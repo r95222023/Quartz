@@ -1,0 +1,46 @@
+<div class="padded-content-page">
+    <md-content firebase="products/{{vm.id}}"
+         layout="row" layout-sm="column" layout-fill layout-wrap layout-margin>
+
+        <md-card class="md-whiteframe-2dp" flex-gt-sm="40">
+            <img class="md-card-image" ng-src="{{ref.$value.image}}">
+        </md-card>
+        <md-card class="md-whiteframe-2dp" flex-gt-sm="40">
+            <md-card-content layout-align="center center">
+                <div class="content-padded">
+                    <h2 class="md-title">{{ref.$value.itemName}}</h2>
+                    <p>
+                        {{ref.$value.description}}
+                    </p>
+                </div>
+            </md-card-content>
+        </md-card>
+
+        <!-- style="min-width: 15em; flex:1 1 8em" is used to fix safari's flex wrapping bug-->
+        <md-card class="md-whiteframe-2dp" flex style="min-width: 8em; flex:1 1 8em">
+            <md-card-content layout-align="center center">
+                <md-input-container>
+                    <label>Options</label>
+                    <md-select ng-model="vm.selectedOption">
+                        <md-option ng-repeat="option in ref.$value.options" value="{{option}}">
+                            {{option}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <p>
+                    Price:{{ref.$value.price|currency : '$' : 2}}
+                </p>
+                <md-divider></md-divider>
+                <ngcart-addtocart  id="{{ ref.$value.itemId }}"
+                                   name="{{ ref.$value.itemName }}"
+                                   price="{{ ref.$value.price }}"
+                                   quantity="{{ref.$value.quantity||1}}"
+                                   quantity-max="30"
+                                   data="ref.$value">Add</ngcart-addtocart>
+            </md-card-content>
+
+        </md-card>
+    </md-content>
+</div>
+

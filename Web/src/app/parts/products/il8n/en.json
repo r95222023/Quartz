@@ -1,0 +1,10 @@
+{
+    "MENU": {
+        "PRODUCTS": {
+            "CART":"Cart",
+            "LIST": "Product List",
+            "DETAIL": "Product Detail",
+            "SHOPPINGCART":"Shopping Cart"
+        }
+    }
+}

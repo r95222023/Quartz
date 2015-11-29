@@ -1,0 +1,21 @@
+{
+    "MENU": {
+        "TODO": {
+            "TITLE": "待辦",
+            "HEADER": "待辦清單",
+            "NOTE": "註記",
+            "REMOVEMSG": "向右滑動來刪除待辦事項",
+            "DIALOG": {
+                "NEW": "增加任務",
+                "DESC": "任務名稱",
+                "HIGH": "高",
+                "MEDIUM": "中",
+                "LOW": "低",
+                "PRIORITY": "優先事項",
+                "TASKFORM": {
+                    "PLEASE_ENTER": "請輸入任務名稱"
+                }
+            }
+        }
+    }
+}

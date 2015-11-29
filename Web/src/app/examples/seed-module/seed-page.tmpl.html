@@ -1,0 +1,30 @@
+<md-content class="padded-content-page">
+    <div layout="row" layout-align="center center">
+        <h2 class="md-display-3" translate>SEED.TITLE</h2>
+    </div>
+    <div class="margin-20" layout="row" layout-align="center center">
+        <ul class="seed-list">
+            <li class="md-headline" ng-repeat="test in vm.testData">
+                {{test}}
+            </li>
+        </ul>
+    </div>
+    <div firebase="products/{{vm.productId}}" ref-name="product">
+        {{product.$value}}{{product.$error}}
+        <md-progress-circular ng-show="product.$isLoading" md-mode="indeterminate"></md-progress-circular>
+    </div>
+
+    <div angularfire-object="products/{{vm.productId}}" ref-name="product">
+        {{product.$value}}{{product.$error}}
+        <md-progress-circular ng-show="product.$isLoading" md-mode="indeterminate"></md-progress-circular>
+    </div>
+    <hr>
+    <button ng-click="vm.changeProduct('bd_001')">bd_001</button>    <button ng-click="vm.changeProduct('bd_002')">bd_002</button>
+    <button ng-click="vm.changeProduct('bd_003')">bd_003</button>
+    <hr>
+    <button ng-click="vm.addNotification()">add notification</button>
+
+    <ngcart-cart></ngcart-cart>
+    <ngcart-addtocart id="item1" name="My Item #1" price="10.99" quantity="1" quantity-max="5">Add to Cart</ngcart-addtocart>
+    <button ng-click="vm.comTest()">ComTest</button>{{vm.result}}
+</md-content>

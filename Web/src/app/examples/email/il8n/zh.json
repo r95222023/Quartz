@@ -1,0 +1,52 @@
+{
+    "MENU": {
+        "EMAIL": {
+            "EMAIL": "電子郵件",
+            "INBOX": "收件匣",
+            "TRASH": "垃圾",
+            "SENT": "送出"
+        }
+    },
+    "EMAIL": {
+        "TOOLBAR": {
+            "SEARCH": "搜索"
+        },
+        "INBOX": {
+            "TITLE": "收件匣",
+            "GROUPS": {
+                "TODAY": "今天",
+                "YESTERDAY": "昨天",
+                "OLDER": "較舊的"
+            }
+        },
+        "COMPOSE": {
+            "FROM": "從",
+            "CC": "CC",
+            "BCC": "BCC",
+            "SUBJECT": "目的",
+            "SEND": "送出",
+            "VALIDATION": {
+                "EMAIL_REQUIRED": "請輸入您的地址。",
+                "EMAIL_VALID": "請輸入有效的電子郵件。",
+                "SUBJECT_REQUIRED": "請輸入主題"
+            }
+        },
+        "TO": "至",
+        "NEW": "新郵件",
+        "SENT": "電子郵件{{to}}發送。",
+        "CANCELED": "已取消",
+        "REPLY": "回覆",
+        "REPLY_ALL": "回覆所有人",
+        "FORWARD": "轉寄",
+        "DELETE": "刪除",
+        "DELETED": "已刪除",
+        "RE": "R.e： ",
+        "CLOSE": "近",
+        "MESSAGE": "的訊息",
+        "NO_EMAILS_FOUND": "找不到郵件",
+        "NO_EMAIL_SELECTED": "未選擇電子郵件",
+        "REPLY_BOTTOM_SHEET": {
+            "TITLE": "回覆"
+        }
+    }
+}

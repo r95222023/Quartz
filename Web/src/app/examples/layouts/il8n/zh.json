@@ -1,0 +1,27 @@
+{
+    "MENU": {
+        "LAYOUTS": {
+            "TITLE": "布局",
+            "COMPOSER": "自訂",
+            "FULL-WIDTH": "全寬度",
+            "ICON-MENU": "圖示選單",
+            "TALL-TOOLBAR": "高工作列"
+        }
+    },
+    "EXAMPLES": {
+        "LAYOUTS": {
+            "OPTIONS": {
+                "SIDEMENU-SIZES": {
+                    "HIDDEN": "隐藏的",
+                    "ICONS": "偶像",
+                    "FULL": "全面规模"
+                },
+                "TOOLBAR-SIZES": {
+                    "DEFAULT": "违约",
+                    "MEDIUM": "中",
+                    "TALL": "高高的"
+                }
+            }
+        }
+    }
+}

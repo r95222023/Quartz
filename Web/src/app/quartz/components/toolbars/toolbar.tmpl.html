@@ -1,0 +1,84 @@
+<div class="md-toolbar-tools">
+    <md-button class="md-icon-button" ng-if="!vm.hideMenuButton()" ng-click="vm.openSideNav('left')" aria-label="side navigation">
+        <md-icon md-font-icon="zmdi zmdi-menu"></md-icon>
+    </md-button>
+
+    <h2 hide-sm flex>
+        <span ng-repeat="crumb in vm.breadcrumbs.crumbs">
+            <span translate>{{crumb.name}}</span>
+            <md-icon md-font-icon="zmdi zmdi-chevron-right" ng-if="!$last"></md-icon>
+        </span>
+    </h2>
+
+    <md-menu>
+        <md-button class="md-icon-button" aria-label="language" ng-click="$mdOpenMenu()" aria-label="change language">
+            <md-icon md-font-icon="zmdi zmdi-globe-alt"></md-icon>
+        </md-button>
+        <md-menu-content width="3">
+            <md-menu-item ng-repeat="language in vm.languages">
+                <md-button ng-click="vm.switchLanguage(language.key)" translate="{{language.name}}" aria-label="{{language.name}}"></md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
+
+    <md-button class="md-icon-button toolbar-button animated"
+               ui-sref="quartz.admin-default.shoppingCart"
+               aria-label="shopping cart">
+        <md-icon md-font-icon="fa fa-shopping-cart"></md-icon>
+        <span class="toolbar-button-badge" theme-background="accent" ng-if="vm.cartSubTotal()>0">{{vm.cartSubTotal()}}</span>
+    </md-button>
+
+    <md-button ng-if="loggedIn"
+               class="md-icon-button toolbar-button animated"
+               ng-click="vm.toggleNotificationsTab(0)"
+               aria-label="side navigation">
+        <md-icon md-font-icon="fa fa-envelope"></md-icon>
+        <span class="toolbar-button-badge animated" theme-background="accent" ng-class="{ 'toolbar-button-badge-new' : vm.emailNew }">5</span>
+    </md-button>
+
+    <md-button ng-if="loggedIn"
+               class="md-icon-button toolbar-button"
+               ng-click="vm.toggleNotificationsTab(1)">
+        <md-icon md-font-icon="fa fa-bell-o"></md-icon>
+        <span class="toolbar-button-badge" theme-background="accent" ng-if="vm.notificationSubTotal()>0">{{vm.notificationSubTotal()}}</span>
+    </md-button>
+
+    <!--<h2 ng-if="!loggedIn" >-->
+        <!--<a href="#/login" aria-label="side navigation" translate="ADMIN.TOOLBAR.LOGIN"></a>-->
+    <!--</h2>-->
+
+    <md-button ng-if="!loggedIn"
+               class="md-icon-button toolbar-button"
+               ui-sref="authentication.login">
+        <md-icon md-font-icon="fa fa-user"></md-icon>
+    </md-button>
+
+    <md-menu ng-if="loggedIn">
+        <md-button aria-label="Open user menu" ng-click="$mdOpenMenu()" aria-label="side navigation">
+            <img  class="toolbar-user-avatar" ng-src="{{user.info.profileImageURL}}">
+            {{user.info.name}}
+        </md-button>
+        <md-menu-content width="4">
+            <md-menu-item>
+                <md-button ng-click="vm.toggleNotificationsTab(2)" aria-label="side navigation">
+                    <md-icon md-font-icon="zmdi zmdi-settings"></md-icon>
+                    <span translate="ADMIN.TOOLBAR.SETTINGS"></span>
+                </md-button>
+            </md-menu-item>
+            <md-menu-item>
+                <md-button href="#/profile" aria-label="side navigation">
+                    <md-icon md-font-icon="zmdi zmdi-account"></md-icon>
+                    <span translate="ADMIN.TOOLBAR.PROFILE"></span>
+                </md-button>
+            </md-menu-item>
+            <md-menu-divider></md-menu-divider>
+            <md-menu-item>
+                <md-button ng-click="vm.logout()" aria-label="side navigation">
+                    <md-icon md-font-icon="zmdi zmdi-sign-in"></md-icon>
+                    <span translate="ADMIN.TOOLBAR.LOGOUT"></span>
+                </md-button>
+            </md-menu-item>
+        </md-menu-content>
+    </md-menu>
+</div>
+

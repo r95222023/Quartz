@@ -1,0 +1,49 @@
+{
+  "author": {
+    "name": "SBOS"
+  },
+  "email": "u910328@gmail.com",
+  "name": "obsidian-server",
+  "description": "obsidian server",
+  "version": "0.0.1",
+  "main": "./lib/obsidian-server.js",
+  "browser": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Firebase",
+    "Obsidian",
+    "angular",
+    "real-time",
+    "material design"
+  ],
+  "dependencies": {
+    "firebase": "~2.3.1"
+  },
+  "repository": {
+    "type": "none",
+    "url": ""
+  },
+  "_id": "obsidain@0.0.1",
+  "_shasum": "",
+  "_from": "",
+  "_npmVersion": "2.7.5",
+  "_nodeVersion": "0.10.38",
+  "_npmUser": {
+    "name": "",
+    "email": ""
+  },
+  "maintainers": [
+    {
+      "name": "boss",
+      "email": "u910328@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "",
+    "tarball": ""
+  },
+  "directories": {},
+  "_resolved": ""
+}

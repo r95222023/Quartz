@@ -1,0 +1,111 @@
+{
+    "MENU": {
+        "DASHBOARDS": {
+            "DASHBOARDS": "儀錶板",
+            "GENERAL": "一般",
+            "ANALYTICS": "分析工具",
+            "SERVER": "伺服器",
+            "SALES": "銷售",
+            "WIDGETS": "小工具",
+            "SOCIAL": "社群",
+            "DRAGGABLE": "可拖拉"
+        }
+    },
+    "DASHBOARDS": {
+        "GENERAL": {
+            "CONTACTS": "聯絡人",
+            "CHAT": "聊天"
+        },
+        "SALES": {
+            "SALES": "銷售",
+            "TOTAL-SALES": "銷售總額",
+            "ALL-TIME-EARNINGS": "累積收入",
+            "TOTAL-EARNINGS": "總收入",
+            "ORDERS": "訂單",
+            "ORDER-STATUS": "訂單狀態",
+            "TOP-PRODUCT-CATEGORIES": "最暢銷產品分類",
+            "DATE-UPDATED": "日期",
+            "DATE-CHANGE": {
+                "TITLE": "選擇日期範圍",
+                "START-DATE": "開始日期",
+                "END-DATE": "結束日期",
+                "YEAR-PICK": "年",
+                "MONTH-PICK": "月",
+                "DATE-PICK": "日"
+            },
+            "ORDER": {
+                "TITLE": "訂單#",
+                "DATE": "日期",
+                "BUYER-NAME": "客戶名",
+                "BUYER-EMAIL": "客戶電子郵件",
+                "NUM-ITEMS": "項目數量",
+                "PRODUCT": "產品說明",
+                "CATEGORY": "類別",
+                "PRICE": "售價",
+                "SUB-TOTAL": "小計",
+                "TAX": "稅",
+                "TOTAL": "總額"
+            }
+        },
+        "ANALYTICS": {
+            "COMMENTS": "評論",
+            "TWEETS": "tweets",
+            "LIKES": "讚",
+            "REACH": "訪問",
+            "PAGEVIEWS": "Pageviews&訪問",
+            "REFERRALS": "推薦",
+            "SOCIAL": "社群",
+            "LOCATION": "地點",
+            "DATE": "11/03/15-11/4/15"
+        },
+        "SERVER": {
+            "IP": "IP位址",
+            "MEMORY": "記憶體",
+            "DISK": "磁碟",
+            "LOCATION": "地點",
+            "REAL_TIME": "現在時間",
+            "24HRS": "24小時",
+            "7DAYS": "7天",
+            "365DAYS": "365天",
+            "CPU": "中央處理器",
+            "BANDWIDTH": "頻寬",
+            "DISKS": "磁碟",
+            "JOB": "工作",
+            "STATUS": "伺服器狀態",
+            "CURRENTLY": "目前用戶數",
+            "RUNNING": "執行中",
+            "RESTART": "重新開始",
+            "SHUTDOWN": "關閉",
+            "USAGE": "每月的使用狀況",
+            "LIMIT": "每月限制",
+            "TASKS": "目前任務",
+            "DATE": "11/03/15-11/4/15",
+            "DISKUSAGE": "磁碟使用"
+        },
+        "SOCIAL": {
+            "STATUS": {
+                "UPDATE": "更新你的地位",
+                "MIND": "什么你想什么呢?"
+            }
+        },
+        "WIDGETS": {
+            "MENU": {
+                "REFRESH": "更新",
+                "DETAILS": "細節",
+                "SHARE": "分享",
+                "PRINT": "列印"
+            },
+            "SALES": "銷售",
+            "COMMENTS": "頻論",
+            "SERVER_UPTIME": "伺服器上線",
+            "FULLDATA": "完整數據"
+        },
+        "DRAGGABLE": {
+            "TITLE": "拉我!",
+            "SUBTITLE1": "You only need to specify the container you want to use.",
+            "SUBTITLE2": "You can re-order these widgets inside the container.",
+            "SUBTITLE3": "It works for all elements, not only widgets!",
+            "SUBTITLE4": "Moving them outside their container is not quite possible."
+        }
+    }
+}

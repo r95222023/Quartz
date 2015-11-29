@@ -1,0 +1,36 @@
+{
+    "MENU": {
+        "UI": {
+            "UI": "UI",
+            "COLORS": "顏色",
+            "FONT_AWESOME": "Font Awesome",
+            "MATERIAL_ICONS": "Material圖示",
+            "TYPOGRAPHY": "字體排版",
+            "TOOLBAR": "工具列",
+            "THEME-TEST": "主題測試",
+            "SKINS": "外觀",
+            "WEATHER_ICONS": "氣象圖示"
+        }
+    },
+    "UI": {
+        "TOOLBARS": {
+            "SIZE": "规模",
+            "SIZE_CHOOSE": "选择一个规模",
+            "SIZE_SHOW": "变革的规模管理小组的最高工具条",
+            "BACKGROUND": "背景",
+            "BACKGROUND_SHOW": "使用形象的背景工具条",
+            "SHRINK": "卷轴心理医生",
+            "SHRINK_SHOW": "隐瞒工具条关于卷轴"
+        },
+        "SKINS": {
+            "ELEMENTS": {
+                "LOGO": "标志",
+                "SIDEBAR": "一边说话",
+                "CONTENT": "的内容",
+                "TOOLBAR": "工具条"
+            },
+            "SKIN_CHOOSE": "选择一个皮肤",
+            "SKIN_TRY": "试试这"
+        }
+    }
+}

@@ -1,0 +1,24 @@
+<div class="padded-content-page" layout="column">
+
+    <md-content firebase="products" layout="row" layout-sm="column" layout-wrap layout-padding>
+        <div flex-gt-sm="33" flex-gt-md="25"
+             ng-repeat="(itemId, item) in ref.$value" >
+            <md-card ng-click="vm.showDetail(itemId)"
+                     class="md-whiteframe-2dp"
+                     style="cursor:pointer">
+                <img class="md-card-image" ng-src="{{item.image}}">
+                <md-card-content layout-align="center center">
+                    <div class="content-padded">
+                        <h2 class="md-title">{{item.itemName}}</h2>
+                        <p>
+                            List price: {{item.listPrice|currency : '$' : 2}}
+                        </p>
+                        <p>
+                            Price: {{item.price|currency : '$' : 2}}
+                        </p>
+                    </div>
+                </md-card-content>
+            </md-card>
+        </div>
+    </md-content>
+</div>

@@ -1,0 +1,10 @@
+{
+    "MENU": {
+        "PRODUCTS": {
+            "CART":"購物車",
+            "LIST": "產品清單",
+            "DETAIL": "產品介紹",
+            "SHOPPINGCART":"購物車"
+        }
+    }
+}

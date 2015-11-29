@@ -1,0 +1,14 @@
+{
+    "MENU": {
+        "CHARTS": {
+            "CHARTS": "圖表",
+            "GOOGLE": "GOOGLE",
+            "CHARTJS": "Chart.js",
+            "BAR": "長條圖",
+            "LINE": "線圖",
+            "SCATTER": "散布圖",
+            "PIE": "圓餅圖",
+            "TICKER": "實時數據"
+        }
+    }
+}

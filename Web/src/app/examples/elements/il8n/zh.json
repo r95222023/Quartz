@@ -1,0 +1,31 @@
+{
+    "MENU": {
+        "ELEMENTS": {
+            "ELEMENTS": "內容",
+            "BUTTONS": "按鈕",
+            "CARDS": "卡片",
+            "ICONS": "圖示",
+            "CHECKBOXES": "選取方塊",
+            "SWITCHES": "開關",
+            "RADIOS": "單選",
+            "DIALOGS": "對話框",
+            "GRIDS": "格線",
+            "FAB-SPEED": "浮動按鈕:快速撥號",
+            "FAB-TOOLBAR": "浮動按鈕:工具列",
+            "TABS": "標籤頁",
+            "SLIDERS": "滑動條",
+            "SELECTS": "選擇",
+            "TABLES": "表",
+            "PROGRESS": "進度",
+            "SIDEBARS": "側邊欄",
+            "TOOLBARS": "工具列",
+            "TEXTANGULAR": "Textangular",
+            "TOOLTIPS": "工具提示",
+            "WHITEFRAMES": "空白框",
+            "TOASTS": "跳出提示",
+            "LISTS": "清單",
+            "CHIPS": "Chips",
+            "MENUS": "選單"
+        }
+    }
+}
