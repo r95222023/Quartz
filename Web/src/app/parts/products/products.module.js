@@ -3,6 +3,7 @@
 
     angular
         .module('app.parts.products', [
-            'app.plugins.ngcart'
+            'app.plugins.ngcart',
+            'app.plugins.ngdisqus'
         ]);
 })();

@@ -21,7 +21,7 @@
         </md-menu-content>
     </md-menu>
 
-    <md-button class="md-icon-button toolbar-button animated"
+    <md-button class="md-icon-button toolbar-button"
                ui-sref="quartz.admin-default.shoppingCart"
                aria-label="shopping cart">
         <md-icon md-font-icon="fa fa-shopping-cart"></md-icon>
@@ -29,7 +29,7 @@
     </md-button>
 
     <md-button ng-if="loggedIn"
-               class="md-icon-button toolbar-button animated"
+               class="md-icon-button toolbar-button"
                ng-click="vm.toggleNotificationsTab(0)"
                aria-label="side navigation">
         <md-icon md-font-icon="fa fa-envelope"></md-icon>
@@ -61,20 +61,20 @@
         <md-menu-content width="4">
             <md-menu-item>
                 <md-button ng-click="vm.toggleNotificationsTab(2)" aria-label="side navigation">
-                    <md-icon md-font-icon="zmdi zmdi-settings"></md-icon>
+                    <md-icon md-font-icon="fa fa-cog"></md-icon>
                     <span translate="ADMIN.TOOLBAR.SETTINGS"></span>
                 </md-button>
             </md-menu-item>
             <md-menu-item>
                 <md-button href="#/profile" aria-label="side navigation">
-                    <md-icon md-font-icon="zmdi zmdi-account"></md-icon>
+                    <md-icon md-font-icon="fa fa-user"></md-icon>
                     <span translate="ADMIN.TOOLBAR.PROFILE"></span>
                 </md-button>
             </md-menu-item>
             <md-menu-divider></md-menu-divider>
             <md-menu-item>
                 <md-button ng-click="vm.logout()" aria-label="side navigation">
-                    <md-icon md-font-icon="zmdi zmdi-sign-in"></md-icon>
+                    <md-icon md-font-icon="fa fa-sign-out"></md-icon>
                     <span translate="ADMIN.TOOLBAR.LOGOUT"></span>
                 </md-button>
             </md-menu-item>

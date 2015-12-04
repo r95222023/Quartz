@@ -14,28 +14,28 @@
         vm.confirm = null;
         vm.createMode = false;
 
-        vm.loginOption={};
+        vm.loginOption = {};
         vm.login = login;
         vm.loginWithProvider = loginWithProvider;
         vm.socialLogins = [{
-            provider:'twitter',
+            provider: 'twitter',
             icon: 'fa fa-twitter',
             color: '#5bc0de',
             url: '#'
         }, {
-            provider:'facebook',
+            provider: 'facebook',
             icon: 'fa fa-facebook',
             color: '#337ab7',
             url: '#'
         }, {
-            provider:'google',
+            provider: 'google',
             icon: 'fa fa-google-plus',
             color: '#e05d6f',
             url: '#'
         }, {
-            provider:'linkedin',
-            icon: 'fa fa-linkedin',
-            color: '#337ab7',
+            provider: 'github',
+            icon: 'fa fa-github-alt',
+            color: '#CACACA',
             url: '#'
         }];
         vm.qtSettings = qtSettings;
@@ -64,11 +64,11 @@
         }
 
         function loginWithProvider(provider) {
-            if($mdMedia('sm')) {
-                var homeUrl=window.location.href.split('#')[0]+'#'+config.defaultUrl;
-                vm.loginOption.popup=false;
-                vm.loginOption.remember='default';
-                window.location.href=homeUrl;
+            if ($mdMedia('sm')) {
+                var homeUrl = window.location.href.split('#')[0] + '#' + config.defaultUrl;
+                vm.loginOption.popup = false;
+                vm.loginOption.remember = 'default';
+                window.location.href = homeUrl;
                 Auth.loginWithProvider(provider, vm.loginOption);
             } else {
                 Auth.loginWithProvider(provider, vm.loginOption)

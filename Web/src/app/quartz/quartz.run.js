@@ -37,7 +37,6 @@
                     '$uid': user.uid
                 };
                 $rootScope.loggedIn = !!user;
-                console.log(user);
 
                 var loadList = {
                     info: {
