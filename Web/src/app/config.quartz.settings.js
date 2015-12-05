@@ -13,7 +13,7 @@
         qtSettingsProvider.setCopyright('&copy;' + now.getFullYear() + ' BYH');
         qtSettingsProvider.setLogo('assets/images/logo.png');
         // set current version of app (shown in footer)
-        qtSettingsProvider.setVersion('2.0.1');
+        qtSettingsProvider.setVersion('1.0.1');
 
         // setup available languages in quartz
         for (var lang = APP_LANGUAGES.length - 1; lang >= 0; lang--) {

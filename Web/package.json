@@ -1,6 +1,10 @@
 {
     "name": "quartz",
     "version": "1.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/r95222023/Quartz.git"
+    },
     "devDependencies": {
         "browser-sync": "~1.7.1",
         "chalk": "~0.5.1",
