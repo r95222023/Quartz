@@ -3,7 +3,7 @@
         <canvas height="300" class="chart-line" chart-data="vm.chartLineData.data" chart-labels="vm.chartLineData.labels" chart-series="vm.chartLineData.series" chart-options="vm.chartLineData.options" chart-colours="vm.chartLineData.colors"></canvas>
     </qt-widget>
 
-    <div layout="row" layout-sm="column" layout-margin dragula='"drag-analytics-container"'>
+    <div layout="row" layout-xs="column" layout-margin dragula='"drag-analytics-container"'>
         <qt-widget palette-background="qtCyan:600" content-layout="column" content-layout-align="space-between center" content-padding>
             <p class="md-display-2 font-weight-100 margin-top-10 margin-bottom-0" countupto="vm.salesData.totalSales" duration="1.5" decimals="0"></p>
             <p class="md-body-2 opacity-60 margin-top-0 margin-bottom-10" translate>DASHBOARDS.SALES.TOTAL-SALES</p>
@@ -18,7 +18,7 @@
         </qt-widget>
     </div>
 
-    <div layout="row" layout-sm="column" layout-margin>
+    <div layout="row" layout-xs="column" layout-margin>
         <qt-widget flex title="DASHBOARDS.SALES.ORDERS" content-layout="column" content-layout-align="center">
             <md-data-table-container>
                 <table md-data-table class="md-data-table" md-progress="vm.deferred">
@@ -56,11 +56,11 @@
         </qt-widget>
     </div>
 
-    <div layout="row" layout-sm="column" layout-margin>
-        <qt-widget flex flex-sm="100" title="DASHBOARDS.SALES.ORDER-STATUS" content-padding>
+    <div layout="row" layout-xs="column" layout-margin>
+        <qt-widget flex flex-xs="100" title="DASHBOARDS.SALES.ORDER-STATUS" content-padding>
             <canvas class="chart-doughnut" chart-data="vm.chartPieData.data" chart-legend="true" chart-labels="vm.chartPieData.labels"></canvas>
         </qt-widget>
-        <qt-widget flex flex-sm="100" title="DASHBOARDS.SALES.TOP-PRODUCT-CATEGORIES" content-padding>
+        <qt-widget flex flex-xs="100" title="DASHBOARDS.SALES.TOP-PRODUCT-CATEGORIES" content-padding>
             <canvas class="chart-bar" chart-data="vm.chartBarData.data" chart-labels="vm.chartBarData.labels" chart-legend="true" chart-options="vm.chartBarData.options" chart-colours="vm.chartBarData.colours" chart-series="vm.chartBarData.series"></canvas>
         </qt-widget>
     </div>

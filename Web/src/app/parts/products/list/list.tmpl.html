@@ -1,7 +1,7 @@
 <div class="padded-content-page" layout="column">
 
-    <md-content firebase="products" layout="row" layout-sm="column" layout-wrap layout-padding>
-        <div flex-gt-sm="33" flex-gt-md="25"
+    <md-content firebase="products" layout="row" layout-xs="column" layout-wrap layout-padding>
+        <div flex-gt-xs="33" flex-gt-sm="25"
              ng-repeat="(itemId, item) in ref.$value" >
             <md-card ng-click="vm.showDetail(itemId)"
                      class="md-whiteframe-2dp"

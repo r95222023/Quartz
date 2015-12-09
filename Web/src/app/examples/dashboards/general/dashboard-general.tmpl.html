@@ -1,5 +1,5 @@
 <div class="dashboard-container overlay-5 padded-content-page" layout="column">
-    <div layout="row" layout-sm="column" layout-margin>
+    <div layout="row" layout-xs="column" layout-margin>
         <qt-widget calendar-widget flex class="widget-calendar" palette-background="qtCyan:500" content-layout="column" content-layout-align="space-between">
             <div flex layout="row" layout-align="start center" layout-padding layout-fill>
                 <div flex layout="column">
@@ -14,7 +14,7 @@
                     <md-button class="widget-button md-icon-button" ng-click="calendarController.changeMonth('prev')" aria-label="previous month">
                         <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>
                     </md-button>
-                    <md-button hide show-gt-lg class="widget-button md-icon-button" ng-click="calendarController.changeMonth('today')" aria-label="today">
+                    <md-button hide show-gt-md class="widget-button md-icon-button" ng-click="calendarController.changeMonth('today')" aria-label="today">
                         <md-icon md-font-icon="zmdi zmdi-calendar-alt"></md-icon>
                     </md-button>
                     <md-button class="widget-button md-icon-button" ng-click="calendarController.changeMonth('next')" aria-label="next month">
@@ -61,8 +61,8 @@
         </qt-widget>
     </div>
 
-    <div layout="row" layout-sm="column" layout-margin>
-        <qt-widget class="widget-blog" flex="60" flex-sm="100" content-layout="column" content-layout-align="start center">
+    <div layout="row" layout-xs="column" layout-margin>
+        <qt-widget class="widget-blog" flex="60" flex-xs="100" content-layout="column" content-layout-align="start center">
             <img src="assets/images/backgrounds/material-backgrounds/mb-bg-26.jpg" alt="some bg">
             <div class="widget-blog-text padding-10">
                 <h2>It's all about Material</h2>
@@ -108,8 +108,8 @@
             </div>
         </qt-widget>
     </div>
-    <div layout="row" layout-sm="column" layout-margin>
-        <div layout="column" layout-margin layout-fill flex="40" flex-sm="100">
+    <div layout="row" layout-xs="column" layout-margin>
+        <div layout="column" layout-margin layout-fill flex="40" flex-xs="100">
            <qt-widget flex weather-widget="Chicago" background-image="assets/images/dashboards/weather.jpg" palette-background="deep-orange:800" content-layout="column" content-layout-align="space-between">
                 <div layout="column" flex layout-align="start center">
                     <p class="md-caption">{{weather.date | amDateFormat:'dddd, MMMM Do YYYY'}}</p>
@@ -136,7 +136,7 @@
             <qt-widget palette-background="qtCyan:500" twitter-widget>
                 <div layout="row" layout-align="space-between center" class="padding-normal">
                     <i class="fa fa-twitter font-size-4 opacity-50"></i>
-                    <h3 flex hide-sm class="md-subhead">Test feed</h3>
+                    <h3 flex hide-xs class="md-subhead">Test feed</h3>
                     <div class="widget-buttons">
                         <md-button class="md-icon-button" ng-click="prevTweet()" aria-label="previous tweet">
                             <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>

@@ -112,7 +112,7 @@
         }
 
         function checkEmailList() {
-            vm.showEmailList = !($mdMedia('sm') && angular.isDefined($state.current.resolve.email));
+            vm.showEmailList = !($mdMedia('xs') && angular.isDefined($state.current.resolve.email));
         }
 
         // watches

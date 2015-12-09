@@ -100,11 +100,11 @@
                 name: 'MENU.DASHBOARDS.SERVER',
                 state: 'quartz.admin-default.dashboard-server',
                 type: 'link'
-            },{
+            },/*{
                 name: 'MENU.DASHBOARDS.SOCIAL',
                 state: 'quartz.admin-default.dashboard-social',
                 type: 'link'
-            },{
+            },*/{
                 name: 'MENU.DASHBOARDS.WIDGETS',
                 state: 'quartz.admin-default.dashboard-widgets',
                 type: 'link'

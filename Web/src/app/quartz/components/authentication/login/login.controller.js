@@ -64,7 +64,7 @@
         }
 
         function loginWithProvider(provider) {
-            if ($mdMedia('sm')) {
+            if ($mdMedia('xs')) {
                 var homeUrl = window.location.href.split('#')[0] + '#' + config.defaultUrl;
                 vm.loginOption.popup = false;
                 vm.loginOption.remember = 'default';

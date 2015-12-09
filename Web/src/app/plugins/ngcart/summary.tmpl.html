@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-6 text-right">
+    <div class="col-sm-6 text-right">
         <svg version="1.1"  class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px" xml:space="preserve">
 			<path d="M27.715,10.48l-2.938,6.312c-0.082,0.264-0.477,0.968-1.318,0.968H11.831
 				c-0.89,0-1.479-0.638-1.602-0.904l-2.048-6.524C7.629,8.514,8.715,7.933,9.462,7.933c0.748,0,14.915,0,16.805,0
@@ -14,7 +14,7 @@
 				C25.395,21.21,25.027,21.575,24.576,21.575L24.576,21.575z"/>
 </svg>
     </div>
-    <div class="col-md-6">{{ ngCart.getTotalItems() }}
+    <div class="col-sm-6">{{ ngCart.getTotalItems() }}
         <ng-pluralize count="ngCart.getTotalItems()" when="{1: 'item', 'other':'items'}"></ng-pluralize>
         <br />{{ ngCart.totalCost() | currency }}
     </div>

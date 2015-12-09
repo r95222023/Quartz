@@ -1,11 +1,11 @@
 <div class="padded-content-page">
     <md-content firebase="products/{{vm.id}}"
-         layout="row" layout-sm="column" layout-fill layout-wrap layout-margin>
+         layout="row" layout-xs="column" layout-fill layout-wrap layout-margin>
 
-        <md-card class="md-whiteframe-2dp" flex-gt-sm="40">
+        <md-card class="md-whiteframe-2dp" flex-gt-xs="40">
             <img class="md-card-image" ng-src="{{ref.$value.image}}">
         </md-card>
-        <md-card class="md-whiteframe-2dp" flex-gt-sm="40">
+        <md-card class="md-whiteframe-2dp" flex-gt-xs="40">
             <md-card-content layout-align="center center">
                 <div class="content-padded">
                     <h2 class="md-title">{{ref.$value.itemName}}</h2>
@@ -41,7 +41,7 @@
             </md-card-content>
 
         </md-card>
-        <md-card class="md-whiteframe-2dp" flex-gt-sm="100" layout-padding>
+        <md-card class="md-whiteframe-2dp" flex-gt-xs="100" layout-padding>
             <div disqus="vm.id"></div>
         </md-card>
     </md-content>

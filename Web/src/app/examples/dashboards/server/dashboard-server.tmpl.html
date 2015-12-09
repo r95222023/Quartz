@@ -1,6 +1,6 @@
 <div class="dashboard-container overlay-10 padded-content-page" layout="column">
     <div layout="row" layout-margin>
-        <qt-widget flex="70" flex-sm="100" server-widget>
+        <qt-widget flex="70" flex-xs="100" server-widget>
             <md-tabs layout-fill flex md-dynamic-height md-no-disconnect md-stretch-tabs="always" md-no-pagination>
                 <md-tab label="{{'DASHBOARDS.SERVER.REAL_TIME' | translate}}">
                     <md-content class="md-padding">
@@ -27,7 +27,7 @@
                 </md-tab>
             </md-tabs>
         </qt-widget>
-        <div flex="30" flex-sm="100" class="drag-container" layout="column" layout-margin dragula='"drag-server-container"'>
+        <div flex="30" flex-xs="100" class="drag-container" layout="column" layout-margin dragula='"drag-server-container"'>
             <qt-widget palette-background="qtCyan:500" background="primary" content-layout="row" content-layout-align="space-between center" content-padding>
                 <div>
                     <md-icon class="font-size-5 opacity-50" md-font-icon="zmdi zmdi-gps-dot"></md-icon>
@@ -66,8 +66,8 @@
             </qt-widget>
         </div>
     </div>
-    <div layout="row" layout-sm="column" layout-margin>
-        <qt-widget class="flex" flex="50" flex-sm="100" title="DASHBOARDS.SERVER.DISKS">
+    <div layout="row" layout-xs="column" layout-margin>
+        <qt-widget class="flex" flex="50" flex-xs="100" title="DASHBOARDS.SERVER.DISKS">
             <md-divider></md-divider>
             <md-list>
                 <md-list-item ng-repeat="disk in ::vm.disks">
@@ -95,13 +95,13 @@
 
     </div>
 
-    <div layout="row" layout-sm="column" layout-margin>
-        <qt-widget chartjs-pie-widget class="flex" flex="40" flex-md="40" flex-sm="100" title="DASHBOARDS.SERVER.DISKUSAGE" subtitle="DASHBOARDS.SERVER.DATE" content-padding>
+    <div layout="row" layout-xs="column" layout-margin>
+        <qt-widget chartjs-pie-widget class="flex" flex="40" flex-sm="40" flex-xs="100" title="DASHBOARDS.SERVER.DISKUSAGE" subtitle="DASHBOARDS.SERVER.DATE" content-padding>
             <div flex>
                 <canvas class="chart-doughnut full-width" chart-data="vm.serverChart.data" chart-legend="true" chart-labels="vm.serverChart.labels"></canvas>
             </div>
         </qt-widget>
-        <qt-widget flex-sm="100" title="DASHBOARDS.SERVER.USAGE" palette-background="qtCyan:600" content-layout="column" content-layout-align="start center">
+        <qt-widget flex-xs="100" title="DASHBOARDS.SERVER.USAGE" palette-background="qtCyan:600" content-layout="column" content-layout-align="start center">
             <div class="full-width" layout="row" layout-padding>
                 <h4 flex="20" class="opacity-80 margin-0 margin-right-20" translate>DASHBOARDS.SERVER.DISK</h4>
                 <div flex>

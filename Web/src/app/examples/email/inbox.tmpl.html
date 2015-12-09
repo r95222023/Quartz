@@ -2,7 +2,7 @@
     <md-button ng-click="vm.composeClick($event)" class="md-fab md-accent md-fab-bottom-right" aria-label="{{'EMAIL.COMPOSE_EMAIL' | translate}}">
         <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
     </md-button>
-    <div class="email-inbox-list md-whiteframe-z1" flex="100" flex-gt-sm="50" flex-gt-md="50" flex-gt-lg="40" ng-show="vm.showEmailList" layout="column">
+    <div class="email-inbox-list md-whiteframe-z1" flex="100" flex-gt-xs="50" flex-gt-sm="50" flex-gt-md="40" ng-show="vm.showEmailList" layout="column">
         <md-content>
             <section class="email-inbox-list-animate-repeat" ng-repeat="group in vm.emailGroups" ng-if="vm.emails.length > 0">
                 <md-subheader ng-show="group.emails.length > 0" class="md-primary">{{::group.name}}</md-subheader>
@@ -33,7 +33,7 @@
     <div class="animate-wrapper" layout="column" layout-align="start center" flex>
         <div flex id="ui-admin-email" ui-view layout="column" layout-align="start center" class="overflow-auto">
             <div flex class="email-inbox-no-email-selected" layout="column" layout-align="center">
-                <h2 hide-sm translate>EMAIL.NO_EMAIL_SELECTED</h2>
+                <h2 hide-xs translate>EMAIL.NO_EMAIL_SELECTED</h2>
             </div>
         </div>
     </div>

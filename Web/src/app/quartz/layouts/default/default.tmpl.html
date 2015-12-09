@@ -1,7 +1,7 @@
 <div layout="row" class="full-height">
     <!-- left sidebar -->
 
-    <md-sidenav class="admin-sidebar-left md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="layout.sideMenuSize !== 'hidden' && $mdMedia('gt-md')" ui-view="sidebarLeft" ng-class="{ 'admin-sidebar-collapsed': layout.sideMenuSize == 'icon' }" ng-mouseover="layoutController.activateHover()" ng-mouseleave="layoutController.removeHover()" md-swipe-left="layoutController.toggleSidenav('left')"></md-sidenav>
+    <md-sidenav class="admin-sidebar-left md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="layout.sideMenuSize !== 'hidden' && $mdMedia('gt-sm')" ui-view="sidebarLeft" ng-class="{ 'admin-sidebar-collapsed': layout.sideMenuSize == 'icon' }" ng-mouseover="layoutController.activateHover()" ng-mouseleave="layoutController.removeHover()" md-swipe-left="layoutController.toggleSidenav('left')"></md-sidenav>
 
     <!-- main content -->
     <div id="admin-panel" layout="column" flex>

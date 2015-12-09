@@ -14,7 +14,7 @@
             <md-tab label="example">
                 <div class="padding-40 md-tabs-content">
                     <md-card>
-                        <md-card-content layout="row" layout-sm="column" layout-padding layout-align="space-around center" ng-include="'app/examples/elements/examples/button-flat.tmpl.html'"></md-card-content>
+                        <md-card-content layout="row" layout-xs="column" layout-padding layout-align="space-around center" ng-include="'app/examples/elements/examples/button-flat.tmpl.html'"></md-card-content>
                     </md-card>
                 </div>
             </md-tab>
@@ -37,7 +37,7 @@
             <md-tab label="example">
                 <div class="padding-40 md-tabs-content">
                     <md-card>
-                        <md-card-content layout="row" layout-sm="column" layout-padding layout-align="space-around center" ng-include="'app/examples/elements/examples/button-raised.tmpl.html'"></md-card-content>
+                        <md-card-content layout="row" layout-xs="column" layout-padding layout-align="space-around center" ng-include="'app/examples/elements/examples/button-raised.tmpl.html'"></md-card-content>
                     </md-card>
                 </div>
             </md-tab>
@@ -60,7 +60,7 @@
             <md-tab label="example">
                 <div class="padding-40 md-tabs-content">
                     <md-card>
-                        <md-card-content layout="row" layout-sm="column" layout-padding layout-align="space-around center" ng-include="'app/examples/elements/examples/button-fab.tmpl.html'"></md-card-content>
+                        <md-card-content layout="row" layout-xs="column" layout-padding layout-align="space-around center" ng-include="'app/examples/elements/examples/button-fab.tmpl.html'"></md-card-content>
                     </md-card>
                 </div>
             </md-tab>
@@ -81,14 +81,14 @@
 
     <md-divider class="margin-top-20 margin-bottom-20"></md-divider>
 
-    <div layout="row" layout-sm="column" layout-align="space-around start">
-        <div flex="40" flex-sm="100" layout="column">
+    <div layout="row" layout-xs="column" layout-align="space-around start">
+        <div flex="40" flex-xs="100" layout="column">
             <h3 class="md-title">Raised Button Example</h3>
             <p>Raised buttons emphasize functions that would otherwise get lost on a busy or wide space. They add dimension to mostly flat layouts.</p>
-            <p><strong>Thats not an image, try it out <md-icon hide-sm md-font-icon="zmdi zmdi-chevron-right"></md-icon></strong></p>
+            <p><strong>Thats not an image, try it out <md-icon hide-xs md-font-icon="zmdi zmdi-chevron-right"></md-icon></strong></p>
         </div>
 
-        <div flex flex-sm="100" class="elements-buttons-raised-usage md-whiteframe-z1" layout="column">
+        <div flex flex-xs="100" class="elements-buttons-raised-usage md-whiteframe-z1" layout="column">
             <md-toolbar>
                 <h2 class="md-toolbar-tools">
                     <span>Raised Button</span>
@@ -108,13 +108,13 @@
 
     <md-divider class="margin-top-20 margin-bottom-20"></md-divider>
 
-    <div layout="row" layout-sm="column" layout-align="space-around start">
-        <div flex="40" flex-sm="100" layout="column">
+    <div layout="row" layout-xs="column" layout-align="space-around start">
+        <div flex="40" flex-xs="100" layout="column">
             <h3 class="md-title">Floating Action Button (FAB)</h3>
             <p>Floating action buttons are used for a special type of promoted action. They are distinguished by a circled icon floating above the UI and have special motion behaviors related to morphing, launching, and the transferring anchor point.</p>
-            <p><strong>Thats not an image, try it out <md-icon hide-sm md-font-icon="zmdi zmdi-chevron-right"></md-icon></strong></p>
+            <p><strong>Thats not an image, try it out <md-icon hide-xs md-font-icon="zmdi zmdi-chevron-right"></md-icon></strong></p>
         </div>
-        <div flex flex-sm="100" class="elements-buttons-fab-usage md-whiteframe-z3" layout="column">
+        <div flex flex-xs="100" class="elements-buttons-fab-usage md-whiteframe-z3" layout="column">
             <img src="http://lorempixel.com/400/200/" alt="">
             <md-toolbar>
                 <h2 class="md-toolbar-tools">
@@ -129,13 +129,13 @@
 
     <md-divider class="margin-top-20 margin-bottom-20"></md-divider>
 
-    <div layout="row" layout-sm="column" layout-align="space-around start">
-        <div flex="40" flex-sm="100" layout="column">
+    <div layout="row" layout-xs="column" layout-align="space-around start">
+        <div flex="40" flex-xs="100" layout="column">
             <h3 class="md-title">Flat button</h3>
             <p>Use flat buttons for contexts such as toolbars and dialogs to avoid gratuitous layering.</p>
-            <p><strong>Thats not an image, try it out <md-icon hide-sm md-font-icon="zmdi zmdi-chevron-right"></md-icon></strong></p>
+            <p><strong>Thats not an image, try it out <md-icon hide-xs md-font-icon="zmdi zmdi-chevron-right"></md-icon></strong></p>
         </div>
-        <div flex flex-sm="100" class="elements-buttons-flat-usage md-whiteframe-z3" layout="column">
+        <div flex flex-xs="100" class="elements-buttons-flat-usage md-whiteframe-z3" layout="column">
             <div class="md-padding">
                 <h2>Would you like to use our location service?</h2>
                 <p>Let us monitor your location to keep you up to date with everything that is happening in your current area.</p>
@@ -150,7 +150,7 @@
 
     <h2 class="md-headline">Button Ripple Options</h2>
     <p>You can also change the style of ripple effects using the <code>md-ripple-size</code> and <code>md-no-ink</code> attribute</p>
-    <div class="elements-button-colors" layout="row" layout-sm="column" layout-align="space-around center">
+    <div class="elements-button-colors" layout="row" layout-xs="column" layout-align="space-around center">
         <div layout="column" layout-align="center center">
             <md-button class="md-primary md-raised" md-ripple-size="full" aria-label="ripple full">Full</md-button>
             <h3>Ripple Full</h3>
@@ -171,7 +171,7 @@
 
     <h2>Button States</h2>
     <p>You can also change the style of ripple effects using the <code>md-ripple-size</code> attribute</p>
-    <div class="elements-button-colors" layout="row" layout-sm="column" layout-align="space-around center">
+    <div class="elements-button-colors" layout="row" layout-xs="column" layout-align="space-around center">
         <div layout="column" layout-align="center center">
             <md-switch ng-model="vm.buttonDisabled" aria-label="Switch 2" class="md-primary">
                 Toggle Button Disabled

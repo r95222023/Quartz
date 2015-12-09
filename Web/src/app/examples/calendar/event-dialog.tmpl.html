@@ -1,4 +1,4 @@
-<md-dialog class="mobile-fullwidth-dialog" flex="60" flex-sm="100">
+<md-dialog class="mobile-fullwidth-dialog" flex="60" flex-xs="100">
     <md-toolbar class="toolbar-default" ng-style="{ 'background-color': vm.selectedColor.backgroundColor, color: vm.selectedColor.textColor }">
         <div class="md-toolbar-tools">
             <h2>
@@ -28,7 +28,7 @@
                     </md-list-item>
                 </md-list>
                 <div class="event-dialog-input-row" layout="row" layout-align="start center">
-                    <p flex hide-sm translate>CALENDAR.EVENT.START</p>
+                    <p flex hide-xs translate>CALENDAR.EVENT.START</p>
                     <md-datepicker ng-model="vm.start" md-placeholder="CALENDAR.EVENT.START | translate"></md-datepicker>
                 </div>
                 <div class="event-dialog-input-row" layout="row" layout-align="start center">
@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <div class="event-dialog-input-row" layout="row" layout-align="start center" ng-hide="vm.event.allDay">
-                    <p translate flex hide-sm>CALENDAR.EVENT.END</p>
+                    <p translate flex hide-xs>CALENDAR.EVENT.END</p>
                     <md-datepicker ng-model="vm.end" md-placeholder="CALENDAR.EVENT.END | translate"></md-datepicker>
                 </div>
                 <div class="event-dialog-input-row" layout="row" layout-align="start center" ng-hide="vm.event.allDay">
