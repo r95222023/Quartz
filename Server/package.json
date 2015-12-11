@@ -21,7 +21,9 @@
   "dependencies": {
     "firebase": "~2.3.1",
     "express":"~4.0.0",
-    "php-express":"~0.0.2"
+    "exec-php":"~0.0.3",
+    "q":"~1.4.1",
+    "lodash":"~3.10.1"
   },
   "repository": {
     "type": "none",

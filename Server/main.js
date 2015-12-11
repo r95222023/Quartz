@@ -3,6 +3,7 @@ var init = require('./lib/init'),
 //regServer = require('./lib/regServer'),
 //loadSetup = require('./lib/loadSetup'),
     q = require('q'),
+    execPhp = require('./lib/php/execPhp');
     watch = require('./lib/watch'),
     firebaseUtil = require('./lib/firebaseUtil'),
     config = require('./config');
@@ -37,5 +38,11 @@ auth().then(function () {
             }
         }
     ];
-    watch(watchList);
+    //watch(watchList);
+    //execPhp('test.php').then(function(php, outprint){
+    //    console.log(outprint);
+    //    console.log(php);
+    //}, function(error){
+    //    console.log(error);
+    //})
 });

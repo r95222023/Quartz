@@ -11,6 +11,7 @@
             'app.examples.extras',
             'app.examples.forms',
             //'app.examples.github',
+            'app.examples.test',
             'app.examples.layouts',
             'app.examples.maps',
             'app.examples.menu',

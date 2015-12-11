@@ -1,0 +1,11 @@
+{
+    "MENU": {
+        "TEST": {
+            "GROUP-NAME": "Test",
+            "PAY2GO": "Pay2go"
+        }
+    },
+    "SEED": {
+        "TITLE": "Welcome to the quartz test page"
+    }
+}
