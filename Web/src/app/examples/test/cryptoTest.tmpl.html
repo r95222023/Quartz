@@ -1,0 +1,7 @@
+<md-content class="padded-content-page">
+    <textarea ng-model="vm.source"></textarea>
+    <md-button ng-click="vm.md5(vm.source)">MD5</md-button>
+    <md-button ng-click="vm.sha256(vm.source)">SHA256</md-button>
+    <br>
+    result:{{vm.result}}
+</md-content>

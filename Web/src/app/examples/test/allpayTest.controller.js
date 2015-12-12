@@ -3,25 +3,38 @@
 
     angular
         .module('app.examples.test')
-        .controller('Pay2goTestController', Pay2goTestController);
+        .controller('AllpayTestController', AllpayTestController);
 
     /* @ngInject */
-    function Pay2goTestController($firebase, CryptoJS, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AllpayTestController(CryptoJS, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
+
         vm.getCheckValue = function (HashKey, HashIV, data) {
             delete data['CheckValue'];
             var keys = Object.keys(data);
             keys.sort();
-            var check_str = 'HashKey=' + HashKey;
+            var uri = 'HashKey=' + HashKey;
             for (var i = 0; i < keys.length; i++) {
                 /*if(data[keys[i]]!=='')*/
-                check_str = check_str + '&' + keys[i] + '=' + data[keys[i]];
+                uri = uri + '&' + keys[i] + '=' + data[keys[i]];
             }
-            check_str = check_str + '&HashIV=' + HashIV;
-            vm.chkstr = check_str;
-            var checked_str = CryptoJS.SHA256(check_str).toString().toUpperCase();
-            vm.chkvalue = checked_str;
-            return checked_str;
+            uri = uri + '&HashIV=' + HashIV;
+            vm.chkstr = uri;
+
+            uri = encodeURIComponent(uri);
+            var regex;
+            var find = ["%2d", "%5f", "%2e", "%21", "%2a", "%28", "%29", "%20"],
+                replace = ["-", "_", ".", "!", "*", "(", ")", "+"];
+            for (var j = 0; j < find.length; j++) {
+                regex = new RegExp(find[i], "g");
+                uri = uri.replace(regex, replace[i]);
+            }
+            uri = uri.toLowerCase();
+            var checked_uri = CryptoJS.SHA256(uri).toString().toUpperCase();
+
+            vm.chkuristr = uri;
+            vm.chkvalue = checked_uri;
+            return checked_uri;
         };
 
         var now = Math.floor((new Date()).getTime() / 1000),

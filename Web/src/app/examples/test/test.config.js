@@ -18,6 +18,22 @@
             // set the controller to load for this page (in seed-page.controller.js)
             controller: 'Pay2goTestController',
             controllerAs: 'vm'
+        }).state('quartz.admin-default.allpayTest', {
+            // set the url of this page
+            url: '/test/allpayTest',
+            // set the html template to show on this page
+            templateUrl: 'app/examples/test/allpayTest.tmpl.html',
+            // set the controller to load for this page (in seed-page.controller.js)
+            controller: 'AllpayTestController',
+            controllerAs: 'vm'
+        }).state('quartz.admin-default.cryptoTest', {
+            // set the url of this page
+            url: '/test/cryptoTest',
+            // set the html template to show on this page
+            templateUrl: 'app/examples/test/cryptoTest.tmpl.html',
+            // set the controller to load for this page (in seed-page.controller.js)
+            controller: 'CryptoTestController',
+            controllerAs: 'vm'
         });
 
         qtMenuProvider.addMenu({
@@ -34,6 +50,18 @@
                 name: 'MENU.TEST.PAY2GO',
                 // point this menu to the state we created in the $stateProvider above
                 state: 'quartz.admin-default.pay2goTest',
+                // set the menu type to a link
+                type: 'link'
+            },{
+                name: 'MENU.TEST.ALLPAY',
+                // point this menu to the state we created in the $stateProvider above
+                state: 'quartz.admin-default.allpayTest',
+                // set the menu type to a link
+                type: 'link'
+            },{
+                name: 'MENU.TEST.CRYPTO',
+                // point this menu to the state we created in the $stateProvider above
+                state: 'quartz.admin-default.cryptoTest',
                 // set the menu type to a link
                 type: 'link'
             }]
