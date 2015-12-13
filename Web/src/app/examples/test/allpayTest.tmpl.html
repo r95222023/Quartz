@@ -1,15 +1,59 @@
 <md-content class="padded-content-page">
-    <div layout="row" layout-align="center center">
-        <h2 class="md-display-3" translate>SEED.TITLE</h2>
-    </div>
-    Http Request: {{vm.chkstr}}<br>
-    URI:{{vm.chkuristr}}<br>
-    Check Value: {{vm.chkvalue}}<br>
-    <form target="_blank" method="post" action="https://capi.pay2go.com/MPG/mpg_gateway">
-        <div ng-repeat="(name, value) in vm.order">
-            {{name}}:<input type='text' name="{{name}}" value="{{value}}" ng-model="value"><br>
+    <div layout="column" layout-margin>
+        <md-card>
+            <div layout="column" ng-cloak class="md-inline-form">
+                <md-content layout-padding layout-gt-sm="row">
+                    <form>
+                        <h3>Merchant Info</h3>
+                        <md-input-container>
+                            <label>Merchant ID</label>
+                            <input type='text' ng-model="vm.merchant.id">
+                        </md-input-container>
+                        <md-input-container>
+                            <label>HashKey</label>
+                            <input type='text' ng-model="vm.merchant.hashKey">
+                        </md-input-container>
+                        <md-input-container>
+                            <label>HashIV</label>
+                            <input type='text' ng-model="vm.merchant.hashIV">
+                        </md-input-container>
+                    </form>
+                </md-content>
+            </div>
+        </md-card>
+        <md-card>
+            <div layout="column" ng-cloak class="md-inline-form">
+                <md-content layout-padding layout-gt-sm="row">
+                    <form target="_blank" method="post" action="http://payment-stage.allpay.com.tw/Cashier/AioCheckOut">
+                        <h3>Order Info</h3>
+                        <md-input-container ng-repeat="(name, value) in vm.order">
+                            <label>{{name}}</label>
+                            <input name="{{name}}" value="{{value}}" ng-model="value">
+                        </md-input-container><br>
+                        <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value remotely</md-button>
+                        <md-button class="md-raised" ng-click="vm.getCheckValueLocaly()">get check value locally</md-button>
+                        <input ng-show="vm.order.CheckMacValue" class='md-button md-raised' type='submit' value='Submit'>
+                    </form>
+                </md-content>
+            </div>
+        </md-card>
+        <div layout-padding class="md-whiteframe-1dp" ng-if="vm.chkstr">
+            <h3>Check</h3>
+            <h4>Http Request:</h4>
+
+            <p style="word-wrap: break-word">{{vm.chkstr}}</p><br>
+            <h4>URI:</h4>
+
+            <p style="word-wrap: break-word">{{vm.chkuristr}}</p> <br>
+            <h4>MD5 Check Value:</h4>
+
+            <p style="word-wrap: break-word">{{vm.chkvalue}}</p><br>
         </div>
-        <input type="submit" value="Submit">
-    </form>
-    <md-button ng-click="vm.getCheckValue('BjpD8H94QhzjaQZ28FN17LPBlCqd5mUG','FjkN1uSRLrbVibXr', vm.order)">get check value</md-button>
+    </div>
+
+
 </md-content>
+
+
+
+

@@ -14,7 +14,7 @@
             params: {},
             databases: {},
             ref: queryRef,
-            $communicate: $communicate,
+            request: request,
             $object: $object,
             isRefUrlValid: isRefUrlValid,
             move: move,
@@ -294,7 +294,19 @@
             })
         }
 
-        function $communicate(opt) {
+        //EX:
+        // request({
+        //    request: [{
+        //        refUrl: 'orders/1234',
+        //        value: {....}
+        //    }],
+        //    response: {
+        //    res1: 'orders/1234/checkValue',             <- new value (was null before) set by the server.
+        //    $res2: 'orders/1234/status'                 <- if value is changed at this path by the server, use prefix $
+        //}).then(function(res){
+        //    res==={res1:...., $res2:....}
+        // })
+        function request(opt) {
             var res = {}, def = $q.defer();
             if (typeof opt !== 'object') return;
 
@@ -327,8 +339,9 @@
                 promises[key] = def.promise;
 
                 var onSuccess = function (snap) {
-                    if (isRenew[key] === true) {
+                    if (refUrl.charAt(0)!=='$'||isRenew[key] === true) {
                         def.resolve(snap.val());
+                        console.log(snap.val());
                         queryRef(refUrl).off();
                     } else {
                         isRenew[key] = true; //server hasn't change the data.

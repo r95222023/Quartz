@@ -6,11 +6,46 @@
         .controller('AllpayTestController', AllpayTestController);
 
     /* @ngInject */
-    function AllpayTestController(CryptoJS, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AllpayTestController(CryptoJS, $firebase, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
+        var now = new Date(),
+            hour = to2dig(now.getHours()),
+            min = to2dig(now.getMinutes()),
+            sec = to2dig(now.getSeconds()),
+            date = now.getFullYear() + '/' + now.getMonth() + '/' + now.getDate() + ' ' + hour + ':' + min + ':' + sec;
 
-        vm.getCheckValue = function (HashKey, HashIV, data) {
-            delete data['CheckValue'];
+        vm.merchant={
+            id:"2000132",
+            hashKey:"5294y06JbISpM5x9",
+            hashIV:"v77hoKGq4kWxNNIS"
+        };
+
+        vm.allpayGateway = 'http://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
+        vm.order = {
+            MerchantID: vm.merchant.id,
+            MerchantTradeDate: date,
+            MerchantTradeNo: now.getTime(),
+            TotalAmount: "100",
+            PaymentType: "aio",
+            TradeDesc: "交易測試(測試)",
+            ItemName: "交易測試(測試)",
+            ReturnURL: "http://www.allpay.com.tw/receive.php",
+            ChoosePayment: "ALL",
+            NeedExtraPaidInfo: "Y",
+            // Alipay 必要參數
+            AlipayItemName: "交易測試(測試)",
+            AlipayItemCounts: 1,
+            AlipayItemPrice: "100",
+            Email: "stage_test@allpay.com.tw",
+            PhoneNo: "0911222333",
+            UserName: "Stage Test"
+        };
+
+        vm.getCheckValueLocaly = function (/*HashKey, HashIV, data*/) {
+            var HashKey =vm.merchant.hashKey,
+                HashIV=vm.merchant.hashIV,
+                data=vm.order;
+            if(data['CheckMacValue']) delete data['CheckMacValue'];
             var keys = Object.keys(data);
             keys.sort();
             var uri = 'HashKey=' + HashKey;
@@ -26,49 +61,42 @@
             var find = ["%2d", "%5f", "%2e", "%21", "%2a", "%28", "%29", "%20"],
                 replace = ["-", "_", ".", "!", "*", "(", ")", "+"];
             for (var j = 0; j < find.length; j++) {
-                regex = new RegExp(find[i], "g");
-                uri = uri.replace(regex, replace[i]);
+                regex = new RegExp(find[j], "g");
+                uri = uri.replace(regex, replace[j]);
             }
             uri = uri.toLowerCase();
-            var checked_uri = CryptoJS.SHA256(uri).toString().toUpperCase();
+            var checked_uri = CryptoJS.MD5(uri).toString().toUpperCase();
 
             vm.chkuristr = uri;
             vm.chkvalue = checked_uri;
+            data['CheckMacValue']=checked_uri;
             return checked_uri;
         };
 
-        var now = Math.floor((new Date()).getTime() / 1000),
-            HashKey = 'BjpD8H94QhzjaQZ28FN17LPBlCqd5mUG',
-            HashIV = 'FjkN1uSRLrbVibXr';
-        vm.order = {
-            MerchantID: "31201874",
-            RespondType: "Json",
-            TimeStamp: "1449904196",
-            Version: "1.2",
-            //LangType: "zh-tw",
-            MerchantOrderNo: "1449904196",
-            Amt: "40",
-            //ItemDesc: "測試商品",
-            //TradeLimit: "600",
-            //ExpireDate: "",
-            //ReturnURL: "https://quartz.firebaseapp.com/#!/home",
-            //NotifyURL: "",
-            //CustomerURL: "",
-            //ClientBackURL: "https://quartz.firebaseapp.com/#!/home",
-            //Email: "u910328@gmail.com",
-            //EmailModify: "",
-            LoginType: 0,
-            //OrderComment: "",
-            //CREDIT: "",
-            //CreditRed: "",
-            //InstFlag: "",
-            //UNIONPAY: "",
-            //WEBATM: "",
-            //VACC: "",
-            //CVS: "",
-            //BARCODE: "",
-            //CUSTOM: ""
-        };
-        vm.order['CheckValue'] = vm.getCheckValue(HashKey, HashIV, vm.order);
+        function to2dig(num){
+            return num < 10 ? ('0'+num): num;
+        }
+
+
+        //vm.order['CheckMacValue'] = vm.getCheckValue(HashKey, HashIV, vm.order);
+
+        vm.getCheckValueRemotely = function () {
+            $firebase.request({
+                request: [{
+                    refUrl: 'orders/'+vm.order.MerchantTradeNo+'/payment/allpay',
+                    value: vm.order
+                }],
+                response: {
+                    checkMacValue: 'orders/'+vm.order.MerchantTradeNo+'/payment/allpay/CheckMacValue'
+                }
+            }).then(function (res) {
+                console.log('test');
+                console.log(res);
+                vm.order['CheckMacValue']=res.checkMacValue;
+            }, function (error) {
+                console.log(error);
+            });
+            //$firebase.update('orders/'+ vm.order.MerchantTradeNo+'/payment/allpay', vm.order)
+        }
     }
 })();
