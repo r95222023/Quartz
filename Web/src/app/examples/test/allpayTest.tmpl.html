@@ -7,7 +7,7 @@
                         <h3>Merchant Info</h3>
                         <md-input-container>
                             <label>Merchant ID</label>
-                            <input type='text' ng-model="vm.merchant.id">
+                            <input type='text' ng-model="vm.merchant.id" ng-change="vm.merchantChange()">
                         </md-input-container>
                         <md-input-container>
                             <label>HashKey</label>
@@ -28,26 +28,27 @@
                         <h3>Order Info</h3>
                         <md-input-container ng-repeat="(name, value) in vm.order">
                             <label>{{name}}</label>
-                            <input name="{{name}}" value="{{value}}" ng-model="value">
+                            <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]" >
                         </md-input-container><br>
                         <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value remotely</md-button>
                         <md-button class="md-raised" ng-click="vm.getCheckValueLocaly()">get check value locally</md-button>
+                        <md-button class="md-raised" ng-click="vm.refresh()">refresh</md-button>
                         <input ng-show="vm.order.CheckMacValue" class='md-button md-raised' type='submit' value='Submit'>
                     </form>
                 </md-content>
             </div>
         </md-card>
-        <div layout-padding class="md-whiteframe-1dp" ng-if="vm.chkstr">
+        <div layout-padding class="md-whiteframe-1dp" ng-if="vm.check.chkstr">
             <h3>Check</h3>
             <h4>Http Request:</h4>
 
-            <p style="word-wrap: break-word">{{vm.chkstr}}</p><br>
+            <p style="word-wrap: break-word">{{vm.check.chkstr}}</p><br>
             <h4>URI:</h4>
 
-            <p style="word-wrap: break-word">{{vm.chkuristr}}</p> <br>
+            <p style="word-wrap: break-word">{{vm.check.chkuristr}}</p> <br>
             <h4>MD5 Check Value:</h4>
 
-            <p style="word-wrap: break-word">{{vm.chkvalue}}</p><br>
+            <p style="word-wrap: break-word">{{vm.check.chkvalue}}</p><br>
         </div>
     </div>
 

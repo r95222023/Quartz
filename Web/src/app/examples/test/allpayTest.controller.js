@@ -8,11 +8,6 @@
     /* @ngInject */
     function AllpayTestController(CryptoJS, $firebase, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
-        var now = new Date(),
-            hour = to2dig(now.getHours()),
-            min = to2dig(now.getMinutes()),
-            sec = to2dig(now.getSeconds()),
-            date = now.getFullYear() + '/' + now.getMonth() + '/' + now.getDate() + ' ' + hour + ':' + min + ':' + sec;
 
         vm.merchant={
             id:"2000132",
@@ -20,25 +15,11 @@
             hashIV:"v77hoKGq4kWxNNIS"
         };
 
-        vm.allpayGateway = 'http://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
-        vm.order = {
-            MerchantID: vm.merchant.id,
-            MerchantTradeDate: date,
-            MerchantTradeNo: now.getTime(),
-            TotalAmount: "100",
-            PaymentType: "aio",
-            TradeDesc: "交易測試(測試)",
-            ItemName: "交易測試(測試)",
-            ReturnURL: "http://www.allpay.com.tw/receive.php",
-            ChoosePayment: "ALL",
-            NeedExtraPaidInfo: "Y",
-            // Alipay 必要參數
-            AlipayItemName: "交易測試(測試)",
-            AlipayItemCounts: 1,
-            AlipayItemPrice: "100",
-            Email: "stage_test@allpay.com.tw",
-            PhoneNo: "0911222333",
-            UserName: "Stage Test"
+        vm.orderChange= function () {
+            delete vm.order['CheckMacValue'];
+        };
+        vm.merchantChange= function () {
+            vm.order.MerchantID=vm.merchant.id;
         };
 
         vm.getCheckValueLocaly = function (/*HashKey, HashIV, data*/) {
@@ -54,7 +35,8 @@
                 uri = uri + '&' + keys[i] + '=' + data[keys[i]];
             }
             uri = uri + '&HashIV=' + HashIV;
-            vm.chkstr = uri;
+            vm.check={};
+            vm.check.chkstr = uri;
 
             uri = encodeURIComponent(uri);
             var regex;
@@ -67,8 +49,8 @@
             uri = uri.toLowerCase();
             var checked_uri = CryptoJS.MD5(uri).toString().toUpperCase();
 
-            vm.chkuristr = uri;
-            vm.chkvalue = checked_uri;
+            vm.check.chkuristr = uri;
+            vm.check.chkvalue = checked_uri;
             data['CheckMacValue']=checked_uri;
             return checked_uri;
         };
@@ -97,6 +79,37 @@
                 console.log(error);
             });
             //$firebase.update('orders/'+ vm.order.MerchantTradeNo+'/payment/allpay', vm.order)
-        }
+        };
+
+        vm.refresh= function () {
+            var now = new Date(),
+                hour = to2dig(now.getHours()),
+                min = to2dig(now.getMinutes()),
+                sec = to2dig(now.getSeconds()),
+                date = now.getFullYear() + '/' + now.getMonth() + '/' + now.getDate() + ' ' + hour + ':' + min + ':' + sec;
+
+            vm.check={};
+            vm.order = {
+                MerchantID: vm.merchant.id,
+                MerchantTradeDate: date,
+                MerchantTradeNo: now.getTime(),
+                TotalAmount: "100",
+                PaymentType: "aio",
+                TradeDesc: "交易測試(測試)",
+                ItemName: "交易測試(測試)",
+                ReturnURL: "http://131.193.191.13/allpayAIO",
+                ChoosePayment: "ALL",
+                NeedExtraPaidInfo: "Y"
+                // Alipay 必要參數
+                //AlipayItemName: "交易測試(測試)",
+                //AlipayItemCounts: 1,
+                //AlipayItemPrice: "100",
+                //Email: "stage_test@allpay.com.tw",
+                //PhoneNo: "0911222333",
+                //UserName: "Stage Test"
+            };
+        };
+
+        vm.refresh();
     }
 })();

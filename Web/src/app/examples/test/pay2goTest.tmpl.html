@@ -4,7 +4,7 @@
     </div>
     Http Request: {{vm.chkstr}}<br>
     Check Value: {{vm.chkvalue}}<br>
-    <form target="_blank" method="post" action="https://capi.pay2go.com/MPG/mpg_gateway">
+    <form target="_blank" method="post" action="http://131.193.191.13/allpayAIO">
         <div ng-repeat="(name, value) in vm.order">
             {{name}}:<input type='text' name="{{name}}" value="{{value}}" ng-model="value"><br>
         </div>

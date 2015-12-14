@@ -3,27 +3,29 @@
     "name": "SBOS"
   },
   "email": "u910328@gmail.com",
-  "name": "obsidian-server",
-  "description": "obsidian server",
-  "version": "0.0.1",
-  "main": "./lib/obsidian-server.js",
+  "name": "quartz-server",
+  "description": "quartz server",
+  "version": "1.0.1",
+  "main": "./lib/quartz-server.js",
   "browser": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "Firebase",
-    "Obsidian",
+    "Quartz",
     "angular",
     "real-time",
     "material design"
   ],
   "dependencies": {
-    "firebase": "~2.3.1",
-    "express":"~4.0.0",
+    "body-parser":"~1.14.1",
     "exec-php":"~0.0.3",
+    "express":"~4.0.0",
+    "firebase": "~2.3.1",
+    "lodash":"~3.10.1",
     "q":"~1.4.1",
-    "lodash":"~3.10.1"
+    "require-dir":"0.3.0"
   },
   "repository": {
     "type": "none",

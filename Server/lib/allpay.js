@@ -84,7 +84,7 @@ var _api = {
  * @param {string} opts.hashIV - HashIV
  * @param {boolean} opts.debug - 選填. 顯示除錯訊息
  */
-var Allpay = function(opts) {
+var Allpay = function (opts) {
     if (typeof opts !== 'object') {
         return sendErrorResponse(null, new Error(_ERROR_MESSAGES.missingParameter));
     }
@@ -122,7 +122,7 @@ Allpay.prototype = {
      * @param {string} opts.port - 選填. 連接埠
      * @param {boolean} opts.useSSL - 選填. 使用 SSL 連線
      */
-    setHost: function(opts) {
+    setHost: function (opts) {
         _api.baseUrl = opts.baseUrl || _api.baseUrl;
         _api.port = opts.port || _api.port;
         _api.useSSL = opts.hasOwnProperty('useSSL') ? opts.useSSL : _api.useSSL;
@@ -133,7 +133,7 @@ Allpay.prototype = {
      *
      * @param {Object} data - 交易資料
      */
-    genCheckMacValue: function(data) {
+    genCheckMacValue: function (data) {
         // 若有 CheckMacValue 則先移除
         if (data.hasOwnProperty('CheckMacValue')) {
             delete data.CheckMacValue;
@@ -141,11 +141,11 @@ Allpay.prototype = {
 
         // 使用物件 key 排序資料
         var keys = Object.keys(data);
-        var sortedKeys = _.sortBy(keys, function(key) {
+        var sortedKeys = _.sortBy(keys, function (key) {
             return key;
         });
 
-        var uri = _.map(sortedKeys, function(key) {
+        var uri = _.map(sortedKeys, function (key) {
             return key + '=' + data[key];
         }).join('&');
 
@@ -173,7 +173,7 @@ Allpay.prototype = {
      * @param {string} opts.CheckMacValue - 選填. 檢查碼
      * @param {requestCallback} callback - 處理回應的 callback
      */
-    queryTradeInfo: function(opts, callback) {
+    queryTradeInfo: function (opts, callback) {
         var data = {};
 
         if (typeof opts !== 'object') {
@@ -211,7 +211,7 @@ Allpay.prototype = {
      * @param {string} opts.CheckMacValue - 選填. 檢查碼
      * @param {requestCallback} callback - 處理回應的 callback
      */
-    queryPeriodCreditCardTradeInfo: function(opts, callback) {
+    queryPeriodCreditCardTradeInfo: function (opts, callback) {
         var data = {};
 
         if (typeof opts !== 'object') {
@@ -247,7 +247,7 @@ Allpay.prototype = {
      * @param {string} opts.PlatformID - 選填. 特約合作平台商代號
      * @param {string} opts.CheckMacValue - 選填. 檢查碼
      */
-    creditDetailDoAction: function(opts, callback) {
+    creditDetailDoAction: function (opts, callback) {
         var data = {};
 
         if (typeof opts !== 'object') {
@@ -303,7 +303,7 @@ Allpay.prototype = {
      * @param {string} opts.PlatformID - 選填. 特約合作平台商代號
      * @param {string} opts.CheckMacValue - 選填. 檢查碼
      */
-    aioChargeback: function(opts, callback) {
+    aioChargeback: function (opts, callback) {
         var data = {};
 
         if (typeof opts !== 'object') {
@@ -508,4 +508,14 @@ function log(message) {
 /**
  * 模組匯出
  */
-module.exports = Allpay;
+
+
+var config = require('../config'),
+    allpay = new Allpay({
+        merchantID: config.ALLPAY.MERCHANT_ID,
+        hashKey: config.ALLPAY.HASH_KEY,
+        hashIV: config.ALLPAY.HASH_IV,
+        debug: config.ALLPAY.DEBUG
+    });
+
+module.exports = allpay;

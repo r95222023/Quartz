@@ -1,5 +1,6 @@
 var q = require('q'),
     config = require('../config');
+
 module.exports=function(opt){
     var def= q.defer(),
         _opt = typeof opt=== 'object'? opt:{};
