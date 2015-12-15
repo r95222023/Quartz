@@ -1,7 +1,14 @@
-<md-content class="padded-content-page">
-    <textarea ng-model="vm.source"></textarea>
-    <md-button ng-click="vm.md5(vm.source)">MD5</md-button>
-    <md-button ng-click="vm.sha256(vm.source)">SHA256</md-button>
-    <br>
-    result:{{vm.result}}
+<md-content layout="row" layout-xs="column" layout-wrap class="padded-content-page">
+    <div flex="40" layout-padding>
+        <textarea rows="6" layout-fill layout-margin ng-model="vm.source"></textarea>
+    </div>
+    <div flex="5" layout-padding>
+    </div>
+    <div flex="50" layout-padding>
+        <h3>Result:</h3>{{vm.result}}
+    </div>
+    <div flex="50" layout-padding>
+        <md-button ng-click="vm.md5(vm.source)">MD5</md-button>
+        <md-button ng-click="vm.sha256(vm.source)">SHA256</md-button>
+    </div>
 </md-content>

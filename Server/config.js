@@ -1,14 +1,14 @@
 //GENERAL
-var APP_NAME='Quartz';
+var APP_NAME = 'Quartz';
 
 //FIREBASE
 var FBURL = 'https://quartz.firebaseio.com',
     FIREBASE_SECRETE = 'XGasvxEnG2Dr9EmaR07aLmYisFMBqPJQSgyUam2I',
-    ORDER_ROOT_PATH='/orders';
+    ORDER_ROOT_PATH = '/orders';
 
 //PHP MODULES
-var PHP_SERVER_PORT='3000',
-    PHP_BIN_PATH='php/bin/php-cgi.exe';
+var PHP_SERVER_PORT = '3000',
+    PHP_BIN_PATH = 'php/bin/php-cgi.exe';
 
 //EMAIL
 var SENDER_NAME = 'My Company Name',
@@ -20,11 +20,11 @@ var SENDER_NAME = 'My Company Name',
 
 //ALLPAY
 var ALLPAY = {
-    MERCHANT_ID:'2000132',
-    HASH_KEY:'5294y06JbISpM5x9',
-    HASH_IV:'v77hoKGq4kWxNNIS',
-    BASE_URL:'payment.allpay.com.tw',
-    PORT:443,
+    MERCHANT_ID: '2000132',
+    HASH_KEY: '5294y06JbISpM5x9',
+    HASH_IV: 'v77hoKGq4kWxNNIS',
+    BASE_URL: 'payment.allpay.com.tw',
+    PORT: 443,
     USE_SSL: true,
     DEBUG: false,
     INITIALIZED: false
@@ -37,6 +37,6 @@ module.exports = {
     FIREBASE_SECRETE: FIREBASE_SECRETE,
     ORDER_ROOT_PATH: ORDER_ROOT_PATH,
     PHP_SERVER_PORT: PHP_SERVER_PORT,
-    PHP_BIN_PATH:PHP_BIN_PATH,
-    ALLPAY:ALLPAY
+    PHP_BIN_PATH: PHP_BIN_PATH,
+    ALLPAY: ALLPAY
 };

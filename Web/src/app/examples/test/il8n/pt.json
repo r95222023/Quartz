@@ -1,11 +1,13 @@
 {
     "MENU": {
-        "SEED": {
-            "SEED-MODULE": "Semente Do Módulo",
-            "SEED-PAGE": "Página Inicial"
+        "TEST": {
+            "GROUP-NAME": "Test",
+            "PAY2GO": "Pay2go",
+            "ALLPAY":"Allpay",
+            "CRYPTO":"CryptoJS"
         }
     },
     "SEED": {
-        "TITLE": "Bem-vindo à página de teste quartz"
+        "TITLE": "Welcome to the quartz test page"
     }
 }

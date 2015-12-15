@@ -2,14 +2,14 @@ var Firebase = require("firebase"),
     q = require('q'),
     _ = require('lodash');
 
-function formalizeRefUrl(refUrl) {
+function parseRefUrl(refUrl) {
     //TODO
     return refUrl
 }
 
 function queryRef(refUrl, options) {
     var opt = options || {},
-        ref = new Firebase(formalizeRefUrl(refUrl));
+        ref = new Firebase(parseRefUrl(refUrl));
     if (opt.orderBy) {
         var orderBy = 'orderBy' + opt.orderBy.split(':')[0];
         if (orderBy === 'orderByChild') {
@@ -74,7 +74,7 @@ function replaceParams(objOrStr, params) {
 function getRefUrl(rawRefUrl, callback) {
     var def = q.defer(),
         matches = rawRefUrl.match(/\(([^)]+)\)/) || [],  // aaa(abc)aa(a)jfklj will give [abc, a]
-        refUrl = formalizeRefUrl(rawRefUrl),
+        refUrl = parseRefUrl(rawRefUrl),
         defers = [],
         promises = [];
 
@@ -107,7 +107,7 @@ function batchUpload(uploadList) {
     _.forOwn(uploadList, function(upload, key){
         defers[key]= q.defer();
         promises[key]= defers[key].promise;
-        queryRef(upload.refUrl).upload(upload.value, function(error){
+        queryRef(upload.refUrl).update(upload.value, function(error){
             if(error){
                 defers[key].reject(error);
             } else {

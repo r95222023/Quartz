@@ -1,11 +1,10 @@
-var auth = require('./lib/auth'),
-    app = require('./lib/expressApp'),
+var app = require('./lib/expressApp'),
+    auth = require('./lib/auth'),
 //execPhp = require('./lib/php/execPhp'),
     watch = require('./lib/watch'),
     watch_list=require('require-dir')('./watch_list'),
     routes = require('require-dir')('./routes'),
-    config = require('./config'),
-    http= require('http');
+    config = require('./config');
 
 
 auth().then(function () {
@@ -24,6 +23,9 @@ auth().then(function () {
 
 
     ///////////////////
-    app.listen(80);
+    var port=80;
+    app.listen(80, function () {
+        console.log('Server listening on: http://localhost:'+port)
+    });
 
 });

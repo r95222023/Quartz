@@ -1,6 +1,5 @@
-//credit:https://github.com/CalvertYang/node-allpay/blob/master/lib/allpay.js
+//credit to  CalvertYang's allpay-node. see https://github.com/CalvertYang/node-allpay/blob/master/lib/allpay.js
 
-/*jslint node: true */
 'use strict';
 
 /**
@@ -136,6 +135,7 @@ Allpay.prototype = {
     genCheckMacValue: function (data) {
         // 若有 CheckMacValue 則先移除
         if (data.hasOwnProperty('CheckMacValue')) {
+            var CheckMacValue = data.CheckMacValue;
             delete data.CheckMacValue;
         }
 
@@ -144,6 +144,9 @@ Allpay.prototype = {
         var sortedKeys = _.sortBy(keys, function (key) {
             return key;
         });
+
+        //將CheckMacValue放回data
+        data.CheckMacValue = CheckMacValue;
 
         var uri = _.map(sortedKeys, function (key) {
             return key + '=' + data[key];
@@ -162,6 +165,10 @@ Allpay.prototype = {
         var checksum = crypto.createHash('md5').update(uri).digest('hex').toUpperCase();
 
         return checksum;
+    },
+
+    validateData: function (data) {
+        return data['CheckMacValue'] === this.genCheckMacValue(data);
     },
 
     /**

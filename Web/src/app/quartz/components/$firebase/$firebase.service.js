@@ -339,7 +339,7 @@
                 promises[key] = def.promise;
 
                 var onSuccess = function (snap) {
-                    if (refUrl.charAt(0)!=='$'||isRenew[key] === true) {
+                    if (snap.val()!==null&&refUrl.charAt(0)!=='$'||isRenew[key] === true) {
                         def.resolve(snap.val());
                         console.log(snap.val());
                         queryRef(refUrl).off();

@@ -2,7 +2,9 @@
     "MENU": {
         "TEST": {
             "GROUP-NAME": "Test",
-            "PAY2GO": "Pay2go"
+            "PAY2GO": "Pay2go",
+            "ALLPAY":"Allpay",
+            "CRYPTO":"CryptoJS"
         }
     },
     "SEED": {
