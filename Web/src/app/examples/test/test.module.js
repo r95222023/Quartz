@@ -3,6 +3,7 @@
 
     angular
         .module('app.examples.test', [
-            'app.plugins.crypto'
+            'app.plugins.crypto',
+            'app.plugins.allpay'
         ]);
 })();

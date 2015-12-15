@@ -1,0 +1,5 @@
+<form style="display:none;" name="allpay-checkout" target="_blank" method="post" action="{{allpayFormAction}}">
+    <input ng-repeat="(name, value) in data.payment.allpay" name="{{name}}" value="{{value}}">
+</form>
+
+<button class="md-button md-raised" ng-click="allpaySubmit()" ng-transclude></button>

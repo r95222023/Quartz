@@ -109,7 +109,8 @@
                 ReturnURL: "http://131.193.191.8/allpayReceive",
                 PaymentInfoURL: "http://131.193.191.8/allpayPaymentInfo",
                 ChoosePayment: "ALL",
-                NeedExtraPaidInfo: "Y"
+                NeedExtraPaidInfo: "Y",
+                DeviceSource:"P"
                 // Alipay 必要參數
                 //AlipayItemName: "交易測試(測試)",
                 //AlipayItemCounts: 1,
@@ -118,6 +119,7 @@
                 //PhoneNo: "0911222333",
                 //UserName: "Stage Test"
             };
+            vm.data={payment:{allpay:vm.order}};
             vm.orderFbRef = $firebase.ref('orders/' + vm.order.MerchantTradeNo + '/payment/allpay')
             vm.orderFbRef.on('value', function (snap) {
                 $timeout(function () {
@@ -131,7 +133,6 @@
 
         vm.submit = function () {
             // send data to firebase;
-
             var e = document.getElementsByName('allpayOrder');
             e[0].submit();
         }

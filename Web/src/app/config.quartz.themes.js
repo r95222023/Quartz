@@ -127,6 +127,11 @@
         .backgroundPalette('black')
         .dark();
 
+        $mdThemingProvider.theme('docs-dark', 'default')
+            .primaryPalette('yellow')
+            .dark();
+
+
         qtSkinsProvider.skin('dark-knight', 'Dark Knight')
         .sidebarTheme('dark')
         .toolbarTheme('dark')

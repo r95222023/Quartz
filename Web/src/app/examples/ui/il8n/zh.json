@@ -14,23 +14,23 @@
     },
     "UI": {
         "TOOLBARS": {
-            "SIZE": "规模",
-            "SIZE_CHOOSE": "选择一个规模",
-            "SIZE_SHOW": "变革的规模管理小组的最高工具条",
+            "SIZE": "大小",
+            "SIZE_CHOOSE": "選擇一個大小",
+            "SIZE_SHOW": "改變控制面板的上方工具列",
             "BACKGROUND": "背景",
-            "BACKGROUND_SHOW": "使用形象的背景工具条",
-            "SHRINK": "卷轴心理医生",
-            "SHRINK_SHOW": "隐瞒工具条关于卷轴"
+            "BACKGROUND_SHOW": "使用背景",
+            "SHRINK": "縮小",
+            "SHRINK_SHOW": "滾動卷軸時隱藏"
         },
         "SKINS": {
             "ELEMENTS": {
-                "LOGO": "标志",
-                "SIDEBAR": "一边说话",
-                "CONTENT": "的内容",
-                "TOOLBAR": "工具条"
+                "LOGO": "標誌",
+                "SIDEBAR": "側邊攔",
+                "CONTENT": "內容",
+                "TOOLBAR": "工具列"
             },
-            "SKIN_CHOOSE": "选择一个皮肤",
-            "SKIN_TRY": "试试这"
+            "SKIN_CHOOSE": "選擇一個外觀主題",
+            "SKIN_TRY": "試試看"
         }
     }
 }

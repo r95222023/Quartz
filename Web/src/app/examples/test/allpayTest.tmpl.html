@@ -2,38 +2,44 @@
     <div layout="column" layout-margin>
         <md-card>
             <div layout="column" ng-cloak class="md-inline-form">
-                <md-content layout-padding layout-gt-sm="row">
-                    <form>
-                        <h3>Merchant Info</h3>
-                        <md-input-container>
-                            <label>Merchant ID</label>
-                            <input type='text' ng-model="vm.merchant.id" ng-change="vm.merchantChange()">
-                        </md-input-container>
-                        <md-input-container>
-                            <label>HashKey</label>
-                            <input type='text' ng-model="vm.merchant.hashKey">
-                        </md-input-container>
-                        <md-input-container>
-                            <label>HashIV</label>
-                            <input type='text' ng-model="vm.merchant.hashIV">
-                        </md-input-container>
+                <md-content layout-padding layout-gt-xs="row" md-theme="docs-dark">
+                    <form layout-fill>
+                        <fieldset>
+                            <legend><h3>Merchant Info</h3></legend>
+                            <div layout="row">
+                                <md-input-container flex="33">
+                                    <label>Merchant ID</label>
+                                    <input type='text' ng-model="vm.merchant.id" ng-change="vm.merchantChange()">
+                                </md-input-container>
+                                <md-input-container flex="33">
+                                    <label>HashKey</label>
+                                    <input type='text' ng-model="vm.merchant.hashKey">
+                                </md-input-container>
+                                <md-input-container flex="33">
+                                    <label>HashIV</label>
+                                    <input type='text' ng-model="vm.merchant.hashIV">
+                                </md-input-container>
+                            </div>
+
+                        </fieldset>
+
                     </form>
                 </md-content>
-            </div>
-        </md-card>
-        <md-card>
-            <div layout="column" ng-cloak class="md-inline-form">
-                <md-content layout-padding layout-gt-sm="row">
+                <md-content layout-padding layout-gt-xs="row">
                     <form name="allpayOrder" ng-submit="vm.submit()" target="_blank" method="post" action="http://payment-stage.allpay.com.tw/Cashier/AioCheckOut">
-                        <h3>Order Info</h3>
-                        <md-input-container ng-repeat="(name, value) in vm.order">
-                            <label>{{name}}</label>
-                            <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]" >
-                        </md-input-container><br>
-                        <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value remotely</md-button>
-                        <md-button class="md-raised" ng-click="vm.getCheckValueLocaly()">get check value locally</md-button>
-                        <md-button class="md-raised" ng-click="vm.refresh()">refresh</md-button>
-                        <input ng-show="vm.order.CheckMacValue" class='md-button md-raised' type='submit' value='Submit'>
+
+                        <fieldset>
+                            <legend><h3>Order Info</h3></legend>
+                            <md-input-container ng-repeat="(name, value) in vm.order" flex-xs="50">
+                                <label>{{name}}</label>
+                                <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]" >
+                            </md-input-container><br>
+                            <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value remotely</md-button>
+                            <md-button class="md-raised" ng-click="vm.getCheckValueLocaly()">get check value locally</md-button>
+                            <md-button class="md-raised" ng-click="vm.refresh()">refresh</md-button>
+                            <input ng-show="vm.order.CheckMacValue" class='md-button md-raised' type='submit' value='Submit'>
+                        </fieldset>
+
                     </form>
                 </md-content>
             </div>
@@ -54,17 +60,19 @@
         <div layout-padding class="md-whiteframe-1dp" ng-if="vm.allpayReturn">
             <md-content layout-padding layout-gt-sm="row">
                 <form name="allpayReturn">
-                    <h3>Data in backend</h3>
-                    <md-input-container ng-repeat="(name, value) in vm.allpayReturn">
-                        <label>{{name}}</label>
-                        <input name="{{name}}" value="{{value}}">
-                    </md-input-container><br>
+                    <fieldset>
+                        <legend><h3>Data In Backend</h3></legend>
+                        <md-input-container ng-repeat="(name, value) in vm.allpayReturn">
+                            <label>{{name}}</label>
+                            <input name="{{name}}" value="{{value}}">
+                        </md-input-container>
+                    </fieldset>
                 </form>
             </md-content>
         </div>
     </div>
 
-
+<allpay-checkout data="vm.data" stage>checkout</allpay-checkout>
 </md-content>
 
 
