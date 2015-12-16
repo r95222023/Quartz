@@ -23,8 +23,8 @@ auth().then(function () {
 
 
     ///////////////////
-    var port=80;
-    app.listen(80, function () {
+    var port=8080;
+    app.listen(port, function () {
         console.log('Server listening on: http://localhost:'+port)
     });
 
