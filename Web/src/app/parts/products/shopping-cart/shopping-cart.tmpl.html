@@ -2,4 +2,6 @@
     <md-card class="padded-content-page md-whiteframe-2dp">
         <ngcart-cart></ngcart-cart>
     </md-card>
+    <button ng-click="vm.getOrder()">get order</button>
+    <allpay-checkout stage data="vm.order">checkout</allpay-checkout>
 </div>

@@ -23,9 +23,9 @@
                 }
             },
             link: function (scope, element, attrs) {
-                console.log(attrs.stage==='');
+                scope.allpaySubmit = submit;
 
-                scope.allpaySubmit = function () {
+                function submit() {
                     if ($mdMedia('xs')) {
                         scope.data.payment.allpay.DeviceSource = 'M'
                     } else {
@@ -44,12 +44,13 @@
                         $timeout(function () {
                             var e = document.getElementsByName('allpay-checkout');
                             e[0].submit();
-                        },0, false);
+                        }, 0, false);
                     }, function (error) {
                         console.log(error);
                     });
-                };
-                var allpayFormAction= attrs.stage !== '' ? 'https://payment.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
+                }
+
+                var allpayFormAction = attrs.stage !== '' ? 'https://payment.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
                 scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
                 scope.attrs = attrs;
             }

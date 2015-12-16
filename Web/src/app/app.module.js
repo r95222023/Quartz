@@ -31,7 +31,6 @@
             'url':  'http://triangular-api.oxygenna.com/'
         })
 
-
         // your Firebase data URL goes here, no trailing slash
         .constant('FBURL', 'https://quartz.firebaseio.com')
         .constant('config', {

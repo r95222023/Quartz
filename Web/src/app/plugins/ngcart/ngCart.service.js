@@ -3,6 +3,10 @@
 
     angular
         .module('app.plugins.ngcart')
+        .provider('$ngCart', function () {
+            this.$get = function () {
+            };
+        })
         .service('ngCart', ['$rootScope', 'ngCartItem', 'store', function ($rootScope, ngCartItem, store) {
 
             this.init = function(){
@@ -21,6 +25,7 @@
                 if (typeof inCart === 'object'){
                     //Update quantity of an item if it's already in the cart
                     inCart.setQuantity(quantity, false);
+                    $rootScope.$broadcast('ngCart:itemUpdated', inCart);
                 } else {
                     var newItem = new ngCartItem(id, name, price, quantity, data);
                     this.$cart.items.push(newItem);
@@ -104,21 +109,22 @@
             };
 
             this.removeItem = function (index) {
-                this.$cart.items.splice(index, 1);
-                $rootScope.$broadcast('ngCart:itemRemoved', {});
+                var item = this.$cart.items.splice(index, 1)[0] || {};
+                $rootScope.$broadcast('ngCart:itemRemoved', item);
                 $rootScope.$broadcast('ngCart:change', {});
 
             };
 
             this.removeItemById = function (id) {
+                var item;
                 var cart = this.getCart();
                 angular.forEach(cart.items, function (item, index) {
-                    if  (item.getId() === id) {
-                        cart.items.splice(index, 1);
+                    if(item.getId() === id) {
+                        item = cart.items.splice(index, 1)[0] || {};
                     }
                 });
                 this.setCart(cart);
-                $rootScope.$broadcast('ngCart:itemRemoved', {});
+                $rootScope.$broadcast('ngCart:itemRemoved', item);
                 $rootScope.$broadcast('ngCart:change', {});
             };
 
@@ -239,7 +245,7 @@
                     this._quantity = 1;
                     $log.info('Quantity must be an integer and was defaulted to 1');
                 }
-                $rootScope.$broadcast('ngCart:change', {});
+
 
             };
 
