@@ -3,24 +3,28 @@
 
     angular
         .module('quartz.components')
-        .factory('$firebase',$firebase);
+        .provider('$firebase', $firebaseProvider);
+
+
+    ////
+    function $firebaseProvider() {
+        var mainFirebase,
+            params;
+        this.setMainFirebase = function (value) {
+            mainFirebase = value;
+        };
+        this.setParams = function (value) {
+            params = value;
+        };
+
+        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q, snippet) {
+            return new $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, snippet)
+        }
+    }
 
     /*@ngInject*/
-    function $firebase(FBURL, config, $firebaseObject, $q, snippet) {
-        var $firebase = {
-            update: update,
-            set: set,
-            batchUpdate: batchUpdate,
-            params: {},
-            databases: {},
-            ref: queryRef,
-            request: request,
-            $object: $object,
-            isRefUrlValid: isRefUrlValid,
-            move: move,
-            load: load,
-            handler:handler
-        };
+    function $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, snippet) {
+
 
         var activeRefUrl = {};
 
@@ -93,8 +97,8 @@
             }
         };
 
-        function getUrl(refUrl, params){
-            return snippet.replaceParamsInString(refUrl, angular.extend({},$firebase.params, params));
+        function getUrl(refUrl, params) {
+            return snippet.replaceParamsInString(refUrl, angular.extend({}, $firebase.params, params));
         }
 
         function queryRef(refUrl, options) {
@@ -164,7 +168,7 @@
 
         function update(refUrl, value, onComplete, removePrev, refUrlParams) {
             var def = $q.defer(),
-                _refUrlParams=angular.isObject(refUrlParams)? refUrlParams:{},
+                _refUrlParams = angular.isObject(refUrlParams) ? refUrlParams : {},
                 replacedRefUrl = getUrl(refUrl, _refUrlParams),
                 fbObj = new FbObj(replacedRefUrl),
                 ref = fbObj.ref(), type = removePrev ? 'set' : 'update';
@@ -339,7 +343,7 @@
                 promises[key] = def.promise;
 
                 var onSuccess = function (snap) {
-                    if (snap.val()!==null&&refUrl.charAt(0)!=='$'||isRenew[key] === true) {
+                    if (snap.val() !== null && refUrl.charAt(0) !== '$' || isRenew[key] === true) {
                         def.resolve(snap.val());
                         console.log(snap.val());
                         queryRef(refUrl).off();
@@ -355,8 +359,8 @@
             }
 
             for (var key in refs) {
-                var cb=onComplete(key, refs[key]),
-                    success=cb[0], error=cb[1];
+                var cb = onComplete(key, refs[key]),
+                    success = cb[0], error = cb[1];
                 if (refs.hasOwnProperty(key)) queryRef(refs[key]).on('value', success, error);
             }
             return $q.all(promises);
@@ -383,6 +387,19 @@
             return def.promise;
         }
 
-        return $firebase
+        return $firebase = {
+            update: update,
+            set: set,
+            batchUpdate: batchUpdate,
+            params: {},
+            databases: {},
+            ref: queryRef,
+            request: request,
+            $object: $object,
+            isRefUrlValid: isRefUrlValid,
+            move: move,
+            load: load,
+            handler: handler
+        };
     }
 })();

@@ -3,10 +3,11 @@
 
     angular
         .module('app.parts.products')
-        .config(moduleConfig);
+        .config(productsConfig)
+        .run(productsRun);
 
     /* @ngInject */
-    function moduleConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
+    function productsConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
         $translatePartialLoaderProvider.addPart('app/parts/products');
 
         $stateProvider
@@ -50,6 +51,43 @@
                 state: 'quartz.admin-default.shoppingCart',
                 type: 'link'
             }]
+        });
+    }
+
+    /* @ngInject */
+    function productsRun($rootScope, ngCart, $allpay) {
+        ngCart.order = {};
+        function getAllpayOrder() {
+            if (!$rootScope.user) return;
+            var order = {
+                clientInfo: {
+                    uid: $rootScope.user.uid
+                },
+                cart: {},
+                payment: {}
+            };
+
+            var items = ngCart.getItems();
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                order.cart[item.getId()] = {
+                    name: item.getName(),
+                    price: item.getPrice(),
+                    quantity: item.getQuantity(),
+                    data: item.getData()
+                }
+            }
+            console.log(order.cart);
+            order.totalAmount = ngCart.totalCost();
+            angular.extend(order, $allpay.getAllpayForm(order));
+            ngCart.order.allpay = order;
+        }
+
+        ngCart.getAllpayOrder = getAllpayOrder;
+
+        getAllpayOrder();
+        $rootScope.$on('ngCart:change', function () {
+            getAllpayOrder();
         });
     }
 })();
