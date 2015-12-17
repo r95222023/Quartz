@@ -106,8 +106,8 @@
                 PaymentType: "aio",
                 TradeDesc: "交易測試(測試)",
                 ItemName: "交易測試(測試)",
-                ReturnURL: "http://131.193.191.8/allpayReceive",
-                PaymentInfoURL: "http://131.193.191.8/allpayPaymentInfo",
+                ReturnURL: "http://104.196.19.150/allpayReceive",
+                PaymentInfoURL: "http://104.196.19.150/allpayPaymentInfo",
                 ChoosePayment: "ALL",
                 NeedExtraPaidInfo: "Y",
                 DeviceSource:"P"

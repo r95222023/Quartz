@@ -23,9 +23,9 @@ auth().then(function () {
 
 
     ///////////////////
-    var port = process.env.PORT || 8080;
+    var port = /*process.env.PORT || 8080*/ 80;
     app.listen(port, function () {
-        console.log('Server listening on: http://localhost:'+port)
+        console.log('Server listening on: http://104.196.19.150:'+port)
     });
 
 });
