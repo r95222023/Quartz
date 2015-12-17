@@ -50,6 +50,9 @@
     "shasum": "",
     "tarball": ""
   },
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "directories": {},
   "_resolved": ""
 }
