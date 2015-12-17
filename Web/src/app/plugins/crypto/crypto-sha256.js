@@ -3,13 +3,13 @@
 
     angular
         .module('app.plugins.crypto')
-        .run(addMd5Service);
+        .run(addSHA256Service);
 
     ////
 
     /* @ngInject */
-    function addMd5Service(CryptoJS){
-        //copied directly from https://github.com/sytelus/CryptoJS/blob/master/components/md5.js
+    function addSHA256Service(CryptoJS){
+        //copied directly from https://github.com/sytelus/CryptoJS/blob/master/components/
         //add other algorithm in similar manner
         /*
          CryptoJS v3.1.2

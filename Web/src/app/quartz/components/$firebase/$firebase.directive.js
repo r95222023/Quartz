@@ -20,10 +20,10 @@
                 equalTo: '@',
                 limitToFirst: '@',
                 limitToLast: '@',
-                options: '=',
+                options: '=?',
                 sync: '@',
                 eventType: '@',
-                callback: '='
+                callback: '=?'
             },
             link: function (scope, element, attrs, ctrl, transcludeFn) {
                 var opt = {

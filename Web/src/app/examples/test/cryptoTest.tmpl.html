@@ -1,4 +1,4 @@
-<md-content layout="row" layout-xs="column" layout-wrap class="padded-content-page">
+<md-card layout="row" layout-xs="column" layout-wrap class="padded-content-page">
     <div flex="40" layout-padding>
         <textarea rows="6" layout-fill layout-margin ng-model="vm.source"></textarea>
     </div>
@@ -11,4 +11,14 @@
         <md-button ng-click="vm.md5(vm.source)">MD5</md-button>
         <md-button ng-click="vm.sha256(vm.source)">SHA256</md-button>
     </div>
-</md-content>
+</md-card>
+<md-card layout="column" layout-padding>
+    <form>
+        Secret: <input ng-model="vm.aesSecret"><br>
+        Messages: <textarea ng-model="vm.aesMessage"></textarea><br>
+        <md-button ng-click="vm.encrypt(vm.aesMessage, vm.aesSecret)">encrypt</md-button><br>
+        encrypted: {{vm.aesEncrypted}}<br>
+        decrypted: {{vm.aesDecrypted}}<br>
+        {{vm.aesError}}
+    </form>
+</md-card>

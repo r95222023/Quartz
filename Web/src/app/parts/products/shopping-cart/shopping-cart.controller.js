@@ -9,8 +9,11 @@
     function ShoppingCartController($q, ngCart, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         vm.order = ngCart.order;
+        vm.isCartEmpty = function () {
+            return ngCart.getTotalItems()!==0
+        };
         ngCart.getAllpayOrder();
 
-    //    check products.config to see how to modify ngCart to auto update order
+        //    check products.config to see how to modify ngCart to auto update order
     }
 })();

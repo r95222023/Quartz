@@ -2,5 +2,6 @@
     <md-card class="padded-content-page md-whiteframe-2dp">
         <ngcart-cart></ngcart-cart>
     </md-card>
-    <allpay-checkout  stage data="vm.order.allpay">checkout</allpay-checkout>
+    <allpay-checkout  stage data="vm.order.allpay" ng-if="loggedIn&&vm.isCartEmpty()">checkout</allpay-checkout>
+    <md-button ng-if="!loggedIn">Please log in to checkout</md-button>
 </div>

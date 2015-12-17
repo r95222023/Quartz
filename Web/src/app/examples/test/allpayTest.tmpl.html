@@ -26,18 +26,24 @@
                     </form>
                 </md-content>
                 <md-content layout-padding layout-gt-xs="row">
-                    <form name="allpayOrder" ng-submit="vm.submit()" target="_blank" method="post" action="http://payment-stage.allpay.com.tw/Cashier/AioCheckOut">
+                    <form name="allpayOrder" ng-submit="vm.submit()" target="_blank" method="post"
+                          action="http://payment-stage.allpay.com.tw/Cashier/AioCheckOut">
 
                         <fieldset>
                             <legend><h3>Order Info</h3></legend>
                             <md-input-container ng-repeat="(name, value) in vm.order" flex-xs="50">
                                 <label>{{name}}</label>
-                                <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]" >
-                            </md-input-container><br>
-                            <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value remotely</md-button>
-                            <md-button class="md-raised" ng-click="vm.getCheckValueLocaly()">get check value locally</md-button>
+                                <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]">
+                            </md-input-container>
+                            <br>
+                            <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value
+                                remotely
+                            </md-button>
+                            <md-button class="md-raised" ng-click="vm.getCheckValueLocaly()">get check value locally
+                            </md-button>
                             <md-button class="md-raised" ng-click="vm.refresh()">refresh</md-button>
-                            <input ng-show="vm.order.CheckMacValue" class='md-button md-raised' type='submit' value='Submit'>
+                            <input ng-show="vm.order.CheckMacValue" class='md-button md-raised' type='submit'
+                                   value='Submit'>
                         </fieldset>
 
                     </form>
@@ -72,7 +78,8 @@
         </div>
     </div>
 
-<allpay-checkout data="vm.data" stage>checkout</allpay-checkout>
+    <allpay-checkout data="vm.data" stage ng-if="loggedIn">checkout</allpay-checkout>
+    <md-button ng-if="!loggedIn">Please log in to checkout</md-button>
 </md-content>
 
 

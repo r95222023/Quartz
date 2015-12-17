@@ -12,8 +12,8 @@
             config = {
                 MerchantID: '2000132',
                 PaymentType: "aio",
-                ReturnURL: "http://131.193.191.9/allpayReceive",
-                PaymentInfoURL: "http://131.193.191.9/allpayPaymentInfo",
+                ReturnURL: "http://104.196.19.150/allpayReceive",
+                PaymentInfoURL: "http://104.196.19.150/allpayPaymentInfo",
                 ChoosePayment: "ALL",
                 NeedExtraPaidInfo: "Y",
                 TradeDesc: "required, please set a value."

@@ -1,6 +1,12 @@
 var config = require('../config'),
     allpay = require('../lib/allpay');
 
+function getTotalAmt(order) {
+    for(var key in order.cart){
+        order.cart[key]
+    }
+}
+
 module.exports = {
     refUrl: config.FBURL + '/orders',
     tasks: {

@@ -63,7 +63,7 @@
                                 $mdToast.simple()
                                     .content(toastMsg)
                                     .position('top right')
-                                    .hideDelay(2500)
+                                    .hideDelay(1500)
                             );
                         }
 
