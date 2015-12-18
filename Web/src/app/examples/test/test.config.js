@@ -46,13 +46,13 @@
             // set a proirity for this menu item, menu is sorted by priority
             priority: 10.1,
             // create a sub-menu
-            children: [{
+            children: [/*{
                 name: 'MENU.TEST.PAY2GO',
                 // point this menu to the state we created in the $stateProvider above
                 state: 'quartz.admin-default.pay2goTest',
                 // set the menu type to a link
                 type: 'link'
-            },{
+            },*/{
                 name: 'MENU.TEST.ALLPAY',
                 // point this menu to the state we created in the $stateProvider above
                 state: 'quartz.admin-default.allpayTest',

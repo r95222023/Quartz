@@ -76,10 +76,16 @@
                 </form>
             </md-content>
         </div>
-    </div>
 
-    <allpay-checkout data="vm.data" stage ng-if="loggedIn">checkout</allpay-checkout>
-    <md-button ng-if="!loggedIn">Please log in to checkout</md-button>
+        <div layout-padding class="md-whiteframe-1dp">
+            <h3>Or Checkout Directly</h3>
+            <div layout-padding layout-gt-sm="row">
+                <allpay-checkout data="vm.data" stage ng-if="loggedIn">checkout</allpay-checkout>
+                <md-button ng-if="!loggedIn">Please log in to checkout</md-button>
+            </div>
+        </div>
+
+    </div>
 </md-content>
 
 
