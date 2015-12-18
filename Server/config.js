@@ -12,11 +12,11 @@ var PHP_SERVER_PORT = '3000',
 
 //EMAIL
 var SENDER_NAME = 'My Company Name',
-    SENDER_ADDRESS = 'u910328@gmail.com',
-    MY_ADDRESS = 'u910328@gmail.com',
+    SENDER_ADDRESS = 'r95222023@gmail.com',
+    MY_ADDRESS = 'r95222023@gmail.com',
     FROM = SENDER_NAME + '<' + SENDER_ADDRESS + '>',
     GMAIL_ACC = 'freecemailtest@gmail.com',
-    GMAIL_PASS = 'u910328@gmail.com';
+    GMAIL_PASS = 'r95222023@gmail.com';
 
 //ALLPAY
 var ALLPAY = {
