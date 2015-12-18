@@ -4,6 +4,7 @@ var app = require('./lib/expressApp'),
     watch = require('./lib/watch'),
     watch_list=require('require-dir')('./watch_list'),
     routes = require('require-dir')('./routes'),
+    ServerGroup = require ('./lib/servers'),
     config = require('./config');
 
 
@@ -21,6 +22,11 @@ auth().then(function () {
     //    console.log(error);
     //})
 
+    var serverGroup = new ServerGroup(config);
+    console.log(serverGroup.getStat());
+    serverGroup.on('value', function () {
+        console.log(serverGroup.getStat());
+    });
 
     ///////////////////
     var port = /*process.env.PORT || 8080*/ 3000;

@@ -121,5 +121,5 @@ function batchUpload(uploadList) {
 
 module.exports = {
     ref: queryRef,
-    test:'test'
+    ServerValue: Firebase.ServerValue
 };
