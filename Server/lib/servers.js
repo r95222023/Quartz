@@ -75,11 +75,11 @@ ServerGroup.prototype.getStat = function () {
 
         for (var onlineServerName in serverSnap.online || {}) {
             serverOnline++;
-            //for future online server stat
+            ////for future online server stat
         }
         for (var offlineServerName in serverSnap.offline || {}) {
             serverOffline++;
-            //for future offline server stat
+            ////for future offline server stat
         }
     });
 
