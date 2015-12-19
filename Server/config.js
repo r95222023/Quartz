@@ -8,7 +8,7 @@ var FBURL = 'https://quartz.firebaseio.com',
     SERVER_PATH = '/servers';
 
 //SERVER_INFO
-var SERVER_ID = 'master';
+var SERVER_ID = 'GCE-instance-2';
 var SERVER_INFO ={
     location:'home'
 };
