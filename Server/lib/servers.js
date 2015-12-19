@@ -1,6 +1,9 @@
 //var config = require('../config');
 var firebaseUtil = require('./firebaseUtil'),
-    events = require('events');
+    events = require('events'),
+    os = require('os'),
+    _ = require('lodash');
+
 
 
 var serverGroupRefs = {},
@@ -10,12 +13,15 @@ var serverGroupRefs = {},
 function ServerGroup(config) {
     ////get server info
     var serverRef = firebaseUtil.ref(config.FBURL + config.SERVER_PATH);
-    var onlineServerRef = serverRef.child('online');
+    var onlineServerRef = serverRef.child('online'),
+        that = this;
 
     this.serverRef = serverRef;
     this.serverId = config.SERVER_ID;
 
     onlineServerRef.on('value', function (snap) {
+        //on(xxx, onComplete) 只要執行就會先跑一次onComeplete不管遠端資料是不是真的傳進來
+        that.stat = _.merge(that.stat || {}, getOnlineStat(snap));
         eventEmitter.emit('value', snap)
     });
 
@@ -39,7 +45,17 @@ function ServerGroup(config) {
     serverRef.child('offline').child(config.SERVER_ID).onDisconnect().set({
         lastStartAt: start.getTime(),
         endAt: firebaseUtil.ServerValue.TIMESTAMP
-    })
+    });
+
+    var sysInfo={
+        arch: os.arch(),
+        cpus: os.cpus(),
+        freemem: os.freemem()+'bytes',
+        totalmem: os.totalmem()+'bytes',
+        platform: os.platform()
+    };
+    var serverInfo = _.merge(config.SERVER_INFO, sysInfo);
+    serverRef.child('detail').child(config.SERVER_ID).update(serverInfo);
 }
 
 ServerGroup.prototype.getServerRefs = function () {
@@ -67,29 +83,25 @@ ServerGroup.prototype.getThisServerRef = function (onlineOrOffline) {
 };
 
 ServerGroup.prototype.getStat = function () {
-    var stat,
-        serverOnline = 0,
-        serverOffline = 0;
-    this.serverRef.on('value', function (snap) {
-        var serverSnap = snap.val();
-
-        for (var onlineServerName in serverSnap.online || {}) {
-            serverOnline++;
-            ////for future online server stat
-        }
-        for (var offlineServerName in serverSnap.offline || {}) {
-            serverOffline++;
-            ////for future offline server stat
-        }
-    });
-
-
-    stat = {
-        serverOnline: serverOnline,
-        serverOffline: serverOffline
-    };
-    return stat
+    return this.stat;
 };
 
 
-module.exports = ServerGroup;
+////////
+function getOnlineStat(snap) {
+    var serverSnap = snap.val(),
+        serverOnline = 0;
+    for (var onlineServerName in serverSnap) {
+        serverOnline++;
+        //for future online server stat
+    }
+
+    return {
+        serverOnline: serverOnline
+    };
+}
+
+
+module.exports = function (config) {
+    return new ServerGroup(config);
+};
