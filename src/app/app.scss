@@ -6,7 +6,7 @@ $zmdi-font-path: "../bower_components/material-design-iconic-font/dist/fonts";
 @import "angular-material/angular-material.scss";
 
 // import quartz module scss
-@import "quartz/quartz.scss";
+@import "quartz/quartz";
 
 // set template font family
 button, select, html, textarea, input {
@@ -15,7 +15,7 @@ button, select, html, textarea, input {
 
 // import app scss
 
-@import "scss/material-backgrounds";
+@import "scss/_material-backgrounds";
 
 // Add your CSS here
 
