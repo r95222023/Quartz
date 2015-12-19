@@ -2,16 +2,16 @@ var app = require('./lib/expressApp'),
     auth = require('./lib/auth'),
 //execPhp = require('./lib/php/execPhp'),
     watch = require('./lib/watch'),
-    watch_list=require('require-dir')('./watch_list'),
+    watch_list = require('require-dir')('./watch_list'),
     routes = require('require-dir')('./routes'),
-    ServerGroup = require ('./lib/servers'),
-    config = require('./config');
+    config = require('./config'),
+    serverGroup = require('./lib/servers')(config);
 
 
 auth().then(function () {
 
     var watchList = [];
-    for(var key in watch_list){
+    for (var key in watch_list) {
         watchList.push(watch_list[key])
     }
     watch(watchList);
@@ -22,11 +22,6 @@ auth().then(function () {
     //    console.log(error);
     //})
 
-    var serverGroup = new ServerGroup(config);
-    console.log(serverGroup.getStat());
-    serverGroup.on('value', function () {
-        console.log(serverGroup.getStat());
-    });
 
     ///////////////////
     var port = /*process.env.PORT || 8080*/ 3000;

@@ -5,12 +5,13 @@ var APP_NAME = 'Quartz';
 var FBURL = 'https://quartz.firebaseio.com',
     FIREBASE_SECRETE = 'XGasvxEnG2Dr9EmaR07aLmYisFMBqPJQSgyUam2I',
     ORDER_ROOT_PATH = '/orders',
-    SERVER_PATH = '/servers',
-    SERVER_ID = 'GCE-instance-2';
+    SERVER_PATH = '/servers';
 
-//PHP MODULES
-var PHP_SERVER_PORT = '3000',
-    PHP_BIN_PATH = 'php/bin/php-cgi.exe';
+//SERVER_INFO
+var SERVER_ID = 'master';
+var SERVER_INFO ={
+    location:'home'
+};
 
 //EMAIL
 var SENDER_NAME = 'My Company Name',
@@ -34,13 +35,17 @@ var ALLPAY = {
 
 
 module.exports = {
+    //GENERAL
     APP_NAME: APP_NAME,
+    //FIREBASE
     FBURL: FBURL,
     FIREBASE_SECRETE: FIREBASE_SECRETE,
     ORDER_ROOT_PATH: ORDER_ROOT_PATH,
     SERVER_PATH: SERVER_PATH,
-    SERVER_ID:SERVER_ID,
-    PHP_SERVER_PORT: PHP_SERVER_PORT,
-    PHP_BIN_PATH: PHP_BIN_PATH,
+    //SERVER_INFO
+    SERVER_INFO:SERVER_INFO,
+    SERVER_ID: SERVER_ID,
+    //EMAIL
+    //ALLPAY
     ALLPAY: ALLPAY
 };
