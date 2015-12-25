@@ -6,7 +6,7 @@
                 return items.slice().reverse();
             }
         })
-        .filter('consecutive', /*@ngInject*/ function ($filter, snippet) {
+        .filter('consecutive', /*@ngInject*/ function ($filter) {
             return function (items, input, isReverse) {
                 var _items = items || [];
                 var result = angular.copy(_items);

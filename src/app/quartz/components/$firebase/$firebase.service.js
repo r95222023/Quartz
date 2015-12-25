@@ -17,16 +17,39 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q, snippet) {
-            return new $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, snippet)
+        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q) {
+            return new $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q)
         }
     }
 
     /*@ngInject*/
-    function $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, snippet) {
+    function $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q) {
 
 
         var activeRefUrl = {};
+
+        function replaceParamsInString(string, params) {
+            for (var param in params) {
+                if (params.hasOwnProperty(param)) string = string.replace(eval("/\\" + param + "/g"), params[param]);
+            }
+            return string
+        }
+
+        function replaceParamsInObj(obj, params) {
+            var objString = JSON.stringify(obj);
+            objString = replaceParamsInString(objString, params);
+
+            var replacedObj = JSON.parse(objString);
+
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key) && (typeof obj[key] === 'function')) {
+                    var paramReplacedKey = replaceParamsInString(key, params);
+                    replacedObj[paramReplacedKey] = obj[key]
+                }
+            }
+
+            return replacedObj
+        }
 
         function FbObj(refUrl, opt) {
             var _opt = opt || {},
@@ -39,7 +62,7 @@
                 return true
             }
 
-            this.dbName = db.Name || FBURL.split("//")[1].split(".fi")[0];
+            this.dbName = db.Name || _refUrl.split("@")[1] || FBURL.split("//")[1].split(".fi")[0];
             this.dbUrl = "https://" + this.dbName + ".firebaseio.com";
             this.path = _refUrl.split("@")[0];
             this.url = this.dbUrl + "/" + this.path;
@@ -98,7 +121,7 @@
         };
 
         function getUrl(refUrl, params) {
-            return snippet.replaceParamsInString(refUrl, angular.extend({}, $firebase.params, params));
+            return replaceParamsInString(refUrl, angular.extend({}, $firebase.params, params));
         }
 
         function queryRef(refUrl, options) {
@@ -320,7 +343,7 @@
                     return
                 }
                 angular.extend(res, resolveVal);
-                var resUrlArr = snippet.replaceParamsInObj(opt.response, resolveVal.params);
+                var resUrlArr = replaceParamsInObj(opt.response, resolveVal.params);
 
                 getResponse(resUrlArr).then(function (response) {
 

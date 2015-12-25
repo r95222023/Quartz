@@ -67,6 +67,7 @@
             "24HRS": "24 Hours",
             "7DAYS": "7 Days",
             "365DAYS": "365 Days",
+            "SETTING":"Settings",
             "CPU": "CPU",
             "BANDWIDTH": "Bandwidth",
             "DISKS": "Disks",
@@ -80,7 +81,8 @@
             "LIMIT": "of monthly limit",
             "TASKS": "Current tasks",
             "DATE": "11/03/15 - 11/4/15",
-            "DISKUSAGE": "Disk Usage"
+            "DISKUSAGE": "Disk Usage",
+            "CONSOLE":"Console"
         },
         "SOCIAL": {
             "STATUS": {

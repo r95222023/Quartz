@@ -20,10 +20,10 @@
             get:get
         };
 
-        function resolving(promiseName) {
+        function resolving(promiseName, context) {
             var def=defers[promiseName];
             status[promiseName]='resolving';
-            resolvers[promiseName].apply(null, [def.resolve, def.reject]);
+            resolvers[promiseName].apply(context, [def.resolve, def.reject]);
         }
 
         function add(promiseName, resolver, executeImediately) {
@@ -73,6 +73,8 @@
         function get(promiseName) {
             if(angular.isUndefined(status[promiseName])){
                 add(promiseName);
+            } else if(angular.isUndefined(status[promiseName])&&angular.isFunction(resolvers[promiseName])){
+                resolving(promiseName)
             }
             return defers[promiseName].promise
         }

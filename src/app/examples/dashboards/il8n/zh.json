@@ -63,10 +63,11 @@
             "MEMORY": "記憶體",
             "DISK": "磁碟",
             "LOCATION": "地點",
-            "REAL_TIME": "現在時間",
+            "REAL_TIME": "即時",
             "24HRS": "24小時",
             "7DAYS": "7天",
             "365DAYS": "365天",
+            "SETTING": "設定",
             "CPU": "中央處理器",
             "BANDWIDTH": "頻寬",
             "DISKS": "磁碟",
@@ -80,12 +81,13 @@
             "LIMIT": "每月限制",
             "TASKS": "目前任務",
             "DATE": "11/03/15-11/4/15",
-            "DISKUSAGE": "磁碟使用"
+            "DISKUSAGE": "磁碟使用",
+            "CONSOLE":"主控台"
         },
         "SOCIAL": {
             "STATUS": {
-                "UPDATE": "更新你的地位",
-                "MIND": "什么你想什么呢?"
+                "UPDATE": "更新您的狀態",
+                "MIND": "您在想甚麼呢?"
             }
         },
         "WIDGETS": {

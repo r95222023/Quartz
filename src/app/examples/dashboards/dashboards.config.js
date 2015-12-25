@@ -28,7 +28,12 @@
         })
         .state('quartz.admin-default.dashboard-general', {
             url: '/dashboards/general',
-            templateUrl: 'app/examples/dashboards/general/dashboard-general.tmpl.html'
+            templateUrl: 'app/examples/dashboards/general/dashboard-general.tmpl.html',
+            controller: 'DashboardGeneralController',
+            controllerAs: 'vm',
+            resolve: {geoip: ['promiseService', function (promiseService) {
+                return promiseService.get('geoip')
+            }]}
         })
         .state('quartz.admin-default.dashboard-analytics', {
             url: '/dashboards/analytics',

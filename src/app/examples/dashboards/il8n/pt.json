@@ -67,6 +67,7 @@
             "24HRS": "24 Horas",
             "7DAYS": "7 Dias",
             "365DAYS": "365 Dias",
+            "SETTING": "cenário",
             "CPU": "CPU",
             "BANDWIDTH": "Largura de banda",
             "DISKS": "Discos",
@@ -80,7 +81,8 @@
             "LIMIT": "do limite mensal",
             "TASKS": "Tarefas actuais",
             "DATE": "11/03/15 - 11/4/15",
-            "DISKUSAGE": "O Uso Do Disco"
+            "DISKUSAGE": "O Uso Do Disco",
+            "CONSOLE":"Console"
         },
         "SOCIAL": {
             "STATUS": {

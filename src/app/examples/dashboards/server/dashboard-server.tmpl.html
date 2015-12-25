@@ -1,5 +1,5 @@
 <div class="dashboard-container overlay-10 padded-content-page" layout="column">
-    <div layout="row" layout-margin>
+    <div layout="row" layout-xs="column" layout-margin>
         <qt-widget flex="70" flex-xs="100" server-widget>
             <md-tabs layout-fill flex md-dynamic-height md-no-disconnect md-stretch-tabs="always" md-no-pagination>
                 <md-tab label="{{'DASHBOARDS.SERVER.REAL_TIME' | translate}}">
@@ -23,6 +23,18 @@
                 <md-tab label="{{'DASHBOARDS.SERVER.365DAYS' | translate}}">
                     <md-content class="md-padding">
                         <canvas flex class="chart-bar" chart-data="serverCharts.data365days.data" chart-labels="serverCharts.data365days.labels" chart-legend="true" chart-options="serverCharts.data365days.options" chart-series="serverCharts.data365days.series"></canvas>
+                    </md-content>
+                </md-tab>
+                <md-tab label="{{'DASHBOARDS.SERVER.SETTING' | translate}}">
+                    <md-content class="md-padding">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Select Server</label>
+                            <md-select ng-model="vm.selectedServer" md-on-close="changeServer(vm.selectedServer)">
+                                <md-option ng-repeat="server in servers">
+                                    {{server}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
                     </md-content>
                 </md-tab>
             </md-tabs>
@@ -134,5 +146,16 @@
                 </div>
             </div>
         </qt-widget>
+    </div>
+    <div layout="row" layout-xs="column" layout-margin>
+        <qt-widget class="flex" flex title="DASHBOARDS.SERVER.CONSOLE">
+            <md-divider></md-divider>
+            <md-list firebase="server_monitor/{{vm.selectedServer.trim()||'instance-2'}}/console@quartz-console">
+                <md-list-item ng-repeat="(line, value) in ref.$value| limitTo:-8">
+                    <p>{{vm.showConsole(value)}}</p>[{{value[1]|date:'M/d/yy h:mm:ss a'}}]
+                </md-list-item>
+            </md-list>
+        </qt-widget>
+
     </div>
 </div>

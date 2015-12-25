@@ -62,7 +62,7 @@
     </div>
 
     <div layout="row" layout-xs="column" layout-margin>
-        <qt-widget class="widget-blog" flex="60" flex-xs="100" content-layout="column" content-layout-align="start center">
+        <qt-widget class="widget-blog" flex="55" flex-xs="100" content-layout="column" content-layout-align="start center">
             <img src="assets/images/backgrounds/material-backgrounds/mb-bg-26.jpg" alt="some bg">
             <div class="widget-blog-text padding-10">
                 <h2>It's all about Material</h2>
@@ -87,46 +87,38 @@
                 </md-fab-speed-dial>
             </div>
         </qt-widget>
-
-        <qt-widget chat-widget flex class="widget-chat" title="DASHBOARDS.GENERAL.CHAT" content-layout="column" content-layout-align="space-between">
-            <md-divider></md-divider>
-            <md-list class="padding-top-20 padding-bottom-0" flex>
-                <md-list-item ng-repeat="chat in ::conversation" class="md-3-line" ng-class="userClass($even)" ng-init="userColor = $even ? 'cyan' : 'light-green'">
-                    <img class="md-avatar" ng-src="{{::chat.image}}" alt="{{::chat.name}}">
-                    <div class="md-list-item-text">
-                        <p palette-background="{{::userColor}}:200" ng-repeat="message in ::chat.messages">
-                           {{::message}}
-                        </p>
-                    </div>
-                </md-list-item>
-            </md-list>
-            <div layout="row" layout-align="space-between center">
-                <md-input-container flex class="margin-left-20 margin-right-20">
-                    <label>Message</label>
-                    <input type="text">
-                </md-input-container>
+        <qt-widget flex weather-widget="{{vm.geoip.city}}" background-image="assets/images/dashboards/weather.jpg" palette-background="deep-orange:800" content-layout="column" content-layout-align="space-between">
+            <div layout="column" flex layout-align="start center">
+                <p class="md-caption">{{weather.date | amDateFormat:'dddd, MMMM Do YYYY'}}</p>
+                <h1 class="font-size-14 margin-top-80 margin-bottom-80 font-weight-100">
+                    {{::weather.temp}}&deg;
+                </h1>
+            </div>
+            <div layout="column" class="full-width overlay-gradient-40">
+                <md-divider></md-divider>
+                <div flex layout="row" layout-margin layout-align="space-between center" class="padding-30">
+                    <i class="wi font-size-2" ng-class="weather.iconClass"></i>
+                    <p class="margin-0">{{::weather.text}}</p>
+                    <p class="margin-0">{{::weather.location}}</p>
+                </div>
             </div>
         </qt-widget>
     </div>
     <div layout="row" layout-xs="column" layout-margin>
-        <div layout="column" layout-margin layout-fill flex="40" flex-xs="100">
-           <qt-widget flex weather-widget="Chicago" background-image="assets/images/dashboards/weather.jpg" palette-background="deep-orange:800" content-layout="column" content-layout-align="space-between">
-                <div layout="column" flex layout-align="start center">
-                    <p class="md-caption">{{weather.date | amDateFormat:'dddd, MMMM Do YYYY'}}</p>
-                    <h1 class="font-size-14 margin-top-80 margin-bottom-80 font-weight-100">
-                        {{::weather.temp}}&deg;
-                    </h1>
-                </div>
-                <div layout="column" class="full-width overlay-gradient-40">
+        <div layout="column" layout-margin layout-fill flex="35" flex-xs="100">
+            <qt-widget palette-background="deep-orange:600">
+                <img class="full-width" src="assets/images/avatars/avatar-big.png" alt="my face">
+
+                <div>
                     <md-divider></md-divider>
-                    <div flex layout="row" layout-margin layout-align="space-between center" class="padding-30">
-                        <i class="wi font-size-2" ng-class="weather.iconClass"></i>
-                        <p class="margin-0">{{::weather.text}}</p>
-                        <p class="margin-0">{{::weather.location}}</p>
-                    </div>
+                    <h2 class="opacity-90 margin-10 text-center">
+                        About me
+                    </h2>
+                    <p class="md-body-2 opacity-80 padding-normal padding-top-0 text-center">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi voluptatibus.
+                    </p>
                 </div>
             </qt-widget>
-
             <qt-widget flex title="Color palette" subtitle="Color in material design is inspired by bold hues and bright highlights. "  palette-background="deep-orange:800" background-image="assets/images/backgrounds/material-backgrounds/mb-bg-05.jpg" overlay-title title-position="bottom" >
             </qt-widget>
         </div>
@@ -166,19 +158,26 @@
                         </md-list-item>
                     </md-list>
                 </qt-widget>
-                <qt-widget palette-background="deep-orange:600">
-                    <img class="full-width" src="assets/images/avatars/avatar-big.png" alt="my face">
-
-                    <div>
-                        <md-divider></md-divider>
-                        <h2 class="opacity-90 margin-10 text-center">
-                            About me
-                        </h2>
-                        <p class="md-body-2 opacity-80 padding-normal padding-top-0 text-center">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi voluptatibus.
-                        </p>
+                <qt-widget chat-widget flex class="widget-chat" title="DASHBOARDS.GENERAL.CHAT" content-layout="column" content-layout-align="space-between">
+                    <md-divider></md-divider>
+                    <md-list class="padding-top-20 padding-bottom-0" flex>
+                        <md-list-item ng-repeat="chat in ::conversation" class="md-3-line" ng-class="userClass($even)" ng-init="userColor = $even ? 'cyan' : 'light-green'">
+                            <img class="md-avatar" ng-src="{{::chat.image}}" alt="{{::chat.name}}">
+                            <div class="md-list-item-text">
+                                <p palette-background="{{::userColor}}:200" ng-repeat="message in ::chat.messages">
+                                    {{::message}}
+                                </p>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                    <div layout="row" layout-align="space-between center">
+                        <md-input-container flex class="margin-left-20 margin-right-20">
+                            <label>Message</label>
+                            <input type="text">
+                        </md-input-container>
                     </div>
                 </qt-widget>
+
             </div>
         </div>
     </div>

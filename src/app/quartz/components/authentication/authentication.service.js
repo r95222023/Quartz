@@ -6,7 +6,7 @@
         .factory('Auth', Auth);
 
     /*@ngInject*/
-    function Auth($firebaseAuth, $q, FBURL, snippet, $firebase) {
+    function Auth($firebaseAuth, $q, FBURL, $firebase) {
 
         var Auth = $firebaseAuth($firebase.ref());
 
@@ -26,25 +26,13 @@
 
         Auth.createAccount = function (authData, opt) {
             if (!authData) return;
-            if (opt === undefined || (typeof opt !== 'object')) {
+            if (opt === undefined || !angular.isObject(opt)) {
                 var ref = $firebase.ref('users/'+authData.uid);
                 return $firebase.handler(function (cb) {
                     ref.set(Auth.basicAccountUserData(authData, opt), cb);
                 })
             } else {
-                var def = $q.defer();
-                if (!!opt.structure) {
-                    var rawData = snippet.flatten(authData, opt.flattenConfig);
-                    rawData.authData = authData;
-                    var values = snippet.createBatchUpdateValues(rawData, opt.structure);
-                    console.log(JSON.stringify(values));
-                    $firebase.batchUpdate(values, opt.isConsecutive).then(function () {
-                        def.resolve();
-                    }, opt.errorHandler);
-                } else {
-                    def.reject('USERDATA_STRUCTURE_NEEDED')
-                }
-                return def.promise
+                //TODO: structure user data by passing opt in
             }
         };
         //Example
@@ -64,12 +52,16 @@
         //    ]
         //};
 
+        function firstPartOfEmail(emailAddress) {
+            return emailAddress.substring(0, emailAddress.indexOf("@"));
+        }
+
         Auth.basicAccountUserData = function (authData) {
             var provider = authData.provider,
                 name = authData[provider].displayName || authData.uid,
                 email = authData[provider].email || null,
                 profileImageURL = authData[provider].profileImageURL || null;
-            if (provider === 'password') name = snippet.firstPartOfEmail(authData.password.email);
+            if (provider === 'password') name = firstPartOfEmail(authData.password.email);
             var basicUser = {createdTime: Firebase.ServerValue.TIMESTAMP};
             basicUser.info = {
                 name: name,

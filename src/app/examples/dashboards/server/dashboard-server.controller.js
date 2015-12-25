@@ -37,13 +37,23 @@
             data: [15, 5, 35, 45]
         };
 
-        $timeout(function() {
-            $mdToast.show(
-                $mdToast.simple()
-                .content('Server CPU at 100%!')
-                .position('bottom right')
-                .hideDelay(3000)
-            );
-        }, 5000);
+        //$timeout(function() {
+        //    $mdToast.show(
+        //        $mdToast.simple()
+        //        .content('Server CPU at 100%!')
+        //        .position('bottom right')
+        //        .hideDelay(3000)
+        //    );
+        //}, 5000);
+
+        vm.showConsole = function (input) {
+            var result='';
+            for (var key in input) {
+                if(key>1) result+=' '+input[key]
+            }
+            return result
+        };
+
+
     }
 })();

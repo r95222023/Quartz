@@ -13,13 +13,19 @@
         }
         // get client's geoip
         promiseService.add('geoip', function (resolve, reject) {
-            $http.get('https://www.freegeoip.net/json/').then(function (response) {
-                console.log(response);
-                resolve(response);
-            }, function (error) {
-                reject(error);
-            });
-        });
+            //for some reason the following doesn't work
+            //$http.get('https://www.freegeoip.net/json/').then(function (response) {
+            //    console.log(response);
+            //    resolve(response);
+            //}, function (error) {
+            //    reject(error);
+            //});
+            window.getGeoIp = function (res) {resolve(res);console.log(res);};
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.src = "http://freegeoip.net/json/?callback=getGeoIp";
+            document.body.appendChild(s);
+        },true);
 
         $rootScope.debug = config.debug;
         if (config.debug) console.log('debug mode');

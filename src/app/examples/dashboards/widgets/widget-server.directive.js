@@ -6,11 +6,11 @@
         .directive('serverWidget', serverWidget);
 
     /* @ngInject */
-    function serverWidget($timeout, $interval) {
+    function serverWidget($timeout, $interval, $firebase) {
         // Usage:
         //
         // Creates:
-        //
+
         var directive = {
             require: 'qtWidget',
             link: link,
@@ -19,6 +19,8 @@
         return directive;
 
         function link($scope) {
+
+
             $scope.serverCharts = {
                 bandwidth: {
                     dataLength: 50,
@@ -70,7 +72,7 @@
             // Update the dataset at 25FPS for a smoothly-animating chart
             $interval(function () {
                 getLiveChartData($scope.serverCharts.bandwidth);
-                getLiveChartData($scope.serverCharts.cpu);
+                //getLiveChartData($scope.serverCharts.cpu);
             }, 1000);
 
             function getLiveChartData (chart) {
@@ -100,6 +102,35 @@
                 var l = data.length, previous = l ? data[l - 1] : 50;
                 var y = previous + Math.random() * 10 - 5;
                 return y < 0 ? 0 : y > max ? max : y;
+            }
+
+            function updateliveCpuUsage(chart, server) {
+                chart.data[0] =[];
+                chart.labels = [];
+                var ref = $firebase.ref('server_monitor/'+(server||'instance-2')+'/cpu/usage@quartz-console').limitToLast(chart.dataLength);
+                ref.on('child_added', update);
+                function update(snap) {
+                    chart.labels.push('');
+                    chart.data[0].push(snap.val());
+                    if(chart.data[0].length>chart.dataLength) {chart.labels.slice(1); chart.labels.slice(1);}
+                }
+                return function () {
+                    ref.off('child_added', update);
+                }
+            }
+            var cpuMonitorStopper = updateliveCpuUsage($scope.serverCharts.cpu);
+
+            //let user choose a server to monitor
+            $firebase.ref('servers/online').on('value', function (snap) {
+                $scope.servers=[];
+                snap.forEach(function (childSnap) {
+                    $scope.servers.push(childSnap.key());
+                });
+            });
+            $scope.changeServer = function (server) {
+                cpuMonitorStopper();
+                cpuMonitorStopper = updateliveCpuUsage($scope.serverCharts.cpu, server.trim());
+                //for some unknown reason, the server passing in include blank on both ends
             }
         }
     }
