@@ -105,50 +105,32 @@
         </qt-widget>
     </div>
     <div layout="row" layout-xs="column" layout-margin>
-        <div layout="column" layout-margin layout-fill flex="35" flex-xs="100">
-            <qt-widget palette-background="deep-orange:600">
-                <img class="full-width" src="assets/images/avatars/avatar-big.png" alt="my face">
-
-                <div>
-                    <md-divider></md-divider>
-                    <h2 class="opacity-90 margin-10 text-center">
-                        About me
-                    </h2>
-                    <p class="md-body-2 opacity-80 padding-normal padding-top-0 text-center">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi voluptatibus.
-                    </p>
-                </div>
-            </qt-widget>
-            <qt-widget flex title="Color palette" subtitle="Color in material design is inspired by bold hues and bright highlights. "  palette-background="deep-orange:800" background-image="assets/images/backgrounds/material-backgrounds/mb-bg-05.jpg" overlay-title title-position="bottom" >
-            </qt-widget>
-        </div>
-
-        <div flex layout="column" layout-margin>
+        <div flex="65" layout="column" layout-margin>
             <div layout-margin>
-            <qt-widget palette-background="qtCyan:500" twitter-widget>
-                <div layout="row" layout-align="space-between center" class="padding-normal">
-                    <i class="fa fa-twitter font-size-4 opacity-50"></i>
-                    <h3 flex hide-xs class="md-subhead">Test feed</h3>
-                    <div class="widget-buttons">
-                        <md-button class="md-icon-button" ng-click="prevTweet()" aria-label="previous tweet">
-                            <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button" ng-click="nextTweet()" aria-label="next tweet">
-                            <md-icon md-font-icon="zmdi zmdi-chevron-right"></md-icon>
-                        </md-button>
+                <qt-widget palette-background="qtCyan:500" twitter-widget>
+                    <div layout="row" layout-align="space-between center" class="padding-normal">
+                        <i class="fa fa-twitter font-size-4 opacity-50"></i>
+                        <h3 flex hide-xs class="md-subhead">Test feed</h3>
+                        <div class="widget-buttons">
+                            <md-button class="md-icon-button" ng-click="prevTweet()" aria-label="previous tweet">
+                                <md-icon md-font-icon="zmdi zmdi-chevron-left"></md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" ng-click="nextTweet()" aria-label="next tweet">
+                                <md-icon md-font-icon="zmdi zmdi-chevron-right"></md-icon>
+                            </md-button>
+                        </div>
                     </div>
-                </div>
-                <div layout="column" class="padding-top-0 padding-left-40 padding-right-40 padding-bottom-40">
-                    <md-tabs md-selected="selectedTab" class="dashboard-no-bar-tabs text-center" md-no-pagination md-no-bar md-dynamic-height>
-                        <md-tab ng-repeat="tweet in ::tweets" label="tweet.id">
-                            <div ng-bind="tweet.body" linkify="twitter" class="font-weight-300 font-size-2 font-style-italic line-height-big"></div>
-                        </md-tab>
-                    </md-tabs>
-                </div>
-            </qt-widget>
+                    <div layout="column" class="padding-top-0 padding-left-40 padding-right-40 padding-bottom-40">
+                        <md-tabs md-selected="selectedTab" class="dashboard-no-bar-tabs text-center" md-no-pagination md-no-bar md-dynamic-height>
+                            <md-tab ng-repeat="tweet in ::tweets" label="tweet.id">
+                                <div ng-bind="tweet.body" linkify="twitter" class="font-weight-300 font-size-2 font-style-italic line-height-big"></div>
+                            </md-tab>
+                        </md-tabs>
+                    </div>
+                </qt-widget>
             </div>
             <div layout="row" layout-margin>
-                 <qt-widget flex="50" title="DASHBOARDS.GENERAL.CONTACTS" contacts-widget content-layout="row">
+                <qt-widget flex="50" title="DASHBOARDS.GENERAL.CONTACTS" contacts-widget content-layout="row">
                     <md-list flex>
                         <md-list-item ng-repeat="contact in ::contacts">
                             <img class="md-avatar" ng-src="{{::contact.image}}" alt="{{::contact.name}}">
@@ -179,6 +161,23 @@
                 </qt-widget>
 
             </div>
+        </div>
+        <div layout="column" layout-margin layout-fill flex flex-xs="100">
+            <qt-widget palette-background="deep-orange:600">
+                <img class="full-width" src="assets/images/avatars/avatar-big.png" alt="my face">
+
+                <div>
+                    <md-divider></md-divider>
+                    <h2 class="opacity-90 margin-10 text-center">
+                        About me
+                    </h2>
+                    <p class="md-body-2 opacity-80 padding-normal padding-top-0 text-center">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi voluptatibus.
+                    </p>
+                </div>
+            </qt-widget>
+            <qt-widget flex title="Color palette" subtitle="Color in material design is inspired by bold hues and bright highlights. "  palette-background="deep-orange:800" background-image="assets/images/backgrounds/material-backgrounds/mb-bg-05.jpg" overlay-title title-position="bottom" >
+            </qt-widget>
         </div>
     </div>
 </div>
