@@ -31,13 +31,15 @@
                     } else {
                         scope.data.payment.allpay.DeviceSource = 'P'
                     }
+                    scope.data.id = scope.data.id||scope.data.payment.allpay.MerchantTradeNo;
+                    scope.data.payment.type = 'allpay';
                     $firebase.request({
                         request: [{
-                            refUrl: 'orders/' + scope.data.payment.allpay.MerchantTradeNo,
+                            refUrl: 'orders/' + scope.data.id,
                             value: scope.data
                         }],
                         response: {
-                            checkMacValue: 'orders/' + scope.data.payment.allpay.MerchantTradeNo + '/payment/allpay/CheckMacValue'
+                            checkMacValue: 'orders/' + scope.data.id + '/payment/allpay/CheckMacValue'
                         }
                     }).then(function (res) {
                         scope.data.payment.allpay['CheckMacValue'] = res.checkMacValue;
@@ -52,7 +54,6 @@
 
                 var allpayFormAction = attrs.stage !== '' ? 'https://payment.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
                 scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
-                scope.attrs = attrs;
             }
 
         };

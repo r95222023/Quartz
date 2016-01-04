@@ -6,7 +6,7 @@
         .controller('AllpayTestController', AllpayTestController);
 
     /* @ngInject */
-    function AllpayTestController(CryptoJS,$timeout, $firebase, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AllpayTestController(CryptoJS, $timeout, $firebase, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
 
         vm.merchant = {
@@ -64,7 +64,9 @@
 
         vm.getCheckValueRemotely = function () {
             var data = {
+                id:vm.order.MerchantTradeNo,
                 payment: {
+                    type:'allpay',
                     allpay: vm.order
                 }
             };
@@ -91,10 +93,13 @@
 
         vm.refresh = function () {
             var now = new Date(),
+                month = to2dig(now.getMonth() + 1),
+                day = to2dig(now.getDate()),
                 hour = to2dig(now.getHours()),
                 min = to2dig(now.getMinutes()),
                 sec = to2dig(now.getSeconds()),
-                date = now.getFullYear() + '/' + now.getMonth() + '/' + now.getDate() + ' ' + hour + ':' + min + ':' + sec;
+                date = now.getFullYear() + '/' + month + '/' + day + ' ' + hour + ':' + min + ':' + sec;
+
             if (vm.orderFbRef) vm.orderFbRef.off();
             vm.check = {};
             vm.allpayReturn = false;
@@ -110,7 +115,7 @@
                 PaymentInfoURL: "http://104.196.19.150/allpayPaymentInfo",
                 ChoosePayment: "ALL",
                 NeedExtraPaidInfo: "Y",
-                DeviceSource:"P"
+                DeviceSource: "P"
                 // Alipay 必要參數
                 //AlipayItemName: "交易測試(測試)",
                 //AlipayItemCounts: 1,
@@ -119,13 +124,13 @@
                 //PhoneNo: "0911222333",
                 //UserName: "Stage Test"
             };
-            vm.data={payment:{allpay:vm.order}};
+            vm.data = {payment: {allpay: vm.order}};
             vm.orderFbRef = $firebase.ref('orders/' + vm.order.MerchantTradeNo + '/payment/allpay')
             vm.orderFbRef.on('value', function (snap) {
                 $timeout(function () {
                     vm.check = {};
                     vm.allpayReturn = snap.val();
-                },0);
+                }, 0);
             });
         };
 

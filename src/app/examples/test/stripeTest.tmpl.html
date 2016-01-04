@@ -1,0 +1,45 @@
+<md-content class="padded-content-page">
+    <div layout="column" layout-margin>
+        <md-card>
+            <div layout="column" ng-cloak class="md-inline-form">
+                <md-content layout-padding layout-gt-xs="row" md-theme="docs-dark">
+                    <form layout-fill>
+                        <fieldset>
+                            <legend><h3>Merchant Info</h3></legend>
+                            <div layout="row">
+                                <md-input-container flex="33">
+                                    <label>Publishable Key</label>
+                                    <input type='text' ng-model="vm.merchant.id" ng-change="vm.merchantChange()">
+                                </md-input-container>
+                            </div>
+
+                        </fieldset>
+
+                    </form>
+                </md-content>
+                <md-content layout-padding layout-gt-xs="row">
+                    <form name="allpayOrder" ng-submit="vm.submit()" target="_blank" method="post"
+                          action="http://payment-stage.allpay.com.tw/Cashier/AioCheckOut">
+
+                        <fieldset>
+                            <legend><h3>Order Info</h3></legend>
+                            <md-input-container ng-repeat="(name, value) in vm.order" flex-xs="50">
+                                <label>{{name}}</label>
+                                <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]">
+                            </md-input-container>
+                            <br>
+
+                            <stripe-checkout data="vm.data"></stripe-checkout>
+
+                        </fieldset>
+
+                    </form>
+                </md-content>
+            </div>
+        </md-card>
+    </div>
+</md-content>
+
+
+
+

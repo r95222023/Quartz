@@ -20,8 +20,8 @@
             //}, function (error) {
             //    reject(error);
             //});
-            var time = setTimeout(resolve({city:'Chicago'}),5000);
-            window.getGeoIp = function (res) {clearTimeout(time);resolve(res);console.log(res);};
+            var time = setTimeout(resolve,20000);
+            window.getGeoIp = function (res) {clearTimeout(time);resolve(res);};
             var s = document.createElement("script");
             s.type = "text/javascript";
             s.src = "https://freegeoip.net/json/?callback=getGeoIp";

@@ -87,7 +87,7 @@
                 </md-fab-speed-dial>
             </div>
         </qt-widget>
-        <qt-widget flex weather-widget="{{vm.geoip.city}}" background-image="assets/images/dashboards/weather.jpg" palette-background="deep-orange:800" content-layout="column" content-layout-align="space-between">
+        <qt-widget ng-if="vm.geoip" flex weather-widget="{{vm.geoip.city}}" background-image="assets/images/dashboards/weather.jpg" palette-background="deep-orange:800" content-layout="column" content-layout-align="space-between">
             <div layout="column" flex layout-align="start center">
                 <p class="md-caption">{{weather.date | amDateFormat:'dddd, MMMM Do YYYY'}}</p>
                 <h1 class="font-size-14 margin-top-80 margin-bottom-80 font-weight-100">

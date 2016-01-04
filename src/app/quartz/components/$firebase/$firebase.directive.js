@@ -135,7 +135,7 @@
                     });
                 }
 
-                var obj = $firebase.$object(scope.angularfireObject, scope.options || opt),
+                var obj = $firebase.object(scope.angularfireObject, scope.options || opt),
                     isFirstTime=true;
                 scope.$watch('angularfireObject', function () {
                     if(isFirstTime){
@@ -143,7 +143,7 @@
                         isFirstTime=false;
                     } else {
                         obj.$destroy();
-                        obj = $firebase.$object(scope.angularfireObject, scope.options || opt);
+                        obj = $firebase.object(scope.angularfireObject, scope.options || opt);
                         init(obj);
                     }
                 });

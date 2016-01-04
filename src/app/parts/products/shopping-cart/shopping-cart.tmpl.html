@@ -3,5 +3,7 @@
         <ngcart-cart></ngcart-cart>
     </md-card>
     <allpay-checkout  stage data="vm.order.allpay" ng-if="loggedIn&&vm.isCartEmpty()">checkout</allpay-checkout>
+    <stripe-checkout data="vm.buildOrder('stripe')" ng-if="loggedIn&&vm.isCartEmpty()">checkout</stripe-checkout>
+
     <md-button ng-if="!loggedIn">Please log in to checkout</md-button>
 </div>

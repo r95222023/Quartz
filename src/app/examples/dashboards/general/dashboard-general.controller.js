@@ -8,6 +8,7 @@
     /* @ngInject */
     function DashboardGeneralController($scope, $timeout, $mdToast, geoip) {
         var vm = this;
-        vm.geoip=geoip;
+        console.log(geoip);
+        vm.geoip=geoip||{city:'Chicago'};
     }
 })();

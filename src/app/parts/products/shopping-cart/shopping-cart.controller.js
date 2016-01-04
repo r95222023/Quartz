@@ -6,14 +6,15 @@
         .controller('ShoppingCartController', ShoppingCartController);
 
     /* @ngInject */
-    function ShoppingCartController($q, ngCart, qtNotificationsService, $state, $mdDialog, config) {
+    function ShoppingCartController(getServerTime, ngCart, qtNotificationsService, $state, $mdDialog, config, orderService) {
         var vm = this;
-        vm.order = ngCart.order;
+        vm.order = orderService.order;
         vm.isCartEmpty = function () {
-            return ngCart.getTotalItems()!==0
+            return ngCart.getTotalItems() !== 0
         };
-        ngCart.getAllpayOrder();
+        orderService.buildOrder('allpay');
+        orderService.buildOrder('stripe');
 
-        //    check products.config to see how to modify ngCart to auto update order
+        vm.buildOrder = orderService.buildOrder;
     }
 })();

@@ -157,7 +157,7 @@
         }
 
 
-        function $object(refUrl, options) {
+        function object(refUrl, options) {
             return $firebaseObject(queryRef(refUrl, options));
         }
 
@@ -305,21 +305,10 @@
             })
         }
 
-        function $transfer(from, to) {
-            var sourceRef = new Firebase(from.refUrl),
-                targetRef = new Firebase(to.refUrl),
-                def = $q.defer();
-            sourceRef.once('value', function (snap) {
-                var value = from.modifier && (typeof modifier === 'function') ? from.modifier(snap.val()) : snap.val();
-                targetRef.update(value, function (error) {
-                    if (error) {
-                        def.reject(error);
-                    } else {
-                        def.resolve();
-                    }
-                });
-            })
+        function getUniqeId(){
+            return queryRef('temp').push().key();
         }
+
 
         //EX:
         // request({
@@ -418,11 +407,12 @@
             databases: {},
             ref: queryRef,
             request: request,
-            $object: $object,
+            object: object,
             isRefUrlValid: isRefUrlValid,
             move: move,
             load: load,
-            handler: handler
+            handler: handler,
+            getUniqeId:getUniqeId
         };
     }
 })();
