@@ -15,6 +15,8 @@
         orderService.buildOrder('allpay');
         orderService.buildOrder('stripe');
 
-        vm.buildOrder = orderService.buildOrder;
+        vm.buildStripeOrder = function () {
+            return orderService.buildOrder('stripe');
+        };
     }
 })();
