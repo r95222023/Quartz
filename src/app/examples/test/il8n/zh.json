@@ -2,7 +2,7 @@
     "MENU": {
         "TEST": {
             "GROUP-NAME": "測試",
-            "PAY2GO": "智付寶",
+            "STRIPE": "Stripe",
             "ALLPAY":"歐付寶",
             "CRYPTO":"CryptoJS"
         }

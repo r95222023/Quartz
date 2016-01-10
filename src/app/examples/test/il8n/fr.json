@@ -2,7 +2,7 @@
     "MENU": {
         "TEST": {
             "GROUP-NAME": "Test",
-            "PAY2GO": "Pay2go",
+            "STRIPE": "Stripe",
             "ALLPAY":"Allpay",
             "CRYPTO":"CryptoJS"
         }

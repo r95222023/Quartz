@@ -6,18 +6,39 @@
         .controller('StripeTestController', StripeTestController);
 
     /* @ngInject */
-    function StripeTestController(syncTime, $timeout, $firebase, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function StripeTestController($timeout, $firebase, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
-        vm.merchant ={
-            key:'pk_test_6pRNASCoBOKtIshFeQd4XMUh'
-        };
         vm.data = {
-            name: 'Quartz',
-            description: '2 widgets',
-            amount: 2000
+            payment:{
+                stripe:{
+                    key:'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+                    name: 'Quartz',
+                    description: 'Stripe checkout test',
+                    amount: 2000,
+                    image:'http://lorempixel.com/128/128/'
+                }
+            }
         };
-        syncTime().then(function (currentTime) {
-            console.log(currentTime);
+        var now = new Date();
+        $firebase.request({
+            request: [{
+                refUrl: 'query/' + now.getTime(),
+                value: {
+                    index: 'quartz',
+                    body: {
+                        query: {
+                            match: {
+                                ChoosePayment: 'All'
+                            }
+                        }
+                    }
+                }
+            }],
+            response: {
+                response: 'query/' + now.getTime()+'/response'
+            }
+        }).then(function (res) {
+            console.log(res);
         })
     }
 })();

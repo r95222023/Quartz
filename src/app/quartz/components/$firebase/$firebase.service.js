@@ -357,7 +357,6 @@
                 var onSuccess = function (snap) {
                     if (snap.val() !== null && refUrl.charAt(0) !== '$' || isRenew[key] === true) {
                         def.resolve(snap.val());
-                        console.log(snap.val());
                         queryRef(refUrl).off();
                     } else {
                         isRenew[key] = true; //server hasn't change the data.
