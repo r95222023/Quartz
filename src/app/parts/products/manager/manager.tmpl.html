@@ -1,17 +1,25 @@
 <div class="padded-content-page" layout="column">
 
     <md-content firebase="products" layout="row" layout-xs="column" layout-wrap layout-padding>
+        <md-button class="md-fab" ng-class="[vm.buttonClass, vm.buttonHue]" aria-label="fab button"
+                   style="position: fixed; bottom: 40px; right: 40px"
+                   ng-click="vm.showEditor($event)">
+            <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+        </md-button>
         <div flex-gt-xs="33" flex-gt-sm="25"
-             ng-repeat="(itemId, item) in ref.$value" >
-            <md-card ng-click="vm.showDetail(itemId)"
-                     class="md-whiteframe-2dp"
-                     style="cursor:pointer">
+             ng-repeat="(itemId, item) in ref.$value">
+            <md-card class="md-whiteframe-2dp">
+                <md-card-actions layout="row" layout-align="start center">
+                    <md-button ng-click="vm.showEditor($event, itemId)">Edit</md-button>
+                    <md-button ng-click="vm.delete($event, itemId)">Delete</md-button>
+                </md-card-actions>
                 <img class="md-card-image" ng-src="{{item.image}}">
                 <md-card-title>
                     <md-card-title-text>
                         <span class="md-headline">{{item.itemName}}</span>
                     </md-card-title-text>
                 </md-card-title>
+
                 <md-card-content layout-align="center center">
                     <div class="content-padded">
                         <p>
@@ -22,6 +30,7 @@
                         </p>
                     </div>
                 </md-card-content>
+
             </md-card>
         </div>
     </md-content>

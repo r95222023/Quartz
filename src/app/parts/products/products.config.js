@@ -35,6 +35,18 @@
                         return syncTime.onReady()
                     }]
                 }
+            })
+            .state('quartz.admin-default.productManager', {
+                url: '/products/productmanager',
+                templateUrl: 'app/parts/products/manager/manager.tmpl.html',
+                // set the controller to load for this page
+                controller: 'ProductManagerController',
+                controllerAs: 'vm',
+                resolve: {
+                    getServerTime: ['syncTime', function (syncTime) {
+                        return syncTime.onReady()
+                    }]
+                }
             });
 
         qtMenuProvider.addMenu({
@@ -49,6 +61,10 @@
             }, {
                 name: 'MENU.PRODUCTS.DETAIL',
                 state: 'quartz.admin-default.productDetail',
+                type: 'link'
+            }, {
+                name: 'MENU.PRODUCTS.MANAGER',
+                state: 'quartz.admin-default.productManager',
                 type: 'link'
             }, {
                 name: 'MENU.PRODUCTS.SHOPPINGCART',

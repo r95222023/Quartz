@@ -1,0 +1,64 @@
+<md-dialog aria-label="Product Editor"  ng-cloak flex="60">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Product Editor</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.cancel()">
+                    <md-icon md-font-icon="fa fa-times"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <fieldset class="md-dialog-content">
+                <legend><h3>Basic Info</h3></legend>
+                <div layout="row">
+                    <md-input-container flex="50">
+                        <label>ID</label>
+                        <input type='text' ng-model="vm.product.itemId" ng-change="vm.merchantChange()">
+                    </md-input-container>
+                    <md-input-container flex="50">
+                        <label>Name</label>
+                        <input type='text' ng-model="vm.product.itemName">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container flex>
+                        <label>Image</label>
+                        <input type='text' ng-model="vm.product.image">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container flex="33">
+                        <label>Price</label>
+                        <input type='text' ng-model="vm.product.price">
+                    </md-input-container>
+                </div>
+                <legend><h3>Optional</h3></legend>
+                <div layout="row">
+                    <md-input-container flex="33">
+                        <label>Group</label>
+                        <input type='text' ng-model="vm.product.group" ng-change="vm.merchantChange()">
+                    </md-input-container>
+                    <md-input-container flex="33">
+                        <label>Subgroup</label>
+                        <input type='text' ng-model="vm.product.subgroup">
+                    </md-input-container>
+                    <md-input-container flex="33">
+                        <label>List Price</label>
+                        <input type='text' ng-model="vm.product.listPrice">
+                    </md-input-container>
+                </div>
+            </fieldset>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="vm.update()">
+                SAVE
+            </md-button>
+            <md-button ng-click="vm.cancel()" style="margin-right:20px;">
+                CANCEL
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
