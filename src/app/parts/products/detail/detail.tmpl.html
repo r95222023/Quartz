@@ -20,9 +20,9 @@
         <md-card class="md-whiteframe-2dp" flex style="min-width: 8em; flex:1 1 8em">
             <md-card-content layout-align="center center">
                 <md-input-container>
-                    <label>Options</label>
-                    <md-select ng-model="vm.selectedOption">
-                        <md-option ng-repeat="option in ref.$value.options" value="{{option}}">
+                    <md-select ng-repeat="(optName, optValue) in ref.$value.options" ng-model="vm.selectedOption[optName]">
+                        <label>{{optName}}</label>
+                        <md-option ng-repeat="option in optValue" value="{{option}}">
                             {{option}}
                         </md-option>
                     </md-select>
@@ -37,7 +37,7 @@
                                    price="{{ ref.$value.price }}"
                                    quantity="{{ref.$value.quantity||1}}"
                                    quantity-max="30"
-                                   data="ref.$value">Add</ngcart-addtocart>
+                                   data="vm.selectedOption">Add</ngcart-addtocart>
             </md-card-content>
 
         </md-card>

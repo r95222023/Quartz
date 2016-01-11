@@ -4,7 +4,8 @@
             "CART":"購物車",
             "LIST": "產品清單",
             "DETAIL": "產品介紹",
-            "SHOPPINGCART":"購物車"
+            "SHOPPINGCART":"購物車",
+            "MANAGER":"產品管理"
         }
     }
 }

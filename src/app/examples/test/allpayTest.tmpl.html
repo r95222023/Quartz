@@ -1,40 +1,89 @@
 <md-content class="padded-content-page">
-    <div layout="column" layout-margin>
+    <div layout="column" layout-margin style="max-width: 1000px">
         <md-card>
             <div layout="column" ng-cloak class="md-inline-form">
                 <md-content layout-padding layout-gt-xs="row" md-theme="docs-dark">
-                    <form layout-fill>
-                        <fieldset>
-                            <legend><h3>Merchant Info</h3></legend>
-                            <div layout="row">
-                                <md-input-container flex="33">
-                                    <label>Merchant ID</label>
-                                    <input type='text' ng-model="vm.merchant.id" ng-change="vm.merchantChange()">
-                                </md-input-container>
-                                <md-input-container flex="33">
-                                    <label>HashKey</label>
-                                    <input type='text' ng-model="vm.merchant.hashKey">
-                                </md-input-container>
-                                <md-input-container flex="33">
-                                    <label>HashIV</label>
-                                    <input type='text' ng-model="vm.merchant.hashIV">
-                                </md-input-container>
-                            </div>
-
-                        </fieldset>
-
-                    </form>
+                    <div layout="row">
+                        <md-input-container flex="33">
+                            <label>Merchant ID</label>
+                            <input type='text' ng-model="vm.merchant.id" ng-change="vm.merchantChange()">
+                        </md-input-container>
+                        <md-input-container flex="33">
+                            <label>HashKey</label>
+                            <input type='text' ng-model="vm.merchant.hashKey">
+                        </md-input-container>
+                        <md-input-container flex="33">
+                            <label>HashIV</label>
+                            <input type='text' ng-model="vm.merchant.hashIV">
+                        </md-input-container>
+                    </div>
                 </md-content>
                 <md-content layout-padding layout-gt-xs="row">
-                    <form name="allpayOrder" ng-submit="vm.submit()" target="_blank" method="post"
+                    <form flex name="allpayOrder" ng-submit="vm.submit()" target="_blank" method="post"
                           action="http://payment-stage.allpay.com.tw/Cashier/AioCheckOut">
 
                         <fieldset>
                             <legend><h3>Order Info</h3></legend>
-                            <md-input-container ng-repeat="(name, value) in vm.order" flex-xs="50">
-                                <label>{{name}}</label>
-                                <input name="{{name}}" value="{{value}}" ng-model="vm.order[name]">
-                            </md-input-container>
+                            <!--<md-input-container ng-repeat="(name, value) in vm.order" flex-xs="50">-->
+                                <!--<label>{{name}}</label>-->
+                                <!--<input name="{{name}}" value="{{value}}" ng-model="vm.order[name]">-->
+                            <!--</md-input-container>-->
+                            <div layout="row">
+                                <md-input-container flex="50">
+                                    <label>MerchantTradeNo</label>
+                                    <input type='text' ng-model="vm.order.MerchantTradeNo">
+                                </md-input-container>
+                                <md-input-container flex="50">
+                                    <label>MerchantTradeDate</label>
+                                    <input type='text' ng-model="vm.order.MerchantTradeDate">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex="33">
+                                    <label>PaymentType</label>
+                                    <input type='text' ng-model="vm.order.PaymentType">
+                                </md-input-container>
+                                <md-input-container flex="33">
+                                    <label>ChoosePayment</label>
+                                    <input type='text' ng-model="vm.order.ChoosePayment">
+                                </md-input-container>
+                                <md-input-container flex="33">
+                                    <label>TotalAmount</label>
+                                    <input type='text' ng-model="vm.order.TotalAmount">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>TradeDesc</label>
+                                    <input type='text' ng-model="vm.order.TradeDesc">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex>
+                                    <label>ItemName</label>
+                                    <input type='text' ng-model="vm.order.ItemName">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex="50">
+                                    <label>ReturnURL</label>
+                                    <input type='text' ng-model="vm.order.ReturnURL">
+                                </md-input-container>
+                                <md-input-container flex="50">
+                                    <label>PaymentInfoURL</label>
+                                    <input type='text' ng-model="vm.order.PaymentInfoURL">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <md-input-container flex="50">
+                                    <label>NeedExtraPaidInfo</label>
+                                    <input type='text' ng-model="vm.order.NeedExtraPaidInfo">
+                                </md-input-container>
+                                <md-input-container flex="50">
+                                    <label>DeviceSource</label>
+                                    <input type='text' ng-model="vm.order.DeviceSource">
+                                </md-input-container>
+                            </div>
                             <br>
                             <md-button class="md-raised" ng-click="vm.getCheckValueRemotely()">get check value
                                 remotely

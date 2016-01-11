@@ -9,6 +9,7 @@
     function ProductDetailController($firebaseObject, $firebase, $location, $stateParams) {
         var vm = this;
         vm.id=$stateParams.id||'bd_001';
+        vm.selectedOption={};
         vm.showDetail= function (itemId) {
             $state.go('quartz.admin-default.productDetail', {id: itemId})
         }

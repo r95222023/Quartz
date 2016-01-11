@@ -3,7 +3,8 @@
         "PRODUCTS": {
             "CART":"Cart",
             "LIST": "Product List",
-            "DETAIL": "Product Detail"
+            "DETAIL": "Product Detail",
+            "MANAGER":"Product Manager"
         }
     }
 }

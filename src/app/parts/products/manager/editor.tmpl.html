@@ -1,4 +1,4 @@
-<md-dialog aria-label="Product Editor"  ng-cloak flex="60">
+<md-dialog aria-label="Product Editor"  ng-cloak flex="60" style="max-height: 80%">
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -34,23 +34,63 @@
                         <input type='text' ng-model="vm.product.price">
                     </md-input-container>
                 </div>
+                <div layout="row">
+                    <md-input-container flex>
+                        <label>Description</label>
+                        <textarea ng-model="vm.product.description" columns="1" md-maxlength="1000" rows="5"></textarea>
+                    </md-input-container>
+                </div>
                 <legend><h3>Optional</h3></legend>
                 <div layout="row">
-                    <md-input-container flex="33">
+                    <md-input-container flex="50">
                         <label>Group</label>
-                        <input type='text' ng-model="vm.product.group" ng-change="vm.merchantChange()">
+                        <input type='text' ng-model="vm.optional.group">
                     </md-input-container>
-                    <md-input-container flex="33">
+                    <md-input-container flex="50">
                         <label>Subgroup</label>
-                        <input type='text' ng-model="vm.product.subgroup">
+                        <input type='text' ng-model="vm.optional.subgroup">
                     </md-input-container>
+                </div>
+                <div layout="row">
                     <md-input-container flex="33">
                         <label>List Price</label>
                         <input type='text' ng-model="vm.product.listPrice">
                     </md-input-container>
                 </div>
+                <div layout="row">
+                    <md-input-container flex="50">
+                        <label>Tags</label>
+                        <input type='text' ng-model="vm.optional.tags">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <div flex="40" ng-repeat="(optName, optValue) in vm.optional.options">
+                        <md-input-container>
+                            <label>Option: {{optName}}</label>
+                            <input type='text' ng-model="vm.optional.options[optName]">
+                        </md-input-container>
+                        <md-button class="md-icon-button" aria-label="language" ng-click="vm.removeOption(optName)" aria-label="remove this option">
+                            <md-icon md-font-icon="fa fa-times"></md-icon>
+                        </md-button>
+                    </div>
+                </div>
+                <div layout="row">
+                    <md-input-container flex="50">
+                        <label>Option Name</label>
+                        <input type='text' ng-model="vm.optional.optName">
+                    </md-input-container>
+                    <md-input-container flex="50">
+                        <label>Option Value</label>
+                        <input type='text' ng-model="vm.optional.optValue">
+                    </md-input-container>
+                    <md-button class="md-icon-button" aria-label="language" ng-click="vm.addOption()" aria-label="add an option">
+                        <md-icon md-font-icon="fa fa-plus"></md-icon>
+                    </md-button>
+                </div>
+
             </fieldset>
         </md-dialog-content>
+
         <md-dialog-actions layout="row">
             <span flex></span>
             <md-button ng-click="vm.update()">

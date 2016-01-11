@@ -10,8 +10,17 @@
              ng-repeat="(itemId, item) in ref.$value">
             <md-card class="md-whiteframe-2dp">
                 <md-card-actions layout="row" layout-align="start center">
-                    <md-button ng-click="vm.showEditor($event, itemId)">Edit</md-button>
-                    <md-button ng-click="vm.delete($event, itemId)">Delete</md-button>
+                    <md-button class="md-icon-button" ui-sref="quartz.admin-default.productDetail({id:itemId})" aria-label="edit product">
+                        <md-icon md-font-icon="fa fa-link"></md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="vm.showEditor($event, itemId)" aria-label="edit product">
+                        <md-icon md-font-icon="fa fa-pencil-square-o"></md-icon>
+                    </md-button>
+
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="vm.delete($event, itemId)" aria-label="delete product">
+                        <md-icon md-font-icon="fa fa-trash-o"></md-icon>
+                    </md-button>
                 </md-card-actions>
                 <img class="md-card-image" ng-src="{{item.image}}">
                 <md-card-title>

@@ -39,7 +39,6 @@
             .state('quartz.admin-default.productManager', {
                 url: '/products/productmanager',
                 templateUrl: 'app/parts/products/manager/manager.tmpl.html',
-                // set the controller to load for this page
                 controller: 'ProductManagerController',
                 controllerAs: 'vm',
                 resolve: {
