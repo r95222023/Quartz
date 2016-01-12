@@ -3,20 +3,33 @@
 
     angular
         .module('quartz.components')
-        .service('$elasticSearch', $elasticSearch);
+        .provider('$elasticSearch', elasticSearchProvider);
 
-    /* @ngInject */
-    function $elasticSearch($firebase, $q) {
-        function doSearch(index, type, query) {
+    function elasticSearchProvider() {
+        var defaultQueryRefUrl = 'query/$reqId',
+            defaultResponseRefUrl = 'query/$reqId/response';
+        this.setQueryRefUrl = function (value) {
+            defaultQueryRefUrl = value;
+        };
+        this.setResponseRefUrl = function (value) {
+            defaultResponseRefUrl = value;
+        };
+        this.$get = /* @ngInject */function ($firebase, $q) {
+            return new elasticSearch($firebase, $q, defaultQueryRefUrl, defaultResponseRefUrl);
+        }
+    }
+
+    function elasticSearch($firebase, $q, defaultQueryRefUrl, defaultResponseRefUrl) {
+        function query(index, type, option) {
             var def = $q.defer(),
                 opt = {
                     request: [{
-                        refUrl:query.queryUrl||'search/request/$reqId',
-                        value: {index:index, type:type, query:query}
+                        refUrl: option.queryUrl || defaultQueryRefUrl,
+                        value: {index: index, type: type, body: option.body}
                     }],
-                    response: [query.responseUrl||'search/response/$reqId']
+                    response: [option.responseUrl || defaultResponseRefUrl]
                 };
-            $firebase.$communicate(opt)
+            $firebase.request(opt)
                 .then(function (res) {
                     def.resolve(res[0])
                 }, function (err) {
@@ -46,8 +59,7 @@
         }
 
         return {
-            doSearch:doSearch,
-            buildQuery:buildQuery
+            query: query
         }
     }
 })();

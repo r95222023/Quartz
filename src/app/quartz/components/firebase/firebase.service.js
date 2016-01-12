@@ -3,11 +3,11 @@
 
     angular
         .module('quartz.components')
-        .provider('$firebase', $firebaseProvider);
+        .provider('$firebase', firebaseProvider);
 
 
     ////
-    function $firebaseProvider() {
+    function firebaseProvider() {
         var mainFirebase,
             params;
         this.setMainFirebase = function (value) {
@@ -18,12 +18,12 @@
         };
 
         this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q) {
-            return new $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q)
+            return new firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q)
         }
     }
 
     /*@ngInject*/
-    function $firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q) {
+    function firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q) {
 
 
         var activeRefUrl = {};
@@ -54,7 +54,7 @@
         function FbObj(refUrl, opt) {
             var _opt = opt || {},
                 _refUrl = refUrl || '@',
-                db = $firebase.databases[_refUrl.split("@")[1]] || {};
+                db = firebase.databases[_refUrl.split("@")[1]] || {};
 
             function isDbOnline() {
                 if (_opt.keepOnline !== undefined) return !!_opt.keepOnline;
@@ -121,7 +121,7 @@
         };
 
         function getUrl(refUrl, params) {
-            return replaceParamsInString(refUrl, angular.extend({}, $firebase.params, params));
+            return replaceParamsInString(refUrl, angular.extend({}, firebase.params, params));
         }
 
         function queryRef(refUrl, options) {
@@ -244,7 +244,7 @@
                 _isConsecutive = (isConsecutive || isConsecutive === undefined);
 
             function update(i) {
-                var params = $firebase.update(values[i].refUrl, values[i].value, onComplete(i), values[i].set, refUrlParams).params;
+                var params = firebase.update(values[i].refUrl, values[i].value, onComplete(i), values[i].set, refUrlParams).params;
                 refUrlParams = angular.extend(refUrlParams, params);
             }
 
@@ -398,7 +398,7 @@
             return def.promise;
         }
 
-        return $firebase = {
+        return firebase = {
             update: update,
             set: set,
             batchUpdate: batchUpdate,

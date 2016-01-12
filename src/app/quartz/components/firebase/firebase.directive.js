@@ -8,7 +8,7 @@
 
 
     /*@ngInject*/
-    function firebase($firebase) {
+    function firebase($firebase, $timeout) {
         return {
             restrict: 'A',
             transclude: true,
@@ -62,7 +62,10 @@
                             } else {
                                 trclScope[refName][valueAs][snap.key()] = snap.val();
                             }
-                            scope.callback(snap, prevChildKey);
+                            //to digest automatically
+                            $timeout(function () {
+                                scope.callback(snap, prevChildKey);
+                            },0);
                         }
                         function onError(error) {
                             scope[errorAs] = error;
