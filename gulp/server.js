@@ -32,14 +32,14 @@ function browserSyncInit(baseDir, files, browser) {
   });
 }
 
-gulp.task('serve', ['clean', 'watch'], function () {
+gulp.task('serve', ['watch'], function () {
   browserSyncInit([
     paths.tmp + '/serve',
     paths.src
   ], [
     paths.tmp + '/serve/app/**/*.css',
     paths.src + '/app/**/*.js',
-    paths.src + 'src/assets/images/**/*',
+    paths.src + '/assets/images/**/*',
     paths.tmp + '/serve/*.html',
     paths.tmp + '/serve/app/**/*.html',
     paths.src + '/app/**/*.html'

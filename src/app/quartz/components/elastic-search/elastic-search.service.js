@@ -6,36 +6,81 @@
         .provider('$elasticSearch', elasticSearchProvider);
 
     function elasticSearchProvider() {
-        var defaultQueryRefUrl = 'query/$reqId',
-            defaultResponseRefUrl = 'query/$reqId/response';
+        var defaultQueryRefUrl = 'query/request/$reqId',
+            defaultResponseRefUrl = 'query/response/$reqId/hits',
+            defaultCacheRefUrl = 'query/cache';
         this.setQueryRefUrl = function (value) {
             defaultQueryRefUrl = value;
         };
         this.setResponseRefUrl = function (value) {
             defaultResponseRefUrl = value;
         };
-        this.$get = /* @ngInject */function ($firebase, $q) {
-            return new elasticSearch($firebase, $q, defaultQueryRefUrl, defaultResponseRefUrl);
+        this.setCacheRefUrl = function (value) {
+            defaultCacheRefUrl = value;
+        };
+        this.$get = /* @ngInject */function ($firebase, $q, snippets) {
+            return new elasticSearch($firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
         }
     }
 
-    function elasticSearch($firebase, $q, defaultQueryRefUrl, defaultResponseRefUrl) {
+    function elasticSearch($firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
         function query(index, type, option) {
             var def = $q.defer(),
-                opt = {
-                    request: [{
-                        refUrl: option.queryUrl || defaultQueryRefUrl,
-                        value: {index: index, type: type, body: option.body}
-                    }],
-                    response: [option.responseUrl || defaultResponseRefUrl]
-                };
-            $firebase.request(opt)
-                .then(function (res) {
-                    def.resolve(res[0])
-                }, function (err) {
-                    def.reject(err)
+                refUrl = option.queryUrl || defaultQueryRefUrl,
+                responseUrl = option.responseUrl || defaultResponseRefUrl,
+                searchData = {index: index, type: type, body: option.body};
+
+
+            if (angular.isString(option.cache)) {
+                var cacheId = getCacheId(searchData),
+                    searchCacheRef = $firebase.ref(option.cache).child(cacheId);
+                responseUrl = searchCacheRef.toString();
+
+                searchCacheRef.child('result').once('value', function (snap) {
+                    var result = snap.val();
+                    searchData.responseUrl = responseUrl;
+                    if (snap.val() === null) {
+                        request(refUrl, responseUrl, searchData);
+                    } else {
+                        searchCacheRef.child('result/usage').update({
+                            times: result.usage.times+1,
+                            last: Firebase.ServerValue.TIMESTAMP
+                        }, function (err) {
+                            if(err){
+                                def.reject(err)
+                            } else {
+                                def.resolve(snap.val());
+                            }
+                        });
+                    }
                 });
+            } else {
+                request(refUrl, responseUrl, searchData);
+            }
+
+            function request(refUrl, responseUrl, searchData) {
+                var req = {
+                    request: [{
+                        refUrl: refUrl,
+                        value: searchData
+                    }],
+                    response: [responseUrl]
+                };
+                $firebase.request(req)
+                    .then(function (res) {
+                        def.resolve(res[0])
+                    }, function (err) {
+                        def.reject(err)
+                    });
+            }
+
             return def.promise;
+        }
+
+
+        function getCacheId(searchObj) {
+            var sorted = snippets.sortObjectByPropery(searchObj);
+            return snippets.md5(JSON.stringify(sorted));
         }
 
         function buildQuery(term, words) {

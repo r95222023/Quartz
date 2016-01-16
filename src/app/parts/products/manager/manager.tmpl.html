@@ -1,6 +1,6 @@
 <div class="padded-content-page" layout="column">
 
-    <md-content firebase="products" layout="row" layout-xs="column" layout-wrap layout-padding>
+    <md-content class="autoScroll" firebase="products" layout="row" layout-xs="column" layout-wrap layout-padding>
         <md-button class="md-fab" ng-class="[vm.buttonClass, vm.buttonHue]" aria-label="fab button"
                    style="position: fixed; bottom: 40px; right: 40px"
                    ng-click="vm.showEditor($event)">

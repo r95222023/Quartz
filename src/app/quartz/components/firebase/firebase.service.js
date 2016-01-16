@@ -61,14 +61,20 @@
                 if (db.keepOnline !== undefined) return !!db.keepOnline;
                 return true
             }
-
-            this.dbName = db.Name || _refUrl.split("@")[1] || FBURL.split("//")[1].split(".fi")[0];
-            this.dbUrl = "https://" + this.dbName + ".firebaseio.com";
-            this.path = _refUrl.split("@")[0];
-            this.url = this.dbUrl + "/" + this.path;
-            this.t = (new Date).getTime().toString();
-            this.params = _opt.params || {};
             this.keepOnline = isDbOnline();
+            this.params = _opt.params || {};
+            this.t = (new Date).getTime().toString();
+
+            if(angular.isString(refUrl)&&refUrl.split("//")[1]){
+                this.dbName = refUrl.split("//")[1].split(".fi")[0];
+                this.dbUrl = refUrl.split(".com")[0]+".com";
+                this.path = refUrl.split(".com/")[1];
+            } else {
+                this.dbName = db.Name || _refUrl.split("@")[1] || FBURL.split("//")[1].split(".fi")[0];
+                this.dbUrl = "https://" + this.dbName + ".firebaseio.com";
+                this.path = _refUrl.split("@")[0];
+            }
+            this.url = this.dbUrl + "/" + this.path;
         }
 
         FbObj.prototype = {

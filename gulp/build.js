@@ -37,7 +37,7 @@ gulp.task('html', ['inject', 'partials'], function () {
     addRootSlash: false
   };
 
-  var htmlFilter = $.filter(['*.html', '!/src/app/elements/examples/*.html']);
+  var htmlFilter = $.filter(['*.html', '!/'+paths.src+'/app/elements/examples/*.html']);
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
   var assets;
@@ -82,19 +82,19 @@ gulp.task('fonts', function () {
 });
 
 gulp.task('translations', function () {
-  return gulp.src('src/**/il8n/*.json')
+  return gulp.src(paths.src+'/**/il8n/*.json')
     .pipe(gulp.dest(paths.dist + '/'))
     .pipe($.size());
 });
 
 gulp.task('data', function () {
-  return gulp.src('src/**/data/*.json')
+  return gulp.src(paths.src+'/**/data/*.json')
     .pipe(gulp.dest(paths.dist + '/'))
     .pipe($.size());
 });
 
 gulp.task('examplejs', function () {
-  return gulp.src('src/**/examples/*.{js,scss}')
+  return gulp.src(paths.src+'/**/examples/*.{js,scss}')
     .pipe(gulp.dest(paths.dist + '/'))
     .pipe($.size());
 });
