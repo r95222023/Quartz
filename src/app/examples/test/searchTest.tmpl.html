@@ -1,54 +1,68 @@
 <md-content class="padded-content-page">
-    <div layout="column" layout-margin>
-        <md-card>
-            <div layout="column" ng-cloak class="md-inline-form">
-                <md-content layout-padding layout-gt-xs="row" md-theme="docs-dark">
-                    <form layout-fill>
-                        <fieldset>
-                            <legend><h3>Merchant Info</h3></legend>
-                            <div layout="row">
-                                <md-input-container flex="33">
-                                    <label>Publishable Key</label>
-                                    <input type='text' ng-model="vm.data.payment.stripe.key" ng-change="vm.merchantChange()">
-                                </md-input-container>
-                            </div>
 
-                        </fieldset>
+    <md-toolbar class="md-table-toolbar md-default" aria-label="search">
+        <div class="md-toolbar-tools" layout="row">
+            <span>Orders</span>
+            <div flex></div>
+            <md-button ng-hide="vm.orderSelected.length || vm.filter.show"
+                       class="md-icon-button toolbar-button"
+                       style="color:black"
+                       ng-click="vm.filter.show = true">
+                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+            </md-button>
+            <md-menu>
+                <md-button class="md-icon-button" aria-label="language" ng-click="$mdOpenMenu()" aria-label="more action">
+                    <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
+                </md-button>
+                <md-menu-content width="3">
+                    <md-menu-item ng-repeat="status in vm.statuses">
+                        <md-button ng-click="vm.changeStatus(status)" translate="{{status}}" aria-label="{{status}}"></md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+        </div>
 
-                    </form>
-                </md-content>
-                <md-content layout-padding layout-gt-xs="row">
-                    <form name="allpayOrder">
+    </md-toolbar>
 
-                        <fieldset>
-                            <legend><h3>Payment Info</h3></legend>
-                            <md-input-container flex-xs="50">
-                                <label>name</label>
-                                <input ng-model="vm.data.payment.stripe.name">
-                            </md-input-container>
-                            <md-input-container flex-xs="50">
-                                <label>description</label>
-                                <input ng-model="vm.data.payment.stripe.description">
-                            </md-input-container>
-                            <md-input-container flex-xs="50">
-                                <label>amount</label>
-                                <input ng-model="vm.data.payment.stripe.amount">
-                            </md-input-container>
-                            <md-input-container flex-xs="50">
-                                <label>image</label>
-                                <input ng-model="vm.data.payment.stripe.image">
-                            </md-input-container>
-                            <br>
+    <md-toolbar class="md-table-toolbar md-default" ng-show="vm.filter.show && !vm.orderSelected.length">
+        <div class="md-toolbar-tools" layout="row">
+            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+            <form flex="" name="vm.filter.form">
+                <input type="text" ng-model="vm.filter" placeholder="search">
+            </form>
+            <md-button class="md-icon-button">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
 
-                            <stripe-checkout data="vm.data"></stripe-checkout>
+    <md-table-container>
+        <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.promise">
+            <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
+            <tr md-row>
+                <th md-column md-order-by="id"><span>Order</span></th>
+                <th md-column>Client</th>
+                <th md-column>Payment</th>
+                <th md-column>Status</th>
+                <th md-column md-numeric>Total amount</th>
 
-                        </fieldset>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr md-row md-select="order._source.id" md-select-id="{{order._id}}" md-auto-select
+                ng-repeat="(index, order) in vm.orders.hits">
+                <td md-cell>{{order._id}}</td>
+                <td md-cell>{{order._source.clientInfo.uid}}</td>
+                <td md-cell>{{order._source.payment.type}}</td>
+                <td md-cell>{{order._source.status}}</td>
+                <td md-cell>{{order._source.totalAmount}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+    <md-table-pagination md-limit="vm.query.size" md-page="vm.page" md-total="{{vm.orders.total}}"
+                         md-on-paginate="vm.getOrderPage" md-page-select></md-table-pagination>
 
-                    </form>
-                </md-content>
-            </div>
-        </md-card>
-    </div>
 </md-content>
 
 

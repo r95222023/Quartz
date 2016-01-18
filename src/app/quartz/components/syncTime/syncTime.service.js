@@ -15,7 +15,8 @@
         }
 
         getServerTime().then(function (now) {
-            offset = now.getTime() - (new Date()).getTime();
+            //the difference between two date object is the time difference in ms
+            offset = now - (new Date());
             ready.resolve(getTime);
         });
 

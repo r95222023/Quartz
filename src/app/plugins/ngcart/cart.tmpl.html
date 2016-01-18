@@ -3,35 +3,45 @@
 </div>
 
 
-<div ng-controller="CartTableAdvancedController as vm"  ng-show="ngCart.getTotalItems() > 0">
-    <md-data-table-toolbar ng-hide="vm.selected.length || vm.filter.show">
-        <h2 class="md-title">Shopping Cart</h2>
-        <div flex></div>
-        <md-button class="md-icon-button" ng-click="vm.filter.show = true">
-            <!-- <i class="material-icons md-dark">filter_list</i> -->
-            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
-        </md-button>
-    </md-data-table-toolbar>
+<div ng-controller="CartTableAdvancedController as vm" ng-show="ngCart.getTotalItems() > 0">
+    <!--<md-toolbar class="md-table-toolbar md-default" ng-hide="vm.selected.length || vm.filter.show">-->
+        <!--<div class="md-toolbar-tools">-->
+            <!--<h2 class="md-title">Shopping Cart</h2>-->
+            <!--<span flex></span>-->
+            <!--<md-button class="md-icon-button" ng-click="vm.filter.show = true">-->
+                <!--&lt;!&ndash; <i class="material-icons md-dark">filter_list</i> &ndash;&gt;-->
+                <!--<md-icon md-font-icon="fa fa-search"></md-icon>-->
+            <!--</md-button>-->
+        <!--</div>-->
+    <!--</md-toolbar>-->
+    <md-toolbar class="md-table-toolbar md-default">
+        <div class="md-toolbar-tools">
+            <span>Shopping Cart</span>
+        </div>
+    </md-toolbar>
 
-    <md-data-table-toolbar ng-show="vm.filter.show && !vm.selected.length" class="md-data-table-toolbar">
-        <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
-        <form flex="" name="vm.filter.form">
-            <input type="text" ng-model="vm.query.filter" ng-model-options="vm.filter.options" placeholder="search">
-        </form>
-        <md-button class="md-icon-button" ng-click="vm.removeFilter()">
-            <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
-        </md-button>
-    </md-data-table-toolbar>
+    <md-toolbar class="md-table-toolbar md-default" ng-show="vm.filter.show && !vm.selected.length">
+        <div class="md-toolbar-tools">
+            <!--<form flex name="vm.filter.form">-->
+                <!--<input type="text" ng-model="vm.query.filter" ng-model-options="vm.filter.options" placeholder="search">-->
+            <!--</form>-->
+            <md-input-container flex>
+                <label>search</label>
+                <input ng-model="vm.query.filter">
+            </md-input-container>
+            <md-button class="md-icon-button" ng-click="vm.removeFilter()">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+            </md-button>
+        </div>
 
-    <md-data-table-toolbar class="alternate" ng-show="vm.selected.length" layout-align="space-between">
-        <div>{{vm.selected.length}} {{vm.selected.length > 1 ? 'users' : 'user'}} selected</div>
-    </md-data-table-toolbar>
+    </md-toolbar>
 
-    <md-data-table-container>
-        <table md-data-table class="md-primary md-data-table" md-progress="vm.deferred" >
+
+    <md-table-container>
+        <table md-table class="md-primary md-data-table" md-progress="vm.deferred">
             <!--<thead md-order="vm.query.order" md-trigger="vm.getUsers">-->
             <thead>
-            <tr>
+            <tr md-row>
                 <!--<th name="avatar"></th>-->
                 <!--<th name="login"></th>-->
                 <!--<th order-by="id" name="ID"></th>-->
@@ -42,86 +52,31 @@
                 <th>Total</th>
             </tr>
             </thead>
-            <tbody>
-            <tr  ng-repeat="item in ngCart.getCart().items track by $index">
+            <tbody md-body>
+            <tr md-row ng-repeat="item in ngCart.getCart().items track by $index">
 
                 <!--<td><a href="{{::user.html_url}}"><img ng-src="{{::user.avatar_url}}"/></a></td>-->
                 <!--<td>{{::user.login}}</td>-->
                 <!--<td>{{::user.id}}</td>-->
-                <td><span ng-click="ngCart.removeItemById(item.getId())" class="zmdi zmdi-delete"></span></td>
+                <td md-cell><span ng-click="ngCart.removeItemById(item.getId())" class="zmdi zmdi-delete"></span></td>
 
-                <td>{{ item.getName() }}</td>
-                <td><md-icon md-font-icon="zmdi zmdi-minus" ng-class="{'disabled':item.getQuantity()==1}"
-                             ng-click="item.setQuantity(-1, true)"></md-icon>&nbsp;&nbsp;
+                <td md-cell>{{ item.getName() }}</td>
+                <td md-cell>
+                    <md-icon md-font-icon="zmdi zmdi-minus" ng-class="{'disabled':item.getQuantity()==1}"
+                             ng-click="item.setQuantity(-1, true)"></md-icon>
+                    &nbsp;&nbsp;
                     {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                    <md-icon md-font-icon="zmdi zmdi-plus" ng-click="item.setQuantity(1, true)"></md-icon></td>
-                <td>{{ item.getPrice() | currency}}</td>
-                <td>{{ item.getTotal() | currency }}</td>
+                    <md-icon md-font-icon="zmdi zmdi-plus" ng-click="item.setQuantity(1, true)"></md-icon>
+                </td>
+                <td md-cell>{{ item.getPrice() | currency}}</td>
+                <td md-cell>{{ item.getTotal() | currency }}</td>
             </tr>
             </tbody>
         </table>
-    </md-data-table-container>
+    </md-table-container>
 
-    <md-data-table-pagination md-limit="vm.query.limit" md-page="vm.query.page" md-total="{{vm.users.total_count}}" md-trigger="vm.getUsers"></md-data-table-pagination>
+    <md-table-pagination md-limit="vm.query.limit" md-page="vm.query.page" md-total="{{vm.users.total_count}}"
+                         md-trigger="vm.getUsers"></md-table-pagination>
+
 </div>
 
-
-<!--<div class="table-responsive col-md-12" ng-show="ngCart.getTotalItems() > 0">-->
-
-<!--<table class="table table-striped ngCart cart">-->
-
-<!--<thead>-->
-<!--<tr>-->
-<!--<th></th>-->
-<!--<th></th>-->
-<!--<th>Quantity</th>-->
-<!--<th>Amount</th>-->
-<!--<th>Total</th>-->
-<!--</tr>-->
-<!--</thead>-->
-<!--<tfoot>-->
-<!--<tr ng-show="ngCart.getTax()">-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td>Tax ({{ ngCart.getTaxRate() }}%):</td>-->
-<!--<td>{{ ngCart.getTax() | currency }}</td>-->
-<!--</tr>-->
-<!--<tr ng-show="ngCart.getShipping()">-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td>Shipping:</td>-->
-<!--<td>{{ ngCart.getShipping() | currency }}</td>-->
-<!--</tr>-->
-<!--<tr>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td></td>-->
-<!--<td>Total:</td>-->
-<!--<td>{{ ngCart.totalCost() | currency }}</td>-->
-<!--</tr>-->
-<!--</tfoot>-->
-<!--<tbody>-->
-<!--<tr ng-repeat="item in ngCart.getCart().items track by $index">-->
-<!--<td><span ng-click="ngCart.removeItemById(item.getId())" class="glyphicon glyphicon-remove"></span></td>-->
-
-<!--<td>{{ item.getName() }}</td>-->
-<!--<td><span class="glyphicon glyphicon-minus" ng-class="{'disabled':item.getQuantity()==1}"-->
-<!--ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;-->
-<!--{{ item.getQuantity() | number }}&nbsp;&nbsp;-->
-<!--<span class="glyphicon glyphicon-plus" ng-click="item.setQuantity(1, true)"></span></td>-->
-<!--<td>{{ item.getPrice() | currency}}</td>-->
-<!--<td>{{ item.getTotal() | currency }}</td>-->
-<!--</tr>-->
-<!--</tbody>-->
-<!--</table>-->
-<!--</div>-->
-<!--<style>-->
-<!--.ngCart.cart span[ng-click] {-->
-<!--cursor: pointer;-->
-<!--}-->
-<!--.ngCart.cart .glyphicon.disabled {-->
-<!--color:#aaa;-->
-<!--}-->
-<!--</style>-->
