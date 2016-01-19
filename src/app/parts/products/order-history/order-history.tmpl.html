@@ -37,8 +37,8 @@
     </md-toolbar>
 
     <md-table-container>
-        <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.promise">
-            <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
+        <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.paginator.promise">
+            <thead md-head md-order="'_id'" md-on-reorder="vm.paginator.onReorder">
             <tr md-row>
                 <th md-column md-order-by="id"><span>Order</span></th>
                 <th md-column md-order-by="uid">Client</th>
@@ -50,7 +50,7 @@
             </thead>
             <tbody md-body>
             <tr md-row md-select="order._source.id" md-select-id="{{order._id}}" md-auto-select
-                ng-repeat="(index, order) in vm.orders.hits">
+                ng-repeat="(index, order) in vm.paginator.result.hits">
                 <td md-cell>{{order._id}}</td>
                 <td md-cell>{{order._source.clientInfo.uid}}</td>
                 <td md-cell>{{order._source.payment.type}}</td>
@@ -60,8 +60,8 @@
             </tbody>
         </table>
     </md-table-container>
-    <md-table-pagination md-limit="vm.query.size" md-page="vm.page" md-total="{{vm.orders.total}}"
-                         md-on-paginate="vm.getOrderPage" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page" md-total="{{vm.paginator.result.total}}"
+                         md-on-paginate="vm.paginator.get" md-page-select></md-table-pagination>
 
 </md-content>
 

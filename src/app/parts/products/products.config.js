@@ -46,7 +46,12 @@
                         return syncTime.onReady()
                     }]
                 }
-            });
+            }).state('quartz.admin-default.orderHistory', {
+            url: '/order-history',
+            templateUrl: 'app/parts/products/order-history/order-history.tmpl.html',
+            controller: 'OrderHistoryController',
+            controllerAs: 'vm'
+        });
 
         qtMenuProvider.addMenu({
             name: 'MENU.PRODUCTS.CART',
@@ -68,6 +73,10 @@
             }, {
                 name: 'MENU.PRODUCTS.SHOPPINGCART',
                 state: 'quartz.admin-default.shoppingCart',
+                type: 'link'
+            },{
+                name: 'MENU.ORDERHISTORY',
+                state: 'quartz.admin-default.orderHistory',
                 type: 'link'
             }]
         });
