@@ -17,13 +17,13 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q) {
-            return new firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q)
+        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q, $timeout) {
+            return new firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, $timeout)
         }
     }
 
     /*@ngInject*/
-    function firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q) {
+    function firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, $timeout) {
 
 
         var activeRefUrl = {};
@@ -61,13 +61,14 @@
                 if (db.keepOnline !== undefined) return !!db.keepOnline;
                 return true
             }
+
             this.keepOnline = isDbOnline();
             this.params = _opt.params || {};
             this.t = (new Date).getTime().toString();
 
-            if(angular.isString(refUrl)&&refUrl.split("//")[1]){
+            if (angular.isString(refUrl) && refUrl.split("//")[1]) {
                 this.dbName = refUrl.split("//")[1].split(".fi")[0];
-                this.dbUrl = refUrl.split(".com")[0]+".com";
+                this.dbUrl = refUrl.split(".com")[0] + ".com";
                 this.path = refUrl.split(".com/")[1];
             } else {
                 this.dbName = db.Name || _refUrl.split("@")[1] || FBURL.split("//")[1].split(".fi")[0];
@@ -311,7 +312,7 @@
             })
         }
 
-        function getUniqeId(){
+        function getUniqeId() {
             return queryRef('temp').push().key();
         }
 
@@ -383,6 +384,73 @@
             return $q.all(promises);
         }
 
+        function Paginator(ref, option) {
+            this.ref = ref;
+            this.size = 10;
+            this.page = 1;
+            this.result = {total: 100};
+            this.orderBy = '';
+            this.cache = {};
+            this.maxCachedPage = 0;
+        }
+
+        Paginator.prototype = {
+            listener: function (maxCachedPage) {
+                var self = this,
+                    def = $q.defer();
+                self.promise = def.promise;
+
+                if (this.listenerCallback) {
+                    this.ref.off('value', this.listenerCallback);
+                }
+                this.listenerCallback = this.ref.limitToFirst(maxCachedPage * parseInt(self.size)).on('value', function (snap) {
+                    self.cache = {};
+                    var page = 1,
+                        items = 0;
+                    snap.forEach(function (childSnap) {
+                        items++
+                        if (items > page * parseInt(self.size)) {
+                            page++;
+                        }
+                        var id = 's' + self.size + 'p' + page;
+                        self.cache[id] = self.cache[id] || {};
+                        self.cache[id][childSnap.key()] = childSnap.val();
+                    });
+                    self.assignPage();
+                    self.result.total = items;
+                    $timeout(angular.noop,0);
+
+                    def.resolve();
+                });
+            },
+            assignPage: function () {
+                var id = 's' + this.size + 'p' + this.page;
+                if (this.cache[id]) {
+                    this.result.hits = this.cache[id];
+                }
+            },
+            get: function (page, size) {
+                this.page = page;
+                this.size = size;
+                var self = this,
+                    id = 's' + self.size + 'p' + self.page;
+
+                if (this.cache && this.cache[id]) {
+                    this.assignPage();
+                } else {
+                    this.maxCachedPage = parseInt(page) + 10;
+                    this.listener(this.maxCachedPage);
+                }
+            },
+            onReorder: function () {
+                this.get(1, this.size)
+            }
+        };
+
+        function paginator(ref, option) {
+            return new Paginator(ref, option)
+        }
+
         // convert a node or Firebase style callback to a future
         function handler(fn, context) {
             return defer(function (def) {
@@ -411,13 +479,14 @@
             params: {},
             databases: {},
             ref: queryRef,
+            paginator: paginator,
             request: request,
             object: object,
             isRefUrlValid: isRefUrlValid,
             move: move,
             load: load,
             handler: handler,
-            getUniqeId:getUniqeId
+            getUniqeId: getUniqeId
         };
     }
 })();

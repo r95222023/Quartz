@@ -119,7 +119,7 @@
             }
 
             out.get = function (page, limit) {
-                var name = 'p' + page + 'l' + limit + 'o' + out.orderBy,
+                var name = 'p' + page + 'l' + limit + 'o' + out.orderBy||'',
                     def = $q.defer();
                 if (_paginators[name]) {
                     _get(name, page, def);
@@ -133,14 +133,16 @@
             };
 
             out.onReorder = function (orderBy) {
+                orderBy = orderBy.replace('.', '_dot_');
                 out.orderBy = orderBy;
                 var isDesc = orderBy.split('-')[1],
                     sortBy = isDesc ? isDesc : orderBy,
                     sort = {};
                 sort[sortBy] = {"order": !!isDesc ? "desc" : "asc"};
                 out.query.body.sort = sort;
-                out.get(1, out.query.size);
+                out.get(1, out.size);
             };
+
             return out
         };
 

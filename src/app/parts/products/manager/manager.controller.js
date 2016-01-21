@@ -6,7 +6,7 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController($mdToast, $mdDialog, $firebase, $location, $stateParams, $mdMedia) {
+    function ProductManagerController($elasticSearch, $mdToast, $mdDialog, $firebase, snippets, $location, $stateParams, $mdMedia) {
         var vm = this,
             position = {
                 bottom: true,
@@ -14,6 +14,53 @@
                 left: false,
                 right: true
             };
+
+        vm.query = {
+            reuse: 200
+        };
+        vm.filter = {};
+        vm.paginator = $elasticSearch.paginator('quartz', 'product', vm.query);
+        //initiate
+        vm.paginator.onReorder('itemId');
+
+        ////categories
+
+        var cateRef = $firebase.ref('config/client/products/categories');
+        vm.getCate = function () {
+            cateRef.once('value', function (snap) {
+                vm.categories = snippets.getFirebaseArrayData(snap.val());
+            });
+        };
+        vm.getCate();
+
+        vm.addCate = function () {
+            vm.categories.push(['Category Name', []])
+        };
+
+        vm.removeCate = function (ithCate, ithSub) {
+            if (ithSub) {
+                vm.categories[ithCate][1].splice(ithSub, 1);
+            } else {
+                vm.categories.splice(ithCate, 1);
+            }
+        };
+        vm.saveCate = function () {
+            cateRef.update(vm.categories, function () {
+                vm.cateEdit=!vm.cateEdit;
+            });
+        };
+
+        vm.addItme = function (index, value) {
+            if (value) {
+                var length = vm.categories[index].length;
+                vm.categories[index][1].push(value);
+                vm.tempItem = {};
+            }
+        };
+
+        ////Products
+
+
         resetData();
 
 
@@ -44,17 +91,13 @@
         };
 
         vm.update = function () {
-            if (angular.isString(vm.optional.group)) {
-                vm.product.group = vm.optional.group;
-                if (angular.isString(vm.optional.subgroup)) vm.product.group += '->' + vm.optional.subgroup;
-            }
 
             if (angular.isObject(vm.optional.options)) {
                 vm.product.options = {};
                 angular.forEach(vm.optional.options, function (item, key) {
                     vm.product.options[key] = [];
                     //trim the input
-                    angular.forEach(item.split(','), function(option, index){
+                    angular.forEach(item.split(','), function (option, index) {
                         vm.product.options[key][index] = option.trim();
                     });
                 })
@@ -91,7 +134,7 @@
                 .ok('Remove');
 
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('products').child(id).set(null, function () {
+                $firebase.ref('products').child(id).child('_index/remove').set(true, function () {
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Deleted!')

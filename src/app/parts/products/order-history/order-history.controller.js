@@ -17,9 +17,17 @@
             expire: 1000000000 //how long does it take for this cache to expire
         };
 
-        vm.paginator = $elasticSearch.paginator('quartz', 'order', vm.query);
+        vm.size = 10;
+        vm.page = 1;
+
+        vm.paginator = $firebase.paginator($firebase.ref('orders').orderByChild('status'));
         //initiate
-        vm.paginator.onReorder('id');
+        vm.paginator.get(1,10);
+        vm.onPaginate = function (page, size) {
+            vm.paginator.size = size;
+            vm.paginator.page = page;
+            vm.paginator.get(page,size)
+        };
 
         vm.changeStatus = function (status) {
             var data = {};
@@ -27,7 +35,7 @@
                 data[orderId + '/status'] = status;
             });
             $firebase.ref('orders').update(data, function () {
-                angular.forEach(vm.orders.hits, function (order, i) {
+                angular.forEach(vm.paginator.result.hits, function (order, i) {
                     if(data[order._source.id + '/status']) order._source.status = status;
                 });
             });

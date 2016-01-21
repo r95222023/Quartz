@@ -46,6 +46,11 @@
         });
         if(!($rootScope.user&&$rootScope.user.admin)) Idle.watch();
 
+        //// get client config
+        $firebase.ref('config/client').once('value', function (snap) {
+            $rootScope.clientConfig = snap.val();
+        });
+
 
         //// detect if user is logged in
         Auth.$onAuth(function (user) {

@@ -199,9 +199,47 @@
             return sortedObj;
         }
 
+        function removeItemFromArray(arr, item) {
+            for(var i = arr.length; i--;) {
+                if(arr[i] === item) {
+                    arr.splice(i, 1);
+                }
+            }
+        }
+
+        function getFirebaseArrayData(data) {
+            function toPosInt(key) {
+                var n = Number(key);
+                return !n % 1 === 0 && n > -1 ? n : false;
+            }
+
+            function iterate(data) {
+                var arr = [],
+                    obj = {},
+                    isArray = true;
+                angular.forEach(data, function (value, key) {
+                    var n = toPosInt(key);
+                    if (n !== false) {
+                        arr[key] = angular.isObject(value) ? iterate(value) : value;
+                    } else {
+                        isArray = false;
+                        return false;
+                    }
+                });
+                if (isArray === false) angular.forEach(data, function (value, key) {
+                    obj[key] = angular.isObject(value) ? iterate(value) : value;
+                });
+                return isArray ? arr : obj;
+            }
+
+            return iterate(data);
+        }
+
         return {
             md5: md5,
-            sortObjectByPropery: sortObjectByPropery
+            sortObjectByPropery: sortObjectByPropery,
+            getFirebaseArrayData: getFirebaseArrayData,
+            removeItemFromArray:removeItemFromArray
         };
     }
 })();

@@ -49,19 +49,19 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="order._source.id" md-select-id="{{order._id}}" md-auto-select
+            <tr md-row md-select="order.id" md-select-id="{{order.id}}" md-auto-select
                 ng-repeat="(index, order) in vm.paginator.result.hits">
-                <td md-cell>{{order._id}}</td>
-                <td md-cell>{{order._source.clientInfo.uid}}</td>
-                <td md-cell>{{order._source.payment.type}}</td>
-                <td md-cell>{{order._source.status}}</td>
-                <td md-cell>{{order._source.totalAmount}}</td>
+                <td md-cell>{{order.id}}</td>
+                <td md-cell>{{order.clientInfo.uid}}</td>
+                <td md-cell>{{order.payment.type}}</td>
+                <td md-cell>{{order.status}}</td>
+                <td md-cell>{{order.totalAmount}}</td>
             </tr>
             </tbody>
         </table>
     </md-table-container>
-    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page" md-total="{{vm.paginator.result.total}}"
-                         md-on-paginate="vm.paginator.get" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="vm.size" md-page="vm.page" md-total="{{vm.paginator.result.total}}"
+                         md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
 </md-content>
 
