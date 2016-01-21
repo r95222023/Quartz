@@ -38,11 +38,11 @@
 
     <md-table-container>
         <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.paginator.promise">
-            <thead md-head md-order="'_id'" md-on-reorder="vm.paginator.onReorder">
+            <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
             <tr md-row>
                 <th md-column md-order-by="id"><span>Order</span></th>
-                <th md-column md-order-by="uid">Client</th>
-                <th md-column md-order-by="payment.type">Payment</th>
+                <th md-column md-order-by="clientInfo/uid">Client</th>
+                <th md-column md-order-by="payment/type">Payment</th>
                 <th md-column md-order-by="status">Status</th>
                 <th md-column md-numeric md-order-by="totalAmount">Total amount</th>
 
@@ -60,7 +60,7 @@
             </tbody>
         </table>
     </md-table-container>
-    <md-table-pagination md-limit="vm.size" md-page="vm.page" md-total="{{vm.paginator.result.total}}"
+    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page" md-total="{{vm.paginator.result.total}}"
                          md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
 </md-content>

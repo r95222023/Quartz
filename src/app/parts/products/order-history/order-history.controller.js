@@ -17,16 +17,16 @@
             expire: 1000000000 //how long does it take for this cache to expire
         };
 
-        vm.size = 10;
-        vm.page = 1;
 
-        vm.paginator = $firebase.paginator($firebase.ref('orders').orderByChild('status'));
+        vm.paginator = $firebase.paginator($firebase.ref('orders'));
         //initiate
-        vm.paginator.get(1,10);
-        vm.onPaginate = function (page, size) {
-            vm.paginator.size = size;
-            vm.paginator.page = page;
+        vm.paginator.onReorder();
+
+        vm.onPaginate = function (page, size) { //to prevent this being overwritten
             vm.paginator.get(page,size)
+        };
+        vm.onReorder = function (sort) {
+            vm.paginator.onReorder(sort);
         };
 
         vm.changeStatus = function (status) {

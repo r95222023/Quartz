@@ -17,13 +17,13 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q, $timeout) {
-            return new firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, $timeout)
+        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $q, $timeout,$filter) {
+            return new firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, $timeout, $filter)
         }
     }
 
     /*@ngInject*/
-    function firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, $timeout) {
+    function firebase(mainFirebase, params, FBURL, config, $firebaseObject, $q, $timeout, $filter) {
 
 
         var activeRefUrl = {};
@@ -386,45 +386,64 @@
 
         function Paginator(ref, option) {
             this.ref = ref;
+            this.option = option||{};
             this.size = 10;
             this.page = 1;
             this.result = {total: 100};
             this.orderBy = '';
             this.cache = {};
+            this.limitTo = 'limitToFirst';
             this.maxCachedPage = 0;
         }
 
         Paginator.prototype = {
             listener: function (maxCachedPage) {
                 var self = this,
-                    def = $q.defer();
+                    limitTo = maxCachedPage * parseInt(self.size),
+                    def = $q.defer(),
+                    isDesc = this.orderBy.split('-')[1],
+                    orderBy = isDesc? isDesc : this.orderBy;
+
+                this.limitTo = isDesc ? 'limitToLast': 'limitToFirst';
                 self.promise = def.promise;
 
                 if (this.listenerCallback) {
                     this.ref.off('value', this.listenerCallback);
                 }
-                this.listenerCallback = this.ref.limitToFirst(maxCachedPage * parseInt(self.size)).on('value', function (snap) {
+                if (this.orderBy) {
+                    this.listenerCallback =  this.ref.orderByChild(orderBy)[this.limitTo](limitTo).on('value', onValue);
+                } else {
+                    this.listenerCallback =  this.ref.orderByKey()[this.limitTo](limitTo).on('value', onValue);
+                }
+                function onValue(snap) {
                     self.cache = {};
                     var page = 1,
-                        items = 0;
+                        items = 0,
+                        arr = [];
+
                     snap.forEach(function (childSnap) {
-                        items++
+                        arr.push(childSnap.val());
+                    });
+                    var sortedArr = $filter('orderBy')(arr, self.orderBy);
+
+                    angular.forEach(sortedArr, function (value) {
+                        items++;
                         if (items > page * parseInt(self.size)) {
                             page++;
                         }
-                        var id = 's' + self.size + 'p' + page;
-                        self.cache[id] = self.cache[id] || {};
-                        self.cache[id][childSnap.key()] = childSnap.val();
+                        var id = 's' + self.size + 'p' + page+'o'+self.orderBy;
+                        self.cache[id] = self.cache[id] || [];
+                        self.cache[id].push(value);
                     });
                     self.assignPage();
-                    self.result.total = items;
-                    $timeout(angular.noop,0);
+                    self.result.total = sortedArr.length;
+                    $timeout(angular.noop, 0);
 
                     def.resolve();
-                });
+                }
             },
             assignPage: function () {
-                var id = 's' + this.size + 'p' + this.page;
+                var id = 's' + this.size + 'p' + this.page+'o'+this.orderBy;
                 if (this.cache[id]) {
                     this.result.hits = this.cache[id];
                 }
@@ -433,17 +452,20 @@
                 this.page = page;
                 this.size = size;
                 var self = this,
-                    id = 's' + self.size + 'p' + self.page;
-
-                if (this.cache && this.cache[id]) {
-                    this.assignPage();
+                    preload = this.option.preload||5,
+                    id = 's' + self.size + 'p' + page+'o'+self.orderBy;
+                if (self.cache && self.cache[id]&&parseInt(page)+preload<self.maxCachedPage) {
+                    self.assignPage();
                 } else {
-                    this.maxCachedPage = parseInt(page) + 10;
-                    this.listener(this.maxCachedPage);
+                    self.maxCachedPage = parseInt(page) + 2*preload;
+                    self.listener(this.maxCachedPage);
                 }
+
             },
-            onReorder: function () {
-                this.get(1, this.size)
+            onReorder: function (value) {
+                value = value||'';
+                this.orderBy = value;
+                this.get(1, this.size);
             }
         };
 
