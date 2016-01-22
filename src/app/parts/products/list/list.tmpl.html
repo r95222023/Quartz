@@ -1,6 +1,22 @@
 <div class="padded-content-page" layout="column">
 
     <md-content layout="row" layout-xs="column" layout-wrap layout-padding>
+        <div flex="100">
+            <md-menu>
+                <md-button aria-label="categories" ng-click="$mdOpenMenu()" aria-label="more action">
+                    Categories
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item ng-repeat-start="cate in clientConfig.products.categories" ng-init="cate[2]=$index">
+                        <span style="width:10px"></span><h3 style="cursor: pointer" ui-sref="quartz.admin-default.productList({ cate: cate[2] })">{{cate[0]}}</h3>
+                    </md-menu-item>
+                    <md-menu-item ng-repeat="subcate in cate[1]">
+                        <span style="width:30px"></span><p style="cursor: pointer" ui-sref="quartz.admin-default.productList({ cate: cate[2], subCate: $index })">{{subcate}}</p>
+                    </md-menu-item>
+                    <span ng-repeat-end></span>
+                </md-menu-content>
+            </md-menu>
+        </div>
         <div flex-gt-xs="33" flex-gt-sm="25"
              ng-repeat="(index, product) in vm.paginator.result.hits" >
             <md-card ng-click="vm.showDetail(product._source.itemId)"
