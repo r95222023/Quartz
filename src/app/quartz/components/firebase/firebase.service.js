@@ -411,7 +411,7 @@
                     this.ref.off('value', this.listenerCallback);
                 }
                 if (this.orderBy) {
-                    this.listenerCallback =  this.ref.orderByChild(orderBy)[this.limitTo](limitTo).on('value', onValue);
+                    this.listenerCallback =  this.ref.orderByChild(orderBy.replace('.','/'))[this.limitTo](limitTo).on('value', onValue);
                 } else {
                     this.listenerCallback =  this.ref.orderByKey()[this.limitTo](limitTo).on('value', onValue);
                 }

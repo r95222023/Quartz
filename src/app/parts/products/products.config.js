@@ -11,7 +11,7 @@
 
         $stateProvider
             .state('quartz.admin-default.productList', {
-                url: '/prodcuts/list',
+                url: '/prodcuts/list/?cate&subCate&queryString',
                 templateUrl: 'app/parts/products/list/list.tmpl.html',
                 // set the controller to load for this page
                 controller: 'ProductListController',
@@ -61,6 +61,7 @@
             children: [{
                 name: 'MENU.PRODUCTS.LIST',
                 state: 'quartz.admin-default.productList',
+                params:{cate:'all'},
                 type: 'link'
             }, {
                 name: 'MENU.PRODUCTS.DETAIL',

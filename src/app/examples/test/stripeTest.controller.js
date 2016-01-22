@@ -19,26 +19,5 @@
                 }
             }
         };
-        var now = new Date();
-        $firebase.request({
-            request: [{
-                refUrl: 'query/' + now.getTime(),
-                value: {
-                    index: 'quartz',
-                    body: {
-                        query: {
-                            match: {
-                                ChoosePayment: 'All'
-                            }
-                        }
-                    }
-                }
-            }],
-            response: {
-                response: 'query/' + now.getTime()+'/response'
-            }
-        }).then(function (res) {
-            console.log(res);
-        })
     }
 })();

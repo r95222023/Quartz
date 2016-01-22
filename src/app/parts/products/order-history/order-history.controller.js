@@ -35,9 +35,9 @@
                 data[orderId + '/status'] = status;
             });
             $firebase.ref('orders').update(data, function () {
-                angular.forEach(vm.paginator.result.hits, function (order, i) {
-                    if(data[order._source.id + '/status']) order._source.status = status;
-                });
+                //angular.forEach(vm.paginator.result.hits, function (order, i) {
+                //    if(data[order._source.id + '/status']) order._source.status = status;
+                //});
             });
             //$firebase.request({
             //    request: [{

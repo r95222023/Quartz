@@ -19,9 +19,13 @@
             reuse: 200
         };
         vm.filter = {};
-        vm.paginator = $elasticSearch.paginator('quartz', 'product', vm.query);
+        vm.paginator = $firebase.paginator($firebase.ref('products'));
         //initiate
         vm.paginator.onReorder('itemId');
+
+        vm.onPaginate = function (page, size) { //to prevent this being overwritten
+            vm.paginator.get(page,size)
+        };
 
         ////categories
 
@@ -91,7 +95,7 @@
         };
 
         vm.update = function () {
-
+            delete vm.product._index;
             if (angular.isObject(vm.optional.options)) {
                 vm.product.options = {};
                 angular.forEach(vm.optional.options, function (item, key) {

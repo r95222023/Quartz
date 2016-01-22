@@ -1,5 +1,58 @@
 <div layout="column">
     <md-tabs md-dynamic-height md-selected="selectedIndex" md-border-bottom md-autoselect>
+        <md-tab label="Products">
+            <div layout="row" layout-xs="column" layout-wrap layout-padding>
+
+                <md-button class="md-fab" aria-label="fab button"
+                           style="position: fixed; bottom: 40px; right: 40px"
+                           ng-click="vm.showEditor($event)">
+                    <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+                </md-button>
+                <div flex-gt-xs="33" flex-gt-sm="25"
+                     ng-repeat="(index, product) in vm.paginator.result.hits">
+                    <md-card class="md-whiteframe-2dp">
+                        <md-card-actions layout="row" layout-align="start center">
+                            <md-button class="md-icon-button" ui-sref="quartz.admin-default.productDetail({id:itemId})"
+                                       aria-label="edit product">
+                                <md-icon md-font-icon="fa fa-link"></md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" ng-click="vm.showEditor($event, product.itemId)"
+                                       aria-label="edit product">
+                                <md-icon md-font-icon="fa fa-pencil-square-o"></md-icon>
+                            </md-button>
+
+                            <span flex></span>
+                            <md-button class="md-icon-button" ng-click="vm.delete($event, product.itemId)"
+                                       aria-label="delete product">
+                                <md-icon md-font-icon="fa fa-trash-o"></md-icon>
+                            </md-button>
+                        </md-card-actions>
+                        <img class="md-card-image" ng-src="{{product.image}}">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">{{product.itemName}}</span>
+                            </md-card-title-text>
+                        </md-card-title>
+
+                        <md-card-content layout-align="center center">
+                            <div class="content-padded">
+                                <p>
+                                    List price: {{product.listPrice|currency : '$' : 2}}
+                                </p>
+                                <p>
+                                    Price: {{product.price|currency : '$' : 2}}
+                                </p>
+                            </div>
+                        </md-card-content>
+
+                    </md-card>
+                </div>
+                <md-table-pagination flex="100" md-limit="vm.paginator.size" md-page="vm.paginator.page"
+                                     md-total="{{vm.paginator.result.total}}"
+                                     md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
+            </div>
+        </md-tab>
+
         <md-tab label="Categories">
             <div>
                 <md-button ng-if="vm.cateEdit" class="md-fab" aria-label="fab button"
@@ -68,57 +121,6 @@
                 </div>
             </div>
         </md-tab>
-        <md-tab label="Products">
-            <div layout="row" layout-xs="column" layout-wrap layout-padding>
 
-                <md-button class="md-fab" aria-label="fab button"
-                           style="position: fixed; bottom: 40px; right: 40px"
-                           ng-click="vm.showEditor($event)">
-                    <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
-                </md-button>
-                <div flex-gt-xs="33" flex-gt-sm="25"
-                     ng-repeat="(index, product) in vm.paginator.result.hits">
-                    <md-card class="md-whiteframe-2dp">
-                        <md-card-actions layout="row" layout-align="start center">
-                            <md-button class="md-icon-button" ui-sref="quartz.admin-default.productDetail({id:itemId})"
-                                       aria-label="edit product">
-                                <md-icon md-font-icon="fa fa-link"></md-icon>
-                            </md-button>
-                            <md-button class="md-icon-button" ng-click="vm.showEditor($event, product._source.itemId)"
-                                       aria-label="edit product">
-                                <md-icon md-font-icon="fa fa-pencil-square-o"></md-icon>
-                            </md-button>
-
-                            <span flex></span>
-                            <md-button class="md-icon-button" ng-click="vm.delete($event, product._source.itemId)"
-                                       aria-label="delete product">
-                                <md-icon md-font-icon="fa fa-trash-o"></md-icon>
-                            </md-button>
-                        </md-card-actions>
-                        <img class="md-card-image" ng-src="{{product._source.image}}">
-                        <md-card-title>
-                            <md-card-title-text>
-                                <span class="md-headline">{{product._source.itemName}}</span>
-                            </md-card-title-text>
-                        </md-card-title>
-
-                        <md-card-content layout-align="center center">
-                            <div class="content-padded">
-                                <p>
-                                    List price: {{product._source.listPrice|currency : '$' : 2}}
-                                </p>
-                                <p>
-                                    Price: {{product._source.price|currency : '$' : 2}}
-                                </p>
-                            </div>
-                        </md-card-content>
-
-                    </md-card>
-                </div>
-                <md-table-pagination flex="100" md-limit="vm.paginator.size" md-page="vm.paginator.page"
-                                     md-total="{{vm.paginator.result.total}}"
-                                     md-on-paginate="vm.paginator.get" md-page-select></md-table-pagination>
-            </div>
-        </md-tab>
     </md-tabs>
 </div>
