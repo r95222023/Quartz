@@ -73,6 +73,7 @@
             vm.optional = {
                 options: {}
             };
+            vm.paginator.page=1;
         }
 
 
@@ -138,7 +139,7 @@
                 .ok('Remove');
 
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('products').child(id).child('_index/remove').set(true, function () {
+                $firebase.ref('products').child(id).child('_remove').set(true, function () {
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Deleted!')

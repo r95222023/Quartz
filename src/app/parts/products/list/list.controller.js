@@ -37,19 +37,21 @@
 
 
         vm.queryString = $stateParams.queryString;
-        vm.search = function(){
-            if(angular.isString(vm.queryString)&&vm.queryString.trim()!=='')
-            vm.query.body = {
-                "query":{
-                    "query_string" : {
-                        "fields" : ["itemName", "description"],
-                        "query" : vm.queryString,
-                        "use_dis_max" : true
+        vm.search = function(go){
+            if(angular.isString(vm.queryString)&&vm.queryString.trim()!==''){
+                vm.query.body = {
+                    "query":{
+                        "query_string" : {
+                            "fields" : ["itemName", "description"],
+                            "query" : vm.queryString,
+                            "use_dis_max" : true
+                        }
                     }
-                }
+                };
+                if(go) $state.go('quartz.admin-default.productList', {queryString: vm.queryString})
             }
         };
-        vm.search();
+        vm.search(); //for query from url
 
 
         vm.paginator = $elasticSearch.paginator('quartz', 'product', vm.query);
