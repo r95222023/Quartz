@@ -8,7 +8,7 @@
                            ng-click="vm.showEditor($event)">
                     <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
                 </md-button>
-                <div flex-gt-xs="33" flex-gt-sm="25"
+                <div flex-gt-xs="33" flex-gt-sm="25" flex-gt-md="20"
                      ng-repeat="(index, product) in vm.paginator.result.hits">
                     <md-card class="md-whiteframe-2dp">
                         <md-card-actions layout="row" layout-align="start center">
@@ -53,7 +53,7 @@
             </div>
         </md-tab>
 
-        <md-tab label="Categories">
+        <md-tab label="Categories and Tags">
             <div>
                 <md-button ng-if="vm.cateEdit" class="md-fab" aria-label="fab button"
                            style="position: fixed; bottom: 40px; right: 40px"
@@ -62,11 +62,12 @@
                 </md-button>
                 <md-button ng-if="!vm.cateEdit"
                            ng-click="vm.cateEdit=!vm.cateEdit"
-                           aria-label="edit categories">
-                    Edit
+                           class="md-raised md-primary"
+                           aria-label="edit mode">
+                    Edit Mode
                 </md-button>
                 <md-button ng-if="vm.cateEdit"
-                           ng-click="vm.saveCate()"
+                           ng-click="vm.saveCateTag()"
                            aria-label="save categories">
                     Save
                 </md-button>
@@ -77,7 +78,23 @@
                 </md-button>
             </div>
 
-            <div layout="row" layout-xs="column" layout-wrap layout-padding>
+            <div layout="row" layout-xs="column" layout-wrap layout-padding class="md-whiteframe-2dp">
+                <div flex="100">
+                    <h2>Tags</h2>
+                    <span ng-if="!vm.cateEdit">{{vm.tags}}</span>
+                    <div ng-if="vm.cateEdit">
+                        <md-input-container class="md-icon-float md-block">
+                            <label>Tags</label>
+                            <input ng-model="vm.tags" type="text">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div layout="row" layout-xs="column" layout-wrap layout-padding class="md-whiteframe-2dp">
+                <div flex="100">
+                    <h2>Categories</h2>
+                </div>
                 <div flex-gt-xs="33" flex-gt-sm="25"
                      ng-repeat="cate in vm.categories track by $index">
                     <md-card class="md-whiteframe-2dp">
@@ -120,7 +137,9 @@
                     </md-card>
                 </div>
             </div>
-        </md-tab>
+            <div layout="row" layout-xs="column" layout-wrap layout-padding>
 
+            </div>
+        </md-tab>
     </md-tabs>
 </div>

@@ -1,67 +1,15 @@
 <md-content class="padded-content-page">
-
-    <md-toolbar class="md-table-toolbar md-default" aria-label="search">
-        <div class="md-toolbar-tools" layout="row">
-            <span>Orders</span>
-            <div flex></div>
-            <md-button ng-hide="vm.orderSelected.length || vm.filter.show"
-                       class="md-icon-button toolbar-button"
-                       style="color:black"
-                       ng-click="vm.filter.show = true">
-                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
-            </md-button>
-            <md-menu>
-                <md-button class="md-icon-button" aria-label="language" ng-click="$mdOpenMenu()" aria-label="more action">
-                    <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
-                </md-button>
-                <md-menu-content width="3">
-                    <md-menu-item ng-repeat="status in vm.statuses">
-                        <md-button ng-click="vm.changeStatus(status)" translate="{{status}}" aria-label="{{status}}"></md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
+    <div dragula='"drag-container"'>
+        <div class="md-whiteframe-3dp"
+             dragula='"drag-row-container"'
+             dragula-scope='$parent'
+             layout="row" layout-xs="row"
+             layout-align="start center"
+             layout-margin
+             ng-repeat="row in vm.rows">
+            <md-button class="dragable-widget" ng-repeat="widget in row.widgets">{{widget.name}}</md-button>
         </div>
-
-    </md-toolbar>
-
-    <md-toolbar class="md-table-toolbar md-default" ng-show="vm.filter.show && !vm.orderSelected.length">
-        <div class="md-toolbar-tools" layout="row">
-            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
-            <form flex="" name="vm.filter.form">
-                <input type="text" ng-model="vm.filter" placeholder="search">
-            </form>
-            <md-button class="md-icon-button">
-                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
-            </md-button>
-        </div>
-    </md-toolbar>
-
-    <md-table-container>
-        <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.promise">
-            <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
-            <tr md-row>
-                <th md-column md-order-by="id"><span>Order</span></th>
-                <th md-column md-order-by="uid">Client</th>
-                <th md-column md-order-by="payment.type">Payment</th>
-                <th md-column md-order-by="status">Status</th>
-                <th md-column md-numeric md-order-by="totalAmount">Total amount</th>
-
-            </tr>
-            </thead>
-            <tbody md-body>
-            <tr md-row md-select="order._source.id" md-select-id="{{order._id}}" md-auto-select
-                ng-repeat="(index, order) in vm.orders.hits">
-                <td md-cell>{{order._id}}</td>
-                <td md-cell>{{order._source.clientInfo.uid}}</td>
-                <td md-cell>{{order._source.payment.type}}</td>
-                <td md-cell>{{order._source.status}}</td>
-                <td md-cell>{{order._source.totalAmount}}</td>
-            </tr>
-            </tbody>
-        </table>
-    </md-table-container>
-    <md-table-pagination md-limit="vm.query.size" md-page="vm.page" md-total="{{vm.orders.total}}"
-                         md-on-paginate="vm.getOrderPage" md-page-select></md-table-pagination>
+    </div>
 
 </md-content>
 

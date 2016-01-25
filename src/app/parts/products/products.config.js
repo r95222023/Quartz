@@ -11,7 +11,7 @@
 
         $stateProvider
             .state('quartz.admin-default.productList', {
-                url: '/prodcuts/list/?cate&subCate&queryString',
+                url: '/prodcuts/list/?cate&subCate&queryString&tag',
                 templateUrl: 'app/parts/products/list/list.tmpl.html',
                 // set the controller to load for this page
                 controller: 'ProductListController',
@@ -46,12 +46,13 @@
                         return syncTime.onReady()
                     }]
                 }
-            }).state('quartz.admin-default.orderHistory', {
-            url: '/order-history',
-            templateUrl: 'app/parts/products/order-history/order-history.tmpl.html',
-            controller: 'OrderHistoryController',
-            controllerAs: 'vm'
-        });
+            })
+            .state('quartz.admin-default.orderHistory', {
+                url: '/order-history/?orderBy&startAt&endAt&equalTo',
+                templateUrl: 'app/parts/products/order-history/order-history.tmpl.html',
+                controller: 'OrderHistoryController',
+                controllerAs: 'vm'
+            });
 
         qtMenuProvider.addMenu({
             name: 'MENU.PRODUCTS.CART',
@@ -61,7 +62,7 @@
             children: [{
                 name: 'MENU.PRODUCTS.LIST',
                 state: 'quartz.admin-default.productList',
-                params:{cate:'all'},
+                params: {cate: 'all',subCate:'all',queryString:''},
                 type: 'link'
             }, {
                 name: 'MENU.PRODUCTS.DETAIL',
@@ -75,7 +76,7 @@
                 name: 'MENU.PRODUCTS.SHOPPINGCART',
                 state: 'quartz.admin-default.shoppingCart',
                 type: 'link'
-            },{
+            }, {
                 name: 'MENU.ORDERHISTORY',
                 state: 'quartz.admin-default.orderHistory',
                 type: 'link'

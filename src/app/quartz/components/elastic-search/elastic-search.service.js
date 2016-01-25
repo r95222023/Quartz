@@ -46,7 +46,6 @@
                     } else {
                         //check if the cache is expired or used many times
                         syncTime.onReady().then(function (getTime) {
-                            console.log(getTime());
                             if (getTime() - result.usage.last > (option.expire || 30 * 24 * 60 * 60 * 1000) || result.usage.times > (option.reuse || 100)) {
                                 request(refUrl, responseUrl, searchData);
                             } else {

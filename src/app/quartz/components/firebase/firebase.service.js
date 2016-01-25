@@ -384,13 +384,16 @@
             return $q.all(promises);
         }
 
-        function Paginator(ref, option) {
-            this.ref = ref;
+        function Paginator(refUrl, option) {
+            this.ref = queryRef(refUrl);
             this.option = option||{};
             this.size = 10;
             this.page = 1;
             this.result = {total: 100};
-            this.orderBy = '';
+            this.orderBy = this.option.orderBy||'';
+            this.startAt = this.option.startAt||'';
+            this.equalTo = this.option.equalTo||'';
+            this.endAt = this.option.endAt||'';
             this.cache = {};
             this.limitTo = 'limitToFirst';
             this.maxCachedPage = 0;
@@ -410,11 +413,22 @@
                 if (this.listenerCallback) {
                     this.ref.off('value', this.listenerCallback);
                 }
+
+                var _ref;
                 if (this.orderBy) {
-                    this.listenerCallback =  this.ref.orderByChild(orderBy.replace('.','/'))[this.limitTo](limitTo).on('value', onValue);
+                    _ref = this.ref.orderByChild(orderBy.replace('.','/'));
                 } else {
-                    this.listenerCallback =  this.ref.orderByKey()[this.limitTo](limitTo).on('value', onValue);
+                    _ref = this.ref.orderByKey();
                 }
+                if(this.equalTo){
+                    _ref = _ref.equalTo(this.equalTo);
+                } else {
+                    _ref = this.startAt? _ref.startAt(this.startAt):_ref;
+                    _ref = this.endAt? _ref.endAt(this.endAt):_ref;
+                }
+                this.listenerCallback = _ref[this.limitTo](limitTo).on('value', onValue);
+
+
                 function onValue(snap) {
                     self.cache = {};
                     var page = 1,

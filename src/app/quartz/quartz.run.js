@@ -47,8 +47,8 @@
         if(!($rootScope.user&&$rootScope.user.admin)) Idle.watch();
 
         //// get client config
-        $firebase.ref('config/client').once('value', function (snap) {
-            $rootScope.clientConfig = snap.val();
+        $firebase.ref('config/client').on('value', function (snap) {
+            $rootScope.clientConfig =snap.val();
         });
 
 

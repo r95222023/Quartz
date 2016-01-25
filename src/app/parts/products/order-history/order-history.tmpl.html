@@ -1,40 +1,63 @@
+
 <md-content class="padded-content-page">
 
     <md-toolbar class="md-table-toolbar md-default" aria-label="search">
         <div class="md-toolbar-tools" layout="row">
             <span>Orders</span>
             <div flex></div>
-            <md-button ng-hide="vm.orderSelected.length || vm.filter.show"
+            <md-button ng-hide="vm.orderSelected.length"
                        class="md-icon-button toolbar-button"
                        style="color:black"
-                       ng-click="vm.filter.show = true">
-                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                       ng-click="vm.showFilter = !vm.showFilter">
+                <md-icon md-font-icon="zmdi zmdi-filter-list"></md-icon>
             </md-button>
-            <md-menu>
-                <md-button class="md-icon-button" aria-label="language" ng-click="$mdOpenMenu()" aria-label="more action">
+            <md-menu ng-hide="!vm.orderSelected.length">
+                <md-button class="md-icon-button" aria-label="more action" ng-click="$mdOpenMenu()"
+                           aria-label="more action">
                     <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
                 </md-button>
                 <md-menu-content width="3">
                     <md-menu-item ng-repeat="status in vm.statuses">
-                        <md-button ng-click="vm.changeStatus(status)" translate="{{status}}" aria-label="{{status}}"></md-button>
+                        <md-button ng-click="vm.changeStatus(status)" translate="{{status}}"
+                                   aria-label="{{status}}"></md-button>
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
         </div>
 
-    </md-toolbar>
 
-    <md-toolbar class="md-table-toolbar md-default" ng-show="vm.filter.show && !vm.orderSelected.length">
-        <div class="md-toolbar-tools" layout="row">
-            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
-            <form flex="" name="vm.filter.form">
-                <input type="text" ng-model="vm.filter" placeholder="search">
-            </form>
-            <md-button class="md-icon-button">
-                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+    </md-toolbar>
+    <form name="filterForm" ng-show="vm.showFilter && !vm.orderSelected.length" ng-submit="vm.getFiltered()" class="md-whiteframe-3dp">
+        <div layout='row' layout-margin layout-padding>
+            <md-input-container flex>
+                <label>Filter</label>
+                <md-select ng-model="vm.orderBy">
+                    <md-option ng-repeat="filter in vm.filters" value="{{filter[1]}}">
+                        {{filter[0]}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container flex>
+                <label>From</label>
+                <input ng-model="vm.startAt">
+            </md-input-container>
+            <md-input-container flex>
+                <label>To</label>
+                <input ng-model="vm.endAt">
+            </md-input-container>
+        </div>
+        <div layout="row" layout-padding>
+            <span flex></span>
+            <md-button class="md-primary md-hue-1 md-raised" type="submit">
+                OK
+            </md-button>
+            <md-button class="md-accent md-raised" ng-click="vm.showFilter = !vm.showFilter">
+                Cancel
             </md-button>
         </div>
-    </md-toolbar>
+
+    </form>
+
 
     <md-table-container>
         <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.paginator.promise">
@@ -60,7 +83,8 @@
             </tbody>
         </table>
     </md-table-container>
-    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page" md-total="{{vm.paginator.result.total}}"
+    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page"
+                         md-total="{{vm.paginator.result.total}}"
                          md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
 </md-content>

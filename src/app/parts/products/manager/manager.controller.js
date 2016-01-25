@@ -15,11 +15,9 @@
                 right: true
             };
 
-        vm.query = {
-            reuse: 200
-        };
-        vm.filter = {};
-        vm.paginator = $firebase.paginator($firebase.ref('products'));
+
+
+        vm.paginator = $firebase.paginator('products');
         //initiate
         vm.paginator.onReorder('itemId');
 
@@ -29,13 +27,14 @@
 
         ////categories
 
-        var cateRef = $firebase.ref('config/client/products/categories');
-        vm.getCate = function () {
-            cateRef.once('value', function (snap) {
-                vm.categories = snippets.getFirebaseArrayData(snap.val());
+        var productConfigRef = $firebase.ref('config/client/products');
+        vm.getCateTag = function () {
+            productConfigRef.on('value', function (snap) {
+                vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
+                vm.tags = snippets.getFirebaseArrayData(snap.val().tags||[]).toString();
             });
         };
-        vm.getCate();
+        vm.getCateTag();
 
         vm.addCate = function () {
             vm.categories.push(['Category Name', []])
@@ -48,8 +47,12 @@
                 vm.categories.splice(ithCate, 1);
             }
         };
-        vm.saveCate = function () {
-            cateRef.update(vm.categories, function () {
+        vm.saveCateTag = function () {
+            var data = {
+                categories:vm.categories,
+                tags:vm.tags? vm.tags.split(','):null
+            };
+            productConfigRef.update(data, function () {
                 vm.cateEdit=!vm.cateEdit;
             });
         };
@@ -112,7 +115,7 @@
                 vm.product.tags = {};
                 var tags = vm.optional.tags.split(',');
                 angular.forEach(tags, function (tag, key) {
-                    vm.product.tags[tag] = '';
+                    vm.product.tags[tag] = 1;
                 })
             }
 
