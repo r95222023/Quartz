@@ -1,15 +1,54 @@
 <md-content class="padded-content-page">
-    <div dragula='"drag-container"'>
-        <div class="md-whiteframe-3dp"
-             dragula='"drag-row-container"'
-             dragula-scope='$parent'
-             layout="row" layout-xs="row"
-             layout-align="start center"
-             layout-margin
-             ng-repeat="row in vm.rows">
-            <md-button class="dragable-widget" ng-repeat="widget in row.widgets">{{widget.name}}</md-button>
+    <!--<div dragula='"drag-row-container"'>-->
+    <!--<span class="dragable-widget" ng-repeat="element in elements">-->
+    <!--<custom-item content="element.content"></custom-item> {{element.name}}-->
+    <!--</span>-->
+    <!--</div>-->
+    <div layout="row">
+        <div flex="20">
+            <div class="md-whiteframe-3dp"
+                 layout="column" layout-xs="column"
+                 layout-align="start center"
+                 layout-margin>
+                <div dragula='"drag-container"'
+                     dragula-model='rowSource'>
+                    <div style="cursor: move" ng-repeat="row in rowSource">
+                        {{row.type}}
+                    </div>
+                </div>
+                <div dragula='"drag-row-container"'
+                     dragula-model='source'>
+                    <div style="cursor: move" class="dragable-widget" ng-repeat="widget in source">
+                        {{widget.name}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div flex dragula='"drag-container"' dragula-model='targets'>
+            <div class="md-whiteframe-3dp"
+                 style="min-width: 50px;min-height: 50px"
+                 layout="row" layout-xs="row"
+                 layout-align="start center"
+                 layout-margin
+                 ng-repeat="row in targets">
+                <div flex layout="row"
+                     style="min-width: 50px;min-height: 50px"
+                     layout-align="space-around center"
+                     dragula='"drag-row-container"'
+                     dragula-model='targets[$index].widgets'>
+                    <div style="cursor: move" class="dragable-widget" ng-repeat="widget in row.widgets" layout-padding>
+                        {{widget.name}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
+    {{targets}}
+    <hr>
+    <md-button ng-click="vm.compile(targets)">compile</md-button>
+    <custom-item content="vm.html"></custom-item>
 
 </md-content>
 

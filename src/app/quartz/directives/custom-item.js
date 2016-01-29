@@ -11,7 +11,6 @@
             scope.$watch('content', function () {
                 if(angular.isString(scope.content)) {
                     //element.replaceWith($compile(scope.content)(scope));
-                    console.log(attrs)
                     if(attrs.modelAs) scope[attrs.modelAs] = scope.model;
                     element.html(scope.content).show();
                     $compile(element.contents())(scope);

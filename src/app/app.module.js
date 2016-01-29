@@ -1,6 +1,5 @@
 (function() {
     'use strict';
-
     angular
         .module('app', [
             'quartz',
@@ -10,36 +9,44 @@
             // uncomment above to activate the example seed module
             'app.examples',
             'app.parts'
-        ])
-        // version of this seed app is compatible with angularFire 1.0.0
-        // see tags for other versions: https://github.com/firebase/angularFire-seed/tags
-        .constant('APP_LANGUAGES', [{
-            name: 'LANGUAGES.CHINESE',
-            key: 'zh'
-        },{
-            name: 'LANGUAGES.ENGLISH',
-            key: 'en'
-        },{
-            name: 'LANGUAGES.FRENCH',
-            key: 'fr'
-        },{
-            name: 'LANGUAGES.PORTUGUESE',
-            key: 'pt'
-        }])
-        // set a constant for the API we are connecting to
-        .constant('API_CONFIG', {
-            'url':  'http://triangular-api.oxygenna.com/'
-        })
-
+        ]);
+    angular.element(document).ready(function() {
         // your Firebase data URL goes here, no trailing slash
-        .constant('FBURL', 'https://quartz.firebaseio.com')
-        .constant('config', {
-            debug: true,
-            shipping: 0,
-            taxRate: 0,
-            home:'quartz.admin-default.home',
-            defaultUrl:'/home',
-            // where to redirect users if they need to authenticate
-            loginRedirectState:'authentication.login'
+        var mainRef = new Firebase('https://quartz.firebaseio.com');
+
+        mainRef.child('config/client').once('value', function (snap) {
+            window.clientConfig=  snap.val();
+            angular.module('app')
+                .constant('APP_LANGUAGES', [{
+                    name: 'LANGUAGES.CHINESE',
+                    key: 'zh'
+                },{
+                    name: 'LANGUAGES.ENGLISH',
+                    key: 'en'
+                },{
+                    name: 'LANGUAGES.FRENCH',
+                    key: 'fr'
+                },{
+                    name: 'LANGUAGES.PORTUGUESE',
+                    key: 'pt'
+                }])
+                // set a constant for the API we are connecting to
+                .constant('API_CONFIG', {
+                    'url':  'http://triangular-api.oxygenna.com/'
+                })
+
+                .constant('FBURL', mainRef.toString())
+                .constant('config', angular.extend({
+                    debug: true,
+                    shipping: 0,
+                    taxRate: 0,
+                    home:'quartz.admin-default.home',
+                    defaultUrl:'/home',
+                    // where to redirect users if they need to authenticate
+                    loginRedirectState:'authentication.login'
+                },snap.val()));
+
+            angular.bootstrap(document, ['app']);
         });
+    });
 })();
