@@ -1,0 +1,112 @@
+<form>
+    <md-input-container>
+        <label>Page Name</label>
+        <input type="text" ng-model="vm.pageName">
+    </md-input-container>
+    <md-button ng-if="!vm.preview" ng-click="vm.compile(targets);vm.preview=true">Preview</md-button>
+    <md-button ng-if="vm.preview" ng-click="vm.preview=false">Edit</md-button>
+    <md-button ng-click="vm.update()">Save</md-button>
+</form>
+
+
+<md-content ng-show="!vm.preview" class="padded-content-page">
+    <!--<div dragula='"drag-row-container"'>-->
+    <!--<span class="dragable-widget" ng-repeat="element in elements">-->
+    <!--<custom-item content="element.content"></custom-item> {{element.name}}-->
+    <!--</span>-->
+    <!--</div>-->
+    <div layout="row">
+        <div flex="20">
+            <div layout="column" layout-xs="column"
+                 layout-align="start center"
+                 layout-margin>
+                <div>
+                    Container
+                </div>
+                <div dragula='"drag-container"'
+                     dragula-model='containerSource' layout-fill>
+                    <div style="cursor: move" ng-repeat="container in containerSource track by $index"
+                         class="md-whiteframe-2dp"
+                         layout-padding>
+                        {{container.type}}
+                    </div>
+                </div>
+                <div>
+                    Widgets
+                </div>
+                <div dragula='"drag-row-container"'
+                     dragula-model='source' layout-fill>
+                    <div style="cursor: move" class="dragable-widget md-whiteframe-2dp" layout-padding
+                         ng-repeat="widget in source track by $index">
+                        {{widget.type}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div flex dragula='"drag-container"' dragula-model='targets'>
+            <div class="md-whiteframe-3dp"
+                 style="cursor: move; min-width: 50px;min-height: 50px"
+                 layout="row"
+                 layout-align="start center"
+                 layout-margin
+                 layout-padding
+                 ng-click="vm.editItem($index);$event.stopPropagation()"
+                 ng-repeat="container in targets track by $index">
+                {{container.type}}
+                <div flex layout="{{container.options.layout||'row'}}"
+                     style="min-width: 50px;min-height: 50px"
+                     layout-align="space-around center"
+                     dragula='"drag-row-container"'
+                     dragula-model='targets[$index].widgets'>
+
+                    <div style="cursor: move; background-color: #0b97c4" class="dragable-widget"
+                         flex="{{widget.options.flex||''}}"
+                         layout-margin
+                         ng-repeat="widget in container.widgets track by $index" layout-padding
+                         ng-click="vm.editItem($parent.$index,$index);$event.stopPropagation()">
+                        {{widget.type}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</md-content>
+<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="editCustomItem">
+    <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
+    </md-toolbar>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Options" ng-disabled="vm.item.type==='custom'">
+            <div class="padding-40 md-tabs-content">
+                <form>
+                    <md-input-container>
+                        <label for="testInput">Test input</label>
+                        <input type="text" id="testInput"
+                               ng-model="data" md-autofocus>
+                    </md-input-container>
+                </form>
+            </div>
+        </md-tab>
+        <md-tab label="HTML" layout-align="center start">
+            <div class="padding-10 md-tabs-content">
+                <form>
+                <textarea ng-if="vm.item.type==='custom'" type="text" id="testInput" rows="35" cols="34"
+                          ng-model="vm.item.content" md-autofocus></textarea>
+                </form>
+                <code ng-if="vm.item.type!=='custom'">{{vm.getHtmlContent(vm.item)}}</code>
+            </div>
+            <md-button ng-click="vm.updateItem()">Save</md-button>
+
+        </md-tab>
+    </md-tabs>
+</md-sidenav>
+
+
+<custom-item ng-if="vm.preview" content="vm.html"></custom-item>
+
+
+
+
+

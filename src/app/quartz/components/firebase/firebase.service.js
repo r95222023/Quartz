@@ -436,7 +436,7 @@
                         arr = [];
 
                     snap.forEach(function (childSnap) {
-                        arr.push(childSnap.val());
+                        arr.push(angular.extend({_key:childSnap.key()},childSnap.val()));
                     });
                     var sortedArr = $filter('orderBy')(arr, self.orderBy);
 
