@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div flex dragula='"drag-container"' dragula-model='targets'>
+        <div flex dragula='"drag-container"' dragula-model='containers'>
             <div class="md-whiteframe-3dp"
                  style="cursor: move; min-width: 50px;min-height: 50px"
                  layout="row"
@@ -51,24 +51,51 @@
                  layout-margin
                  layout-padding
                  ng-click="vm.editItem($index);$event.stopPropagation()"
-                 ng-repeat="container in targets track by $index">
+                 ng-repeat="container in containers track by container.id">
                 {{container.type}}
-                <div flex layout="{{container.options.layout||'row'}}"
+                <div ng-if="container.id"
+                    flex layout="{{container.options.layout||'row'}}"
                      style="min-width: 50px;min-height: 50px"
                      layout-align="space-around center"
-                     dragula='"drag-row-container"'
-                     dragula-model='targets[$index].widgets'>
+                     dragula='"drag-row-container"' dragula-scope="$parent"
+                     dragula-model='subContainers[container.id]'>
 
                     <div style="cursor: move; background-color: #0b97c4" class="dragable-widget"
                          flex="{{widget.options.flex||''}}"
                          layout-margin
-                         ng-repeat="widget in container.widgets track by $index" layout-padding
+                         ng-repeat="widget in subContainers[container.id] track by $index" layout-padding
                          ng-click="vm.editItem($parent.$index,$index);$event.stopPropagation()">
                         {{widget.type}}
                     </div>
                 </div>
             </div>
         </div>
+        <!--<div flex dragula='"drag-container"' dragula-model='targets'>-->
+            <!--<div class="md-whiteframe-3dp"-->
+                 <!--style="cursor: move; min-width: 50px;min-height: 50px"-->
+                 <!--layout="row"-->
+                 <!--layout-align="start center"-->
+                 <!--layout-margin-->
+                 <!--layout-padding-->
+                 <!--ng-click="vm.editItem($index);$event.stopPropagation()"-->
+                 <!--ng-repeat="container in targets track by $index">-->
+                <!--{{container.type}}-->
+                <!--<div flex layout="{{container.options.layout||'row'}}"-->
+                     <!--style="min-width: 50px;min-height: 50px"-->
+                     <!--layout-align="space-around center"-->
+                     <!--dragula='"drag-row-container"'-->
+                     <!--dragula-model='targets[$index].widgets'>-->
+
+                    <!--<div style="cursor: move; background-color: #0b97c4" class="dragable-widget"-->
+                         <!--flex="{{widget.options.flex||''}}"-->
+                         <!--layout-margin-->
+                         <!--ng-repeat="widget in container.widgets track by $index" layout-padding-->
+                         <!--ng-click="vm.editItem($parent.$index,$index);$event.stopPropagation()">-->
+                        <!--{{widget.type}}-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 
 

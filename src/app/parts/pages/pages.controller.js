@@ -16,13 +16,13 @@
                 left: false,
                 right: true
             },
-            pagesRef= $firebase.ref('pages');
+            pagesRef = $firebase.ref('pages');
 
         //Todo: 改名 刪除
         vm.actions = ['delete', 'rename'];
         vm.action = function (action, id, params) {
             console.log(action, id)
-            switch(action) {
+            switch (action) {
                 case 'delete':
 
                     pagesRef.child(id).remove();
@@ -37,9 +37,9 @@
         vm.paginator.onReorder('name');
 
         vm.onPaginate = function (page, size) { //to prevent this being overwritten
-            vm.paginator.get(page,size)
+            vm.paginator.get(page, size)
         };
-        vm.onReorder = function(orderBy){
+        vm.onReorder = function (orderBy) {
             vm.paginator.onReorder(orderBy);
         }
     }
@@ -56,49 +56,53 @@
         var source = customService.items,
             containerSource = customService.containers,
             pageRootRef = $firebase.ref('pages');
-        vm.pageName=$stateParams.pageName||('New Page-'+(new Date()).getTime());
+        vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
         vm.getHtmlContent = customService.getHtmlContent;
         function getSource(source) {
             return angular.copy(source);
         }
 
 
-
         $scope.source = getSource(source);
         $scope.containerSource = getSource(containerSource);
-        $scope.targets = [
-            {
-                type: 'row',
-                widgets: []
-            }
-        ];
 
-        if($stateParams.pageName){
-            pageRootRef.orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
-                if(snap.val()) {
-                    $timeout(function () {
-                        var targets = [];
-                        snap.child('content').forEach(function (childSnap) {
-                            var container = childSnap.val();
-                            container.widgets = container.widgets||[];
-                            targets.push(container)
-                        });
-                        $scope.targets = targets;
-                        vm.pageRef = snap.ref();
-                    },0);
-                }
-            });
-        }
-        var containers=[],
-            subContainers={};
-        function convert(val){
+
+
+        $scope.containers = [];
+        $scope.subContainers = {};
+        function convert(val) {
             angular.forEach(val, function (item) {
                 var _item = {};
                 _item.id = Math.random().toString();
                 _item.options = item.options;
                 _item.type = item.type;
-                subContainers[item.id] = item.widgets||[];
-            })
+                _item.content = item.content;
+                $scope.subContainers[_item.id] = item.widgets || [];
+                $scope.containers.push(_item);
+            });
+        }
+        if ($stateParams.pageName) {
+            pageRootRef.orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
+                if (snap.val()) {
+                    $timeout(function () {
+                        convert(snap.child('content').val());
+                        vm.pageRef = snap.ref();
+                    }, 0);
+                }
+            });
+        }
+
+        function convertBack(){
+            var result=[];
+            angular.forEach($scope.containers, function (item) {
+                var _item = {};
+                _item.options = item.options||null;
+                _item.type = item.type;
+                _item.content = item.content||null;
+                _item.widgets = $scope.subContainers[item.id];
+                result.push(_item);
+            });
+            return result;
         }
 
         $scope.$on('drag-row-container.drop-model', function (e, el) {
@@ -108,30 +112,37 @@
         });
 
         $scope.$on('drag-container.drop-model', function (e, el) {
+            angular.forEach($scope.containers, function (container, index) {
+                if(!container.id) {
+                    var id = Math.random().toString();
+                    $scope.containers[index].id = id;
+                    $scope.subContainers[id]=[];
+                }
+            });
             $scope.containerSource = getSource(containerSource);
         });
 
 
         vm.editItem = function (rowIndex, itemIndex) {
-            vm.item = itemIndex !== undefined ? getSource($scope.targets[rowIndex].widgets[itemIndex]) : getSource($scope.targets[rowIndex]);
+            vm.item = itemIndex !== undefined ? getSource($scope.subContainers[$scope.containers[rowIndex].id][itemIndex]) : getSource($scope.containers[rowIndex]);
             vm.rowIndex = rowIndex;
             vm.itemIndex = itemIndex;
             $mdSidenav('editCustomItem').open();
         };
 
         vm.updateItem = function () {
-            if(vm.itemIndex !== undefined) {
-                $scope.targets[vm.rowIndex].widgets[vm.itemIndex] = vm.item
+            if (vm.itemIndex !== undefined) {
+                $scope.subContainers[$scope.containers[vm.rowIndex].id][vm.itemIndex] = vm.item
             } else {
-                $scope.targets[vm.rowIndex] = vm.item;
+                $scope.containers[vm.rowIndex] = vm.item;
 
             }
             $mdSidenav('editCustomItem').close();
             vm.update();
         };
 
-        vm.compile = function (targets) {
-            vm.html = customService.compile(targets)
+        vm.compile = function () {
+            vm.html = customService.compile(convertBack())
         };
 
         vm.toggleEditor = function () {
@@ -140,10 +151,10 @@
 
         vm.update = function () {
             var data = {
-                name:vm.pageName,
-                content:$scope.targets
+                name: vm.pageName,
+                content: convertBack()
             };
-            if(vm.pageRef){
+            if (vm.pageRef) {
                 vm.pageRef.update(data);
             } else {
                 pageRootRef.push(data);
@@ -153,14 +164,14 @@
     }
 
     /* @ngInject */
-    function CustomPageController($firebase, customService, $stateParams,$timeout, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function CustomPageController($firebase, customService, $stateParams, $timeout, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
-        if($stateParams.pageName){
+        if ($stateParams.pageName) {
             $firebase.ref('pages').orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
                 $timeout(function () {
                     vm.html = customService.compile(snap.val().content)
 
-                },0);
+                }, 0);
             })
         }
     }
