@@ -24,7 +24,7 @@
                     Container
                 </div>
                 <div dragula='"drag-container"'
-                     dragula-model='containerSource' layout-fill>
+                     dragula-model='containerSource'>
                     <div style="cursor: move" ng-repeat="container in containerSource track by $index"
                          class="md-whiteframe-2dp"
                          layout-padding>
@@ -35,7 +35,7 @@
                     Widgets
                 </div>
                 <div dragula='"drag-row-container"'
-                     dragula-model='source' layout-fill>
+                     dragula-model='source'>
                     <div style="cursor: move" class="dragable-widget md-whiteframe-2dp" layout-padding
                          ng-repeat="widget in source track by $index">
                         {{widget.type}}

@@ -72,20 +72,39 @@
                 widgets: []
             }
         ];
+
         if($stateParams.pageName){
             pageRootRef.orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
                 if(snap.val()) {
                     $timeout(function () {
-                        $scope.targets = snap.val().content;
+                        var targets = [];
+                        snap.child('content').forEach(function (childSnap) {
+                            var container = childSnap.val();
+                            container.widgets = container.widgets||[];
+                            targets.push(container)
+                        });
+                        $scope.targets = targets;
                         vm.pageRef = snap.ref();
                     },0);
                 }
             });
         }
-
+        var containers=[],
+            subContainers={};
+        function convert(val){
+            angular.forEach(val, function (item) {
+                var _item = {};
+                _item.id = Math.random().toString();
+                _item.options = item.options;
+                _item.type = item.type;
+                subContainers[item.id] = item.widgets||[];
+            })
+        }
 
         $scope.$on('drag-row-container.drop-model', function (e, el) {
+            console.log($scope.targets);
             $scope.source = getSource(source);
+
         });
 
         $scope.$on('drag-container.drop-model', function (e, el) {
@@ -94,15 +113,18 @@
 
 
         vm.editItem = function (rowIndex, itemIndex) {
-            vm.item = itemIndex !== undefined ? $scope.targets[rowIndex].widgets[itemIndex] : $scope.targets[rowIndex];
+            vm.item = itemIndex !== undefined ? getSource($scope.targets[rowIndex].widgets[itemIndex]) : getSource($scope.targets[rowIndex]);
+            vm.rowIndex = rowIndex;
+            vm.itemIndex = itemIndex;
             $mdSidenav('editCustomItem').open();
         };
 
-        vm.updateItem = function (rowIndex, itemIndex) {
-            if(itemIndex !== undefined) {
-                $scope.targets[rowIndex].widgets[itemIndex] = vm.item
+        vm.updateItem = function () {
+            if(vm.itemIndex !== undefined) {
+                $scope.targets[vm.rowIndex].widgets[vm.itemIndex] = vm.item
             } else {
-                $scope.targets[rowIndex] = vm.item;
+                $scope.targets[vm.rowIndex] = vm.item;
+
             }
             $mdSidenav('editCustomItem').close();
             vm.update();

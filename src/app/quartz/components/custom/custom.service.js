@@ -82,9 +82,8 @@
         function getHtmlContent(item) {
             //todo: build content from template and item.options
             //console.log(item)
-            item = item||{};
+            item = item || {};
             return item.content || (item.type && templates[item.type] ? templates[item.type] : '')
-
         }
 
 
