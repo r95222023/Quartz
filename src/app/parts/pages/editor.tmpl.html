@@ -48,14 +48,14 @@
                  ng-repeat="container in containers track by container.id">
                 {{container.type}}
                 <div ng-if="container.id"
-                    flex layout="{{container.options.layout||'row'}}"
+                    flex layout="{{container.layout.all.layout||'row'}}"
                      style="min-width: 50px;min-height: 50px"
                      layout-align="space-around center"
                      dragula='"drag-row-container"' dragula-scope="$parent"
                      dragula-model='subContainers[container.id]'>
 
                     <div style="cursor: move; background-color: #0b97c4" class="dragable-widget"
-                         flex="{{widget.options.flex||''}}"
+                         flex="{{widget.layout.all.flex||''}}"
                          layout="row"
                          layout-margin
                          ng-repeat="widget in subContainers[container.id] track by $index" layout-padding>
@@ -98,6 +98,70 @@
         <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
     </md-toolbar>
     <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Layout">
+            <div class="padding-40 md-tabs-content">
+                <form layout="column">
+                    <md-input-container ng-init="vm.layoutBreakpoint='all'">
+                        <label>Breakpoint</label>
+                        <md-select ng-model="vm.layoutBreakpoint">
+                            <md-option ng-value="bp" ng-repeat="bp in vm.layoutOptions.breakpoints">{{ bp }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>layout</label>
+                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].layout">
+                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout.layout">{{ size }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>flex</label>
+                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].flex">
+                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout.flex">{{ size }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>flex-offset</label>
+                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['flex-offset']">
+                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout['flex-offset']">{{ size }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>layout-align-x</label>
+                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-align'].x">
+                            <md-option ng-value="xAlign"
+                                       ng-repeat="xAlign in vm.layoutOptions.layout['layout-align'].x">{{ xAlign }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>layout-align-y</label>
+                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-align'].y">
+                            <md-option ng-value="yAlign" ng-repeat="yAlign in vm.layoutOptions.layout['layout-align'].y">{{ yAlign }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'" ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-fill']" ng-false-value="null">
+                        Fill
+                    </md-checkbox>
+                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'" ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-wrap']" ng-false-value="null">
+                        Wrap
+                    </md-checkbox>
+                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'" ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-nowrap']" ng-false-value="null">
+                        Nowrap
+                    </md-checkbox>
+                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'" ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-margin']" ng-false-value="null">
+                        Margin
+                    </md-checkbox>
+                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'" ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-padding']" ng-false-value="null">
+                        Padding
+                    </md-checkbox>
+                    <md-checkbox ng-model="vm.item.layout[vm.layoutBreakpoint]['show']" ng-false-value="null">
+                        Show
+                    </md-checkbox>
+                    <md-checkbox ng-model="vm.item.layout[vm.layoutBreakpoint]['hide']" ng-false-value="null">
+                        hide
+                    </md-checkbox>
+                </form>
+            </div>
+        </md-tab>
         <md-tab label="Options" ng-disabled="vm.item.type==='custom'">
             <div class="padding-40 md-tabs-content">
                 <form>
@@ -117,10 +181,11 @@
                 </form>
                 <code ng-if="vm.item.type!=='custom'">{{vm.getHtmlContent(vm.item)}}</code>
             </div>
-            <md-button ng-click="vm.updateItem()">Save</md-button>
-
         </md-tab>
     </md-tabs>
+    <md-button ng-click="vm.updateItem()">Save</md-button>
+    <md-button ng-click="vm.toggleEditor()">Cancel</md-button>
+
 </md-sidenav>
 
 

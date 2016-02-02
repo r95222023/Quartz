@@ -58,6 +58,7 @@
             pageRootRef = $firebase.ref('pages');
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
         vm.getHtmlContent = customService.getHtmlContent;
+        vm.layoutOptions = customService.layoutOptions;
         function getSource(source) {
             return angular.copy(source);
         }
@@ -139,6 +140,7 @@
 
 
         vm.editItem = function (rowIndex, itemIndex) {
+            vm.item={};
             vm.item = itemIndex !== undefined ? getSource($scope.subContainers[$scope.containers[rowIndex].id][itemIndex]) : getSource($scope.containers[rowIndex]);
             vm.rowIndex = rowIndex;
             vm.itemIndex = itemIndex;
@@ -152,6 +154,7 @@
                 $scope.containers[vm.rowIndex] = vm.item;
             }
             $mdSidenav('editCustomItem').close();
+            console.log(vm.item.layout)
             vm.update();
         };
         vm.copyItem = function (rowIndex,itemIndex) {

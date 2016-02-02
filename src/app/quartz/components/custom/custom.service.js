@@ -7,45 +7,41 @@
 
     /* @ngInject */
     function CustomService() {
-        var increment5 = [5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100],
-            torf = [true, false];
-        var options = {
-            "breakpoints": ['-xs', '-gt-xs', '-sm', '-gt-sm', '-md', '-gt-md', '-lg', '-gt-lg', '-xl'],
+        var increment5 = [0, 5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100],
+        layoutOptions = {
+            "breakpoints": ['all','xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'],
             "layout": {
                 "flex": increment5,
                 "flex-offset": increment5,
                 "layout": ['row', 'column'],
                 "layout-align": {
-                    horizontal: ['start', 'center', 'end', 'space-around', 'space-between'],
-                    vertical: ['start', 'center', 'end', 'stretch']
-                },
-                "layout-fill": torf,
-                "layout-wrap": torf,
-                "layout-nowrap": torf,
-                "layout-margin": torf,
-                "layout-padding": torf,
-                "show": torf,
-                "hide": torf
+                    x: ['start', 'center', 'end', 'space-around', 'space-between'],
+                    y: ['start', 'center', 'end', 'stretch']
+                }
             }
         };
 
         var items = [
                 {type: 'button'},
-                {type: 'card', options: {flex: '50'}},
-                {type: 'custom', content: '<div></div>'}
+                {type: 'card', layout: {all:{flex: '50'}}},
+                {type: 'custom', content: '<div <!--layout-->></div>'}
             ],
             containers = [
                 {
                     type: 'row',
-                    options: {
-                        layout: 'row'
+                    layout: {
+                        all:{
+                            layout: 'row'
+                        }
                     },
                     widgets: []
                 },
                 {
                     type: 'column',
-                    options: {
-                        layout: 'column'
+                    layout: {
+                        all:{
+                            layout: 'column'
+                        }
                     },
                     widgets: []
                 },
@@ -59,7 +55,7 @@
         var templates = {
             row: '<div layout="row"><!--include--></div>',
             column: '<div layout="column"><!--include--></div>',
-            card: '<md-card flex="50">' +
+            card: '<md-card <!--layout-->>' +
             '<img src="assets/images/backgrounds/material-backgrounds/mb-bg-03.jpg" alt="Card Image">     ' +
             '       <md-card-content>         ' +
             '   <div class="content-padded">          ' +
@@ -80,10 +76,37 @@
         };
 
         function getHtmlContent(item) {
-            //todo: build content from template and item.options
-            //console.log(item)
             item = item || {};
-            return item.content || (item.type && templates[item.type] ? templates[item.type] : '')
+            var content = item.content || (item.type && templates[item.type] ? templates[item.type] : '');
+            //todo: build content from template and item.options
+            if(item.layout){
+                var res = '';
+                angular.forEach(item.layout, function(layout, breakpoint){
+                    var _breakpoint = breakpoint==='all'? '':'-'+breakpoint;
+                    angular.forEach(layout, function (value,key) {
+                        var _value = '="'+value+'" ',
+                            _property = key+_breakpoint;
+                        switch(key){
+                            case 'flex':
+                                break;
+                            case 'flex-offset':
+                                break;
+                            case 'layout':
+                                break;
+                            case 'layout-align':
+                                _value = '="'+value.x+' '+value.y+'" ';
+                                break;
+                            default:
+                                _property= value? _property+' ':'';_value = ''; //ex layout-fill:true will get layout-fill
+                                break;
+                        }
+                        res+=_property+_value;
+                    })
+                });
+                console.log(res);
+                content = content.replace('<!--layout-->', res);
+            }
+            return content
         }
 
 
@@ -101,7 +124,7 @@
         }
 
         return {
-            options: options,
+            layoutOptions: layoutOptions,
             compile: compile,
             getHtmlContent: getHtmlContent,
             containers: containers,
