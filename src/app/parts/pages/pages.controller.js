@@ -106,7 +106,6 @@
         }
 
         $scope.$on('drag-row-container.drop-model', function (e, el) {
-            console.log($scope.targets);
             $scope.source = getSource(source);
 
         });
@@ -122,6 +121,22 @@
             $scope.containerSource = getSource(containerSource);
         });
 
+        vm.actions = ['edit','copy','delete'];
+
+        vm.action = function(action, rowIndex, itemIndex){
+            switch(action){
+                case 'edit':
+                    vm.editItem(rowIndex, itemIndex);
+                    break;
+                case 'copy':
+                    vm.copyItem(rowIndex, itemIndex);
+                    break;
+                case 'delete':
+                    vm.deleteItem(rowIndex, itemIndex);
+                    break;
+            }
+        };
+
 
         vm.editItem = function (rowIndex, itemIndex) {
             vm.item = itemIndex !== undefined ? getSource($scope.subContainers[$scope.containers[rowIndex].id][itemIndex]) : getSource($scope.containers[rowIndex]);
@@ -135,10 +150,25 @@
                 $scope.subContainers[$scope.containers[vm.rowIndex].id][vm.itemIndex] = vm.item
             } else {
                 $scope.containers[vm.rowIndex] = vm.item;
-
             }
             $mdSidenav('editCustomItem').close();
             vm.update();
+        };
+        vm.copyItem = function (rowIndex,itemIndex) {
+            if (itemIndex !== undefined) {
+                var subContainer = $scope.subContainers[$scope.containers[rowIndex].id];
+                $scope.subContainers[$scope.containers[rowIndex].id].splice(itemIndex,0, subContainer[itemIndex]);
+            } else {
+                $scope.containers.splice(rowIndex,0,$scope.containers[rowIndex]);
+            }
+        };
+
+        vm.deleteItem = function (rowIndex,itemIndex) {
+            if (itemIndex !== undefined) {
+                $scope.subContainers[$scope.containers[rowIndex].id].splice(itemIndex,1);
+            } else {
+                $scope.containers.splice(rowIndex,1);
+            }
         };
 
         vm.compile = function () {
