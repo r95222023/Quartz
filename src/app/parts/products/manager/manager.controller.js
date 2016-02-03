@@ -6,7 +6,7 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController($elasticSearch, $mdToast, $mdDialog, $firebase, snippets, $location, $stateParams, $mdMedia) {
+    function ProductManagerController($mdToast, $mdDialog, $firebase, snippets, $stateParams, $state, $mdMedia) {
         var vm = this,
             position = {
                 bottom: true,
@@ -15,23 +15,49 @@
                 right: true
             };
 
+        vm.filters = [
+            ['Product Id', 'itemId'],
+            ['Name', 'itemName'],
+            ['Category', 'category'],
+            ['Price', 'price']
+        ];
 
-
-        vm.paginator = $firebase.paginator('products');
+        vm.paginator = $firebase.paginator('products', $stateParams);
         //initiate
         vm.paginator.onReorder('itemId');
-
-        vm.onPaginate = function (page, size) { //to prevent this being overwritten
-            vm.paginator.get(page,size)
+        vm.getFiltered = function () {
+            $state.go('quartz.admin-default.productManager', {
+                orderBy: vm.orderBy,
+                startAt: vm.startAt,
+                endAt: vm.endAt
+            })
         };
 
+        vm.onPaginate = function (page, size) { //to prevent this being overwritten
+            vm.paginator.get(page, size)
+        };
+        vm.onReorder = function (sort) {
+            vm.paginator.onReorder(sort);
+        };
+
+        vm.actions = ['edit', 'delete'];
+        vm.action = function (action, id, event) {
+            switch (action) {
+                case 'edit':
+                    vm.showEditor(event, id);
+                    break;
+                case 'delete':
+                    vm.delete(event, id);
+                    break;
+            }
+        };
         ////categories
 
         var productConfigRef = $firebase.ref('config/client/products');
         vm.getCateTag = function () {
             productConfigRef.on('value', function (snap) {
                 vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
-                vm.tags = snippets.getFirebaseArrayData(snap.val().tags||[]).toString();
+                vm.tags = snippets.getFirebaseArrayData(snap.val().tags || []).toString();
             });
         };
         vm.getCateTag();
@@ -49,15 +75,15 @@
         };
         vm.saveCateTag = function () {
             var data = {
-                categories:vm.categories,
-                tags:vm.tags? vm.tags.split(','):null
+                categories: vm.categories,
+                tags: vm.tags ? vm.tags.split(',') : null
             };
             productConfigRef.update(data, function () {
-                vm.cateEdit=!vm.cateEdit;
+                vm.cateEdit = !vm.cateEdit;
             });
         };
 
-        vm.addItme = function (index, value) {
+        vm.addItem = function (index, value) {
             if (value) {
                 var length = vm.categories[index].length;
                 vm.categories[index][1].push(value);
@@ -76,7 +102,7 @@
             vm.optional = {
                 options: {}
             };
-            vm.paginator.page=1;
+            vm.paginator.page = 1;
         }
 
 

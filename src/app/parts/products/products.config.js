@@ -37,7 +37,7 @@
                 }
             })
             .state('quartz.admin-default.productManager', {
-                url: '/products/productmanager',
+                url: '/products/productmanager/?orderBy&startAt&endAt&equalTo',
                 templateUrl: 'app/parts/products/manager/manager.tmpl.html',
                 controller: 'ProductManagerController',
                 controllerAs: 'vm',

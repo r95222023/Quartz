@@ -47,7 +47,8 @@
             var cate = $stateParams.cate||null,
                 subCate = $stateParams.subCate||null,
                 tag = $stateParams.tag||null,
-                filterMust=[];
+                filterMust=[],
+                filterMustNot=[{"term":{"show":false}}];
             if(angular.isString(tag)) {
                 var tagTerm = {};
                 tagTerm['tags_dot_'+tag] = 1;
@@ -61,7 +62,8 @@
                 "filtered": {
                     "filter": {
                         "bool": {
-                            "must":filterMust.length? filterMust:null
+                            "must":filterMust.length? filterMust:null,
+                            "must_not":filterMustNot
                         }
                     }
                 }

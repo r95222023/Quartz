@@ -21,7 +21,7 @@
         //Todo: 改名 刪除
         vm.actions = ['delete', 'rename'];
         vm.action = function (action, id, params) {
-            console.log(action, id)
+            console.log(action, id);
             switch (action) {
                 case 'delete':
 
@@ -76,6 +76,7 @@
                 var _item = {};
                 _item.id = Math.random().toString();
                 _item.options = item.options;
+                _item.layout = item.layout;
                 _item.type = item.type;
                 _item.content = item.content;
                 $scope.subContainers[_item.id] = item.widgets || [];
@@ -99,6 +100,7 @@
                 var _item = {};
                 _item.options = item.options||null;
                 _item.type = item.type;
+                _item.layout = item.layout||null;
                 _item.content = item.content||null;
                 _item.widgets = $scope.subContainers[item.id];
                 result.push(_item);
@@ -108,7 +110,6 @@
 
         $scope.$on('drag-row-container.drop-model', function (e, el) {
             $scope.source = getSource(source);
-
         });
 
         $scope.$on('drag-container.drop-model', function (e, el) {
@@ -154,15 +155,17 @@
                 $scope.containers[vm.rowIndex] = vm.item;
             }
             $mdSidenav('editCustomItem').close();
-            console.log(vm.item.layout)
-            vm.update();
+            //vm.update();
         };
         vm.copyItem = function (rowIndex,itemIndex) {
             if (itemIndex !== undefined) {
                 var subContainer = $scope.subContainers[$scope.containers[rowIndex].id];
                 $scope.subContainers[$scope.containers[rowIndex].id].splice(itemIndex,0, subContainer[itemIndex]);
             } else {
-                $scope.containers.splice(rowIndex,0,$scope.containers[rowIndex]);
+                var copied = angular.copy($scope.containers[rowIndex]);
+                copied.id =  Math.random().toString();
+                $scope.subContainers[copied.id] = angular.copy($scope.subContainers[$scope.containers[rowIndex].id]);
+                $scope.containers.splice(rowIndex,0, copied);
             }
         };
 

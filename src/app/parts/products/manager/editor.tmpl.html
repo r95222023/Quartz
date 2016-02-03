@@ -62,6 +62,23 @@
                         <label>List Price</label>
                         <input type='text' ng-model="vm.product.listPrice">
                     </md-input-container>
+                    <md-input-container flex="33">
+                        <label>Quantity</label>
+                        <input type='text' ng-model="vm.product.quantity">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container flex="33">
+                        <label>Availability</label>
+                        <input type='text' ng-model="vm.product.availability">
+                    </md-input-container>
+                    <div flex="10"></div>
+                    <div flex="33">
+                        <md-checkbox ng-model="vm.product.show">
+                            Show
+                        </md-checkbox>
+                    </div>
+
                 </div>
                 <div layout="row">
                     <md-input-container flex="50">

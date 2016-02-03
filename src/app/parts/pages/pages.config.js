@@ -20,6 +20,11 @@
                         sideMenuSize: 'hidden'
                     }
                 },
+                resolve:{
+                    getAllTemplates:['customService', function(customService){
+                        return customService.getAllTemplates
+                    }]
+                },
                 url: '/dashboard/pageEditor/:pageName',
                 templateUrl: 'app/parts/pages/editor.tmpl.html',
                 controller: 'PageEditorController',
@@ -27,6 +32,11 @@
             })
             .state('quartz.admin-default.customPage', {
                 url: '/:pageName/?params1&params2',
+                resolve:{
+                    getAllTemplates:['customService', function(customService){
+                        return customService.getAllTemplates
+                    }]
+                },
                 templateUrl: 'app/parts/pages/custom-page.tmpl.html',
                 controller: 'CustomPageController',
                 controllerAs: 'vm'

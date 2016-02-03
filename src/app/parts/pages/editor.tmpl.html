@@ -98,7 +98,7 @@
         <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
     </md-toolbar>
     <md-tabs md-dynamic-height md-border-bottom>
-        <md-tab label="Layout">
+        <md-tab label="Layout" ng-disabled="vm.item.type==='custom'">
             <div class="padding-40 md-tabs-content">
                 <form layout="column">
                     <md-input-container ng-init="vm.layoutBreakpoint='all'">
@@ -183,7 +183,7 @@
             </div>
         </md-tab>
     </md-tabs>
-    <md-button ng-click="vm.updateItem()">Save</md-button>
+    <md-button ng-click="vm.updateItem()">OK</md-button>
     <md-button ng-click="vm.toggleEditor()">Cancel</md-button>
 
 </md-sidenav>
