@@ -34,7 +34,7 @@
                             layout: 'row'
                         }
                     },
-                    widgets: []
+                    divs: []
                 },
                 {
                     type: 'column',
@@ -43,7 +43,7 @@
                             layout: 'column'
                         }
                     },
-                    widgets: []
+                    divs: []
                 },
                 {
                     type: 'custom',
@@ -51,9 +51,9 @@
                     content: '<div><!--include--></div>'
                 }
             ];
-        var templates={
-            "row":"<div customlayout><!--include--></div>",
-            "column":"<div customlayout><!--include--></div>"
+        var templates = {
+            "row": "<div customlayout><!--include--></div>",
+            "column": "<div customlayout><!--include--></div>"
         };
 
         var tmplRoot = 'app/quartz/components/custom/templates/',
@@ -77,22 +77,56 @@
             return def.promise;
         }
 
-        function getAllTemplates(){
-            var promises={};
+        function getAllTemplates() {
+            var promises = {};
             angular.forEach(templateList, function (tmplName) {
-                promises[tmplName] = getTemplate(tmplRoot+tmplName+'.html');
+                promises[tmplName] = getTemplate(tmplRoot + tmplName + '.html');
             });
             return $q.all(promises);
         }
 
 
-        tmplPromise.then(function(res){
-            angular.extend(templates,res);
+        tmplPromise.then(function (res) {
+            angular.extend(templates, res);
         });
 
         var configs = {
             row: []
         };
+
+        function convert(val, target, maxLevel, level) {
+            var _level = level || 1,
+                res = [];
+            angular.forEach(val, function (item) {
+                var _item = {};
+                _item.id = Math.random().toString();
+                _item.options = item.options;
+                _item.layout = item.layout;
+                _item.type = item.type;
+                _item.content = item.content;
+                res.push(_item);
+                if (_level < maxLevel) {
+                    target[_item.id] = convert(item.divs || [], target, maxLevel, _level + 1);
+                }
+            });
+            if (_level === 1) target['root'] = res;
+            return res
+        }
+
+        function convertBack(val, id) {
+            var result = [],
+                _id= id||'root';
+            angular.forEach(val[_id], function (item) {
+                var _item = {};
+                _item.options = item.options || null;
+                _item.type = item.type;
+                _item.layout = item.layout || null;
+                _item.content = item.content || null;
+                if (item.id) _item.divs = convertBack(val, item.id);
+                result.push(_item);
+            });
+            return result;
+        }
 
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
         function getHtmlContent(item) {
@@ -130,23 +164,31 @@
 
 
         function compile(containers) {
-            var html = '';
-            angular.forEach(containers, function (container) {
-                var rowContent = getHtmlContent(container),
-                    include = '';
-                angular.forEach(container.widgets, function (widget) {
-                    include += getHtmlContent(widget);
+            var html='<div layout="row">';
+            angular.forEach(containers,function(container){
+                var rawContainer = getHtmlContent(container),
+                    subContainerHtml = '';
+                angular.forEach(container.divs, function (subContainer) {
+                    var rawSubContainer = getHtmlContent(subContainer),
+                        widgets = '';
+                    angular.forEach(subContainer.divs, function (widget) {
+                        widgets += getHtmlContent(widget);
+                    });
+                    subContainerHtml += rawSubContainer.replace('<!--include-->', widgets);
                 });
-                html += rowContent.replace('<!--include-->', include);
+                html+=rawContainer.replace('<!--include-->',subContainerHtml)
             });
+            html+='</div>';
             return html;
         }
 
         return {
             layoutOptions: layoutOptions,
+            convert: convert,
+            convertBack: convertBack,
             compile: compile,
             getHtmlContent: getHtmlContent,
-            getAllTemplates:getAllTemplates,
+            getAllTemplates: getAllTemplates,
             containers: containers,
             items: items
         }

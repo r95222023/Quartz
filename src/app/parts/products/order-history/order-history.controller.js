@@ -25,7 +25,7 @@
 
         vm.paginator = $firebase.paginator('orders', $stateParams);
         //initiate
-        vm.paginator.onReorder();
+        vm.paginator.onReorder($stateParams.orderBy||'id');
 
         vm.onPaginate = function (page, size) { //to prevent this being overwritten
             vm.paginator.get(page,size)

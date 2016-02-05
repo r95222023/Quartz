@@ -3,8 +3,9 @@
         "PRODUCTS": {
             "CART":"Cart",
             "LIST": "Product List",
-            "DETAIL": "Product Detail",
+            "SHOPPINGCART":"Shopping Cart",
             "MANAGER":"Product Manager"
-        }
+        },
+        "ORDERHISTORY":"Order History"
     }
 }

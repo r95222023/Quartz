@@ -65,10 +65,6 @@
                 params: {cate: 'all',subCate:'all',queryString:''},
                 type: 'link'
             }, {
-                name: 'MENU.PRODUCTS.DETAIL',
-                state: 'quartz.admin-default.productDetail',
-                type: 'link'
-            }, {
                 name: 'MENU.PRODUCTS.MANAGER',
                 state: 'quartz.admin-default.productManager',
                 type: 'link'

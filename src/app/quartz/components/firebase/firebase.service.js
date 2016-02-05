@@ -421,8 +421,11 @@
                     _ref = this.ref.orderByKey();
                 }
                 if(this.equalTo){
+                    if(isFinite(this.equalTo)) this.equalTo = Number(this.equalTo);
                     _ref = _ref.equalTo(this.equalTo);
                 } else {
+                    if(isFinite(this.startAt)) this.startAt = Number(this.startAt);
+                    if(isFinite(this.endAt)) this.endAt = Number(this.endAt);
                     _ref = this.startAt? _ref.startAt(this.startAt):_ref;
                     _ref = this.endAt? _ref.endAt(this.endAt):_ref;
                 }

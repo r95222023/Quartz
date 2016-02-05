@@ -1,5 +1,5 @@
-<md-dialog aria-label="Product Editor"  ng-cloak flex="60" style="max-height: 80%">
-    <form>
+<md-dialog aria-label="Product Editor" ng-cloak flex="60" style="max-height: 80%">
+    <form ng-submit="vm.update()">
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h2>Product Editor</h2>
@@ -31,7 +31,7 @@
                 <div layout="row">
                     <md-input-container flex="33">
                         <label>Price</label>
-                        <input type='text' ng-model="vm.product.price">
+                        <input type='number' ng-model="vm.product.price">
                     </md-input-container>
                 </div>
                 <div layout="row">
@@ -45,7 +45,9 @@
                         <label>Subcategory</label>
                         <md-select ng-model="vm.product.subcategory">
                             <md-option ng-value="null">Empty</md-option>
-                            <md-option ng-value="$index" ng-repeat="subcate in vm.categories[vm.product.category][1]">{{ subcate }}</md-option>
+                            <md-option ng-value="$index" ng-repeat="subcate in vm.categories[vm.product.category][1]">{{
+                                subcate }}
+                            </md-option>
                         </md-select>
                     </md-input-container>
                 </div>
@@ -60,22 +62,30 @@
                 <div layout="row">
                     <md-input-container flex="33">
                         <label>List Price</label>
-                        <input type='text' ng-model="vm.product.listPrice">
+                        <input type='number' ng-model="vm.product.listPrice">
                     </md-input-container>
                     <md-input-container flex="33">
                         <label>Quantity</label>
-                        <input type='text' ng-model="vm.product.quantity">
+                        <input type='number' ng-model="vm.product.quantity">
                     </md-input-container>
                 </div>
                 <div layout="row">
                     <md-input-container flex="33">
-                        <label>Availability</label>
-                        <input type='text' ng-model="vm.product.availability">
+                        <label>Status</label>
+                        <input type='text' ng-model="vm.product.status">
                     </md-input-container>
-                    <div flex="10"></div>
                     <div flex="33">
-                        <md-checkbox ng-model="vm.product.show">
-                            Show
+                        <md-checkbox ng-model="vm.product.available"
+                                     ng-true-value="false"
+                                     ng-false-value="null">
+                            Not Available
+                        </md-checkbox>
+                    </div>
+                    <div flex="33">
+                        <md-checkbox ng-model="vm.product.show"
+                                     ng-true-value="false"
+                                     ng-false-value="null">
+                            Hide
                         </md-checkbox>
                     </div>
 
@@ -92,7 +102,8 @@
                             <label>Option: {{optName}}</label>
                             <input type='text' ng-model="vm.optional.options[optName]">
                         </md-input-container>
-                        <md-button class="md-icon-button" aria-label="language" ng-click="vm.removeOption(optName)" aria-label="remove this option">
+                        <md-button class="md-icon-button" aria-label="language" ng-click="vm.removeOption(optName)"
+                                   aria-label="remove this option">
                             <md-icon md-font-icon="fa fa-times"></md-icon>
                         </md-button>
                     </div>
@@ -106,7 +117,8 @@
                         <label>Option Value</label>
                         <input type='text' ng-model="vm.optional.optValue">
                     </md-input-container>
-                    <md-button class="md-icon-button" aria-label="language" ng-click="vm.addOption()" aria-label="add an option">
+                    <md-button class="md-icon-button" aria-label="language" ng-click="vm.addOption()"
+                               aria-label="add an option">
                         <md-icon md-font-icon="fa fa-plus"></md-icon>
                     </md-button>
                 </div>
@@ -116,7 +128,7 @@
 
         <md-dialog-actions layout="row">
             <span flex></span>
-            <md-button ng-click="vm.update()">
+            <md-button type="submit">
                 SAVE
             </md-button>
             <md-button ng-click="vm.cancel()" style="margin-right:20px;">

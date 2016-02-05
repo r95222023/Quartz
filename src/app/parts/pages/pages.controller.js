@@ -47,81 +47,73 @@
     /* @ngInject */
     function PageEditorController(customService, $stateParams, $firebase, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
-        dragulaService.options($scope, 'drag-container', {
+        $scope.containers = {};
+
+        dragulaService.options($scope, 'drag-container-root', {
             moves: function (el, container, handle) {
-                return !handle.classList.contains('dragable-widget');
+                return handle.classList.contains('root-handle');
+            }
+        });
+        dragulaService.options($scope, 'drag-container-lv1', {
+            moves: function (el, container, handle) {
+                return handle.classList.contains('lv1-handle');
             }
         });
 
-        var source = customService.items,
+
+
+        $scope.$on('drag-container-root.drop-model', function (e, el) {
+            //angular.forEach($scope.containers.root, function (container, index) {
+            //    if(!container.id) {
+            //        var id = Math.random().toString();
+            //        $scope.containers.root[index].id = id;
+            //        $scope.containers[id]=[];
+            //    }
+            //});
+            $scope.containerSource = getSource(containerSource);
+        });
+        $scope.$on('drag-container-lv1.drop-model', function (e, el) {
+            $scope.subContainerSource = getSource(containerSource);
+        });
+        $scope.$on('drag-container-lv2.drop-model', function (e, el) {
+            $scope.widgetSource = getSource(widgetSource);
+        });
+
+        var widgetSource = customService.items,
             containerSource = customService.containers,
             pageRootRef = $firebase.ref('pages');
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
         vm.getHtmlContent = customService.getHtmlContent;
         vm.layoutOptions = customService.layoutOptions;
         function getSource(source) {
-            return angular.copy(source);
-        }
-
-
-        $scope.source = getSource(source);
-        $scope.containerSource = getSource(containerSource);
-
-
-
-        $scope.containers = [];
-        $scope.subContainers = {};
-        function convert(val) {
-            angular.forEach(val, function (item) {
-                var _item = {};
-                _item.id = Math.random().toString();
-                _item.options = item.options;
-                _item.layout = item.layout;
-                _item.type = item.type;
-                _item.content = item.content;
-                $scope.subContainers[_item.id] = item.widgets || [];
-                $scope.containers.push(_item);
+            var copy = [];
+            angular.forEach(source, function (item) {
+                var id=Math.random().toString();
+                $scope.containers[id]=[];
+                copy.push(angular.extend({id:id},item))
             });
+            return copy;
         }
+
+
+        $scope.widgetSource = getSource(widgetSource);
+        $scope.containerSource = getSource(containerSource);
+        $scope.subContainerSource = getSource(containerSource);
+
+
+
         if ($stateParams.pageName) {
             pageRootRef.orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
                 if (snap.val()) {
                     $timeout(function () {
-                        convert(snap.child('content').val());
+                        customService.convert(snap.child('content').val(),$scope['containers'],3);
+                        console.log($scope.containers);
                         vm.pageRef = snap.ref();
                     }, 0);
                 }
             });
         }
 
-        function convertBack(){
-            var result=[];
-            angular.forEach($scope.containers, function (item) {
-                var _item = {};
-                _item.options = item.options||null;
-                _item.type = item.type;
-                _item.layout = item.layout||null;
-                _item.content = item.content||null;
-                _item.widgets = $scope.subContainers[item.id];
-                result.push(_item);
-            });
-            return result;
-        }
-
-        $scope.$on('drag-row-container.drop-model', function (e, el) {
-            $scope.source = getSource(source);
-        });
-
-        $scope.$on('drag-container.drop-model', function (e, el) {
-            angular.forEach($scope.containers, function (container, index) {
-                if(!container.id) {
-                    var id = Math.random().toString();
-                    $scope.containers[index].id = id;
-                    $scope.subContainers[id]=[];
-                }
-            });
-            $scope.containerSource = getSource(containerSource);
-        });
 
         vm.actions = ['edit','copy','delete'];
 
@@ -178,7 +170,8 @@
         };
 
         vm.compile = function () {
-            vm.html = customService.compile(convertBack())
+            console.log(customService.convertBack($scope.containers))
+            vm.html = customService.compile(customService.convertBack($scope.containers))
         };
 
         vm.toggleEditor = function () {

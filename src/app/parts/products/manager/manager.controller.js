@@ -19,17 +19,19 @@
             ['Product Id', 'itemId'],
             ['Name', 'itemName'],
             ['Category', 'category'],
+            ['Quantity', 'quantity'],
             ['Price', 'price']
         ];
 
         vm.paginator = $firebase.paginator('products', $stateParams);
         //initiate
-        vm.paginator.onReorder('itemId');
+        vm.paginator.onReorder($stateParams.orderBy||'itemId');
         vm.getFiltered = function () {
             $state.go('quartz.admin-default.productManager', {
                 orderBy: vm.orderBy,
                 startAt: vm.startAt,
-                endAt: vm.endAt
+                endAt: vm.endAt,
+                equalTo:vm.equalTo
             })
         };
 

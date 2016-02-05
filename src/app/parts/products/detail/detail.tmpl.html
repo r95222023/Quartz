@@ -32,12 +32,14 @@
                     Price:{{ref.$value.price|currency : '$' : 2}}
                 </p>
                 <md-divider></md-divider>
-                <ngcart-addtocart  id="{{ ref.$value.itemId }}"
-                                   name="{{ ref.$value.itemName }}"
-                                   price="{{ ref.$value.price }}"
-                                   quantity="{{ref.$value.quantity||1}}"
-                                   quantity-max="30"
-                                   data="vm.selectedOption">Add</ngcart-addtocart>
+                <ngcart-addtocart id="{{ ref.$value.itemId }}"
+                                  ng-if="ref.$value.available!==false"
+                                  name="{{ ref.$value.itemName }}"
+                                  price="{{ ref.$value.price }}"
+                                  quantity="{{ref.$value.quantity||1}}"
+                                  quantity-max="30"
+                                  data="vm.selectedOption">Add</ngcart-addtocart>
+                {{ref.$value.status}}
             </md-card-content>
 
         </md-card>
