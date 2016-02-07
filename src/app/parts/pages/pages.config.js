@@ -6,7 +6,8 @@
         .config(productsConfig);
 
     /* @ngInject */
-    function productsConfig($stateProvider, qtMenuProvider) {
+    function productsConfig($stateProvider, qtMenuProvider,$translatePartialLoaderProvider) {
+        $translatePartialLoaderProvider.addPart('app/parts/pages');
         $stateProvider
             .state('quartz.admin-default.pageManager', {
                 url: '/dashboard/pageManager',
@@ -72,13 +73,13 @@
             });
 
         qtMenuProvider.addMenu({
-            name: 'MENU.PAGES.NAME',
+            name: 'MENU.PAGES.MENUNAME',
             icon: 'fa fa-pencil-square-o',
             type: 'dropdown',
             priority: 1.5,
             children:[
                 {
-                    name: 'MENU.PAGES.MANAGER',
+                    name: 'MENU.PAGES.PAGEMANAGER',
                     state: 'quartz.admin-default.pageManager',
                     params: {cate: 'all',subCate:'all',queryString:''},
                     type: 'link'

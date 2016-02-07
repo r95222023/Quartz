@@ -13,7 +13,11 @@
     },
     "GENERAL": {
         "CANCEL": "取消",
-        "OK": "好"
+        "OK": "好",
+        "EDIT": "編輯",
+        "DELETE": "刪除",
+        "COPY":"複製",
+        "VIEW": "檢視"
     },
     "ADMIN": {
         "TOOLBAR": {

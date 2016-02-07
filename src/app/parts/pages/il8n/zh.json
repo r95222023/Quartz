@@ -1,0 +1,9 @@
+{
+    "MENU": {
+        "PAGES": {
+            "MENUNAME": "頁面",
+            "PAGEMANAGER":"頁面管理",
+            "WIDGETMANAGER": "元件管理"
+        }
+    }
+}

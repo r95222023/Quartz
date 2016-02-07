@@ -21,12 +21,16 @@
             pagesRef = $firebase.ref('pages');
 
         //Todo: 改名 刪除
-        vm.actions = ['delete', 'rename'];
-        vm.action = function (action, id, params) {
-            console.log(action, id);
+        vm.actions = [['view','GENERAL.VIEW'],['edit','GENERAL.EDIT'],['delete','GENERAL.DELETE']];
+        vm.action = function (action, id, name) {
             switch (action) {
+                case 'view':
+                    $state.go('quartz.admin-default.customPage',{pageName:name});
+                    break;
+                case 'edit':
+                    $state.go('quartz.admin-default.pageEditor',{pageName:name});
+                    break;
                 case 'delete':
-
                     pagesRef.child(id).remove();
                     break;
                 case 'rename':
@@ -57,12 +61,14 @@
             widgetsRef = $firebase.ref('widgets');
 
         //Todo: 改名 刪除
-        vm.actions = ['delete'];
-        vm.action = function (action, id, params) {
-            console.log(action, id);
+        vm.actions = [['edit','GENERAL.EDIT'],['delete','GENERAL.DELETE']];
+        vm.action = function (action, id, name) {
+            console.log(action, id, name);
             switch (action) {
+                case 'edit':
+                    $state.go('quartz.admin-default.widgetEditor',{widgetName:name});
+                    break;
                 case 'delete':
-
                     widgetsRef.child(id).remove();
                     break;
                 case 'rename':
@@ -114,7 +120,7 @@
             });
         }
 
-        vm.actions = ['edit', 'copy', 'delete'];
+        vm.actions =[['edit','GENERAL.EDIT'],['copy','GENERAL.COPY'],['delete','GENERAL.DELETE']];
         vm.action = function (action, id, index) {
             switch (action) {
                 case 'edit':
@@ -164,7 +170,8 @@
         vm.update = function () {
             var data = {
                 name: vm.pageName,
-                content: customService.convertBack($scope.containers)
+                content: customService.convertBack($scope.containers),
+                editTime: Firebase.ServerValue.TIMESTAMP
             };
             if (vm.pageRef) {
                 vm.pageRef.update(data);
@@ -172,10 +179,13 @@
                 pageRootRef.push(data);
             }
         }
+        vm.revert = function(){
+            $state.go($state.current, {pageName:vm.pageName}, {reload: true});
+        }
     }
 
     /* @ngInject */
-    function WidgetEditorController(customService, $stateParams, $firebase, $scope, dragulaService, $mdSidenav, $timeout) {
+    function WidgetEditorController(customService, $state, $stateParams, $firebase, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
         var elementSource = customService.items,
@@ -203,13 +213,14 @@
                     $timeout(function () {
                         customService.convert(snap.child('content').val(), $scope['containers'], 3);
                         vm.widgetRef = snap.ref();
+                        vm.compile();
                     }, 0);
                 }
             });
         }
 
 
-        vm.actions = ['edit', 'copy', 'delete'];
+        vm.actions = [['edit','GENERAL.EDIT'],['copy','GENERAL.COPY'],['delete','GENERAL.DELETE']];;
 
         vm.action = function (action, id, index) {
             switch (action) {
@@ -238,6 +249,7 @@
 
         vm.updateItem = function () {
             $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
+            vm.compile();
             $mdSidenav('editCustomItem').close();
         };
         vm.copyItem = function (id, index) {
@@ -252,7 +264,6 @@
         };
 
         vm.compile = function () {
-            console.log(customService.convertBack($scope.containers));
             vm.html = customService.compile(customService.convertBack($scope.containers))
         };
 
@@ -264,13 +275,17 @@
             var data = {
                 name: vm.widgetName,
                 type: 'customWidget',
-                content: customService.convertBack($scope.containers)
+                content: customService.convertBack($scope.containers),
+                editTime: Firebase.ServerValue.TIMESTAMP
             };
             if (vm.widgetRef) {
                 vm.widgetRef.update(data);
             } else {
                 widgetRootRef.push(data);
             }
+        }
+        vm.revert = function(){
+            $state.go($state.current, {widgetName:vm.widgetName}, {reload: true});
         }
     }
 
@@ -281,7 +296,6 @@
             $firebase.ref('pages').orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
                 $timeout(function () {
                     vm.html = customService.compile(snap.val().content)
-
                 }, 0);
             })
         }

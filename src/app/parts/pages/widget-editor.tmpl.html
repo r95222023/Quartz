@@ -5,6 +5,8 @@
     </md-input-container>
     <md-button ng-click="vm.hidePreview=!vm.hidePreview">Preview</md-button>
     <md-button ng-click="vm.update()">Save</md-button>
+    <md-button ng-click="vm.revert()">Revert</md-button>
+
 </form>
 
 
@@ -69,9 +71,9 @@
                             <md-menu-content width="3">
                                 <md-menu-item ng-repeat="action in vm.actions">
                                     <md-button
-                                        ng-click="vm.action(action,'root', $parent.$parent.$index)"
-                                        translate="{{action}}"
-                                        aria-label="{{action}}"></md-button>
+                                        ng-click="vm.action(action[0],'root', $parent.$parent.$index)"
+                                        translate="{{action[1]}}"
+                                        aria-label="{{action[1]}}"></md-button>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
@@ -98,9 +100,9 @@
                                     <md-menu-content width="3">
                                         <md-menu-item ng-repeat="action in vm.actions">
                                             <md-button
-                                                ng-click="vm.action(action,container.id, $parent.$parent.$index)"
-                                                translate="{{action}}"
-                                                aria-label="{{action}}"></md-button>
+                                                ng-click="vm.action(action[0],container.id, $parent.$parent.$index)"
+                                                translate="{{action[1]}}"
+                                                aria-label="{{action[1]}}"></md-button>
                                         </md-menu-item>
                                     </md-menu-content>
                                 </md-menu>
@@ -129,9 +131,9 @@
                                         <md-menu-content width="3">
                                             <md-menu-item ng-repeat="action in vm.actions">
                                                 <md-button
-                                                    ng-click="vm.action(action,subcontainer.id, $parent.$parent.$index)"
-                                                    translate="{{action}}"
-                                                    aria-label="{{action}}"></md-button>
+                                                    ng-click="vm.action(action[0],subcontainer.id, $parent.$parent.$index)"
+                                                    translate="{{action[1]}}"
+                                                    aria-label="{{action[1]}}"></md-button>
                                             </md-menu-item>
                                         </md-menu-content>
                                     </md-menu>
@@ -144,8 +146,8 @@
             </div>
         </div>
 
-        <div layout="row" ng-if="!vm.hidePreview" flex class="md-whiteframe-2dp">
-            <custom-item content="vm.html"></custom-item>
+        <div layout="row" layout-align="center center" ng-if="!vm.hidePreview" flex class="md-whiteframe-2dp">
+            <custom-item class="md-whiteframe-2dp" content="vm.html"></custom-item>
         </div>
     </div>
 </md-content>

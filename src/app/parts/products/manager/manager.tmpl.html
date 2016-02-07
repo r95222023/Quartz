@@ -83,7 +83,7 @@
                         </thead>
                         <tbody md-body>
                         <tr md-row md-select="product.itemId" md-select-id="{{product.itemId}}" md-auto-select
-                            ng-repeat="(index, product) in vm.paginator.result.hits" ui-sref="quartz.admin-default.productDetail({id:product.itemId})">
+                            ng-repeat="(index, product) in vm.paginator.result.hits">
                             <td md-cell>{{product.itemId}}</td>
                             <td md-cell>{{product.itemName}}</td>
                             <td md-cell>{{vm.categories[product.category][0]}}</td>
@@ -101,8 +101,8 @@
                                         </md-button>
                                         <md-menu-content width="3">
                                             <md-menu-item ng-repeat="action in vm.actions">
-                                                <md-button ng-click="vm.action(action, product.itemId,$event)" translate="{{action}}"
-                                                           aria-label="{{action}}"></md-button>
+                                                <md-button ng-click="vm.action(action[0], product.itemId,$event)" translate="{{action[1]}}"
+                                                           aria-label="{{action[1]}}"></md-button>
                                             </md-menu-item>
                                         </md-menu-content>
                                     </md-menu>

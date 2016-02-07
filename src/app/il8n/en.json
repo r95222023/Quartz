@@ -1,7 +1,11 @@
 {
     "GENERAL": {
         "CANCEL": "Cancel",
-        "OK": "Ok"
+        "OK": "Ok",
+        "EDIT": "Edit",
+        "DELETE": "Delete",
+        "COPY":"Copy",
+        "VIEW": "View"
     },
     "ADMIN": {
         "TOOLBAR": {

@@ -102,6 +102,7 @@
                 _item.id = Math.random().toString();
                 _item.options = item.options;
                 _item.layout = item.layout;
+                _item.name = item.name;
                 _item.type = item.type;
                 _item.content = item.content;
                 res.push(_item);
@@ -119,6 +120,7 @@
             angular.forEach(val[_id], function (item) {
                 var _item = {};
                 _item.options = item.options || null;
+                _item.name = item.name || null;
                 _item.type = item.type;
                 _item.layout = item.layout || null;
                 _item.content = item.content || null;

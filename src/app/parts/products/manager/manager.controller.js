@@ -42,9 +42,12 @@
             vm.paginator.onReorder(sort);
         };
 
-        vm.actions = ['edit', 'delete'];
+        vm.actions = [['view','GENERAL.VIEW'],['edit','GENERAL.EDIT'],['delete','GENERAL.DELETE']];
         vm.action = function (action, id, event) {
             switch (action) {
+                case 'view':
+                    $state.go('quartz.admin-default.productDetail',{id:id})
+                    break;
                 case 'edit':
                     vm.showEditor(event, id);
                     break;
