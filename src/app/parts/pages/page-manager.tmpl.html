@@ -18,7 +18,7 @@
                 <tr md-row
                     ng-repeat="(id, page) in vm.paginator.result.hits">
                     <td md-cell>{{page.name}}</td>
-                    <td md-cell>{{page.editTime}}</td>
+                    <td md-cell>{{page.editTime| date: 'medium'}}</td>
                     <td md-cell>
                         <div layout="row">
                             <span flex></span>
