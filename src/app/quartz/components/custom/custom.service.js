@@ -115,7 +115,7 @@
 
         function convertBack(val, id) {
             var result = [],
-                _id= id||'root';
+                _id = id || 'root';
             angular.forEach(val[_id], function (item) {
                 var _item = {};
                 _item.options = item.options || null;
@@ -131,7 +131,18 @@
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
         function getHtmlContent(item) {
             item = item || {};
-            var content = item.content || (item.type && templates[item.type] ? templates[item.type] : '');
+            var content;
+
+            if (item.type === 'customWidget') {
+                content = compile(item.content);
+            } else if (item.content) {
+                content = item.content;
+            } else if (item.type && templates[item.type]) {
+                content = templates[item.type];
+            } else {
+                content = '';
+            }
+
             if (item.layout) {
                 var res = '';
                 angular.forEach(item.layout, function (layout, breakpoint) {
@@ -164,8 +175,8 @@
 
 
         function compile(containers) {
-            var html='<div layout="row">';
-            angular.forEach(containers,function(container){
+            var html = '';
+            angular.forEach(containers, function (container) {
                 var rawContainer = getHtmlContent(container),
                     subContainerHtml = '';
                 angular.forEach(container.divs, function (subContainer) {
@@ -176,9 +187,8 @@
                     });
                     subContainerHtml += rawSubContainer.replace('<!--include-->', widgets);
                 });
-                html+=rawContainer.replace('<!--include-->',subContainerHtml)
+                html += rawContainer.replace('<!--include-->', subContainerHtml)
             });
-            html+='</div>';
             return html;
         }
 
