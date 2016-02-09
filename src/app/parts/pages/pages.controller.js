@@ -92,9 +92,6 @@
     function PageEditorController(customService, customWidgets,$state, $stateParams, $firebase, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-        vm.toWidgetEditor=function(widget){
-            if(widget.type==='customWidget') $state.go('quartz.admin-default.widgetEditor',{widgetName:widget.name})
-        }
 
         var widgetSource = angular.extend({},customWidgets, customService.items),
             containerSource = customService.containers,
@@ -138,15 +135,22 @@
         vm.editItem = function (id, index) {
             vm.item = {};
             vm.item = angular.copy($scope.containers[id][index]);
+            vm.backUpItem=angular.copy($scope.containers[id][index]);
+            if(vm.item.type==='customWidget') vm.item.content = vm.getHtmlContent(vm.item);
             vm.selectedContainerId = id;
             vm.selectedItemIndex = index;
-            if(vm.item.type==='customWidget'){vm.toWidgetEditor(vm.item); return}
             $mdSidenav('editCustomItem').open();
         };
 
+
         vm.updateItem = function () {
-            $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
             $mdSidenav('editCustomItem').close();
+
+            if(vm.item.type==='customWidget'){
+                if(vm.getHtmlContent(vm.backUpItem)===vm.item.content) return;
+            }
+
+            $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
         };
         vm.copyItem = function (id, index) {
             var copied = angular.copy($scope.containers[id][index]);
@@ -176,7 +180,7 @@
             if (vm.pageRef) {
                 vm.pageRef.update(data);
             } else {
-                pageRootRef.push(data);
+                vm.pageRef=pageRootRef.push(data);
             }
         }
         vm.revert = function(){
@@ -281,7 +285,7 @@
             if (vm.widgetRef) {
                 vm.widgetRef.update(data);
             } else {
-                widgetRootRef.push(data);
+                vm.widgetRef=widgetRootRef.push(data);
             }
         }
         vm.revert = function(){

@@ -78,7 +78,7 @@
                             </md-menu-content>
                         </md-menu>
                     </div>
-                    <div flex layout="{{container.layout.all.layout||'row'}}"
+                    <div flex layout="{{container.layout.all.layout||'column'}}"
                          style="min-width: 50px;min-height: 50px"
                          dragula="'drag-container-lv1'"
                          dragula-scope="$parent"
@@ -108,7 +108,7 @@
                                 </md-menu>
                             </div>
 
-                            <div flex layout="{{subcontainer.layout.all.layout||'row'}}"
+                            <div flex layout="{{subcontainer.layout.all.layout||'column'}}"
                                  style="min-width: 50px;min-height: 50px"
                                  layout-align="space-around center"
                                  dragula='"drag-container-lv2"'
@@ -117,7 +117,7 @@
 
                                 <div style="cursor: move; background-color: #0b97c4" class="dragable-widget lv2-handle"
                                      flex="{{widget.layout.all.flex||''}}"
-                                     layout="row"
+                                     layout="column"
                                      layout-margin
                                      ng-repeat="widget in containers[subcontainer.id] track by widget.id"
                                      layout-padding>

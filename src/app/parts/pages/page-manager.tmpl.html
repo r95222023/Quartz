@@ -9,7 +9,8 @@
             <table md-table md-progress="vm.paginator.promise">
                 <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span>Page Name</span></th>
+                    <th md-column md-order-by="name">Page Name</th>
+                    <th md-column md-order-by="author">Author</th>
                     <th md-column md-order-by="timestamp">Edit Time</th>
                     <th md-column></th>
                 </tr>
@@ -18,8 +19,9 @@
                 <tr md-row
                     ng-repeat="(id, page) in vm.paginator.result.hits">
                     <td md-cell>{{page.name}}</td>
+                    <th md-cell>{{page.author}}</th>
                     <td md-cell>{{page.editTime| date: 'medium'}}</td>
-                    <td md-cell>
+                    <td md-cell style="width:50px;">
                         <div layout="row">
                             <span flex></span>
                             <md-menu>

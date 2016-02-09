@@ -23,7 +23,6 @@
 
         var items = [
                 {type: 'button'},
-                {type: 'card', layout: {all: {flex: '50'}}},
                 {type: 'custom', content: '<div></div>'}
             ],
             containers = [
@@ -56,9 +55,6 @@
             "column": "<div customlayout><!--include--></div>"
         };
 
-        var tmplRoot = 'app/quartz/components/custom/templates/',
-            templateList = ['card', 'button'],
-            tmplPromise = getAllTemplates();
 
         function getTemplate(url) {
             var def = $q.defer(),
@@ -77,18 +73,17 @@
             return def.promise;
         }
 
-        function getAllTemplates() {
+        function getAllTemplates(templateList, tmplRoot) {
             var promises = {};
             angular.forEach(templateList, function (tmplName) {
                 promises[tmplName] = getTemplate(tmplRoot + tmplName + '.html');
             });
-            return $q.all(promises);
+            var promise=$q.all(promises);
+            promise.then(function (res) {
+                angular.extend(templates, res);
+            });
+            return promise;
         }
-
-
-        tmplPromise.then(function (res) {
-            angular.extend(templates, res);
-        });
 
         var configs = {
             row: []

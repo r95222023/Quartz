@@ -7,6 +7,8 @@
 
     /* @ngInject */
     function productsConfig($stateProvider, qtMenuProvider,$translatePartialLoaderProvider) {
+        var tmplRoot='app/parts/pages/templates/',
+            templateList=['button'];
         $translatePartialLoaderProvider.addPart('app/parts/pages');
         $stateProvider
             .state('quartz.admin-default.pageManager', {
@@ -29,7 +31,7 @@
                 },
                 resolve:{
                     getAllTemplates:['customService', function(customService){
-                        return customService.getAllTemplates
+                        return customService.getAllTemplates(templateList, tmplRoot)
                     }],
                     customWidgets:['$q','$firebase', function($q,$firebase){
                         var def=$q.defer();
@@ -52,7 +54,7 @@
                 },
                 resolve:{
                     getAllTemplates:['customService', function(customService){
-                        return customService.getAllTemplates
+                        return customService.getAllTemplates(templateList, tmplRoot)
                     }]
                 },
                 url: '/dashboard/widgetEditor/:widgetName',
@@ -64,7 +66,7 @@
                 url: '/:pageName/?params1&params2',
                 resolve:{
                     getAllTemplates:['customService', function(customService){
-                        return customService.getAllTemplates
+                        return customService.getAllTemplates(templateList, tmplRoot)
                     }]
                 },
                 templateUrl: 'app/parts/pages/custom-page.tmpl.html',
