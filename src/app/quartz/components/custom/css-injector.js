@@ -60,14 +60,25 @@
 
         injectCSS.setFromFirebase = function (id, refUrl) {
             var def = $q.defer();
-            if (!angular.element('style#' + id).length) {
-                $firebase.ref(refUrl).once('value', function (snap) {
-                    var style = createStyle(id, snap.val());
-                    angular.element('head').append(style);
-                    def.resolve();
-                });
-            }
+            $firebase.ref(refUrl).once('value', function (snap) {
+                injectCSS.setDirectly(id, snap.val());
+                def.resolve();
+            });
             return def.promise;
+        };
+
+        injectCSS.setDirectly = function (id, value) {
+            if (!angular.element('style#' + id).length) {
+                var style = createStyle(id, value);
+                angular.element('head').append(style);
+            } else {
+                angular.element('style#' + id).remove();
+                injectCSS.setDirectly(id,value);
+            }
+        };
+
+        injectCSS.remove = function(id){
+            angular.element('style#' + id).remove();
         };
 
         return injectCSS;

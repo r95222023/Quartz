@@ -3,6 +3,11 @@
         <label>Widget Name</label>
         <input type="text" ng-model="vm.widgetName">
     </md-input-container>
+    <md-input-container>
+        <label>CSS</label>
+        <textarea type="text" id="css" rows="10" ng-change="vm.injectCss()"
+          ng-model="vm.widgetCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
+    </md-input-container>
     <md-button ng-click="vm.hidePreview=!vm.hidePreview">Preview</md-button>
     <md-button ng-click="vm.update()">Save</md-button>
     <md-button ng-click="vm.revert()">Revert</md-button>
@@ -182,7 +187,8 @@
                     <md-input-container>
                         <label>flex-offset</label>
                         <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['flex-offset']">
-                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout['flex-offset']">{{size}}
+                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout['flex-offset']">
+                                {{size}}
                             </md-option>
                         </md-select>
                     </md-input-container>

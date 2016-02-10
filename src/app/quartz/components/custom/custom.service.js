@@ -100,6 +100,7 @@
                 _item.name = item.name;
                 _item.type = item.type;
                 _item.content = item.content;
+                if(item.css) _item.css=item.css;
                 res.push(_item);
                 if (_level < maxLevel) {
                     target[_item.id] = convert(item.divs || [], target, maxLevel, _level + 1);
@@ -109,17 +110,19 @@
             return res
         }
 
-        function convertBack(val, id) {
+        function convertBack(val, id, styleSheets) {
             var result = [],
                 _id = id || 'root';
+
             angular.forEach(val[_id], function (item) {
                 var _item = {};
+                if(item.css&&styleSheets&&item.name) styleSheets[item.name] = item.css;
                 _item.options = item.options || null;
                 _item.name = item.name || null;
                 _item.type = item.type;
                 _item.layout = item.layout || null;
                 _item.content = item.content || null;
-                if (item.id) _item.divs = convertBack(val, item.id);
+                if (item.id) _item.divs = convertBack(val, item.id, styleSheets);
                 result.push(_item);
             });
             return result;

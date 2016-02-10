@@ -21,14 +21,14 @@
             pagesRef = $firebase.ref('pages');
 
         //Todo: 改名 刪除
-        vm.actions = [['view','GENERAL.VIEW'],['edit','GENERAL.EDIT'],['delete','GENERAL.DELETE']];
+        vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
-                    $state.go('quartz.admin-default.customPage',{pageName:name});
+                    $state.go('quartz.admin-default.customPage', {pageName: name});
                     break;
                 case 'edit':
-                    $state.go('quartz.admin-default.pageEditor',{pageName:name});
+                    $state.go('quartz.admin-default.pageEditor', {pageName: name});
                     break;
                 case 'delete':
                     pagesRef.child(id).remove();
@@ -49,6 +49,7 @@
             vm.paginator.onReorder(orderBy);
         }
     }
+
     /* @ngInject */
     function WidgetManagerController($firebase, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this,
@@ -61,12 +62,12 @@
             widgetsRef = $firebase.ref('widgets');
 
         //Todo: 改名 刪除
-        vm.actions = [['edit','GENERAL.EDIT'],['delete','GENERAL.DELETE']];
+        vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, name) {
             console.log(action, id, name);
             switch (action) {
                 case 'edit':
-                    $state.go('quartz.admin-default.widgetEditor',{widgetName:name});
+                    $state.go('quartz.admin-default.widgetEditor', {widgetName: name});
                     break;
                 case 'delete':
                     widgetsRef.child(id).remove();
@@ -89,11 +90,16 @@
     }
 
     /* @ngInject */
-    function PageEditorController(customService, customWidgets,$state, $stateParams, $firebase, $scope, dragulaService, $mdSidenav, $timeout) {
+    function PageEditorController(injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
+        $rootScope.$on('$stateChangeStart',
+            function(){
+                injectCSS.remove(vm.pageRef.key());
+            });
+
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
-        var widgetSource = angular.extend({},customWidgets, customService.items),
+        var widgetSource = angular.extend({}, customWidgets, customService.items),
             containerSource = customService.containers,
             pageRootRef = $firebase.ref('pages');
         vm.getHtmlContent = customService.getHtmlContent;
@@ -112,12 +118,15 @@
                     $timeout(function () {
                         customService.convert(snap.child('content').val(), $scope['containers'], 3);
                         vm.pageRef = snap.ref();
+                        vm.pageCss = snap.child('css').val()||'';
                     }, 0);
                 }
             });
+        } else {
+            vm.pageRef = pageRootRef.push();
         }
 
-        vm.actions =[['edit','GENERAL.EDIT'],['copy','GENERAL.COPY'],['delete','GENERAL.DELETE']];
+        vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, index) {
             switch (action) {
                 case 'edit':
@@ -135,8 +144,8 @@
         vm.editItem = function (id, index) {
             vm.item = {};
             vm.item = angular.copy($scope.containers[id][index]);
-            vm.backUpItem=angular.copy($scope.containers[id][index]);
-            if(vm.item.type==='customWidget') vm.item.content = vm.getHtmlContent(vm.item);
+            vm.backUpItem = angular.copy($scope.containers[id][index]);
+            if (vm.item.type === 'customWidget') vm.item.content = vm.getHtmlContent(vm.item);
             vm.selectedContainerId = id;
             vm.selectedItemIndex = index;
             $mdSidenav('editCustomItem').open();
@@ -146,8 +155,8 @@
         vm.updateItem = function () {
             $mdSidenav('editCustomItem').close();
 
-            if(vm.item.type==='customWidget'){
-                if(vm.getHtmlContent(vm.backUpItem)===vm.item.content) return;
+            if (vm.item.type === 'customWidget') {
+                if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) return;
             }
 
             $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
@@ -163,34 +172,59 @@
         };
 
         vm.compile = function () {
-            console.log(customService.convertBack($scope.containers));
-            vm.html = customService.compile(customService.convertBack($scope.containers))
+            var styleSheets={};
+            var compiled = customService.compile(customService.convertBack($scope.containers,'root',styleSheets));
+            vm.pageRef.once('value', function (snap) {
+                vm.pageCss=vm.pageCss||snap.child('css').val()||'';
+                vm.widgetsCss=vm.buildCss(styleSheets);
+                vm.injectCss();
+            });
+            vm.html = compiled
         };
+
+        vm.injectCss=function(){
+            injectCSS.setDirectly(vm.pageRef.key(), vm.pageCss+vm.widgetsCss);
+        };
+
 
         vm.toggleEditor = function () {
             $mdSidenav('editCustomItem').toggle();
         };
 
         vm.update = function () {
+            var styleSheets={},
+                content = customService.convertBack($scope.containers, 'root',styleSheets);
+
             var data = {
                 name: vm.pageName,
-                content: customService.convertBack($scope.containers),
+                content: content,
+                css: (vm.pageCss+vm.buildCss(styleSheets))||null,
                 editTime: Firebase.ServerValue.TIMESTAMP
             };
-            if (vm.pageRef) {
-                vm.pageRef.update(data);
-            } else {
-                vm.pageRef=pageRootRef.push(data);
-            }
+            vm.pageRef.update(data);
+            vm.revert();
+        };
+        vm.buildCss = function(styleSheets){
+            var widgetsCss='';
+            angular.forEach(styleSheets, function (widgetCss) {
+                if(vm.pageCss.indexOf(widgetCss)===-1){widgetsCss+=widgetCss}
+            });
+            return widgetsCss;
+        };
+        vm.revert = function () {
+            $state.go($state.current, {pageName: vm.pageName}, {reload: true});
         }
-        vm.revert = function(){
-            $state.go($state.current, {pageName:vm.pageName}, {reload: true});
-        }
+
     }
 
     /* @ngInject */
-    function WidgetEditorController(customService, $state, $stateParams, $firebase, $scope, dragulaService, $mdSidenav, $timeout) {
+    function WidgetEditorController(injectCSS, customService, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
+        $rootScope.$on('$stateChangeStart',
+            function(){
+                injectCSS.remove(vm.widgetRef.key());
+            });
+
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
         var elementSource = customService.items,
             containerSource = customService.containers,
@@ -217,15 +251,16 @@
                     $timeout(function () {
                         customService.convert(snap.child('content').val(), $scope['containers'], 3);
                         vm.widgetRef = snap.ref();
+                        vm.widgetCss = snap.child('css').val();
                         vm.compile();
                     }, 0);
                 }
             });
+        } else {
+            vm.widgetRef = widgetRootRef.push();
         }
 
-
-        vm.actions = [['edit','GENERAL.EDIT'],['copy','GENERAL.COPY'],['delete','GENERAL.DELETE']];;
-
+        vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, index) {
             switch (action) {
                 case 'edit':
@@ -241,7 +276,6 @@
                     break;
             }
         };
-
 
         vm.editItem = function (id, index) {
             vm.item = {};
@@ -259,7 +293,7 @@
         vm.copyItem = function (id, index) {
             var copied = angular.copy($scope.containers[id][index]);
             copied.id = Math.random().toString();
-            console.log(copied)
+            console.log(copied);
             $scope.containers[id].splice(index, 0, copied);
         };
 
@@ -268,7 +302,16 @@
         };
 
         vm.compile = function () {
-            vm.html = customService.compile(customService.convertBack($scope.containers))
+            var compiled = customService.compile(customService.convertBack($scope.containers,'root'));
+            vm.widgetRef.once('value', function (snap) {
+                vm.widgetCss = vm.widgetCss||snap.child('css').val()||'';
+                vm.injectCss();
+            });
+            vm.html = compiled
+        };
+
+        vm.injectCss=function(){
+            injectCSS.setDirectly(vm.widgetRef.key(), vm.widgetCss);
         };
 
         vm.toggleEditor = function () {
@@ -279,28 +322,30 @@
             var data = {
                 name: vm.widgetName,
                 type: 'customWidget',
+                css: vm.widgetCss||null,
                 content: customService.convertBack($scope.containers),
                 editTime: Firebase.ServerValue.TIMESTAMP
             };
-            if (vm.widgetRef) {
-                vm.widgetRef.update(data);
-            } else {
-                vm.widgetRef=widgetRootRef.push(data);
-            }
-        }
-        vm.revert = function(){
-            $state.go($state.current, {widgetName:vm.widgetName}, {reload: true});
+            vm.widgetRef.update(data);
+        };
+        vm.revert = function () {
+            $state.go($state.current, {widgetName: vm.widgetName}, {reload: true});
         }
     }
 
     /* @ngInject */
-    function CustomPageController($firebase, customService, $stateParams, $timeout, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function CustomPageController(injectCSS, $firebase, customService, $stateParams, $timeout, $rootScope,qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
         if ($stateParams.pageName) {
             $firebase.ref('pages').orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
                 $timeout(function () {
-                    vm.html = customService.compile(snap.val().content)
+                    injectCSS.setDirectly(snap.key(), snap.child('css').val());
+                    vm.html = customService.compile(snap.val().content);
                 }, 0);
+                $rootScope.$on('$stateChangeStart',
+                    function(){
+                        injectCSS.remove(snap.key());
+                    });
             })
         }
     }
