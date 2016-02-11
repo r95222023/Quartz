@@ -2,35 +2,43 @@
 
     <md-content layout="row" layout-xs="column" layout-wrap layout-padding>
         <div flex="100" layout="row">
-
             <md-input-container class="md-icon-float md-block">
                 <!-- Use floating label instead of placeholder -->
                 <label>Search</label>
                 <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
-                <input ng-model="vm.queryString" ng-model-options="{ debounce: 2000 }" ng-change="vm.search(true)" type="text">
+                <input ng-model="vm.queryString" ng-model-options="{ debounce: 2000 }" ng-change="vm.search(true)"
+                       type="text">
             </md-input-container>
             <md-menu>
                 <md-button aria-label="categories" ng-click="$mdOpenMenu()" aria-label="categories">
-                    <span ng-if="clientConfig.products.categories">{{vm.categories()}}</span>
+                    <span ng-if="vm.clientConfig.products.categories">{{vm.categories()}}</span>
                     <md-icon md-font-icon="fa fa-caret-down"></md-icon>
                 </md-button>
                 <md-menu-content width="{{vm.menuWidth}}" layout="row">
                     <div flex>
-                        <md-menu-item>
-                            <span style="width:10px"></span><h3 style="cursor: pointer" ng-click="vm.go('','all')">All</h3>
+                        <md-menu-item ng-click="vm.go('','all','all')">
+                            <span style="width:10px"></span>
+                            <h3 style="cursor: pointer">All</h3>
                         </md-menu-item>
                         <md-divider></md-divider>
-                        <md-menu-item ng-repeat-start="cate in clientConfig.products.categories" ng-init="cate[2]=$index">
-                            <span style="width:10px"></span><h3 style="cursor: pointer" ui-sref="quartz.admin-default.productList({ cate: cate[2], subCate: 'all', tag:''})">{{cate[0]}}</h3>
+                        <md-menu-item ng-repeat-start="cate in vm.clientConfig.products.categories"
+                                      ng-click="vm.go('',cate[2],'all','')"
+                                      ng-init="cate[2]=$index">
+                            <span style="width:10px"></span>
+                            <h3 style="cursor: pointer">
+                                {{cate[0]}}</h3>
                         </md-menu-item>
-                        <md-menu-item ng-repeat="subcate in cate[1]">
-                            <span style="width:30px"></span><p style="cursor: pointer" ui-sref="quartz.admin-default.productList({ cate: cate[2], subCate: $index, tag:'' })">{{subcate}}</p>
+                        <md-menu-item ng-repeat="subcate in cate[1]" ng-click="vm.go('',cate[2],$index,'')">
+                            <span style="width:30px"></span>
+                            <p style="cursor: pointer">
+                                {{subcate}}</p>
                         </md-menu-item>
                         <md-divider ng-repeat-end ng-show="!$last"></md-divider>
                     </div>
-                    <div flex ng-if="clientConfig.products.tags">
-                        <md-menu-item ng-repeat="tag in clientConfig.products.tags">
-                            <span style="width:10px"></span><h3 style="cursor: pointer" ng-click="vm.go('','all','all',tag)">{{tag}}</h3>
+                    <div flex ng-if="vm.clientConfig.products.tags">
+                        <md-menu-item ng-repeat="tag in vm.clientConfig.products.tags">
+                            <span style="width:10px"></span>
+                            <h3 style="cursor: pointer" ng-click="vm.go('','all','all',tag)">{{tag}}</h3>
                         </md-menu-item>
                     </div>
                 </md-menu-content>
@@ -40,7 +48,7 @@
 
 
         <div flex-gt-xs="33" flex-gt-sm="25" flex-gt-md="20"
-             ng-repeat="(index, product) in vm.paginator.result.hits" >
+             ng-repeat="(index, product) in vm.paginator.result.hits">
             <md-card ng-click="vm.showDetail(product._source.itemId)"
                      style="cursor:pointer">
                 <img class="md-card-image" ng-src="{{product._source.image}}">
@@ -65,6 +73,7 @@
     </md-content>
 
 
-    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page" md-total="{{vm.paginator.result.total}}"
+    <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page"
+                         md-total="{{vm.paginator.result.total}}"
                          md-on-paginate="vm.paginator.get" md-page-select></md-table-pagination>
 </div>

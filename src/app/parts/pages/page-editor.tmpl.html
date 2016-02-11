@@ -16,7 +16,7 @@
 
 <md-content ng-if="!destroyDragula" ng-init="initDragula()" ng-show="!vm.preview" class="padded-content-page">
     <div layout="row">
-        <div flex="10">
+        <div style="position: fixed; top:100px; left:30px">
             <div layout="column" layout-xs="column"
                  layout-align="start center"
                  layout-margin>
@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div flex>
+        <div flex flex-offset="10">
             <div layout="row" dragula='"drag-container-root"' dragula-model='containers.root'
                  style="min-width: 100px;min-height: 500px">
                 <div flex class="md-whiteframe-3dp"

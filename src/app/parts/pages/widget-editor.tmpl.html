@@ -17,7 +17,7 @@
 
 <md-content ng-if="!destroyDragula" ng-init="initDragula()" class="padded-content-page">
     <div layout="row">
-        <div flex="10">
+        <div style="position: fixed; top:100px; left:30px">
             <div layout="column" layout-xs="column"
                  layout-align="start center"
                  layout-margin>
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <div flex>
+        <div flex flex-offset="10">
             <div layout="row" dragula='"drag-container-root"' dragula-model='containers.root'
                  style="min-width: 100px;min-height: 500px">
                 <div flex class="md-whiteframe-3dp"
@@ -262,6 +262,74 @@
     <md-button ng-click="vm.toggleEditor()">Cancel</md-button>
 
 </md-sidenav>
+
+
+<div id="doraemon">
+    <div id="face">
+        <div id="head_light"></div>
+        <div id="eyes">
+            <div class="eye eye_left"></div>
+            <div class="black_eye black_left"></div>
+
+            <div class="eye eye_right"></div>
+            <div class="black_eye black_right"></div>
+        </div>
+        <div id="base">
+            <div id="base_white"></div>
+            <div id="nose">
+                <div id="nose_light"></div>
+            </div>
+            <div id="nose_line"></div>
+            <div id="mouth"></div>
+            <div id="mouth_rewrite"></div>
+            <div id="firefox_mouth"></div>
+
+            <div class="whiskers whi_right_top rotate160"></div>
+            <div class="whiskers whi_right"></div>
+            <div class="whiskers whi_right_bottom rotate20"></div>
+
+            <div class="whiskers whi_left_top rotate20"></div>
+            <div class="whiskers whi_left"></div>
+            <div class="whiskers whi_left_bottom rotate160"></div>
+        </div>
+    </div>
+    <div id="choker">
+        <div id="belt"></div>
+        <div id="bell">
+            <div id="bell_line"></div>
+            <div id="bell_circle"></div>
+            <div id="bell_under"></div>
+            <div id="bell_light"></div>
+        </div>
+    </div>
+    <div id="body">
+        <div id="doutai"></div>
+        <div class="base_white2 doutai_center"></div>
+        <div id="pocket">
+            <div id="circle"></div>
+            <div id="circle_rewrite"></div>
+        </div>
+    </div>
+    <div id="hand_right">
+        <div id="arm_right"></div>
+        <div class="hand_circle hand_right"></div>
+        <div class="arm_rewrite_right"></div>
+    </div>
+    <div id="hand_left">
+        <div id="arm_left"></div>
+        <div class="hand_circle hand_left"></div>
+        <div class="arm_rewrite_left"></div>
+    </div>
+    <div id="foot">
+        <div id="foot_left"></div>
+        <div id="foot_right"></div>
+        <div id="foot_rewrite"></div>
+    </div>
+    <div id="shadow_doutai_arm"></div>
+    <div id="shadow_doutai_left"></div>
+    <div id="shadow_doutai_right"></div>
+    <div id="shadow_belt"></div>
+</div>
 
 
 

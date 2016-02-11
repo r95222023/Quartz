@@ -37,7 +37,7 @@
                         var def=$q.defer();
                         $firebase.ref('widgets').once('value', function(snap){
                             def.resolve(snap.val())
-                        })
+                        });
                         return def.promise;
                     }]
                 },
@@ -63,7 +63,7 @@
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.customPage', {
-                url: '/:pageName/?params1&params2',
+                url: '/:pageName/?id&params1&params2&cate&subCate&queryString&tag',
                 resolve:{
                     getAllTemplates:['customService', function(customService){
                         return customService.getAllTemplates(templateList, tmplRoot)
@@ -71,7 +71,7 @@
                 },
                 templateUrl: 'app/parts/pages/custom-page.tmpl.html',
                 controller: 'CustomPageController',
-                controllerAs: 'vm'
+                controllerAs: 'customPage'
             });
 
         qtMenuProvider.addMenu({

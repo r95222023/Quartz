@@ -6,83 +6,81 @@
         .controller('ProductListController', ProductListController);
 
     /* @ngInject */
-    function ProductListController($elasticSearch, $stateParams, $rootScope,$firebase, qtNotificationsService, $state, $mdDialog, config) {
+    function ProductListController($elasticSearch, $stateParams, $rootScope, $firebase, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
 
         vm.query = {
-            cache:'query/cache',
-            reuse:200
+            cache: 'query/cache',
+            reuse: 200
         };
 
-        vm.menuWidth = vm.tags? 6:4;
-
+        vm.menuWidth = vm.tags ? 6 : 4;
+        vm.clientConfig = $rootScope.clientConfig;
         vm.categories = function () {
             var cate = parseInt($stateParams.cate),
                 subCate = parseInt($stateParams.subCate),
                 categories = $rootScope.clientConfig.products.categories;
-            if($stateParams.tag) return $stateParams.tag;
-            if(cate%1===0){
-                return categories[cate][0] + (subCate%1===0? '/'+categories[cate][1][subCate]:'')
+            if ($stateParams.tag) return $stateParams.tag;
+            if (cate % 1 === 0) {
+                return categories[cate][0] + (subCate % 1 === 0 ? '/' + categories[cate][1][subCate] : '');
             } else {
-                return $stateParams.cate;
+                return 'GENERAL.ALLCATE';
             }
         };
-
-
-
 
 
         vm.queryString = $stateParams.queryString;
-        vm.tag= $stateParams.tag;
-        vm.go =function(queryString,cate,subCate,tag){
-            $state.go('quartz.admin-default.productList', {
-                queryString:queryString||vm.queryString,
-                cate:cate||$stateParams.cate,
-                subCate:subCate||$stateParams.subCate,
-                tag:tag
+        vm.tag = $stateParams.tag;
+        vm.go = function (queryString, cate, subCate, tag, pageName) {
+            $state.go(pageName? 'quartz.admin-default.customPage':'quartz.admin-default.productList', {
+                queryString: queryString || vm.queryString,
+                cate: cate+'' || $stateParams.cate,
+                subCate: subCate+'' || $stateParams.subCate,
+                tag: tag,
+                pageName:pageName
             })
         };
-        vm.search = function(go){
-            vm.query.body=vm.query.body||{};
-            var cate = $stateParams.cate||null,
-                subCate = $stateParams.subCate||null,
-                tag = $stateParams.tag||null,
-                filterMust=[],
-                filterMustNot=[{"term":{"show":false}}];
-            if(angular.isString(tag)) {
+        vm.search = function (go) {
+            vm.query.body = vm.query.body || {};
+            var cate = $stateParams.cate || null,
+                subCate = $stateParams.subCate || null,
+                tag = $stateParams.tag || null,
+                filterMust = [],
+                filterMustNot = [{"term": {"show": false}}];
+            if (angular.isString(tag)) {
                 var tagTerm = {};
-                tagTerm['tags_dot_'+tag] = 1;
-                filterMust.push({term:tagTerm});
+                tagTerm['tags_dot_' + tag] = 1;
+                filterMust.push({term: tagTerm});
             }
-            if(parseInt(cate)%1===0){
-                filterMust.push({"term": { "category": cate }});
-                if(parseInt(subCate)%1===0) filterMust.push({ "term": { "subcategory":  subCate }});
+            if (parseInt(cate) % 1 === 0) {
+                filterMust.push({"term": {"category": cate}});
+                if (parseInt(subCate) % 1 === 0) filterMust.push({"term": {"subcategory": subCate}});
             }
             vm.query.body.query = {
                 "filtered": {
                     "filter": {
                         "bool": {
-                            "must":filterMust.length? filterMust:null,
-                            "must_not":filterMustNot
+                            "must": filterMust.length ? filterMust : null,
+                            "must_not": filterMustNot
                         }
                     }
                 }
             };
-            if(angular.isString(vm.queryString)&&vm.queryString.trim()!==''){
+            if (angular.isString(vm.queryString) && vm.queryString.trim() !== '') {
                 var query_string = {
-                    "fields" : ["itemName", "description"],
-                    "query" : vm.queryString,
-                    "use_dis_max" : true
+                    "fields": ["itemName", "description"],
+                    "query": vm.queryString,
+                    "use_dis_max": true
                 };
-                if(vm.query.body.query&&vm.query.body.query.filtered){
-                    vm.query.body.query.filtered.query ={
-                        query_string:query_string
+                if (vm.query.body.query && vm.query.body.query.filtered) {
+                    vm.query.body.query.filtered.query = {
+                        query_string: query_string
                     };
                 } else {
-                    vm.query.body.query.query_string= query_string;
+                    vm.query.body.query.query_string = query_string;
                 }
             }
-            if(go) vm.go(vm.queryString);
+            if (go) vm.go(vm.queryString);
             //console.log(vm.query.body)
         };
         vm.search(); //for query from url
@@ -93,8 +91,8 @@
         vm.paginator.onReorder('itemId');
 
 
-        vm.showDetail= function (itemId) {
-            $state.go('quartz.admin-default.productDetail', {id: itemId})
+        vm.showDetail = function (itemId, pageName) {
+            $state.go(pageName? 'quartz.admin-default.customPage':'quartz.admin-default.productDetail', {id: itemId, pageName:pageName})
         }
     }
 })();

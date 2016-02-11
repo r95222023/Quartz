@@ -335,12 +335,12 @@
 
     /* @ngInject */
     function CustomPageController(injectCSS, $firebase, customService, $stateParams, $timeout, $rootScope,qtNotificationsService, Auth, $state, $mdDialog, config) {
-        var vm = this;
+        var customPage = this;
         if ($stateParams.pageName) {
             $firebase.ref('pages').orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
                 $timeout(function () {
                     injectCSS.setDirectly(snap.key(), snap.child('css').val());
-                    vm.html = customService.compile(snap.val().content);
+                    customPage.html = customService.compile(snap.val().content);
                 }, 0);
                 $rootScope.$on('$stateChangeStart',
                     function(){

@@ -6,8 +6,9 @@
         .controller('ProductDetailController', ProductDetailController);
 
     /* @ngInject */
-    function ProductDetailController($firebaseObject, $firebase, $location, $stateParams) {
+    function ProductDetailController($scope,$firebaseObject, $firebase, $location, $stateParams) {
         var vm = this;
+        $scope.id='test';
         vm.id=$stateParams.id||'bd_001';
         vm.selectedOption={};
         vm.showDetail= function (itemId) {
