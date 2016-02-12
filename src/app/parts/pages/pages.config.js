@@ -26,7 +26,9 @@
             .state('quartz.admin-default.pageEditor', {
                 data: {
                     layout: {
-                        sideMenuSize: 'hidden'
+                        sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        footer: false
                     }
                 },
                 resolve:{
@@ -49,7 +51,9 @@
             .state('quartz.admin-default.widgetEditor', {
                 data: {
                     layout: {
-                        sideMenuSize: 'hidden'
+                        sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        footer: false
                     }
                 },
                 resolve:{
@@ -68,6 +72,13 @@
                     getAllTemplates:['customService', function(customService){
                         return customService.getAllTemplates(templateList, tmplRoot)
                     }]
+                },
+                data: {
+                    layout: {
+                        sideMenuSize: 'hidden'
+                        //toolbarShrink: true,
+                        //footer: false
+                    }
                 },
                 templateUrl: 'app/parts/pages/custom-page.tmpl.html',
                 controller: 'CustomPageController',

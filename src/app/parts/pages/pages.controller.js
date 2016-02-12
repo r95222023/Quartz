@@ -156,7 +156,11 @@
             $mdSidenav('editCustomItem').close();
 
             if (vm.item.type === 'customWidget') {
-                if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) return;
+                if (vm.getHtmlContent(vm.backUpItem) === vm.item.content){
+                    return;
+                } else {
+                    vm.item.type = 'custom';
+                }
             }
 
             $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;

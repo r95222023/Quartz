@@ -1,23 +1,26 @@
-<form>
-    <md-input-container>
-        <label>Widget Name</label>
-        <input type="text" ng-model="vm.widgetName">
-    </md-input-container>
-    <md-input-container>
-        <label>CSS</label>
+<div>
+    <form>
+        <md-input-container>
+            <label>Widget Name</label>
+            <input type="text" ng-model="vm.widgetName">
+        </md-input-container>
+        <md-input-container>
+            <label>CSS</label>
         <textarea type="text" id="css" rows="10" ng-change="vm.injectCss()"
-          ng-model="vm.widgetCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
-    </md-input-container>
-    <md-button ng-click="vm.hidePreview=!vm.hidePreview">Preview</md-button>
-    <md-button ng-click="vm.update()">Save</md-button>
-    <md-button ng-click="vm.revert()">Revert</md-button>
+                  ng-model="vm.widgetCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
+        </md-input-container>
+        <md-button ng-click="vm.hidePreview=!vm.hidePreview">Preview</md-button>
+        <md-button ng-click="vm.update()">Save</md-button>
+        <md-button ng-click="vm.revert()">Revert</md-button>
 
-</form>
+    </form>
+</div>
+
 
 
 <md-content ng-if="!destroyDragula" ng-init="initDragula()" class="padded-content-page">
     <div layout="row">
-        <div style="position: fixed; top:100px; left:30px">
+        <div style="max-height:80%; overflow-y: scroll; position: fixed; top:100px; left:30px">
             <div layout="column" layout-xs="column"
                  layout-align="start center"
                  layout-margin>
@@ -263,73 +266,6 @@
 
 </md-sidenav>
 
-
-<div id="doraemon">
-    <div id="face">
-        <div id="head_light"></div>
-        <div id="eyes">
-            <div class="eye eye_left"></div>
-            <div class="black_eye black_left"></div>
-
-            <div class="eye eye_right"></div>
-            <div class="black_eye black_right"></div>
-        </div>
-        <div id="base">
-            <div id="base_white"></div>
-            <div id="nose">
-                <div id="nose_light"></div>
-            </div>
-            <div id="nose_line"></div>
-            <div id="mouth"></div>
-            <div id="mouth_rewrite"></div>
-            <div id="firefox_mouth"></div>
-
-            <div class="whiskers whi_right_top rotate160"></div>
-            <div class="whiskers whi_right"></div>
-            <div class="whiskers whi_right_bottom rotate20"></div>
-
-            <div class="whiskers whi_left_top rotate20"></div>
-            <div class="whiskers whi_left"></div>
-            <div class="whiskers whi_left_bottom rotate160"></div>
-        </div>
-    </div>
-    <div id="choker">
-        <div id="belt"></div>
-        <div id="bell">
-            <div id="bell_line"></div>
-            <div id="bell_circle"></div>
-            <div id="bell_under"></div>
-            <div id="bell_light"></div>
-        </div>
-    </div>
-    <div id="body">
-        <div id="doutai"></div>
-        <div class="base_white2 doutai_center"></div>
-        <div id="pocket">
-            <div id="circle"></div>
-            <div id="circle_rewrite"></div>
-        </div>
-    </div>
-    <div id="hand_right">
-        <div id="arm_right"></div>
-        <div class="hand_circle hand_right"></div>
-        <div class="arm_rewrite_right"></div>
-    </div>
-    <div id="hand_left">
-        <div id="arm_left"></div>
-        <div class="hand_circle hand_left"></div>
-        <div class="arm_rewrite_left"></div>
-    </div>
-    <div id="foot">
-        <div id="foot_left"></div>
-        <div id="foot_right"></div>
-        <div id="foot_rewrite"></div>
-    </div>
-    <div id="shadow_doutai_arm"></div>
-    <div id="shadow_doutai_left"></div>
-    <div id="shadow_doutai_right"></div>
-    <div id="shadow_belt"></div>
-</div>
 
 
 

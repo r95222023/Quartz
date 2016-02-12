@@ -19,7 +19,7 @@
                 <tr md-row
                     ng-repeat="(id, widget) in vm.paginator.result.hits">
                     <td md-cell>{{widget.name}}</td>
-                    <th md-cell>{{widget.author}}</th>
+                    <td md-cell>{{widget.author}}</td>
                     <td md-cell>{{widget.editTime| date: 'medium'}}</td>
                     <td md-cell style="width:50px;">
                         <div layout="row">

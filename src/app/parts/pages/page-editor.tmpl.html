@@ -16,7 +16,7 @@
 
 <md-content ng-if="!destroyDragula" ng-init="initDragula()" ng-show="!vm.preview" class="padded-content-page">
     <div layout="row">
-        <div style="position: fixed; top:100px; left:30px">
+        <div style="max-height:80%; overflow-y: scroll; position: fixed; top:100px; left:30px">
             <div layout="column" layout-xs="column"
                  layout-align="start center"
                  layout-margin>
@@ -56,13 +56,13 @@
         </div>
 
         <div flex flex-offset="10">
-            <div layout="row" dragula='"drag-container-root"' dragula-model='containers.root'
+            <div layout="row" layout-wrap dragula='"drag-container-root"' dragula-model='containers.root'
                  style="min-width: 100px;min-height: 500px">
-                <div flex class="md-whiteframe-3dp"
+                <div flex="{{container.layout.all.flex||''}}" class="md-whiteframe-3dp"
                      style="min-width: 100px;min-height: 500px"
                      layout="column"
                      layout-align="start center"
-                     layout-margin
+                     layout-padding
                      ng-repeat="container in containers.root track by container.id">
                     <div class="root-handle" style="cursor: move; width:100%;margin:0; background-color: lightgray">
                         {{container.type}}
@@ -91,7 +91,7 @@
                         <div style="min-width: 300px;min-height: 100px; background-color: dimgrey;padding: 0"
                              flex="{{subcontainer.layout.all.flex||''}}"
                              layout="column"
-                             layout-margin
+                             layout-padding
                              ng-repeat="subcontainer in containers[container.id] track by subcontainer.id">
                             <div class="lv1-handle" style="cursor: move; margin:0; background-color: lightgray">
                                 {{subcontainer.type}}
@@ -121,7 +121,6 @@
                                 <div style="cursor: move; background-color: #0b97c4" class="dragable-widget lv2-handle"
                                      flex="{{widget.layout.all.flex||''}}"
                                      layout="column"
-                                     layout-margin
                                      ng-repeat="widget in containers[subcontainer.id] track by widget.id"
                                      layout-padding>
                                     <span>{{widget.name||widget.type}}</span>
@@ -258,7 +257,7 @@
 
 </md-sidenav>
 
-<custom-item layout="row" ng-if="vm.preview" content="vm.html"></custom-item>
+<custom-item layout="row" layout-wrap ng-if="vm.preview" content="vm.html"></custom-item>
 
 
 
