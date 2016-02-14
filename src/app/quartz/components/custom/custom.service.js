@@ -22,7 +22,6 @@
             };
 
         var items = [
-                {type: 'button'},
                 {type: 'custom', content: '<div></div>'}
             ],
             containers = [
@@ -51,8 +50,8 @@
                 }
             ];
         var templates = {
-            "row": "<div customlayout><!--include--></div>",
-            "column": "<div customlayout><!--include--></div>"
+            "row": "<div <!--custom-->><!--include--></div>",
+            "column": "<div <!--custom--> ><!--include--></div>"
         };
 
 
@@ -78,16 +77,13 @@
             angular.forEach(templateList, function (tmplName) {
                 promises[tmplName] = getTemplate(tmplRoot + tmplName + '.html');
             });
-            var promise=$q.all(promises);
+            var promise = $q.all(promises);
             promise.then(function (res) {
                 angular.extend(templates, res);
             });
             return promise;
         }
 
-        var configs = {
-            row: []
-        };
 
         function convert(val, target, maxLevel, level) {
             var _level = level || 1,
@@ -95,12 +91,10 @@
             angular.forEach(val, function (item) {
                 var _item = {};
                 _item.id = Math.random().toString();
-                _item.options = item.options;
-                _item.layout = item.layout;
-                _item.name = item.name;
-                _item.type = item.type;
-                _item.content = item.content;
-                if(item.css) _item.css=item.css;
+                angular.forEach(['options', 'name', 'type', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
+                    _item[property] = item[property];
+                });
+                if (item.css) _item.css = item.css;
                 res.push(_item);
                 if (_level < maxLevel) {
                     target[_item.id] = convert(item.divs || [], target, maxLevel, _level + 1);
@@ -116,12 +110,10 @@
 
             angular.forEach(val[_id], function (item) {
                 var _item = {};
-                if(item.css&&styleSheets&&item.name) styleSheets[item.name] = item.css;
-                _item.options = item.options || null;
-                _item.name = item.name || null;
-                _item.type = item.type;
-                _item.layout = item.layout || null;
-                _item.content = item.content || null;
+                if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
+                angular.forEach(['options', 'name', 'type', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
+                    _item[property] = item[property] || null;
+                });
                 if (item.id) _item.divs = convertBack(val, item.id, styleSheets);
                 result.push(_item);
             });
@@ -143,8 +135,8 @@
                 content = '';
             }
 
+            var res = '';
             if (item.layout) {
-                var res = '';
                 angular.forEach(item.layout, function (layout, breakpoint) {
                     var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
                     angular.forEach(layout, function (value, key) {
@@ -168,8 +160,20 @@
                         res += _property + _value;
                     })
                 });
-                content = content.replace('customlayout', res);
             }
+
+            if (item.class) {
+                res+=' class="' + item.class + '"';
+            }
+            if (item.style) {
+                res+=' style="' + item.style + '"';
+            }
+            if (item.attrs) {
+                res+=' '+item.attrs;
+            }
+
+            content = content.replace('<!--custom-->', res);
+
             return content
         }
 
