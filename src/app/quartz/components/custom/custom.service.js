@@ -46,12 +46,12 @@
                 {
                     type: 'custom',
                     widgets: [],
-                    content: '<div><!--include--></div>'
+                    content: '<!--tag-- !--custom--><!--include--><!--endtag-->'
                 }
             ];
         var templates = {
-            "row": "<div <!--custom-->><!--include--></div>",
-            "column": "<div <!--custom--> ><!--include--></div>"
+            "row": "<!--tag-- !--custom--><!--include--><!--endtag-->",
+            "column": "<!--tag-- !--custom--><!--include--><!--endtag-->"
         };
 
 
@@ -90,31 +90,31 @@
                 res = [];
             angular.forEach(val, function (item) {
                 var _item = {};
-                _item.id = Math.random().toString();
-                angular.forEach(['options', 'name', 'type', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
+                _item.cid = Math.random().toString();
+                angular.forEach(['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
                     _item[property] = item[property];
                 });
                 if (item.css) _item.css = item.css;
                 res.push(_item);
                 if (_level < maxLevel) {
-                    target[_item.id] = convert(item.divs || [], target, maxLevel, _level + 1);
+                    target[_item.cid] = convert(item.divs || [], target, maxLevel, _level + 1);
                 }
             });
             if (_level === 1) target['root'] = res;
             return res
         }
 
-        function convertBack(val, id, styleSheets) {
+        function convertBack(val, cid, styleSheets) {
             var result = [],
-                _id = id || 'root';
+                _cid = cid || 'root';
 
-            angular.forEach(val[_id], function (item) {
+            angular.forEach(val[_cid], function (item) {
                 var _item = {};
                 if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
-                angular.forEach(['options', 'name', 'type', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
+                angular.forEach(['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
                     _item[property] = item[property] || null;
                 });
-                if (item.id) _item.divs = convertBack(val, item.id, styleSheets);
+                if (item.cid) _item.divs = convertBack(val, item.cid, styleSheets);
                 result.push(_item);
             });
             return result;
@@ -123,7 +123,8 @@
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
         function getHtmlContent(item) {
             item = item || {};
-            var content;
+            var content,
+                tag = item.tag || 'div';
 
             if (item.type === 'customWidget') {
                 content = compile(item.content);
@@ -136,6 +137,9 @@
             }
 
             var res = '';
+            if (item.id) {
+                res+='id="'+item.id+'" '
+            }
             if (item.layout) {
                 angular.forEach(item.layout, function (layout, breakpoint) {
                     var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
@@ -163,16 +167,18 @@
             }
 
             if (item.class) {
-                res+=' class="' + item.class + '"';
+                res += ' class="' + item.class + '"';
             }
             if (item.style) {
-                res+=' style="' + item.style + '"';
+                res += ' style="' + item.style + '"';
             }
             if (item.attrs) {
-                res+=' '+item.attrs;
+                res += ' ' + item.attrs;
             }
 
-            content = content.replace('<!--custom-->', res);
+            content = content.replace('!--custom--', res);
+            content = content.replace('!--tag--', tag);
+            content = content.replace('!--endtag--', '/' + tag);
 
             return content
         }
@@ -196,6 +202,13 @@
             return html;
         }
 
+        function isAttrsConfigurable(html){
+            return html.search('!--custom--')!==-1;
+        }
+        function isTagConfigurable(html){
+            return html.search('!--tag--')!==-1&&html.search('!--endtag--')!==-1;
+        }
+
         return {
             layoutOptions: layoutOptions,
             convert: convert,
@@ -203,6 +216,8 @@
             compile: compile,
             getHtmlContent: getHtmlContent,
             getAllTemplates: getAllTemplates,
+            isAttrsConfigurable:isAttrsConfigurable,
+            isTagConfigurable:isTagConfigurable,
             containers: containers,
             items: items
         }

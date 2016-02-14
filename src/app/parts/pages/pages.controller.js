@@ -103,6 +103,8 @@
             containerSource = customService.containers,
             pageRootRef = $firebase.ref('pages');
         vm.getHtmlContent = customService.getHtmlContent;
+        vm.isAttrsConfigurable = customService.isAttrsConfigurable;
+        vm.isTagConfigurable = customService.isTagConfigurable;
         vm.layoutOptions = customService.layoutOptions;
 
         var dragula = new Dragula(containerSource, containerSource, widgetSource, {
@@ -127,27 +129,31 @@
         }
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
-        vm.action = function (action, id, index) {
+        vm.action = function (action, cid, index) {
             switch (action) {
                 case 'edit':
-                    vm.editItem(id, index);
+                    vm.editItem(cid, index);
                     break;
                 case 'copy':
-                    vm.copyItem(id, index);
+                    vm.copyItem(cid, index);
                     break;
                 case 'delete':
-                    vm.deleteItem(id, index);
+                    vm.deleteItem(cid, index);
                     break;
             }
         };
 
-        vm.editItem = function (id, index) {
+        vm.editItem = function (cid, index) {
             vm.item = {};
-            vm.item = angular.copy($scope.containers[id][index]);
-            vm.backUpItem = angular.copy($scope.containers[id][index]);
-            if (vm.item.type === 'customWidget') vm.item.content = vm.getHtmlContent(vm.item);
-            vm.selectedContainerId = id;
+            vm.item = angular.copy($scope.containers[cid][index]);
+            vm.backUpItem = angular.copy($scope.containers[cid][index]);
+            if (vm.item.type === 'customWidget') {
+                vm.item.content = vm.getHtmlContent(vm.item);
+                vm.item.type='custom';
+            }
+            vm.selectedContainerId = cid;
             vm.selectedItemIndex = index;
+
             $mdSidenav('editCustomItem').open();
         };
 
@@ -165,14 +171,14 @@
 
             $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
         };
-        vm.copyItem = function (id, index) {
-            var copied = angular.copy($scope.containers[id][index]);
-            copied.id = Math.random().toString();
-            $scope.containers[id].splice(index, 0, copied);
+        vm.copyItem = function (cid, index) {
+            var copied = angular.copy($scope.containers[cid][index]);
+            copied.cid = Math.random().toString();
+            $scope.containers[cid].splice(index, 0, copied);
         };
 
-        vm.deleteItem = function (id, index) {
-            $scope.containers[id].splice(index, 1);
+        vm.deleteItem = function (cid, index) {
+            $scope.containers[cid].splice(index, 1);
         };
 
         vm.compile = function () {
@@ -234,6 +240,8 @@
             containerSource = customService.containers,
             widgetRootRef = $firebase.ref('widgets');
         vm.getHtmlContent = customService.getHtmlContent;
+        vm.isAttrsConfigurable = customService.isAttrsConfigurable;
+        vm.isTagConfigurable = customService.isTagConfigurable;
         vm.layoutOptions = customService.layoutOptions;
 
 
@@ -265,26 +273,26 @@
         }
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
-        vm.action = function (action, id, index) {
+        vm.action = function (action, cid, index) {
             switch (action) {
                 case 'edit':
-                    vm.editItem(id, index);
+                    vm.editItem(cid, index);
                     break;
                 case 'copy':
-                    vm.copyItem(id, index);
+                    vm.copyItem(cid, index);
                     vm.compile();
                     break;
                 case 'delete':
-                    vm.deleteItem(id, index);
+                    vm.deleteItem(cid, index);
                     vm.compile();
                     break;
             }
         };
 
-        vm.editItem = function (id, index) {
+        vm.editItem = function (cid, index) {
             vm.item = {};
-            vm.item = angular.copy($scope.containers[id][index]);
-            vm.selectedContainerId = id;
+            vm.item = angular.copy($scope.containers[cid][index]);
+            vm.selectedContainerId = cid;
             vm.selectedItemIndex = index;
             $mdSidenav('editCustomItem').open();
         };
@@ -294,15 +302,15 @@
             vm.compile();
             $mdSidenav('editCustomItem').close();
         };
-        vm.copyItem = function (id, index) {
-            var copied = angular.copy($scope.containers[id][index]);
-            copied.id = Math.random().toString();
+        vm.copyItem = function (cid, index) {
+            var copied = angular.copy($scope.containers[cid][index]);
+            copied.cid = Math.random().toString();
             console.log(copied);
-            $scope.containers[id].splice(index, 0, copied);
+            $scope.containers[cid].splice(index, 0, copied);
         };
 
-        vm.deleteItem = function (id, index) {
-            $scope.containers[id].splice(index, 1);
+        vm.deleteItem = function (cid, index) {
+            $scope.containers[cid].splice(index, 1);
         };
 
         vm.compile = function () {
@@ -434,9 +442,9 @@
                 self = this;
 
             angular.forEach(source, function (item) {
-                var id = Math.random().toString();
-                self.scope.containers[id] = [];
-                copy.push(angular.extend({}, item, {id: id}))
+                var cid = Math.random().toString();
+                self.scope.containers[cid] = [];
+                copy.push(angular.extend({}, item, {cid: cid}))
             });
             return copy;
         }
