@@ -22,7 +22,7 @@
             };
 
         var items = [
-                {type: 'custom', content: '<div></div>'}
+                {type: 'custom', content: '<!--tag-- !--custom--><!--include--><!--endtag-->'}
             ],
             containers = [
                 {
@@ -45,7 +45,6 @@
                 },
                 {
                     type: 'custom',
-                    widgets: [],
                     content: '<!--tag-- !--custom--><!--include--><!--endtag-->'
                 }
             ];

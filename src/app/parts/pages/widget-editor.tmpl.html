@@ -1,29 +1,101 @@
-<div layout="row">
-    <div flex="15" style="min-width: 200px"></div>
-    <form>
-        <md-input-container>
-            <label>Widget Name</label>
-            <input type="text" ng-model="vm.widgetName">
-        </md-input-container>
-        <md-input-container>
-            <label>CSS</label>
-        <textarea type="text" id="css" rows="10" ng-change="vm.injectCss()"
-                  ng-model="vm.widgetCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
-        </md-input-container>
-        <md-button ng-click="vm.hidePreview=!vm.hidePreview">Preview</md-button>
-        <md-button ng-click="vm.update()">Save</md-button>
-        <md-button ng-click="vm.revert()">Revert</md-button>
+<div ng-if="!destroyDragula" ng-init="initDragula()" style="
+    position: absolute;
+    width:100%;
+    top:0;
+    bottom: 0;
+    overflow: hidden;" layout="column">
+    <md-toolbar class="md-menu-toolbar">
+        <div layout="row">
+            <!--<md-toolbar-filler layout layout-align="center center">-->
+            <!--<md-icon md-svg-icon="call:chat"></md-icon>-->
+            <!--</md-toolbar-filler>-->
+            <div>
+                <h2 class="md-toolbar-tools" ng-if="!vm.showWidgetNameInput">{{vm.widgetName}}</h2>
+                <div class="md-toolbar-tools" ng-if="vm.showWidgetNameInput">
+                    <md-input-container>
+                        <label>Widget Name</label>
+                        <input type="text" ng-model="vm.widgetName">
+                    </md-input-container>
+                    <md-button ng-click="vm.showWidgetNameInput=false">OK</md-button>
+                </div>
+                <md-menu-bar>
+                    <md-menu>
+                        <button ng-click="$mdOpenMenu()">
+                            File
+                        </button>
+                        <md-menu-content>
+                            <md-menu-item>
+                                <md-button ui-sref="quartz.admin-default-no-scroll.widgetEditor({widgetName:''})">
+                                    New
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="vm.showWidgetNameInput=true">
+                                    Rename
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="vm.update()">
+                                    Save
+                                </md-button>
+                            </md-menu-item>
 
-    </form>
-</div>
-
-
-<md-content ng-if="!destroyDragula" ng-init="initDragula()" class="padded-content-page">
-    <div layout="row">
-        <div style="max-height:80%; overflow-y: scroll; position: fixed; top:100px; left:30px">
+                        </md-menu-content>
+                    </md-menu>
+                    <md-menu>
+                        <button ng-click="$mdOpenMenu()">
+                            Edit
+                        </button>
+                        <md-menu-content>
+                            <md-menu-item>
+                                <md-button ng-click="vm.undo()">
+                                    Undo
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="vm.redo()">
+                                    Redo
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                    <md-menu>
+                        <button ng-click="$mdOpenMenu()">
+                            View
+                        </button>
+                        <md-menu-content>
+                            <md-menu-item ng-if="vm.hidePreview">
+                                <md-button ng-click="vm.compile();vm.hidePreview=false">
+                                    Show Preview
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item ng-if="!vm.hidePreview">
+                                <md-button ng-click="vm.hidePreview=true">
+                                    Hide Preview
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item ng-if="!vm.showCss">
+                                <md-button ng-click="vm.showCss=true">
+                                    Show Css Editor
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item ng-if="vm.showCss">
+                                <md-button ng-click="vm.showCss=false">
+                                    Hide Css Editor
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </md-menu-bar>
+            </div>
+        </div>
+    </md-toolbar>
+    <br>
+    <div layout="row" flex="100">
+        <md-content flex="10" style="min-width: 200px">
             <div layout="column" layout-xs="column"
                  layout-align="start center"
-                 layout-margin>
+                 layout-margin style="overflow: auto">
                 <div>
                     Container
                 </div>
@@ -64,11 +136,15 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div flex="10" style="min-width: 200px"></div>
-
-        <div flex>
-            <div layout="row" dragula='"drag-container-root"'
+        </md-content>
+        <md-content flex layout-padding class="overlay-5">
+            <div layout="row" ng-if="vm.showCss">
+                <md-input-container flex="50">
+                    <label>CSS</label>
+                    <textarea name="pageCss" ng-model="vm.pageCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
+                </md-input-container>
+            </div>
+            <div flex ng-hide="vm.showCss" layout="row" dragula='"drag-container-root"'
                  dragula-model='containers.root'
                  style="min-width: 100px;min-height: 200px">
                 <div flex="{{container.layout.all.flex||''}}"
@@ -139,11 +215,10 @@
                                      class="md-whiteframe-3dp dragable-widget lv2-handle"
                                      flex="{{widget.layout.all.flex||''}}"
                                      layout="column"
-                                     layout-margin
                                      layout-padding
                                      ng-repeat="widget in containers[subcontainer.cid] track by widget.cid">
                                     <div class="lv2-handle" style="cursor: move; margin:0;">
-                                        {{widget.type+' '}}{{widget.name||widget.type}}
+                                        {{widget.name||widget.type+' '}}{{widget.id}}
                                         <md-menu>
                                             <md-button class="md-icon-button" aria-label="more action"
                                                        ng-click="$mdOpenMenu();$event.stopPropagation();"
@@ -167,17 +242,18 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div ng-if="!vm.hidePreview"
+        </md-content>
+        <md-content ng-if="!vm.hidePreview"
              flex layout="row"
              layout-align="center center"
              layout-margin
              class="md-whiteframe-2dp">
             <custom-item class="md-whiteframe-2dp" content="vm.html"></custom-item>
-        </div>
+        </md-content>
     </div>
-</md-content>
+
+</div>
 <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="editCustomItem">
     <md-toolbar class="md-theme-light">
         <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
@@ -289,16 +365,14 @@
         </md-tab>
 
         <md-tab label="HTML" layout-align="center start">
-            <div class="padding-10 md-tabs-content">
-                <form>
+            <div class="padding-10 md-tabs-content" ng-if="vm.selectedSideEditorTab===2">
+                <form ng-if="vm.item.type==='custom'">
                     <md-button ng-if="!vm.htmlEditor" ng-click="vm.htmlEditor=true">Edit</md-button>
                     <md-button ng-if="vm.htmlEditor===true" ng-click="vm.htmlEditor=false">Hide</md-button>
-
-                <textarea ng-if="vm.item.type==='custom'&&vm.htmlEditor" type="text" id="testInput" rows="35" cols="34"
+                <textarea ng-if="vm.htmlEditor" type="text" id="testInput" rows="35" cols="34"
                           ng-model="vm.item.content" md-autofocus></textarea>
                 </form>
-                <div ng-if="vm.selectedSideEditorTab===2">
-                    Result:
+                <div>
                     <code>{{vm.getHtmlContent(vm.item)}}</code>
                 </div>
             </div>

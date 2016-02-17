@@ -25,10 +25,10 @@
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
-                    $state.go('quartz.admin-default.customPage', {pageName: name});
+                    $state.go('quartz.admin-default.customPage', {id: id, pageName: name});
                     break;
                 case 'edit':
-                    $state.go('quartz.admin-default.pageEditor', {pageName: name});
+                    $state.go('quartz.admin-default-no-scroll.pageEditor', {id: id, pageName: name});
                     break;
                 case 'delete':
                     pagesRef.child(id).remove();
@@ -61,19 +61,15 @@
             },
             widgetsRef = $firebase.ref('widgets');
 
-        //Todo: 改名 刪除
         vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, name) {
             console.log(action, id, name);
             switch (action) {
                 case 'edit':
-                    $state.go('quartz.admin-default.widgetEditor', {widgetName: name});
+                    $state.go('quartz.admin-default-no-scroll.widgetEditor', {id: id, widgetName: name});
                     break;
                 case 'delete':
                     widgetsRef.child(id).remove();
-                    break;
-                case 'rename':
-                    //pagesRef.child(id+'/name').set();
                     break;
             }
         };
@@ -93,7 +89,7 @@
     function PageEditorController(injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
         $rootScope.$on('$stateChangeStart',
-            function(){
+            function () {
                 injectCSS.remove(vm.pageRef.key());
             });
 
@@ -115,12 +111,12 @@
         $scope.initDragula = dragula.init.bind(dragula);
 
         if ($stateParams.pageName) {
-            pageRootRef.orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
+            pageRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
                 if (snap.val()) {
                     $timeout(function () {
                         customService.convert(snap.child('content').val(), $scope['containers'], 3);
                         vm.pageRef = snap.ref();
-                        vm.pageCss = snap.child('css').val()||'';
+                        vm.pageCss = snap.child('css').val() || '';
                     }, 0);
                 }
             });
@@ -149,11 +145,10 @@
             vm.backUpItem = angular.copy($scope.containers[cid][index]);
             if (vm.item.type === 'customWidget') {
                 vm.item.content = vm.getHtmlContent(vm.item);
-                vm.item.type='custom';
+                vm.item.type = 'custom';
             }
             vm.selectedContainerId = cid;
             vm.selectedItemIndex = index;
-
             $mdSidenav('editCustomItem').open();
         };
 
@@ -162,7 +157,7 @@
             $mdSidenav('editCustomItem').close();
 
             if (vm.item.type === 'customWidget') {
-                if (vm.getHtmlContent(vm.backUpItem) === vm.item.content){
+                if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
                     return;
                 } else {
                     vm.item.type = 'custom';
@@ -182,18 +177,18 @@
         };
 
         vm.compile = function () {
-            var styleSheets={};
-            var compiled = customService.compile(customService.convertBack($scope.containers,'root',styleSheets));
+            var styleSheets = {};
+            var compiled = customService.compile(customService.convertBack($scope.containers, 'root', styleSheets));
             vm.pageRef.once('value', function (snap) {
-                vm.pageCss=vm.pageCss||snap.child('css').val()||'';
-                vm.widgetsCss=vm.buildCss(styleSheets);
+                vm.pageCss = vm.pageCss || snap.child('css').val() || '';
+                vm.widgetsCss = vm.buildCss(styleSheets);
                 vm.injectCss();
             });
             vm.html = compiled
         };
 
-        vm.injectCss=function(){
-            injectCSS.setDirectly(vm.pageRef.key(), vm.pageCss+vm.widgetsCss);
+        vm.injectCss = function () {
+            injectCSS.setDirectly(vm.pageRef.key(), vm.pageCss + vm.widgetsCss);
         };
 
 
@@ -202,25 +197,29 @@
         };
 
         vm.update = function () {
-            var styleSheets={},
-                content = customService.convertBack($scope.containers, 'root',styleSheets);
-
+            var styleSheets = {},
+                content = customService.convertBack($scope.containers, 'root', styleSheets),
+                css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
             var data = {
                 name: vm.pageName,
                 content: content,
-                css: (vm.pageCss+vm.buildCss(styleSheets))||null,
+                css: css || null,
                 editTime: Firebase.ServerValue.TIMESTAMP
             };
             vm.pageRef.update(data);
             vm.revert();
         };
-        vm.buildCss = function(styleSheets){
-            var widgetsCss='';
+        vm.buildCss = function (styleSheets) {
+            var widgetsCss = '';
             angular.forEach(styleSheets, function (widgetCss) {
-                if(vm.pageCss.indexOf(widgetCss)===-1){widgetsCss+=widgetCss}
+                if (vm.pageCss.indexOf(widgetCss) === -1) {
+                    widgetsCss += widgetCss
+                }
             });
             return widgetsCss;
         };
+
+        vm.undo = dragula.undo; vm.redo = dragula.redo;
         vm.revert = function () {
             $state.go($state.current, {pageName: vm.pageName}, {reload: true});
         }
@@ -231,7 +230,7 @@
     function WidgetEditorController(injectCSS, customService, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
         $rootScope.$on('$stateChangeStart',
-            function(){
+            function () {
                 injectCSS.remove(vm.widgetRef.key());
             });
 
@@ -258,7 +257,7 @@
         $scope.initDragula = dragula.init.bind(dragula);
 
         if ($stateParams.widgetName) {
-            widgetRootRef.orderByChild('name').equalTo($stateParams.widgetName).once('child_added', function (snap) {
+            widgetRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
                 if (snap.val()) {
                     $timeout(function () {
                         customService.convert(snap.child('content').val(), $scope['containers'], 3);
@@ -314,15 +313,15 @@
         };
 
         vm.compile = function () {
-            var compiled = customService.compile(customService.convertBack($scope.containers,'root'));
+            var compiled = customService.compile(customService.convertBack($scope.containers, 'root'));
             vm.widgetRef.once('value', function (snap) {
-                vm.widgetCss = vm.widgetCss||snap.child('css').val()||'';
+                vm.widgetCss = vm.widgetCss || snap.child('css').val() || '';
                 vm.injectCss();
             });
             vm.html = compiled
         };
 
-        vm.injectCss=function(){
+        vm.injectCss = function () {
             injectCSS.setDirectly(vm.widgetRef.key(), vm.widgetCss);
         };
 
@@ -334,29 +333,34 @@
             var data = {
                 name: vm.widgetName,
                 type: 'customWidget',
-                css: vm.widgetCss||null,
+                css: vm.widgetCss || null,
                 content: customService.convertBack($scope.containers),
                 editTime: Firebase.ServerValue.TIMESTAMP
             };
             vm.widgetRef.update(data);
+            vm.revert();
         };
+        vm.undo = dragula.undo; vm.redo = dragula.redo;
+
         vm.revert = function () {
             $state.go($state.current, {widgetName: vm.widgetName}, {reload: true});
         }
     }
 
     /* @ngInject */
-    function CustomPageController(injectCSS, $firebase, customService, $stateParams, $timeout, $rootScope,qtNotificationsService, Auth, $state, $mdDialog, config) {
-        var customPage = this;
-        if ($stateParams.pageName) {
-            $firebase.ref('pages').orderByChild('name').equalTo($stateParams.pageName).once('child_added', function (snap) {
+    function CustomPageController(injectCSS, $firebase, customService, $stateParams, $timeout, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
+        var customPage = this,
+            pageName = $stateParams.pageName;
+        if (pageName) {
+            $firebase.ref('pages').orderByChild('name').equalTo(pageName).once('child_added', function (snap) {
                 $timeout(function () {
                     injectCSS.setDirectly(snap.key(), snap.child('css').val());
                     customPage.html = customService.compile(snap.val().content);
                 }, 0);
-                $rootScope.$on('$stateChangeStart',
-                    function(){
+                var listener = $rootScope.$on('$stateChangeStart',
+                    function () {
                         injectCSS.remove(snap.key());
+                        listener();
                     });
             })
         }
@@ -375,6 +379,52 @@
         this.scope.containerSource = this.getSource(containerSource);
         this.scope.subContainerSource = this.getSource(subContainerSource);
         this.scope.subSubContainerSource = this.getSource(subSubContainerSource);
+
+        this.steps = {
+            index: -1,
+            action: '',
+            cache: []
+        };
+
+        var self = this;
+        self.scope.$watch('containers', function () {
+            registerStep();
+        }, true);
+
+        function registerStep() {
+            var index = self.steps['index'],
+                action = self.steps['action'],
+                lastIndex = self.steps['cache'].length - 1;
+            if (action === '') {
+                if (index !== lastIndex) {
+                    self.steps['cache'].splice(index + 1, lastIndex - index, angular.copy(self.scope.containers));
+                } else {
+                    self.steps['cache'].push(angular.copy(self.scope.containers));
+                }
+                self.steps['index'] = self.steps['cache'].length - 1;
+                if (self.steps['cache'].length > 20) {
+                    self.steps['index']--;
+                    self.steps['cache'].shift()
+                }
+            } else {
+                self.steps['action'] = '';
+            }
+        }
+
+        this.undo = function () {
+            if(self.steps['index']<2) return;
+            self.steps['index']--;
+            var resumed = self.steps['cache'][self.steps['index']];
+            self.steps['action'] = 'undo';
+            self.scope.containers=resumed;
+        };
+        this.redo = function(){
+            if(self.steps['index']===self.steps['cache'].length-1) return;
+            self.steps['index']++;
+            var resumed = self.steps['cache'][self.steps['index']];
+            self.steps['action'] = 'redo';
+            self.scope.containers=resumed;
+        }
     }
 
     Dragula.prototype = {
@@ -386,6 +436,7 @@
                     self.options.onDrop()
                 }
             }
+
 
             self.dragulaService.options(self.scope, 'drag-container-root', {
                 moves: function (el, container, handle) {

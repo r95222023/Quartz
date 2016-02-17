@@ -23,7 +23,7 @@
                 controller: 'WidgetManagerController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.pageEditor', {
+            .state('quartz.admin-default-no-scroll.pageEditor', {
                 data: {
                     layout: {
                         sideMenuSize: 'hidden',
@@ -43,12 +43,12 @@
                         return def.promise;
                     }]
                 },
-                url: '/dashboard/pageEditor/:pageName',
+                url: '/dashboard/pageEditor/:pageName/:id',
                 templateUrl: 'app/parts/pages/page-editor.tmpl.html',
                 controller: 'PageEditorController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.widgetEditor', {
+            .state('quartz.admin-default-no-scroll.widgetEditor', {
                 data: {
                     layout: {
                         sideMenuSize: 'hidden',
@@ -61,7 +61,7 @@
                         return customService.getAllTemplates(templateList, tmplRoot)
                     }]
                 },
-                url: '/dashboard/widgetEditor/:widgetName',
+                url: '/dashboard/widgetEditor/:widgetName/:id',
                 templateUrl: 'app/parts/pages/widget-editor.tmpl.html',
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'
