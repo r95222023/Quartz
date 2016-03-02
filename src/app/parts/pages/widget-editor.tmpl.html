@@ -1,9 +1,4 @@
-<div ng-if="!destroyDragula" ng-init="initDragula()" style="
-    position: absolute;
-    width:100%;
-    top:0;
-    bottom: 0;
-    overflow: hidden;" layout="column">
+<div ng-if="!destroyDragula" ng-init="initDragula()" class="editor-full-height" layout="column">
     <md-toolbar class="md-menu-toolbar">
         <div layout="row">
             <!--<md-toolbar-filler layout layout-align="center center">-->
@@ -30,6 +25,11 @@
                                 </md-button>
                             </md-menu-item>
                             <md-menu-item>
+                                <md-button ui-sref="quartz.admin-default.widgetManager">
+                                    Open...
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
                                 <md-button ng-click="vm.showWidgetNameInput=true">
                                     Rename
                                 </md-button>
@@ -39,7 +39,6 @@
                                     Save
                                 </md-button>
                             </md-menu-item>
-
                         </md-menu-content>
                     </md-menu>
                     <md-menu>

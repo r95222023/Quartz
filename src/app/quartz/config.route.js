@@ -91,7 +91,7 @@
                         controllerAs: 'vm'
                     },
                     content: {
-                        template: '<div flex ui-view layout="column" class="overflow-hidden"></div>'
+                        template: '<div flex ui-view layout="column" class="{{layout.innerContentClass}} overflow-hidden"></div>'
                     }
                 }
             });

@@ -3,10 +3,10 @@
 
     angular
         .module('app.parts.pages')
-        .config(productsConfig);
+        .config(pagesConfig);
 
     /* @ngInject */
-    function productsConfig($stateProvider, qtMenuProvider,$translatePartialLoaderProvider) {
+    function pagesConfig($stateProvider, qtMenuProvider,$translatePartialLoaderProvider) {
         var tmplRoot='app/parts/pages/templates/',
             templateList=['button'];
         $translatePartialLoaderProvider.addPart('app/parts/pages');
@@ -28,6 +28,8 @@
                     layout: {
                         sideMenuSize: 'hidden',
                         //toolbarShrink: true,
+                        contentClass: 'full-height',
+                        innerContentClass:'full-height',
                         footer: false
                     }
                 },

@@ -13,7 +13,9 @@
                     //element.replaceWith($compile(scope.content)(scope));
                     if(attrs.modelAs) scope[attrs.modelAs] = scope.model;
                     element.html(scope.content).show();
-                    $compile(element.contents())(scope);
+                    var _scope=scope;
+                    if(scope.scope) _scope=scope.scope;
+                    $compile(element.contents())(_scope);
                 }
             });
         };
@@ -23,7 +25,8 @@
             link: linker,
             scope: {
                 content:'=',
-                model:'='
+                model:'=',
+                scope:'='
             }
         };
     }

@@ -1,9 +1,5 @@
-<div ng-hide="vm.preview" ng-if="!destroyDragula" ng-init="initDragula()" style="
-    position: absolute;
-    width:100%;
-    top:0;
-    bottom: 0;
-    overflow: hidden;" layout="column">
+<div ng-hide="vm.preview" ng-if="!destroyDragula" ng-init="initDragula()" class="editor-full-height"
+     layout="column">
     <md-toolbar class="md-menu-toolbar">
         <div layout="row">
             <!--<md-toolbar-filler layout layout-align="center center">-->
@@ -44,7 +40,6 @@
                                     Save
                                 </md-button>
                             </md-menu-item>
-
                         </md-menu-content>
                     </md-menu>
                     <md-menu>
@@ -249,11 +244,11 @@
 
 
 </div>
-<md-content layout="column" ng-if="vm.preview">
+<md-content layout="column" ng-if="vm.preview" class="editor-full-height">
     <md-button ng-click="vm.preview=false">
         Back To Edit Mode
     </md-button>
-    <custom-item layout="row" layout-wrap  content="vm.html"></custom-item>
+    <custom-item layout="row" layout-wrap  content="vm.html" scope="vm.scope"></custom-item>
 </md-content>
 <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="editCustomItem">
     <md-toolbar class="md-theme-light">

@@ -93,6 +93,9 @@
                 injectCSS.remove(vm.pageRef.key());
             });
 
+        $scope.$mdSidenav = $mdSidenav;
+        vm.scope = $scope;
+
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
         var widgetSource = angular.extend({}, customWidgets, customService.items),
@@ -348,9 +351,13 @@
     }
 
     /* @ngInject */
-    function CustomPageController(injectCSS, $firebase, customService, $stateParams, $timeout, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function CustomPageController(injectCSS, $firebase, $scope, $mdSidenav, customService, $stateParams, $timeout, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName;
+
+        $scope.$mdSidenav = $mdSidenav;
+
+        customPage.scope = $scope;
         if (pageName) {
             $firebase.ref('pages').orderByChild('name').equalTo(pageName).once('child_added', function (snap) {
                 $timeout(function () {
@@ -365,6 +372,8 @@
             })
         }
     }
+
+    ////////Classes
 
     function Dragula(containerSource, subContainerSource, subSubContainerSource, services, options) {
         this.options = options || {};
@@ -412,9 +421,10 @@
         }
 
         this.undo = function () {
-            if(self.steps['index']<2) return;
+            if(self.steps['index']<1||self.steps.cache.length<2) return;
+            var resumed = self.steps['cache'][self.steps['index']-1];
+            if(resumed.root.length<1) return;
             self.steps['index']--;
-            var resumed = self.steps['cache'][self.steps['index']];
             self.steps['action'] = 'undo';
             self.scope.containers=resumed;
         };
