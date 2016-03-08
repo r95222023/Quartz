@@ -1,6 +1,6 @@
-(function () {
+window.config=window.config||{};
+window.config.route=function () {
     'use strict';
-
     angular
         .module('app')
         .config(routeConfig);
@@ -44,4 +44,5 @@
         // always goto 404 if route not found
         $urlRouterProvider.otherwise('/404');
     }
-})();
+};
+//window.config.route();

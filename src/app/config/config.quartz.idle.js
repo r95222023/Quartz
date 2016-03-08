@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.quartzIdle=function() {
     'use strict';
 
     angular
@@ -13,4 +14,5 @@
         IdleProvider.timeout(10*24*60*60); // in seconds
         //KeepaliveProvider.interval(2); // in seconds
     }
-})();
+};
+//window.config.quartzIdle();

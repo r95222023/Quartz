@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.quartzSetting=function() {
     'use strict';
 
     angular
@@ -23,4 +24,5 @@
             });
         }
     }
-})();
+};
+//window.config.quartzSetting();

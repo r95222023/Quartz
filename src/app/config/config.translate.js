@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.translate=function() {
     'use strict';
 
     angular
@@ -38,13 +39,14 @@
          *      navigator.userLanguage
          */
         $translateProvider
-        .registerAvailableLanguageKeys(languageKeys, {
-            'en_US': 'en',
-            'en_UK': 'en'
-        })
-        .use('en');
+            .registerAvailableLanguageKeys(languageKeys, {
+                'en_US': 'en',
+                'en_UK': 'en'
+            })
+            .use('en');
 
         // store the users language preference in a cookie
         $translateProvider.useLocalStorage();
     }
-})();
+};
+//window.config.translate();

@@ -77,9 +77,9 @@
                 },
                 data: {
                     layout: {
-                        sideMenuSize: 'hidden'
+                        sideMenuSize: 'hidden',
                         //toolbarShrink: true,
-                        //footer: false
+                        footer: false
                     }
                 },
                 templateUrl: 'app/parts/pages/custom-page.tmpl.html',

@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.googleChart=function() {
     'use strict';
 
     angular
@@ -10,4 +11,5 @@
                 language: 'en'
             }
         });
-})();
+};
+//window.config.googleChart();

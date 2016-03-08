@@ -13,7 +13,10 @@
     angular.element(document).ready(function() {
         // your Firebase data URL goes here, no trailing slash
         var mainRef = new Firebase('https://quartz.firebaseio.com');
-
+        console.log(window.location);
+        angular.forEach(window.config,function(config){
+            config.apply(null);
+        });
         mainRef.child('config/client').once('value', function (snap) {
             window.clientConfig=  snap.val();
             angular.module('app')

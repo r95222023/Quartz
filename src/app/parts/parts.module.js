@@ -6,6 +6,7 @@
             //'app.parts.menu',
             'app.parts.home',
             'app.parts.products',
-            'app.parts.pages'
+            'app.parts.pages',
+            'app.parts.sites'
         ]);
 })();

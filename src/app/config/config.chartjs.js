@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.chartjs=function() {
     'use strict';
 
     angular
@@ -23,4 +24,5 @@
             responsive: true
         });
     }
-})();
+};
+//window.config.chartjs();

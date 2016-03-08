@@ -46,7 +46,7 @@
         vm.action = function (action, id, event) {
             switch (action) {
                 case 'view':
-                    $state.go('quartz.admin-default.productDetail',{id:id})
+                    $state.go('quartz.admin-default.productDetail',{id:id});
                     break;
                 case 'edit':
                     vm.showEditor(event, id);

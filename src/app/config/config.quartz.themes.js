@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.quartzThemes=function() {
     'use strict';
 
     angular
@@ -59,73 +60,73 @@
          *  SKINS
          */
 
-        // CYAN CLOUD SKIN
+            // CYAN CLOUD SKIN
         qtThemingProvider.theme('cyan')
-        .primaryPalette('qtCyan')
-        .accentPalette('amber')
-        .warnPalette('deep-orange');
+            .primaryPalette('qtCyan')
+            .accentPalette('amber')
+            .warnPalette('deep-orange');
 
         qtThemingProvider.theme('white-cyan')
-        .primaryPalette('white')
-        .accentPalette('qtCyan', {
-            'default': '500'
-        })
-        .warnPalette('deep-orange');
+            .primaryPalette('white')
+            .accentPalette('qtCyan', {
+                'default': '500'
+            })
+            .warnPalette('deep-orange');
 
         qtSkinsProvider.skin('cyan-cloud', 'Cyan Cloud')
-        .sidebarTheme('cyan')
-        .toolbarTheme('white-cyan')
-        .logoTheme('cyan')
-        .contentTheme('cyan');
+            .sidebarTheme('cyan')
+            .toolbarTheme('white-cyan')
+            .logoTheme('cyan')
+            .contentTheme('cyan');
 
         // RED DWARF SKIN
         qtThemingProvider.theme('red')
-        .primaryPalette('red')
-        .accentPalette('amber')
-        .warnPalette('purple');
+            .primaryPalette('red')
+            .accentPalette('amber')
+            .warnPalette('purple');
 
         qtThemingProvider.theme('white-red')
-        .primaryPalette('white')
-        .accentPalette('red', {
-            'default': '500'
-        })
-        .warnPalette('purple');
+            .primaryPalette('white')
+            .accentPalette('red', {
+                'default': '500'
+            })
+            .warnPalette('purple');
 
         qtSkinsProvider.skin('red-dwarf', 'Red Dwarf')
-        .sidebarTheme('red')
-        .toolbarTheme('white-red')
-        .logoTheme('red')
-        .contentTheme('red');
+            .sidebarTheme('red')
+            .toolbarTheme('white-red')
+            .logoTheme('red')
+            .contentTheme('red');
 
         // PLUMB PURPLE SKIN
         qtThemingProvider.theme('purple')
-        .primaryPalette('purple')
-        .accentPalette('deep-orange')
-        .warnPalette('amber');
+            .primaryPalette('purple')
+            .accentPalette('deep-orange')
+            .warnPalette('amber');
 
         qtThemingProvider.theme('white-purple')
-        .primaryPalette('white')
-        .accentPalette('purple', {
-            'default': '400'
-        })
-        .warnPalette('deep-orange');
+            .primaryPalette('white')
+            .accentPalette('purple', {
+                'default': '400'
+            })
+            .warnPalette('deep-orange');
 
         qtSkinsProvider.skin('plumb-purple', 'Plumb Purple')
-        .sidebarTheme('purple')
-        .toolbarTheme('white-purple')
-        .logoTheme('purple')
-        .contentTheme('purple');
+            .sidebarTheme('purple')
+            .toolbarTheme('white-purple')
+            .logoTheme('purple')
+            .contentTheme('purple');
 
         // DARK KNIGHT SKIN
         qtThemingProvider.theme('dark')
-        .primaryPalette('black', {
-            'default': '300',
-            'hue-1': '400'
-        })
-        .accentPalette('amber')
-        .warnPalette('deep-orange')
-        .backgroundPalette('black')
-        .dark();
+            .primaryPalette('black', {
+                'default': '300',
+                'hue-1': '400'
+            })
+            .accentPalette('amber')
+            .warnPalette('deep-orange')
+            .backgroundPalette('black')
+            .dark();
 
         $mdThemingProvider.theme('docs-dark', 'default')
             .primaryPalette('yellow')
@@ -133,65 +134,65 @@
 
 
         qtSkinsProvider.skin('dark-knight', 'Dark Knight')
-        .sidebarTheme('dark')
-        .toolbarTheme('dark')
-        .logoTheme('dark')
-        .contentTheme('dark');
+            .sidebarTheme('dark')
+            .toolbarTheme('dark')
+            .logoTheme('dark')
+            .contentTheme('dark');
 
         // BATTLESHIP GREY SKIN
         qtThemingProvider.theme('blue-grey')
-        .primaryPalette('blue-grey')
-        .accentPalette('amber')
-        .warnPalette('orange');
+            .primaryPalette('blue-grey')
+            .accentPalette('amber')
+            .warnPalette('orange');
 
         qtThemingProvider.theme('white-blue-grey')
-        .primaryPalette('white')
-        .accentPalette('blue-grey', {
-            'default': '400'
-        })
-        .warnPalette('orange');
+            .primaryPalette('white')
+            .accentPalette('blue-grey', {
+                'default': '400'
+            })
+            .warnPalette('orange');
 
         qtSkinsProvider.skin('battleship-grey', 'Battleship Grey')
-        .sidebarTheme('blue-grey')
-        .toolbarTheme('white-blue-grey')
-        .logoTheme('blue-grey')
-        .contentTheme('blue-grey');
+            .sidebarTheme('blue-grey')
+            .toolbarTheme('white-blue-grey')
+            .logoTheme('blue-grey')
+            .contentTheme('blue-grey');
 
         // ZESTY ORANGE SKIN
         qtThemingProvider.theme('orange')
-        .primaryPalette('orange' , {
-            'default': '800'
-        })
-        .accentPalette('lime')
-        .warnPalette('amber');
+            .primaryPalette('orange' , {
+                'default': '800'
+            })
+            .accentPalette('lime')
+            .warnPalette('amber');
 
         qtThemingProvider.theme('white-orange')
-        .primaryPalette('white')
-        .accentPalette('orange', {
-            'default': '500'
-        })
-        .warnPalette('lime');
+            .primaryPalette('white')
+            .accentPalette('orange', {
+                'default': '500'
+            })
+            .warnPalette('lime');
 
         qtSkinsProvider.skin('zesty-orange', 'Zesty Orange')
-        .sidebarTheme('orange')
-        .toolbarTheme('white-orange')
-        .logoTheme('orange')
-        .contentTheme('orange');
+            .sidebarTheme('orange')
+            .toolbarTheme('white-orange')
+            .logoTheme('orange')
+            .contentTheme('orange');
 
 
         // INDIGO ISLAND SKIN
         qtThemingProvider.theme('indigo')
-        .primaryPalette('indigo' , {
-            'default': '600'
-        })
-        .accentPalette('red')
-        .warnPalette('lime');
+            .primaryPalette('indigo' , {
+                'default': '600'
+            })
+            .accentPalette('red')
+            .warnPalette('lime');
 
         qtSkinsProvider.skin('indigo-island', 'Indigo Island')
-        .sidebarTheme('indigo')
-        .toolbarTheme('white-cyan')
-        .logoTheme('indigo')
-        .contentTheme('indigo');
+            .sidebarTheme('indigo')
+            .toolbarTheme('white-cyan')
+            .logoTheme('indigo')
+            .contentTheme('indigo');
 
         // BLUE SKY SKIN
         qtThemingProvider.theme('blue')
@@ -209,24 +210,24 @@
 
         // KERMIT GREEN SKIN
         qtThemingProvider.theme('light-green')
-        .primaryPalette('light-green' , {
-            'default': '400'
-        })
-        .accentPalette('amber')
-        .warnPalette('deep-orange');
+            .primaryPalette('light-green' , {
+                'default': '400'
+            })
+            .accentPalette('amber')
+            .warnPalette('deep-orange');
 
         qtThemingProvider.theme('white-light-green')
-        .primaryPalette('white')
-        .accentPalette('light-green', {
-            'default': '400'
-        })
-        .warnPalette('deep-orange');
+            .primaryPalette('white')
+            .accentPalette('light-green', {
+                'default': '400'
+            })
+            .warnPalette('deep-orange');
 
         qtSkinsProvider.skin('kermit-green', 'Kermit Green')
-        .sidebarTheme('light-green')
-        .toolbarTheme('white-light-green')
-        .logoTheme('light-green')
-        .contentTheme('light-green');
+            .sidebarTheme('light-green')
+            .toolbarTheme('white-light-green')
+            .logoTheme('light-green')
+            .contentTheme('light-green');
 
 
         /**
@@ -241,4 +242,5 @@
          */
         qtSkinsProvider.setSkin('blue-sky');
     }
-})();
+};
+//window.config.quartzThemes();

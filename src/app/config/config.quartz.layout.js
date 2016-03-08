@@ -1,4 +1,5 @@
-(function() {
+window.config=window.config||{};
+window.config.quartzLayout=function() {
     'use strict';
 
     angular
@@ -21,4 +22,5 @@
 
         qtLayoutProvider.setDefaultOption('footer', true);
     }
-})();
+};
+//window.config.quartzLayout();

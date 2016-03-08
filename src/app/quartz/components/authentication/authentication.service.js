@@ -6,7 +6,7 @@
         .factory('Auth', Auth);
 
     /*@ngInject*/
-    function Auth($firebaseAuth, $q, FBURL, $firebase) {
+    function Auth($firebaseAuth, $q, $firebase) {
 
         var Auth = $firebaseAuth($firebase.ref());
 
@@ -99,7 +99,7 @@
         };
 
         Auth.removeUserData = function (authData, extraCallBack) {
-            var ref = new Firebase((FBURL + 'users/' + authData.uid));   //TODO: 𩄍惩撠滚𩄍firebase𩄍𣈲𩄍
+            var ref = $firebase.ref('users/' + authData.uid);
 
             ref.remove(function (err) {
                 if (err) {
