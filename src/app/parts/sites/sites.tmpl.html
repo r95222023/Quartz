@@ -30,6 +30,9 @@
                     <div class="content-padded">
 
                     </div>
+                    <button ui-sref="quartz.admin-default.site-configure({siteName:site.siteName})">configure</button>
+                    <button ui-sref="quartz.admin-default.pageManager({siteName:site.siteName})">page</button>
+                    <button ui-sref="quartz.admin-default.widgetManager({siteName:site.siteName})">page</button>
                     <button ng-click="vm.deleteSite(site)">delete</button>
                 </md-card-content>
             </md-card>

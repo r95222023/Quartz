@@ -72,8 +72,8 @@
                 this.dbUrl = refUrl.split(".com")[0] + ".com";
                 this.path = refUrl.split(".com/")[1];
             } else {
-                this.root = (db.url || _refUrl.split("@")[1] || '').split("/")[0] || FBURL.split("//")[1].split(".fi")[0];
-                this.rootPath = (db.url || _refUrl.split("@")[1] || '').split("/")[1] || FBURL.split(".com/")[1] || '';
+                this.root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || FBURL.split("//")[1].split(".fi")[0];
+                this.rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1] || FBURL.split(".com/")[1] || '';
                 this.dbUrl = "https://" + this.root + ".firebaseio.com";
                 this.path = _refUrl.split("@")[0];
             }
@@ -518,12 +518,20 @@
             return def.promise;
         }
 
+        function setSite(siteName){
+            firebase.databases.selectedSite = {
+                siteName:siteName,
+                url:config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/' + siteName
+            };
+        }
+
         return firebase = {
             update: update,
             set: set,
             batchUpdate: batchUpdate,
             params: {},
             databases: {},
+            setSite:setSite,
             ref: queryRef,
             paginator: paginator,
             request: request,
