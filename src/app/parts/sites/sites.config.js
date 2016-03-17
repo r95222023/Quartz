@@ -10,7 +10,7 @@
         $translatePartialLoaderProvider.addPart('app/parts/sites');
 
         $stateProvider
-            .state('quartz.admin-default.sites', {
+            .state('quartz.admin-default.mysites', {
                 data: {
                     layout: {
                         sideMenuSize: 'hidden',
@@ -23,10 +23,29 @@
                         return Auth.$waitForAuth()
                     }]
                 },
-                url: '/sites',
-                templateUrl: 'app/parts/sites/sites.tmpl.html',
+                url: '/mysites',
+                templateUrl: 'app/parts/sites/my-sites.tmpl.html',
                 // set the controller to load for this page
-                controller: 'SitesController',
+                controller: 'MySitesController',
+                controllerAs: 'vm'
+            })
+            .state('quartz.admin-default.allsites', {
+                data: {
+                    layout: {
+                        sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        footer: false
+                    }
+                },
+                resolve: {
+                    authData: ['Auth', function (Auth) {
+                        return Auth.$waitForAuth()
+                    }]
+                },
+                url: '/allsites',
+                templateUrl: 'app/parts/sites/all-sites.tmpl.html',
+                // set the controller to load for this page
+                controller: 'AllSitesController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.site-configure', {
@@ -45,11 +64,18 @@
             });
 
         qtMenuProvider.addMenu({
-            name: 'MENU.SITES',
+            name: 'MENU.MYSITES',
             icon: 'zmdi zmdi-home',
             type: 'link',
             priority: 1.2,
-            state: 'quartz.admin-default.sites'
+            state: 'quartz.admin-default.mysites'
+        });
+        qtMenuProvider.addMenu({
+            name: 'MENU.ALLSITES',
+            icon: 'zmdi zmdi-home',
+            type: 'link',
+            priority: 1.2,
+            state: 'quartz.admin-default.allsites'
         });
     }
 })();

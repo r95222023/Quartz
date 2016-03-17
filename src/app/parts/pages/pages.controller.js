@@ -9,10 +9,16 @@
         .controller('WidgetEditorController', WidgetEditorController)
         .controller('CustomPageController', CustomPageController);
 
+    var pageRefUrl = 'pages@selectedSite',
+        pageListRefUrl = 'pages/list@selectedSite',
+        pageDetailRefUrl = 'pages/detail@selectedSite',
+        widgetRefUrl = 'widgets@selectedSite',
+        widgetListRefUrl = 'widgets/list@selectedSite',
+        widgetDetailRefUrl = 'widgets/detail@selectedSite';
+
     /* @ngInject */
     function PageManagerController($firebase, qtNotificationsService, Auth, $state, $stateParams, $mdDialog, config) {
-        var vm = this,
-            pagesRef = $firebase.ref('pages@selectedSite');
+        var vm = this;
 
         //Todo: 改名 刪除
         vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
@@ -25,14 +31,13 @@
                     $state.go('quartz.admin-default-no-scroll.pageEditor', {id: id, pageName: name});
                     break;
                 case 'delete':
-                    pagesRef.child(id).remove();
-                    break;
-                case 'rename':
-                    //pagesRef.child(id+'/name').set();
+                    $firebase.update(pageRefUrl, ['list/' + id, 'detail/' + id], {
+                        "@all": null
+                    });
                     break;
             }
         };
-        vm.paginator = $firebase.paginator('pages@selectedSite');
+        vm.paginator = $firebase.paginator(pageListRefUrl);
         //initiate
         vm.paginator.onReorder('name');
 
@@ -46,8 +51,7 @@
 
     /* @ngInject */
     function WidgetManagerController($firebase, qtNotificationsService, Auth, $state, $stateParams, $mdDialog, config) {
-        var vm = this,
-            widgetsRef = $firebase.ref('widgets@selectedSite');
+        var vm = this;
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, name) {
@@ -57,11 +61,13 @@
                     $state.go('quartz.admin-default-no-scroll.widgetEditor', {id: id, widgetName: name});
                     break;
                 case 'delete':
-                    widgetsRef.child(id).remove();
+                    $firebase.update(widgetRefUrl, ['list/' + id, 'detail/' + id], {
+                        "@all": null
+                    });
                     break;
             }
         };
-        vm.paginator = $firebase.paginator('widgets@selectedSite');
+        vm.paginator = $firebase.paginator(widgetListRefUrl);
         //initiate
         vm.paginator.onReorder('name');
 
@@ -84,7 +90,7 @@
 
         var widgetSource = angular.extend({}, customWidgets, customService.items),
             containerSource = customService.containers,
-            pageRootRef = $firebase.ref('pages@selectedSite');
+            pageRootRef = $firebase.ref(pageDetailRefUrl);
         //vm.getHtmlContent = customService.getHtmlContent;
         //vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         //vm.isTagConfigurable = customService.isTagConfigurable;
@@ -112,7 +118,7 @@
             vm.pageRef = pageRootRef.push();
         }
 
-        action(vm, 'page', $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
+        action(vm, 'page', $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
 
         //vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
         //vm.action = function (action, cid, index) {
@@ -228,7 +234,7 @@
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
         var elementSource = customService.items,
             containerSource = customService.containers,
-            widgetRootRef = $firebase.ref('widgets@selectedSite');
+            widgetRootRef = $firebase.ref(widgetDetailRefUrl);
         //vm.getHtmlContent = customService.getHtmlContent;
         //vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         //vm.isTagConfigurable = customService.isTagConfigurable;
@@ -262,7 +268,7 @@
             vm.widgetRef = widgetRootRef.push();
         }
 
-        action(vm, 'widget', $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
+        action(vm, 'widget', $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
 
         //vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
         //vm.action = function (action, cid, index) {
@@ -356,7 +362,7 @@
 
         customPage.scope = $scope;
         if (pageName) {
-            $firebase.ref('pages@selectedSite').orderByChild('name').equalTo(pageName).once('child_added', function (snap) {
+            $firebase.ref(pageDetailRefUrl).orderByChild('name').equalTo(pageName).once('child_added', function (snap) {
                 $timeout(function () {
                     injectCSS.setDirectly(snap.key(), snap.child('css').val());
                     customPage.html = customService.compile(snap.val().content);
@@ -508,7 +514,7 @@
         }
     };
 
-    function action(vm, type, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService) {
+    function action(vm, type, $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService) {
         vm.getHtmlContent = customService.getHtmlContent;
         vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         vm.isTagConfigurable = customService.isTagConfigurable;
@@ -596,13 +602,20 @@
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
-                var data = {
-                    name: vm.pageName,
-                    content: content,
-                    css: css || null,
-                    editTime: Firebase.ServerValue.TIMESTAMP
-                };
-                vm.pageRef.update(data);
+                //var data = {
+                //    name: vm.pageName,
+                //    content: content,
+                //    css: css || null,
+                //    editTime: Firebase.ServerValue.TIMESTAMP
+                //};
+                //vm.pageRef.update(data);
+                var pid = vm.pageRef.key();
+                $firebase.update(pageRefUrl, ['list/'+pid, 'detail/'+pid], {
+                    "name": vm.pageName,
+                    "content@1": content,
+                    "css@1": css || null,
+                    "editTime@0": Firebase.ServerValue.TIMESTAMP
+                });
                 vm.revert();
             };
 
@@ -617,7 +630,7 @@
             };
 
             vm.revert = function () {
-                $state.go($state.current, {pageName: vm.pageName,id:vm.pageRef.key()}, {reload: true});
+                $state.go($state.current, {pageName: vm.pageName, id: vm.pageRef.key()}, {reload: true});
             };
 
             vm.undo = dragula.undo;
@@ -673,26 +686,36 @@
             };
 
             vm.update = function () {
-                var data = {
-                    name: vm.widgetName,
-                    type: 'customWidget',
-                    css: vm.widgetCss || null,
-                    content: customService.convertBack($scope.containers),
-                    editTime: Firebase.ServerValue.TIMESTAMP
-                };
-                vm.widgetRef.update(data);
+                //var data = {
+                //    name: vm.widgetName,
+                //    type: 'customWidget',
+                //    css: vm.widgetCss || null,
+                //    content: customService.convertBack($scope.containers),
+                //    editTime: Firebase.ServerValue.TIMESTAMP
+                //};
+                //vm.widgetRef.update(data);
+
+                var wid = vm.widgetRef.key();
+                $firebase.update(widgetRefUrl, ['list/'+wid, 'detail/'+wid], {
+                    "name": vm.widgetName,
+                    "type@1": 'customWidget',
+                    "content@1": customService.convertBack($scope.containers),
+                    "css@1": vm.widgetCss || null,
+                    "editTime@0": Firebase.ServerValue.TIMESTAMP
+                });
+
                 vm.revert();
             };
 
             vm.revert = function () {
-                $state.go($state.current, {widgetName: vm.widgetName, id:vm.widgetRef.key()}, {reload: true});
+                $state.go($state.current, {widgetName: vm.widgetName, id: vm.widgetRef.key()}, {reload: true});
             };
 
-            vm.undo = function(){
+            vm.undo = function () {
                 dragula.undo();
                 vm.compile();
             };
-            vm.redo = function(){
+            vm.redo = function () {
                 dragula.redo();
                 vm.compile();
             };

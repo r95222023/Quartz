@@ -246,6 +246,43 @@
             return def.promise
         }
 
+        function _update(refUrl, pathArr, data) {
+            //Usage example:
+            // $firebase.update('sites', ['detail/123', 'list/123', extra/123], {
+            //    "toDetail@0": "test", <- 0 means the zeroth component of the array which is detail/123
+            //    "toList@1": "test",   <- similarly, list/123/toList will be set to "test"
+            //    "toBoth@0;1": "test",   <- detail/123/toBoth and list/123/toBoth will be set to "test"
+            //    "createdTime": Firebase.ServerValue.TIMESTAMP <- this will go to both paths (this equal to "createdTime@all")
+            //    "@2": null <-extra/123 will be set to null
+            //});
+            // $firebase.update(refUrl, data) is just the normal firebase update
+            var _data = {},
+                ref;
+            if(angular.isString(refUrl)){
+                ref = queryRef(refUrl);
+            } else{
+                ref = refUrl;
+            }
+            if(data===undefined){
+                return ref.update(pathArr);
+            }
+            angular.forEach(pathArr, function (path, pathIndex) {
+                _data[path] = {};
+                angular.forEach(data, function (subdata, key) {
+                    var whereDataGoes = key.split('@')[1] || "",
+                        subDataKey = key.split('@')[0];
+                    if (whereDataGoes === ""||whereDataGoes === "all" || whereDataGoes.indexOf(pathIndex) !== -1 || whereDataGoes.indexOf(path) !== -1) {
+                        if (subDataKey) {
+                            _data[path][subDataKey] = subdata;
+                        } else {
+                            _data[path] = subdata;
+                        }
+                    }
+                })
+            });
+            return ref.update(_data);
+        }
+
         function set(refUrl, value, onComplete, refUrlParams) {
             update(refUrl, value, onComplete, true, refUrlParams);
         }
@@ -521,12 +558,12 @@
         function setSite(siteName){
             firebase.databases.selectedSite = {
                 siteName:siteName,
-                url:config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/' + siteName
+                url:config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
             };
         }
 
         return firebase = {
-            update: update,
+            update: _update,
             set: set,
             batchUpdate: batchUpdate,
             params: {},
