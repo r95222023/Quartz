@@ -203,7 +203,7 @@
             return $q.all(promises)
         }
 
-        function update(refUrl, value, onComplete, removePrev, refUrlParams) {
+        function _update(refUrl, value, onComplete, removePrev, refUrlParams) {
             var def = $q.defer(),
                 _refUrlParams = angular.isObject(refUrlParams) ? refUrlParams : {},
                 replacedRefUrl = getUrl(refUrl, _refUrlParams),
@@ -246,7 +246,7 @@
             return def.promise
         }
 
-        function _update(refUrl, pathArr, data) {
+        function update(refUrl, pathArr, data) {
             //Usage example:
             // $firebase.update('sites', ['detail/123', 'list/123', extra/123], {
             //    "toDetail@0": "test", <- 0 means the zeroth component of the array which is detail/123
@@ -258,12 +258,12 @@
             // $firebase.update(refUrl, data) is just the normal firebase update
             var _data = {},
                 ref;
-            if(angular.isString(refUrl)){
+            if (angular.isString(refUrl)) {
                 ref = queryRef(refUrl);
-            } else{
+            } else {
                 ref = refUrl;
             }
-            if(data===undefined){
+            if (data === undefined) {
                 return ref.update(pathArr);
             }
             angular.forEach(pathArr, function (path, pathIndex) {
@@ -271,7 +271,7 @@
                 angular.forEach(data, function (subdata, key) {
                     var whereDataGoes = key.split('@')[1] || "",
                         subDataKey = key.split('@')[0];
-                    if (whereDataGoes === ""||whereDataGoes === "all" || whereDataGoes.indexOf(pathIndex) !== -1 || whereDataGoes.indexOf(path) !== -1) {
+                    if (whereDataGoes === "" || whereDataGoes === "all" || whereDataGoes.indexOf(pathIndex) !== -1 || whereDataGoes.indexOf(path) !== -1) {
                         if (subDataKey) {
                             _data[path][subDataKey] = subdata;
                         } else {
@@ -283,8 +283,8 @@
             return ref.update(_data);
         }
 
-        function set(refUrl, value, onComplete, refUrlParams) {
-            update(refUrl, value, onComplete, true, refUrlParams);
+        function _set(refUrl, value, onComplete, refUrlParams) {
+            _update(refUrl, value, onComplete, true, refUrlParams);
         }
 
 //TODO: Transaction
@@ -295,7 +295,7 @@
                 _isConsecutive = (isConsecutive || isConsecutive === undefined);
 
             function update(i) {
-                var params = firebase.update(values[i].refUrl, values[i].value, onComplete(i), values[i].set, refUrlParams).params;
+                var params = _update(values[i].refUrl, values[i].value, onComplete(i), values[i].set, refUrlParams).params;
                 refUrlParams = angular.extend(refUrlParams, params);
             }
 
@@ -377,24 +377,25 @@
             var res = {}, def = $q.defer();
             if (typeof opt !== 'object') return;
 
-            batchUpdate(opt.request, true).then(function (resolveVal) {
-                if (!opt.response) {
-                    def.resolve(resolveVal);
-                    return
-                }
-                angular.extend(res, resolveVal);
-                var resUrlArr = replaceParamsInObj(opt.response, resolveVal.params);
+            batchUpdate(opt.request, true)
+                .then(function (resolveVal) {
+                    if (!opt.response) {
+                        def.resolve(resolveVal);
+                        return
+                    }
+                    angular.extend(res, resolveVal);
+                    var resUrlArr = replaceParamsInObj(opt.response, resolveVal.params);
 
-                getResponse(resUrlArr).then(function (response) {
+                    getResponse(resUrlArr).then(function (response) {
 
-                    angular.extend(res, response);
-                    def.resolve(res);
+                        angular.extend(res, response);
+                        def.resolve(res);
+                    }, function (error) {
+                        def.reject(error);
+                    })
                 }, function (error) {
                     def.reject(error);
-                })
-            }, function (error) {
-                def.reject(error);
-            });
+                });
             return def.promise
         }
 
@@ -555,20 +556,19 @@
             return def.promise;
         }
 
-        function setSite(siteName){
+        function setSite(siteName) {
             firebase.databases.selectedSite = {
-                siteName:siteName,
-                url:config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
+                siteName: siteName,
+                url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
             };
         }
 
         return firebase = {
-            update: _update,
-            set: set,
+            update: update,
             batchUpdate: batchUpdate,
             params: {},
             databases: {},
-            setSite:setSite,
+            setSite: setSite,
             ref: queryRef,
             paginator: paginator,
             request: request,

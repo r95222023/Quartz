@@ -120,111 +120,6 @@
 
         action(vm, 'page', $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
 
-        //vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
-        //vm.action = function (action, cid, index) {
-        //    switch (action) {
-        //        case 'edit':
-        //            vm.editItem(cid, index);
-        //            break;
-        //        case 'copy':
-        //            vm.copyItem(cid, index);
-        //            break;
-        //        case 'delete':
-        //            vm.deleteItem(cid, index);
-        //            break;
-        //    }
-        //};
-        //
-        //vm.editItem = function (cid, index) {
-        //    vm.item = {};
-        //    vm.item = angular.copy($scope.containers[cid][index]);
-        //    vm.backUpItem = angular.copy($scope.containers[cid][index]);
-        //    if (vm.item.type === 'customWidget') {
-        //        vm.item.content = vm.getHtmlContent(vm.item);
-        //        vm.item.type = 'custom';
-        //    }
-        //    vm.selectedContainerId = cid;
-        //    vm.selectedItemIndex = index;
-        //    $mdSidenav('editCustomItem').open();
-        //};
-        //
-        //
-        //vm.updateItem = function () {
-        //    $mdSidenav('editCustomItem').close();
-        //
-        //    if (vm.item.type === 'customWidget') {
-        //        if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
-        //            return;
-        //        } else {
-        //            vm.item.type = 'custom';
-        //        }
-        //    }
-        //
-        //    $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
-        //};
-        //vm.copyItem = function (cid, index) {
-        //    var copied = angular.copy($scope.containers[cid][index]);
-        //    copied.cid = Math.random().toString();
-        //    $scope.containers[cid].splice(index, 0, copied);
-        //    $scope.containers[copied.cid] = [];
-        //};
-        //
-        //vm.deleteItem = function (cid, index) {
-        //    $scope.containers[cid].splice(index, 1);
-        //};
-        //
-        //vm.compile = function () {
-        //    var styleSheets = {};
-        //    var compiled = customService.compile(customService.convertBack($scope.containers, 'root', styleSheets));
-        //    vm.pageRef.once('value', function (snap) {
-        //        vm.pageCss = vm.pageCss || snap.child('css').val() || '';
-        //        vm.widgetsCss = vm.buildCss(styleSheets);
-        //        vm.injectCss();
-        //    });
-        //    vm.html = compiled
-        //};
-        //
-        //vm.injectCss = function () {
-        //    injectCSS.setDirectly(vm.pageRef.key(), vm.pageCss + vm.widgetsCss);
-        //    var dereg = $rootScope.$on('$stateChangeStart',
-        //        function () {
-        //            injectCSS .remove(vm.pageRef.key());
-        //            dereg();
-        //        });
-        //};
-        //
-        //
-        //vm.toggleEditor = function () {
-        //    $mdSidenav('editCustomItem').toggle();
-        //};
-        //
-        //vm.update = function () {
-        //    var styleSheets = {},
-        //        content = customService.convertBack($scope.containers, 'root', styleSheets),
-        //        css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
-        //    var data = {
-        //        name: vm.pageName,
-        //        content: content,
-        //        css: css || null,
-        //        editTime: Firebase.ServerValue.TIMESTAMP
-        //    };
-        //    vm.pageRef.update(data);
-        //    vm.revert();
-        //};
-        //vm.buildCss = function (styleSheets) {
-        //    var widgetsCss = '';
-        //    angular.forEach(styleSheets, function (widgetCss) {
-        //        if (vm.pageCss.indexOf(widgetCss) === -1) {
-        //            widgetsCss += widgetCss
-        //        }
-        //    });
-        //    return widgetsCss;
-        //};
-        //
-        //vm.undo = dragula.undo; vm.redo = dragula.redo;
-        //vm.revert = function () {
-        //    $state.go($state.current, {pageName: vm.pageName}, {reload: true});
-        //}
     }
 
     /* @ngInject */
@@ -269,96 +164,15 @@
         }
 
         action(vm, 'widget', $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
-
-        //vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
-        //vm.action = function (action, cid, index) {
-        //    switch (action) {
-        //        case 'edit':
-        //            vm.editItem(cid, index);
-        //            break;
-        //        case 'copy':
-        //            vm.copyItem(cid, index);
-        //            vm.compile();
-        //            dragula.resetDragula();
-        //            break;
-        //        case 'delete':
-        //            vm.deleteItem(cid, index);
-        //            vm.compile();
-        //            break;
-        //    }
-        //};
-        //
-        //vm.editItem = function (cid, index) {
-        //    vm.item = {};
-        //    vm.item = angular.copy($scope.containers[cid][index]);
-        //    vm.selectedContainerId = cid;
-        //    vm.selectedItemIndex = index;
-        //    $mdSidenav('editCustomItem').open();
-        //};
-        //
-        //vm.updateItem = function () {
-        //    $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
-        //    vm.compile();
-        //    $mdSidenav('editCustomItem').close();
-        //};
-        //vm.copyItem = function (cid, index) {
-        //    var copied = angular.copy($scope.containers[cid][index]);
-        //    copied.cid = Math.random().toString();
-        //    $scope.containers[copied.cid] = [];
-        //    $scope.containers[cid].splice(index, 0, copied);
-        //};
-        //
-        //vm.deleteItem = function (cid, index) {
-        //    $scope.containers[cid].splice(index, 1);
-        //};
-        //
-        //vm.compile = function () {
-        //    var compiled = customService.compile(customService.convertBack($scope.containers, 'root'));
-        //    vm.widgetRef.once('value', function (snap) {
-        //        vm.widgetCss = vm.widgetCss || snap.child('css').val() || '';
-        //        vm.injectCss();
-        //    });
-        //    vm.html = compiled
-        //};
-        //
-        //vm.injectCss = function () {
-        //    injectCSS.setDirectly(vm.widgetRef.key(), vm.widgetCss);
-        //    var dereg = $rootScope.$on('$stateChangeStart',
-        //        function () {
-        //            injectCSS.remove(vm.widgetRef.key());
-        //            dereg();
-        //        });
-        //};
-        //
-        //vm.toggleEditor = function () {
-        //    $mdSidenav('editCustomItem').toggle();
-        //};
-        //
-        //vm.update = function () {
-        //    var data = {
-        //        name: vm.widgetName,
-        //        type: 'customWidget',
-        //        css: vm.widgetCss || null,
-        //        content: customService.convertBack($scope.containers),
-        //        editTime: Firebase.ServerValue.TIMESTAMP
-        //    };
-        //    vm.widgetRef.update(data);
-        //    vm.revert();
-        //};
-        //vm.undo = dragula.undo;
-        //vm.redo = dragula.redo;
-        //
-        //vm.revert = function () {
-        //    $state.go($state.current, {widgetName: vm.widgetName}, {reload: true});
-        //}
     }
 
     /* @ngInject */
-    function CustomPageController(injectCSS, $firebase, $scope, $mdSidenav, customService, $stateParams, $timeout, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function CustomPageController(injectCSS, $firebase, modelService, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName;
 
         $scope.$mdSidenav = $mdSidenav;
+        customPage.settingsGroups = modelService.settingsGroups;
 
         customPage.scope = $scope;
         if (pageName) {
@@ -610,7 +424,7 @@
                 //};
                 //vm.pageRef.update(data);
                 var pid = vm.pageRef.key();
-                $firebase.update(pageRefUrl, ['list/'+pid, 'detail/'+pid], {
+                $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                     "name": vm.pageName,
                     "content@1": content,
                     "css@1": css || null,
@@ -696,7 +510,7 @@
                 //vm.widgetRef.update(data);
 
                 var wid = vm.widgetRef.key();
-                $firebase.update(widgetRefUrl, ['list/'+wid, 'detail/'+wid], {
+                $firebase.update(widgetRefUrl, ['list/' + wid, 'detail/' + wid], {
                     "name": vm.widgetName,
                     "type@1": 'customWidget',
                     "content@1": customService.convertBack($scope.containers),

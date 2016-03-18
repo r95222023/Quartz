@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -6,76 +6,76 @@
         .controller('NotificationsPanelController', NotificationsPanelController);
 
     /* @ngInject */
-    function NotificationsPanelController($scope, qtNotificationsService, $firebase, Auth, $http, $mdSidenav, $state, API_CONFIG) {
+    function NotificationsPanelController($scope,modelService,  qtNotificationsService, $firebase, Auth, $http, $mdSidenav, $state, API_CONFIG) {
         var vm = this;
         // sets the current active tab
         vm.close = close;
-        vm.removeNotification=qtNotificationsService.removeNotification;
+        vm.removeNotification = qtNotificationsService.removeNotification;
         vm.currentTab = 0;
-        vm.notificationGroups={
-            "Twitter":[{
+        vm.notificationGroups = {
+            "Twitter": [{
                 title: 'Mention from oxygenna',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Oxygenna',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Oxygenna',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Followed by Oxygenna',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
             }],
-            "Server":[{
+            "Server": [{
                 title: 'Server Down',
                 icon: 'zmdi zmdi-alert-circle',
                 iconColor: 'rgb(244, 67, 54)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Slow Response Time',
                 icon: 'zmdi zmdi-alert-triangle',
                 iconColor: 'rgb(255, 152, 0)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Server Down',
                 icon: 'zmdi zmdi-alert-circle',
                 iconColor: 'rgb(244, 67, 54)',
                 date: moment().startOf('hour')
             }],
-            "Sales":[{
+            "Sales": [{
                 title: 'Quartz Admin $21',
                 icon: 'zmdi zmdi-shopping-cart',
                 iconColor: 'rgb(76, 175, 80)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Lambda WordPress $60',
                 icon: 'zmdi zmdi-shopping-cart',
                 iconColor: 'rgb(76, 175, 80)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Quartz Admin $21',
                 icon: 'zmdi zmdi-shopping-cart',
                 iconColor: 'rgb(76, 175, 80)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Quartz Admin $21',
                 icon: 'zmdi zmdi-shopping-cart',
                 iconColor: 'rgb(76, 175, 80)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Lambda WordPress $60',
                 icon: 'zmdi zmdi-shopping-cart',
                 iconColor: 'rgb(76, 175, 80)',
                 date: moment().startOf('hour')
-            },{
+            }, {
                 title: 'Quartz Admin $21',
                 icon: 'zmdi zmdi-shopping-cart',
                 iconColor: 'rgb(76, 175, 80)',
@@ -84,37 +84,9 @@
         };
 
         vm.openMail = openMail;
-        vm.settingsGroups = [{
-            name: 'ADMIN.NOTIFICATIONS.ACCOUNT_SETTINGS',
-            settings: [{
-                title: 'ADMIN.NOTIFICATIONS.SHOW_LOCATION',
-                icon: 'zmdi zmdi-pin',
-                enabled: true
-            },{
-                title: 'ADMIN.NOTIFICATIONS.SHOW_AVATAR',
-                icon: 'zmdi zmdi-face',
-                enabled: false
-            },{
-                title: 'ADMIN.NOTIFICATIONS.SEND_NOTIFICATIONS',
-                icon: 'zmdi zmdi-notifications-active',
-                enabled: true
-            }]
-        },{
-            name: 'ADMIN.NOTIFICATIONS.CHAT_SETTINGS',
-            settings: [{
-                title: 'ADMIN.NOTIFICATIONS.SHOW_USERNAME',
-                icon: 'zmdi zmdi-account',
-                enabled: true
-            },{
-                title: 'ADMIN.NOTIFICATIONS.SHOW_PROFILE',
-                icon: 'zmdi zmdi-account-box',
-                enabled: false
-            },{
-                title: 'ADMIN.NOTIFICATIONS.ALLOW_BACKUPS',
-                icon: 'zmdi zmdi-cloud-upload',
-                enabled: true
-            }]
-        }];
+
+        vm.settingsGroups = modelService.settingsGroups;
+
 
         vm.statisticsGroups = [{
             name: 'ADMIN.NOTIFICATIONS.USER_STATS',
@@ -122,26 +94,26 @@
                 title: 'ADMIN.NOTIFICATIONS.STORAGE_SPACE',
                 mdClass: 'md-primary',
                 value: 60
-            },{
+            }, {
                 title: 'ADMIN.NOTIFICATIONS.BANDWIDTH_USAGAE',
                 mdClass: 'md-accent',
                 value: 10
-            },{
+            }, {
                 title: 'ADMIN.NOTIFICATIONS.MEMORY_USAGAE',
                 mdClass: 'md-warn',
                 value: 100
             }]
-        },{
+        }, {
             name: 'ADMIN.NOTIFICATIONS.SERVER_STATS',
             stats: [{
                 title: 'ADMIN.NOTIFICATIONS.STORAGE_SPACE',
                 mdClass: 'md-primary',
                 value: 60
-            },{
+            }, {
                 title: 'ADMIN.NOTIFICATIONS.BANDWIDTH_USAGAE',
                 mdClass: 'md-accent',
                 value: 10
-            },{
+            }, {
                 title: 'ADMIN.NOTIFICATIONS.MEMORY_USAGAE',
                 mdClass: 'md-warn',
                 value: 100
@@ -151,12 +123,12 @@
         ////////////////
 
         // add an event to switch tabs (used when user clicks a menu item before sidebar opens)
-        $scope.$on('qtSwitchNotificationTab', function($event, tab) {
+        $scope.$on('qtSwitchNotificationTab', function ($event, tab) {
             vm.currentTab = tab;
         });
 
         $scope.$watch(qtNotificationsService.getNotification, function () {
-            vm.notificationGroups=qtNotificationsService.getNotification();
+            vm.notificationGroups = qtNotificationsService.getNotification();
         });
 
         // fetch some dummy emails from the API
