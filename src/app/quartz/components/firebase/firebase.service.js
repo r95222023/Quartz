@@ -556,19 +556,11 @@
             return def.promise;
         }
 
-        function setSite(siteName) {
-            firebase.databases.selectedSite = {
-                siteName: siteName,
-                url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
-            };
-        }
-
         return firebase = {
             update: update,
             batchUpdate: batchUpdate,
             params: {},
             databases: {},
-            setSite: setSite,
             ref: queryRef,
             paginator: paginator,
             request: request,

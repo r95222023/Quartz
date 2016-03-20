@@ -51,7 +51,7 @@
             .state('quartz.admin-default.site-configure', {
                 data: {
                     layout: {
-                        sideMenuSize: 'hidden',
+                        // sideMenuSize: 'hidden',
                         //toolbarShrink: true,
                         footer: false
                     }

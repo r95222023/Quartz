@@ -6,7 +6,7 @@
         .controller('NotificationsPanelController', NotificationsPanelController);
 
     /* @ngInject */
-    function NotificationsPanelController($scope,modelService,  qtNotificationsService, $firebase, Auth, $http, $mdSidenav, $state, API_CONFIG) {
+    function NotificationsPanelController($scope, qtSettings, qtNotificationsService, $firebase, Auth, $http, $mdSidenav, $state, API_CONFIG) {
         var vm = this;
         // sets the current active tab
         vm.close = close;
@@ -85,7 +85,7 @@
 
         vm.openMail = openMail;
 
-        vm.settingsGroups = modelService.settingsGroups;
+        vm.settingsGroups =  qtSettings.custom;
 
 
         vm.statisticsGroups = [{

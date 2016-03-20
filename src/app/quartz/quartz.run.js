@@ -6,7 +6,7 @@
         .run(runFunction);
 
     /* @ngInject */
-    function runFunction($rootScope, Idle, $window, $http, $state, $mdSidenav,qtMenu, promiseService, Auth, $firebase, config) {
+    function runFunction($rootScope, Idle, $window, $http, $state, $mdSidenav, qtMenu, qtSettings, promiseService, Auth, $firebase, config) {
         //// add a class to the body if we are on windows
         if ($window.navigator.platform.indexOf('Win') !== -1) {
             $rootScope.bodyClasses = ['os-windows'];
@@ -54,43 +54,70 @@
         });
 
         //// set current site automatically
-        function redirect(state, params){
+        function redirect(state, params) {
             var clear = $rootScope.$on('$stateChangeSuccess', function () {
                 $state.go(state, params);
                 clear();
             });
         }
+
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-            qtMenu.removeMenu('MENU.PAGES.MENUNAME');
             if (toParams.siteName) {
-                $firebase.setSite(toParams.siteName);
-            } else if(toParams.siteName===''&& $firebase.databases.selectedSite){
-                redirect(toState, angular.extend(toParams,{siteName: $firebase.databases.selectedSite.siteName}))
-            } else if(toParams.siteName===''&& !$firebase.databases.selectedSite){
+                qtSettings.setSite(toParams.siteName);
+            } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
+                redirect(toState, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}))
+            } else if (toParams.siteName === '' && !$firebase.databases.selectedSite) {
                 redirect('quartz.admin-default.sites')
             }
-            if($firebase.databases.selectedSite){
+            if ($firebase.databases.selectedSite) {
                 var siteName = $firebase.databases.selectedSite.siteName;
+                // qtMenu.addMenu({
+                //     name: 'MENU.PAGES.MENUNAME',
+                //     icon: 'fa fa-pencil-square-o',
+                //     type: 'dropdown',
+                //     priority: 1.5,
+                //     children: [
+                //         {
+                //             name: 'MENU.PAGES.PAGEMANAGER',
+                //             state: 'quartz.admin-default.pageManager',
+                //             params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
+                //             type: 'link'
+                //         },
+                //         {
+                //             name: 'MENU.PAGES.WIDGETMANAGER',
+                //             state: 'quartz.admin-default.widgetManager',
+                //             params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
+                //             type: 'link'
+                //         }
+                //     ]
+                //
+                // });
+                qtMenu.removeMenu('MENU.SITECONFIG');
+
                 qtMenu.addMenu({
-                    name: 'MENU.PAGES.MENUNAME',
+                    name: 'MENU.SITECONFIG',
                     icon: 'fa fa-pencil-square-o',
                     type: 'dropdown',
-                    priority: 1.5,
-                    children:[
+                    priority: 1.2,
+                    children: [
+                        {
+                            name: 'MENU.SITES.CONFIG',
+                            type: 'link',
+                            state: 'quartz.admin-default.site-configure'
+                        },
                         {
                             name: 'MENU.PAGES.PAGEMANAGER',
                             state: 'quartz.admin-default.pageManager',
-                            params: {cate: 'all',subCate:'all',queryString:'',siteName:siteName},
+                            params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
                             type: 'link'
                         },
                         {
                             name: 'MENU.PAGES.WIDGETMANAGER',
                             state: 'quartz.admin-default.widgetManager',
-                            params: {cate: 'all',subCate:'all',queryString:'',siteName:siteName},
+                            params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
                             type: 'link'
                         }
                     ]
-
                 });
             }
         });

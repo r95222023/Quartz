@@ -4,10 +4,10 @@ window.config.quartzSetting=function() {
 
     angular
         .module('app')
-        .config(translateConfig);
+        .config(settingConfig);
 
     /* @ngInject */
-    function translateConfig(qtSettingsProvider, APP_LANGUAGES) {
+    function settingConfig(qtSettingsProvider, APP_LANGUAGES) {
         var now = new Date();
         // set app name & logo (used in loader, sidemenu, footer, login pages, etc)
         qtSettingsProvider.setName('quartz');
@@ -15,6 +15,54 @@ window.config.quartzSetting=function() {
         qtSettingsProvider.setLogo('assets/images/logo.png');
         // set current version of app (shown in footer)
         qtSettingsProvider.setVersion('1.1.0');
+        // set default custom settings
+        qtSettingsProvider.setCustom({
+            acc: {
+                name: 'ADMIN.NOTIFICATIONS.ACCOUNT_SETTINGS',
+                settings: {
+                    devMode: {
+                        title: 'ADMIN.NOTIFICATIONS.DEV_MODE',
+                        icon: 'zmdi zmdi-code',
+                        enabled: false
+                    },
+                    showLocation: {
+                        title: 'ADMIN.NOTIFICATIONS.SHOW_LOCATION',
+                        icon: 'zmdi zmdi-pin',
+                        enabled: true
+                    },
+                    showAvatar: {
+                        title: 'ADMIN.NOTIFICATIONS.SHOW_AVATAR',
+                        icon: 'zmdi zmdi-face',
+                        enabled: false
+                    },
+                    sendNoti: {
+                        title: 'ADMIN.NOTIFICATIONS.SEND_NOTIFICATIONS',
+                        icon: 'zmdi zmdi-notifications-active',
+                        enabled: true
+                    }
+                }
+            },
+            chat: {
+                name: 'ADMIN.NOTIFICATIONS.CHAT_SETTINGS',
+                settings: {
+                    showUserName: {
+                        title: 'ADMIN.NOTIFICATIONS.SHOW_USERNAME',
+                        icon: 'zmdi zmdi-account',
+                        enabled: true
+                    },
+                    showProfile: {
+                        title: 'ADMIN.NOTIFICATIONS.SHOW_PROFILE',
+                        icon: 'zmdi zmdi-account-box',
+                        enabled: false
+                    },
+                    allowBackups: {
+                        title: 'ADMIN.NOTIFICATIONS.ALLOW_BACKUPS',
+                        icon: 'zmdi zmdi-cloud-upload',
+                        enabled: true
+                    }
+                }
+            }
+        });
 
         // setup available languages in quartz
         for (var lang = APP_LANGUAGES.length - 1; lang >= 0; lang--) {

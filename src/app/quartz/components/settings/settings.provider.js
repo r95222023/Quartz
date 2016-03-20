@@ -1,8 +1,8 @@
-(function() {
+(function () {
     'use strict';
 
     angular
-        .module('quartz')
+        .module('quartz.components')
         .provider('qtSettings', settingsProvider);
 
     /* @ngInject */
@@ -13,7 +13,8 @@
             name: '',
             logo: '',
             copyright: '',
-            version: ''
+            version: '',
+            custom: {}
         };
 
         this.addLanguage = addLanguage;
@@ -21,6 +22,7 @@
         this.setName = setName;
         this.setCopyright = setCopyright;
         this.setVersion = setVersion;
+        this.setCustom = setCustom;
 
         function addLanguage(newLanguage) {
             settings.languages.push(newLanguage);
@@ -42,15 +44,29 @@
             settings.version = version;
         }
 
+        function setCustom(settingsGroups) {
+            settings.custom = settingsGroups
+        }
+
         // Service
-        this.$get = function() {
+        this.$get = /* @ngInject */ function ($firebase, config, FBURL) {
+            function setSite(siteName) {
+                $firebase.databases.selectedSite = {
+                    siteName: siteName,
+                    url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
+                };
+                this.name = siteName;
+            }
+
             return {
                 languages: settings.languages,
                 name: settings.name,
                 copyright: settings.copyright,
                 logo: settings.logo,
                 version: settings.version,
-                defaultSkin: settings.defaultSkin
+                defaultSkin: settings.defaultSkin,
+                custom: settings.custom,
+                setSite:setSite
             };
         };
     }

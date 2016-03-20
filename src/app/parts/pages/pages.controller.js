@@ -167,18 +167,26 @@
     }
 
     /* @ngInject */
-    function CustomPageController(injectCSS, $firebase, modelService, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function CustomPageController(injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
         var customPage = this,
-            pageName = $stateParams.pageName;
+            pageName = $stateParams.pageName,
+            isIndex = !pageName||pageName==="index",
+            orderBy = isIndex? "index":"name",
+            equalTo = isIndex? true: pageName;
+        
 
         $scope.$mdSidenav = $mdSidenav;
-        customPage.settingsGroups = modelService.settingsGroups;
+        customPage.settingsGroups = qtSettings.custom;
+        customPage.devMode = $stateParams.devMode;
 
         customPage.scope = $scope;
-        if (pageName) {
-            $firebase.ref(pageDetailRefUrl).orderByChild('name').equalTo(pageName).once('child_added', function (snap) {
+        $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
+            if(parentSnap.val()===null) {$state.go('404');return true;}
+
+            parentSnap.forEach(function(snap){
                 $timeout(function () {
                     injectCSS.setDirectly(snap.key(), snap.child('css').val());
+                    customPage.pageData = snap.val();
                     customPage.html = customService.compile(snap.val().content);
                 }, 0);
                 var listener = $rootScope.$on('$stateChangeStart',
@@ -186,7 +194,25 @@
                         injectCSS.remove(snap.key());
                         listener();
                     });
+            });
+        });
+        
+
+        customPage.getSites = function(){
+            if(authData) $firebase.ref('users/'+authData.uid+'/sites').once('value', function(snap){
+                customPage.mysites = snap.val();
             })
+        };
+        customPage.copyPageTo = function(siteName){
+
+            var pid = $firebase.ref('').push().key(),
+                pageData = {
+                    "name": "Copy-"+siteName+"-"+customPage.pageData.name,
+                    "content@1": customPage.pageData.content,
+                    "css@1": customPage.pageData.css || null,
+                    "editTime@0": Firebase.ServerValue.TIMESTAMP
+                };
+            $firebase.update('sites/detail/'+siteName+'/pages', ['list/' + pid, 'detail/' + pid], pageData);
         }
     }
 

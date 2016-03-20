@@ -69,15 +69,19 @@
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.customPage', {
-                url: '/:siteName/:pageName/?id&params1&params2&cate&subCate&queryString&tag',
+                url: '/:siteName/:pageName/?id&params1&params2&cate&subCate&queryString&tag&devMode',
                 resolve:{
                     getAllTemplates:['customService', function(customService){
                         return customService.getAllTemplates(templateList, tmplRoot)
+                    }],
+                    authData: ['Auth', function (Auth) {
+                        return Auth.$waitForAuth()
                     }]
                 },
                 data: {
                     layout: {
                         sideMenuSize: 'hidden',
+                        showToolbar: false,
                         //toolbarShrink: true,
                         footer: false
                     }

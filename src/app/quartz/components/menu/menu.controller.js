@@ -9,10 +9,11 @@
     function MenuController(qtSettings, qtLayout) {
         var vm = this;
         vm.layout = qtLayout.layout;
-        vm.sidebarInfo = {
-            appName: qtSettings.name,
-            appLogo: qtSettings.logo
-        };
+        // vm.sidebarInfo = {
+        //     appName: qtSettings.name,
+        //     appLogo: qtSettings.logo
+        // };
+        vm.qtSettings = qtSettings;
         vm.toggleIconMenu = toggleIconMenu;
 
         ////////////
