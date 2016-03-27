@@ -199,7 +199,7 @@
         
 
         customPage.getSites = function(){
-            if(authData) $firebase.ref('users/'+authData.uid+'/sites').once('value', function(snap){
+            if(authData) $firebase.ref('users/detail/'+authData.uid+'/sites').once('value', function(snap){
                 customPage.mysites = snap.val();
             })
         };

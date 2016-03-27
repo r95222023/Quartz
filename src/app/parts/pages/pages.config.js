@@ -27,9 +27,10 @@
                 data: {
                     layout: {
                         sideMenuSize: 'hidden',
-                        //toolbarShrink: true,
-                        contentClass: 'full-height',
-                        innerContentClass:'full-height',
+                        showToolbar: false,
+                        // //toolbarShrink: true,
+                        // contentClass: 'full-height',
+                        // innerContentClass:'full-height',
                         footer: false
                     }
                 },
@@ -54,6 +55,7 @@
                 data: {
                     layout: {
                         sideMenuSize: 'hidden',
+                        showToolbar: false,
                         //toolbarShrink: true,
                         footer: false
                     }

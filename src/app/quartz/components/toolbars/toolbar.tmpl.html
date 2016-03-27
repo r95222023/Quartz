@@ -12,7 +12,7 @@
 
     <md-menu>
         <md-button class="md-icon-button" aria-label="language" ng-click="$mdOpenMenu()" aria-label="change language">
-            <md-icon md-font-icon="zmdi zmdi-globe-alt"></md-icon>
+            <md-icon md-font-icon="zmdi zmdi-translate"></md-icon>
         </md-button>
         <md-menu-content width="3">
             <md-menu-item ng-repeat="language in vm.languages">
@@ -24,7 +24,7 @@
     <md-button class="md-icon-button toolbar-button"
                ui-sref="quartz.admin-default.shoppingCart"
                aria-label="shopping cart">
-        <md-icon md-font-icon="fa fa-shopping-cart"></md-icon>
+        <md-icon md-font-icon="zmdi zmdi-shopping-cart"></md-icon>
         <span class="toolbar-button-badge" theme-background="accent" ng-if="vm.cartSubTotal()>0">{{vm.cartSubTotal()}}</span>
     </md-button>
 

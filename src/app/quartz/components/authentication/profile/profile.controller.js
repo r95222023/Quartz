@@ -61,7 +61,7 @@
         //    confirm: ''
         //};
         vm.updateProfile = function () {
-            var userUrl = 'users/' + $rootScope.user.uid;
+            var userUrl = 'users/detail/' + $rootScope.user.uid;
             $firebase.update(userUrl + '/info', vm.user)
                 .then(success, error);
 

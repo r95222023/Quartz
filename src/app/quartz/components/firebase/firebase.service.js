@@ -17,13 +17,13 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function (FBURL, config, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
-            return new firebase(mainFirebase, params, FBURL, config, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
+        this.$get = /* @ngInject */ function (FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
+            return new firebase(mainFirebase, params, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
         }
     }
 
     /*@ngInject*/
-    function firebase(mainFirebase, params, FBURL, config, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
+    function firebase(mainFirebase, params, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
 
 
         var activeRefUrl = {};
@@ -442,6 +442,15 @@
             this.cache = {};
             this.limitTo = 'limitToFirst';
             this.maxCachedPage = 0;
+
+            var self = this,
+                clear = $rootScope.$on('$stateChangeStart', function () {
+                    if (angular.isFunction(self.listenerCallback)) {
+                        self.ref.off('value', self.listenerCallback);
+                    }
+                    clear();
+                })
+
         }
 
         Paginator.prototype = {
@@ -455,7 +464,8 @@
                 this.limitTo = isDesc ? 'limitToLast' : 'limitToFirst';
                 self.promise = def.promise;
 
-                if (this.listenerCallback) {
+
+                if (angular.isFunction(this.listenerCallback)) {
                     this.ref.off('value', this.listenerCallback);
                 }
 
@@ -465,6 +475,7 @@
                 } else {
                     _ref = this.ref.orderByKey();
                 }
+
                 if (this.equalTo) {
                     if (isFinite(this.equalTo)) this.equalTo = Number(this.equalTo);
                     _ref = _ref.equalTo(this.equalTo);
@@ -499,8 +510,7 @@
                     });
                     self.assignPage();
                     self.result.total = sortedArr.length;
-                    $timeout(angular.noop, 0);
-
+                    if(self.result.total===0) self.result.hits = [];
                     def.resolve();
                 }
             },

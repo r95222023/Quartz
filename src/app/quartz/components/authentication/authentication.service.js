@@ -6,34 +6,68 @@
         .factory('Auth', Auth);
 
     /*@ngInject*/
-    function Auth($firebaseAuth, $q, $firebase) {
+    function Auth($firebaseAuth, $q, $firebase, $stateParams, config) {
 
         var Auth = $firebaseAuth($firebase.ref());
 
         Auth.checkIfAccountExistOnFb = function (authData) {
-            var def = $q.defer();
+            var def = $q.defer(),
+                opt={},
+                userPath = 'users/detail/'+ authData.uid;
             if (!authData) def.reject('AUTH_NEEDED');
-            var ref = $firebase.ref('users/'+ authData.uid+ '/createdTime');
-            ref.once('value', function (snap) {
-                if (snap.val() === null) {
-                    def.resolve(authData);
-                }
-            }, function (err) {
-                def.reject(err)
-            });
+            
+            function checkIfCreated(){
+                $firebase.ref(userPath+'/createdTime').once('value', function (snap) {
+                    opt.registered = snap.val() !== null;
+                    def.resolve(angular.extend({},authData,opt));
+                }, function (err) {
+                    def.reject(err)
+                });
+            }
+            
+            if($stateParams.siteName){
+                var siteName = $stateParams.siteName;
+                $firebase.ref(userPath+'/sitesRegistered/'+siteName).once('value', function(regSnap){
+                    if(regSnap.val()===null&&!config.standalone) opt.regSite = siteName;
+                    checkIfCreated();
+                })
+            } else {
+                checkIfCreated();
+            }
+            
             return def.promise
         };
 
-        Auth.createAccount = function (authData, opt) {
-            if (!authData) return;
-            if (opt === undefined || !angular.isObject(opt)) {
-                var ref = $firebase.ref('users/'+authData.uid);
-                return $firebase.handler(function (cb) {
-                    ref.set(Auth.basicAccountUserData(authData, opt), cb);
-                })
-            } else {
-                //TODO: structure user data by passing opt in
+        Auth.createAccount = function (authData) {
+            if (authData.registered!==true) {
+                var uid = authData.uid,
+                    userPaths =['list/'+uid,'detail/'+uid],
+                    basicData = Auth.basicAccountUserData(authData),
+                    def,
+                    regSite = function(){
+                        var data={},
+                            siteName = authData.regSite;
+                        data["users/detail/"+uid+"/sitesRegistered/"+siteName]=Firebase.ServerValue.TIMESTAMP;
+                        data["sites/detail/"+siteName+"/users/list/"+uid]=basicData;
+                        data["sites/detail/"+siteName+"/users/detail/"+uid]=basicData;
+                        $firebase.update('', data).then(function () {
+                            def.resolve();
+                        })
+                    };
+                if(authData.regSite){
+                    def = $q.defer();
+                    $firebase.update('users', userPaths, basicData).then(regSite);
+                    return def.promise;
+                } else {
+                    return $firebase.update('users', userPaths, basicData);
+                }
             }
+            // if (opt === undefined || !angular.isObject(opt)) {
+            //     var uid = authData.uid;
+            //     return $firebase.update('users', ['list/'+uid,'detail/'+uid], Auth.basicAccountUserData(authData, opt));
+            // } else {
+            //     //TODO: structure user data by passing opt in
+            // }
         };
         //Example
         //var opt={
@@ -99,15 +133,11 @@
         };
 
         Auth.removeUserData = function (authData, extraCallBack) {
-            var ref = $firebase.ref('users/' + authData.uid);
-
-            ref.remove(function (err) {
-                if (err) {
-                    console.log(err.code);
-                } else {
-                    if (extraCallBack) extraCallBack(authData);
-
-                }
+            var uid = authData.uid;
+            $firebase.update('users',['list/'+uid,'detail/'+uid],{
+                "@all":null
+            }).then(function(){
+                if (extraCallBack) extraCallBack(authData);
             });
         };
 

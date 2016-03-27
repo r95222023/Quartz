@@ -1,9 +1,9 @@
 <div ng-if="!destroyDragula" ng-init="initDragula()" class="editor-full-height" layout="column">
     <md-toolbar class="md-menu-toolbar">
         <div layout="row">
-            <!--<md-toolbar-filler layout layout-align="center center">-->
-            <!--<md-icon md-svg-icon="call:chat"></md-icon>-->
-            <!--</md-toolbar-filler>-->
+            <md-toolbar-filler layout layout-align="center center" ui-sref="quartz.admin-default.widgetManager">
+                <md-icon md-font-icon="zmdi zmdi-apps"></md-icon>
+            </md-toolbar-filler>
             <div>
                 <h2 class="md-toolbar-tools" ng-if="!vm.showWidgetNameInput">{{vm.widgetName}}</h2>
                 <div class="md-toolbar-tools" ng-if="vm.showWidgetNameInput">

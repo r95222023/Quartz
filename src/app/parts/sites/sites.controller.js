@@ -14,7 +14,7 @@
 
         vm.newSiteName = '';
 
-        vm.sitesArray = $firebase.array('users/' + authData.uid + '/sites');
+        vm.sitesArray = $firebase.array('users/detail/' + authData.uid + '/sites');
 
         vm.addSite = function () {
             $firebase.ref('sites/list/' + vm.newSiteName + '/createdTime').once('value', function (snap) {
@@ -89,7 +89,7 @@
         };
 
         vm.deleteSite = function (site) {
-            $firebase.ref('users/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
+            $firebase.ref('users/detail/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
                 snap.ref().set(null);
             });
             $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
@@ -106,14 +106,11 @@
             pageListRef = $firebase.ref('pages/list@selectedSite'),
             siteName = $stateParams.siteName;
         siteListRef.child(siteName).child('config').once('value', function (snap) {
-            $timeout(function(){
-                vm.config = snap.val();
-            },0)
+            vm.config = snap.val();
         });
         pageListRef.once('value', function (snap) {
             vm.pages = snap.val();
         });
-        vm.siteName = siteName;
         vm.updateSiteConfig = function () {
             var pageName = vm.config.index;
             setIndex(pageName, function (data) {

@@ -2,9 +2,9 @@
      layout="column">
     <md-toolbar class="md-menu-toolbar">
         <div layout="row">
-            <!--<md-toolbar-filler layout layout-align="center center">-->
-                <!--<md-icon md-svg-icon="call:chat"></md-icon>-->
-            <!--</md-toolbar-filler>-->
+            <md-toolbar-filler layout layout-align="center center" ui-sref="quartz.admin-default.pageManager">
+                <md-icon md-font-icon="zmdi zmdi-view-web"></md-icon>
+            </md-toolbar-filler>
             <div>
                 <h2 class="md-toolbar-tools" ng-if="!vm.showPageNameInput">{{vm.pageName}}</h2>
                 <div class="md-toolbar-tools" ng-if="vm.showPageNameInput">
