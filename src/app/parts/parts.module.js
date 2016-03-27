@@ -7,6 +7,7 @@
             'app.parts.home',
             'app.parts.products',
             'app.parts.pages',
-            'app.parts.sites'
+            'app.parts.sites',
+            'app.parts.users'
         ]);
 })();

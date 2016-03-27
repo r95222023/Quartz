@@ -12,7 +12,7 @@
         $stateProvider
         .state('quartz.admin-default.home', {
             url: '/home',
-            templateUrl: 'app/parts/home/all-sites.tmpl.html',
+            templateUrl: 'app/parts/home/home.tmpl.html',
             // set the controller to load for this page
             controller: 'HomePageController',
             controllerAs: 'vm'
