@@ -6,9 +6,9 @@
         .config(pagesConfig);
 
     /* @ngInject */
-    function pagesConfig($stateProvider, qtMenuProvider,$translatePartialLoaderProvider) {
-        var tmplRoot='app/parts/pages/templates/',
-            templateList=['button'];
+    function pagesConfig($stateProvider, qtMenuProvider, $translatePartialLoaderProvider) {
+        var tmplRoot = 'app/parts/pages/templates/',
+            templateList = ['button'];
         $translatePartialLoaderProvider.addPart('app/parts/pages');
         $stateProvider
             .state('quartz.admin-default.pageManager', {
@@ -34,13 +34,13 @@
                         footer: false
                     }
                 },
-                resolve:{
-                    getAllTemplates:['customService', function(customService){
+                resolve: {
+                    getAllTemplates: ['customService', function (customService) {
                         return customService.getAllTemplates(templateList, tmplRoot)
                     }],
-                    customWidgets:['$q','$firebase', function($q,$firebase){
-                        var def=$q.defer();
-                        $firebase.ref('widgets').once('value', function(snap){
+                    customWidgets: ['$q', '$firebase', function ($q, $firebase) {
+                        var def = $q.defer();
+                        $firebase.ref('widgets/detail@selectedSite').once('value', function (snap) {
                             def.resolve(snap.val())
                         });
                         return def.promise;
@@ -60,8 +60,8 @@
                         footer: false
                     }
                 },
-                resolve:{
-                    getAllTemplates:['customService', function(customService){
+                resolve: {
+                    getAllTemplates: ['customService', function (customService) {
                         return customService.getAllTemplates(templateList, tmplRoot)
                     }]
                 },
@@ -72,8 +72,8 @@
             })
             .state('quartz.admin-default.customPage', {
                 url: '/:siteName/:pageName/?id&params1&params2&cate&subCate&queryString&tag&devMode',
-                resolve:{
-                    getAllTemplates:['customService', function(customService){
+                resolve: {
+                    getAllTemplates: ['customService', function (customService) {
                         return customService.getAllTemplates(templateList, tmplRoot)
                     }],
                     authData: ['Auth', function (Auth) {
@@ -93,27 +93,31 @@
                 controllerAs: 'customPage'
             });
 
-        //// 已改成dynamic menu 放在quartz.run
-        //qtMenuProvider.addMenu({
-        //    name: 'MENU.PAGES.MENUNAME',
-        //    icon: 'fa fa-pencil-square-o',
-        //    type: 'dropdown',
-        //    priority: 1.5,
-        //    children:[
-        //        {
-        //            name: 'MENU.PAGES.PAGEMANAGER',
-        //            state: 'quartz.admin-default.pageManager',
-        //            params: {cate: 'all',subCate:'all',queryString:''},
-        //            type: 'link'
-        //        },
-        //        {
-        //            name: 'MENU.PAGES.WIDGETMANAGER',
-        //            state: 'quartz.admin-default.widgetManager',
-        //            params: {cate: 'all',subCate:'all',queryString:''},
-        //            type: 'link'
-        //        }
-        //    ]
-        //
-        //});
+        //// dynamic menu group 由quartz.run控制
+        qtMenuProvider.addMenuToGroup("siteSelected", {
+            name: 'MENU.SITECONFIG',
+            icon: 'fa fa-pencil-square-o',
+            type: 'dropdown',
+            priority: 1.2,
+            children: [
+                {
+                    name: 'MENU.SITES.CONFIG',
+                    type: 'link',
+                    state: 'quartz.admin-default.site-configure'
+                },
+                {
+                    name: 'MENU.PAGES.PAGEMANAGER',
+                    state: 'quartz.admin-default.pageManager',
+                    params: {cate: 'all', subCate: 'all', queryString: ''},
+                    type: 'link'
+                },
+                {
+                    name: 'MENU.PAGES.WIDGETMANAGER',
+                    state: 'quartz.admin-default.widgetManager',
+                    params: {cate: 'all', subCate: 'all', queryString: ''},
+                    type: 'link'
+                }
+            ]
+        });
     }
 })();

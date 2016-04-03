@@ -6,7 +6,7 @@
         .controller('DefaultToolbarController', DefaultToolbarController);
 
     /* @ngInject */
-    function DefaultToolbarController(config, $scope, $rootScope, Auth, $mdMedia, $translate, $state, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
+    function DefaultToolbarController(config, $scope, $rootScope, Auth, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
         var vm = this;
         vm.breadcrumbs = qtBreadcrumbsService.breadcrumbs;
         vm.emailNew = false;
@@ -22,7 +22,11 @@
         ////////////////
 
         function logout() {
-            $state.go(config.home);
+            if($stateParams.siteName&&$stateParams.pageName){
+                $state.go('quartz.admin-default.customPage',$stateParams);
+            } else {
+                $state.go(config.home);
+            }
             Auth.$unauth();
         }
 

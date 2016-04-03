@@ -13,7 +13,7 @@
                             All
                         </md-button>
                         <md-button class="toolbar-button"
-                                   ng-repeat="cate in clientConfig.products.categories"
+                                   ng-repeat="cate in vm.productConfig.categories"
                                    style="color:black"
                                    ng-click="vm.orderBy='category';vm.equalTo=$index;vm.getFiltered()">
                             {{cate[0]}}
@@ -49,7 +49,7 @@
                         <md-input-container class="md-block" flex ng-if="vm.orderBy==='category'">
                             <label>Equal to</label>
                             <md-select ng-model="vm.equalTo">
-                                <md-option ng-repeat="cate in clientConfig.products.categories" value="{{$index}}">
+                                <md-option ng-repeat="cate in vm.productConfig.categories" value="{{$index}}">
                                     {{cate[0]}}
                                 </md-option>
                             </md-select>

@@ -4,7 +4,7 @@
                ui-sref="quartz.admin-default-no-scroll.widgetEditor">
         <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
     </md-button>
-    <div layout="row" layout-xs="column" layout-wrap>
+    <div layout="column">
         <md-table-container flex>
             <table md-table md-progress="vm.paginator.promise">
                 <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
@@ -44,8 +44,8 @@
             </table>
         </md-table-container>
 
-        <md-table-pagination flex="100" md-limit="vm.paginator.size" md-page="vm.paginator.page"
-                             ng-if="vm.paginator.size<vm.paginator.result.total"
+        <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page"
+                             ng-show="vm.paginator.size<vm.paginator.result.total"
                              md-total="{{vm.paginator.result.total}}"
                              md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
     </div>

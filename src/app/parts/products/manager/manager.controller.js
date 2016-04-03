@@ -23,9 +23,11 @@
             ['Price', 'price']
         ];
 
-        vm.paginator = $firebase.paginator('products', $stateParams);
+        vm.paginator = $firebase.paginator('products/list@selectedSite', $stateParams);
         //initiate
         vm.paginator.onReorder($stateParams.orderBy||'itemId');
+
+
         vm.getFiltered = function () {
             $state.go('quartz.admin-default.productManager', {
                 orderBy: vm.orderBy,
@@ -58,9 +60,10 @@
         };
         ////categories
 
-        var productConfigRef = $firebase.ref('config/client/products');
+        var productConfigRef = $firebase.ref('products/config@selectedSite');
         vm.getCateTag = function () {
             productConfigRef.on('value', function (snap) {
+                vm.productConfig=snap.val();
                 vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
                 vm.tags = snippets.getFirebaseArrayData(snap.val().tags || []).toString();
             });
@@ -150,7 +153,7 @@
                 })
             }
 
-            $firebase.ref('products').child(vm.product.itemId || (new Date()).getTime()).update(vm.product, function () {
+            $firebase.ref('products/list@selectedSite').child(vm.product.itemId || (new Date()).getTime()).update(vm.product, function () {
                 vm.hide(function () {
                     $mdToast.show(
                         $mdToast.simple()
@@ -173,7 +176,7 @@
                 .ok('Remove');
 
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('products').child(id).child('_remove').set(true, function () {
+                $firebase.ref('products/list@selectedSite').child(id).child('_remove').set(true, function () {
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Deleted!')
@@ -190,7 +193,7 @@
         vm.showEditor = function (ev, id) {
             resetData();
             if (id) {
-                $firebase.ref('products').child(id).once('value', function (snap) {
+                $firebase.ref('products/list@selectedSite').child(id).once('value', function (snap) {
                     vm.product = snap.val();
                     if (angular.isString(snap.val().group)) {
                         var groups = snap.val().group.split('->');

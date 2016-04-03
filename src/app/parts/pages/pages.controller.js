@@ -176,8 +176,8 @@
         
 
         $scope.$mdSidenav = $mdSidenav;
+        angular.extend(customPage, $stateParams);
         customPage.settingsGroups = qtSettings.custom;
-        customPage.devMode = $stateParams.devMode;
 
         customPage.scope = $scope;
         $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {

@@ -48,11 +48,6 @@
         });
         if (!($rootScope.user && $rootScope.user.admin)) Idle.watch();
 
-        //// get client config
-        $firebase.ref('config/client').on('value', function (snap) {
-            $rootScope.clientConfig = snap.val();
-        });
-
         //// set current site automatically
         function redirect(state, params) {
             var clear = $rootScope.$on('$stateChangeSuccess', function () {
@@ -61,66 +56,25 @@
             });
         }
 
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-            if (toParams.siteName) {
-                qtSettings.setSite(toParams.siteName);
-            } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
-                redirect(toState, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}))
-            } else if (toParams.siteName === '' && !$firebase.databases.selectedSite) {
-                redirect('quartz.admin-default.sites')
-            }
-            if ($firebase.databases.selectedSite) {
-                var siteName = $firebase.databases.selectedSite.siteName;
-                // qtMenu.addMenu({
-                //     name: 'MENU.PAGES.MENUNAME',
-                //     icon: 'fa fa-pencil-square-o',
-                //     type: 'dropdown',
-                //     priority: 1.5,
-                //     children: [
-                //         {
-                //             name: 'MENU.PAGES.PAGEMANAGER',
-                //             state: 'quartz.admin-default.pageManager',
-                //             params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
-                //             type: 'link'
-                //         },
-                //         {
-                //             name: 'MENU.PAGES.WIDGETMANAGER',
-                //             state: 'quartz.admin-default.widgetManager',
-                //             params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
-                //             type: 'link'
-                //         }
-                //     ]
-                //
-                // });
-                qtMenu.removeMenu('MENU.SITECONFIG');
+        if(!config.standAlone){
+            $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+                if (toParams.siteName) {
+                    qtSettings.setSite(toParams.siteName);
+                } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
+                    redirect(toState, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}))
+                } else if (toParams.siteName === '' && !$firebase.databases.selectedSite) {
+                    redirect('quartz.admin-default.sites')
+                }
+                if ($firebase.databases.selectedSite) {
+                    var siteName = $firebase.databases.selectedSite.siteName;
 
-                qtMenu.addMenu({
-                    name: 'MENU.SITECONFIG',
-                    icon: 'fa fa-pencil-square-o',
-                    type: 'dropdown',
-                    priority: 1.2,
-                    children: [
-                        {
-                            name: 'MENU.SITES.CONFIG',
-                            type: 'link',
-                            state: 'quartz.admin-default.site-configure'
-                        },
-                        {
-                            name: 'MENU.PAGES.PAGEMANAGER',
-                            state: 'quartz.admin-default.pageManager',
-                            params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
-                            type: 'link'
-                        },
-                        {
-                            name: 'MENU.PAGES.WIDGETMANAGER',
-                            state: 'quartz.admin-default.widgetManager',
-                            params: {cate: 'all', subCate: 'all', queryString: '', siteName: siteName},
-                            type: 'link'
-                        }
-                    ]
-                });
-            }
-        });
+                    qtMenu.removeGroup("siteSelected");
+                    qtMenu.addGroup("siteSelected", {siteName: siteName});
+                }
+            });
+        } else {
+            qtMenu.addGroup("siteSelected");
+        }
 
         //// detect if user is logged in
         Auth.$onAuth(function (user) {

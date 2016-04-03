@@ -15,7 +15,7 @@
                 templateUrl: 'app/quartz/components/authentication/layouts/authentication.tmpl.html'
             })
             .state('authentication.login', {
-                url: '/login',
+                url: '/login?siteName&pageName',
                 templateUrl: 'app/quartz/components/authentication/login/login.tmpl.html',
                 controller: 'LoginController',
                 controllerAs: 'vm'

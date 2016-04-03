@@ -60,7 +60,7 @@
         if (!authData) $state.go('authentication.login');
 
 
-        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['delete', 'GENERAL.DELETE']];
+        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'],['user', 'SITES.SHOWUSER'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, site) {
             switch (action) {
                 case 'configure':
@@ -71,6 +71,9 @@
                     break;
                 case 'widget':
                     $state.go('quartz.admin-default.widgetManager', {siteName: site.siteName});
+                    break;
+                case 'user':
+                    $state.go('quartz.admin-default.siteusers', {siteName: site.siteName});
                     break;
                 case 'delete':
                     vm.deleteSite(site);

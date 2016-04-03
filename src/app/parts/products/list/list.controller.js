@@ -15,11 +15,14 @@
         };
 
         vm.menuWidth = vm.tags ? 6 : 4;
-        vm.clientConfig = $rootScope.clientConfig;
+
+        $firebase.ref("products/config@selectedSite").once("value", function(snap){
+            vm.productConfig = snap.val();
+        });
         vm.categories = function () {
             var cate = parseInt($stateParams.cate),
                 subCate = parseInt($stateParams.subCate),
-                categories = $rootScope.clientConfig.products.categories;
+                categories = vm.productConfig.categories;
             if ($stateParams.tag) return $stateParams.tag;
             if (cate % 1 === 0) {
                 return categories[cate][0] + (subCate % 1 === 0 ? '/' + categories[cate][1][subCate] : '');

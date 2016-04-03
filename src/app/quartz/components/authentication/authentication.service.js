@@ -15,7 +15,7 @@
                 opt={},
                 userPath = 'users/detail/'+ authData.uid;
             if (!authData) def.reject('AUTH_NEEDED');
-            
+
             function checkIfCreated(){
                 $firebase.ref(userPath+'/createdTime').once('value', function (snap) {
                     opt.registered = snap.val() !== null;
@@ -24,7 +24,7 @@
                     def.reject(err)
                 });
             }
-            
+
             if($stateParams.siteName){
                 var siteName = $stateParams.siteName;
                 $firebase.ref(userPath+'/sitesRegistered/'+siteName).once('value', function(regSnap){
@@ -34,33 +34,33 @@
             } else {
                 checkIfCreated();
             }
-            
+
             return def.promise
         };
 
         Auth.createAccount = function (authData) {
-            if (authData.registered!==true) {
-                var uid = authData.uid,
-                    userPaths =['list/'+uid,'detail/'+uid],
-                    basicData = Auth.basicAccountUserData(authData),
-                    def,
-                    regSite = function(){
+            var uid = authData.uid,
+                userPaths =['list/'+uid,'detail/'+uid],
+                basicData = Auth.basicAccountUserData(authData),
+                def=$q.defer(),
+                regSite = function(){
+                    if(authData.regSite){
                         var data={},
                             siteName = authData.regSite;
                         data["users/detail/"+uid+"/sitesRegistered/"+siteName]=Firebase.ServerValue.TIMESTAMP;
                         data["sites/detail/"+siteName+"/users/list/"+uid]=basicData;
-                        data["sites/detail/"+siteName+"/users/detail/"+uid]=basicData;
                         $firebase.update('', data).then(function () {
                             def.resolve();
                         })
-                    };
-                if(authData.regSite){
-                    def = $q.defer();
-                    $firebase.update('users', userPaths, basicData).then(regSite);
-                    return def.promise;
-                } else {
-                    return $firebase.update('users', userPaths, basicData);
-                }
+                    } else {
+                        def.resolve();
+                    }
+                };
+
+            if (authData.registered!==true) {
+                $firebase.update('users', userPaths, basicData).then(regSite);
+            } else {
+                regSite();
             }
             // if (opt === undefined || !angular.isObject(opt)) {
             //     var uid = authData.uid;
@@ -68,6 +68,7 @@
             // } else {
             //     //TODO: structure user data by passing opt in
             // }
+            return def.promise
         };
         //Example
         //var opt={
@@ -96,7 +97,7 @@
                 email = authData[provider].email || null,
                 profileImageURL = authData[provider].profileImageURL || null;
             if (provider === 'password') name = firstPartOfEmail(authData.password.email);
-            var basicUser = {createdTime: Firebase.ServerValue.TIMESTAMP};
+            var basicUser = {createdTime: Firebase.ServerValue.TIMESTAMP, privider: authData.provider};
             basicUser.info = {
                 name: name,
                 email: email,

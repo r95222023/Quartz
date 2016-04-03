@@ -6,7 +6,7 @@
         .controller('LoginController', LoginController);
 
     /* @ngInject */
-    function LoginController($state, $mdMedia, qtSettings, Auth, config) {
+    function LoginController($state, $stateParams, $mdMedia, qtSettings, Auth, config) {
         var vm = this;
 
         vm.email = null;
@@ -46,9 +46,12 @@
         };
 
         ////////////////
-
-        function redirectTo(state) {
-            $state.go(state);
+        function redirect(){
+            if($stateParams.siteName&&$stateParams.pageName){
+                $state.go('quartz.admin-default.customPage',$stateParams)
+            } else {
+                $state.go(config.home);
+            }
         }
 
         function showError(err) {
@@ -59,7 +62,7 @@
             vm.err = null;
             Auth.$authWithPassword({email: email, password: pass}, opt)
                 .then(function (/* user */) {
-                    redirectTo(config.home);
+                    redirect();
                 }, showError);
         }
 
@@ -73,7 +76,7 @@
             } else {
                 Auth.loginWithProvider(provider, vm.loginOption)
                     .then(function (user) {
-                        redirectTo(config.home);
+                        redirect();
                         return Auth.checkIfAccountExistOnFb(user)
                     }, showError)
                     .then(Auth.createAccount, showError)

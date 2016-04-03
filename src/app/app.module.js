@@ -17,8 +17,7 @@
         angular.forEach(window.config,function(config){
             config.apply(null);
         });
-        mainRef.child('config/client').once('value', function (snap) {
-            window.clientConfig=  snap.val();
+        mainRef.child('config').once('value', function (snap) {
             angular.module('app')
                 .constant('APP_LANGUAGES', [{
                     name: 'LANGUAGES.CHINESE',

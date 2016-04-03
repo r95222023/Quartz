@@ -11,7 +11,7 @@
             </md-input-container>
             <md-menu>
                 <md-button aria-label="categories" ng-click="$mdOpenMenu()" aria-label="categories">
-                    <span ng-if="vm.clientConfig.products.categories">{{vm.categories()}}</span>
+                    <span ng-if="vm.productConfig.categories">{{vm.categories()}}</span>
                     <md-icon md-font-icon="fa fa-caret-down"></md-icon>
                 </md-button>
                 <md-menu-content width="{{vm.menuWidth}}" layout="row">
@@ -21,7 +21,7 @@
                             <h3 style="cursor: pointer">All</h3>
                         </md-menu-item>
                         <md-divider></md-divider>
-                        <md-menu-item ng-repeat-start="cate in vm.clientConfig.products.categories"
+                        <md-menu-item ng-repeat-start="cate in vm.productConfig.categories"
                                       ng-click="vm.go('',cate[2],'all','')"
                                       ng-init="cate[2]=$index">
                             <span style="width:10px"></span>
@@ -35,8 +35,8 @@
                         </md-menu-item>
                         <md-divider ng-repeat-end ng-show="!$last"></md-divider>
                     </div>
-                    <div flex ng-if="vm.clientConfig.products.tags">
-                        <md-menu-item ng-repeat="tag in vm.clientConfig.products.tags">
+                    <div flex ng-if="vm.productConfig.tags">
+                        <md-menu-item ng-repeat="tag in vm.productConfig.tags">
                             <span style="width:10px"></span>
                             <h3 style="cursor: pointer" ng-click="vm.go('','all','all',tag)">{{tag}}</h3>
                         </md-menu-item>
