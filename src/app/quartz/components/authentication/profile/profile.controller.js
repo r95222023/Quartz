@@ -6,66 +6,29 @@
         .controller('ProfileController', ProfileController);
 
     /* @ngInject */
-    function ProfileController($rootScope, userData, Auth, $firebase, $mdToast) {
+    function ProfileController($rootScope, userData, Auth, $firebase, $mdToast, qtSettings) {
         console.log(userData);
 
         var vm = this;
-        vm.settingsGroups = [{
-            name: 'ADMIN.NOTIFICATIONS.ACCOUNT_SETTINGS',
-            settings: [{
-                title: 'ADMIN.NOTIFICATIONS.SHOW_LOCATION',
-                icon: 'zmdi zmdi-pin',
-                enabled: true
-            }, {
-                title: 'ADMIN.NOTIFICATIONS.SHOW_AVATAR',
-                icon: 'zmdi zmdi-face',
-                enabled: false
-            }, {
-                title: 'ADMIN.NOTIFICATIONS.SEND_NOTIFICATIONS',
-                icon: 'zmdi zmdi-notifications-active',
-                enabled: true
-            }]
-        }, {
-            name: 'ADMIN.NOTIFICATIONS.CHAT_SETTINGS',
-            settings: [{
-                title: 'ADMIN.NOTIFICATIONS.SHOW_USERNAME',
-                icon: 'zmdi zmdi-account',
-                enabled: true
-            }, {
-                title: 'ADMIN.NOTIFICATIONS.SHOW_PROFILE',
-                icon: 'zmdi zmdi-account-box',
-                enabled: false
-            }, {
-                title: 'ADMIN.NOTIFICATIONS.ALLOW_BACKUPS',
-                icon: 'zmdi zmdi-cloud-upload',
-                enabled: true
-            }]
-        }];
+        vm.settingsGroups = qtSettings.custom;
+
 
         //user profile.
         vm.user = {};
-        if ($rootScope.user) {
-            angular.forEach($rootScope.user.info, function (value, key) {
+        if (userData) {
+            angular.forEach(userData.info, function (value, key) {
                 vm.user[key] = value;
             });
         }
 
 
-        //vm.user = {
-        //    location: 'Sitia, Crete, Greece',
-        //    website: 'http://www.oxygenna.com',
-        //    twitter: 'oxygenna',
-        //    bio: 'We are a small creative web design agency \n who are passionate with our pixels.',
-        //    current: '',
-        //    password: '',
-        //    confirm: ''
-        //};
         vm.updateProfile = function () {
             var userUrl = 'users/detail/' + $rootScope.user.uid;
             $firebase.update(userUrl + '/info', vm.user)
                 .then(success, error);
 
             function success() {
+                indexService.update("users", userData.uid, userData, "main"); //TODO: 檢查是否有main以外更好的index
                 $mdToast.show(
                     $mdToast.simple()
                         .content('profile updated')

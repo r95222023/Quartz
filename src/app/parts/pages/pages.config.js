@@ -92,32 +92,5 @@
                 controller: 'CustomPageController',
                 controllerAs: 'customPage'
             });
-
-        //// dynamic menu group 由quartz.run控制
-        qtMenuProvider.addMenuToGroup("siteSelected", {
-            name: 'MENU.SITECONFIG',
-            icon: 'fa fa-pencil-square-o',
-            type: 'dropdown',
-            priority: 1.2,
-            children: [
-                {
-                    name: 'MENU.SITES.CONFIG',
-                    type: 'link',
-                    state: 'quartz.admin-default.site-configure'
-                },
-                {
-                    name: 'MENU.PAGES.PAGEMANAGER',
-                    state: 'quartz.admin-default.pageManager',
-                    params: {cate: 'all', subCate: 'all', queryString: ''},
-                    type: 'link'
-                },
-                {
-                    name: 'MENU.PAGES.WIDGETMANAGER',
-                    state: 'quartz.admin-default.widgetManager',
-                    params: {cate: 'all', subCate: 'all', queryString: ''},
-                    type: 'link'
-                }
-            ]
-        });
     }
 })();

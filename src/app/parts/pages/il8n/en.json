@@ -2,8 +2,8 @@
     "MENU": {
         "PAGES": {
             "MENUNAME": "Pages",
-            "PAGEMANAGER":"Page Manager",
-            "WIDGETMANAGER": "Widget Manager"
+            "PAGEMANAGER":"Pages",
+            "WIDGETMANAGER": "Widgets"
         }
     }
 }

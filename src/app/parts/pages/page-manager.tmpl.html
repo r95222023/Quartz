@@ -11,6 +11,7 @@
                 <tr md-row>
                     <th md-column md-order-by="name">Page Name</th>
                     <th md-column md-order-by="author">Author</th>
+                    <th md-column md-order-by="private">Private</th>
                     <th md-column md-order-by="editTime">Edit Time</th>
                     <th md-column></th>
                 </tr>
@@ -20,6 +21,7 @@
                     ng-repeat="(id, page) in vm.paginator.result.hits">
                     <td md-cell>{{page.name}}</td>
                     <td md-cell>{{page.author}}</td>
+                    <td md-cell>{{page.private}}</td>
                     <td md-cell>{{page.editTime| date: 'medium'}}</td>
                     <td md-cell style="width:50px;">
                         <div layout="row">

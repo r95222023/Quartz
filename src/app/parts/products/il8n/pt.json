@@ -1,11 +1,11 @@
 {
     "MENU": {
         "PRODUCTS": {
-            "CART":"Cart",
+            "NAME":"Products",
             "LIST": "Product List",
             "SHOPPINGCART":"Shopping Cart",
-            "MANAGER":"Product Manager"
+            "MANAGER":"Products"
         },
-        "ORDERHISTORY":"Order History"
+        "ORDERHISTORY":"Orders"
     }
 }

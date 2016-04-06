@@ -6,7 +6,7 @@
         .controller('SignupController', SignupController);
 
     /* @ngInject */
-    function SignupController($state, $mdToast, $filter, qtSettings, Auth) {
+    function SignupController($state, $mdToast, $filter, qtSettings, Auth, indexService) {
         var vm = this;
         vm.qtSettings = qtSettings;
 
@@ -46,6 +46,7 @@
         }
 
         function signupSuccess(authData) {
+            indexService.add("users", authData.uid, authData, "main"); //TODO: 檢查是否有main以外更好的index
             $mdToast.show(
                 $mdToast.simple()
                     .content($filter('translate')('SIGNUP.MESSAGES.CONFIRM_SENT') + ' ' + authData.uid)

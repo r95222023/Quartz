@@ -1,4 +1,10 @@
 <div layout="column">
+    <md-button class="md-fab" aria-label="fab button"
+               style="position: fixed; bottom: 40px; right: 40px"
+               ng-if="selectedIndex===0"
+               ng-click="vm.showEditor($event)">
+        <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+    </md-button>
     <md-tabs md-dynamic-height md-selected="selectedIndex" md-border-bottom md-autoselect>
         <md-tab label="Products">
 
@@ -118,11 +124,7 @@
                                      md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
             </md-content>
-            <md-button class="md-fab" aria-label="fab button"
-                       style="position: fixed; bottom: 40px; right: 40px"
-                       ng-click="vm.showEditor($event)">
-                <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
-            </md-button>
+
         </md-tab>
 
         <md-tab label="Categories and Tags">

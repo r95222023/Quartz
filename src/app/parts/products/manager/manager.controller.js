@@ -6,7 +6,7 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController($mdToast, $mdDialog, $firebase, snippets, $stateParams, $state, $mdMedia) {
+    function ProductManagerController($mdToast, $mdDialog, $firebase, indexService, snippets, $stateParams, $state, $mdMedia) {
         var vm = this,
             position = {
                 bottom: true,
@@ -25,7 +25,7 @@
 
         vm.paginator = $firebase.paginator('products/list@selectedSite', $stateParams);
         //initiate
-        vm.paginator.onReorder($stateParams.orderBy||'itemId');
+        vm.paginator.onReorder($stateParams.orderBy || 'itemId');
 
 
         vm.getFiltered = function () {
@@ -33,7 +33,7 @@
                 orderBy: vm.orderBy,
                 startAt: vm.startAt,
                 endAt: vm.endAt,
-                equalTo:vm.equalTo
+                equalTo: vm.equalTo
             })
         };
 
@@ -44,11 +44,11 @@
             vm.paginator.onReorder(sort);
         };
 
-        vm.actions = [['view','GENERAL.VIEW'],['edit','GENERAL.EDIT'],['delete','GENERAL.DELETE']];
+        vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, event) {
             switch (action) {
                 case 'view':
-                    $state.go('quartz.admin-default.productDetail',{id:id});
+                    $state.go('quartz.admin-default.productDetail', {id: id});
                     break;
                 case 'edit':
                     vm.showEditor(event, id);
@@ -63,7 +63,8 @@
         var productConfigRef = $firebase.ref('products/config@selectedSite');
         vm.getCateTag = function () {
             productConfigRef.on('value', function (snap) {
-                vm.productConfig=snap.val();
+                if (snap.val() === null) return;
+                vm.productConfig = snap.val();
                 vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
                 vm.tags = snippets.getFirebaseArrayData(snap.val().tags || []).toString();
             });
@@ -133,7 +134,6 @@
         };
 
         vm.update = function () {
-            delete vm.product._index;
             if (angular.isObject(vm.optional.options)) {
                 vm.product.options = {};
                 angular.forEach(vm.optional.options, function (item, key) {
@@ -152,31 +152,39 @@
                     vm.product.tags[tag] = 1;
                 })
             }
+            var id = vm.product.itemId || (new Date()).getTime();
 
-            $firebase.ref('products/list@selectedSite').child(vm.product.itemId || (new Date()).getTime()).update(vm.product, function () {
-                vm.hide(function () {
-                    $mdToast.show(
-                        $mdToast.simple()
-                            .textContent('Saved!')
-                            .position(position)
-                            .hideDelay(3000)
-                    );
-                    resetData();
+            $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], vm.product)
+                .then(function () {
+                    indexService.update("products", id, vm.product);
+
+                    vm.hide(function () {
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .textContent('Saved!')
+                                .position(position)
+                                .hideDelay(3000)
+                        );
+                        resetData();
+                    });
                 });
-            })
         };
+
         vm.delete = function (ev, id) {
             resetData();
             var confirm = $mdDialog.confirm()
                 .title('Remove products/' + id + '?')
-                .textContent('Warning: This data will be deleted permanently.')
+                .textContent('Warning: The data will be deleted permanently.')
                 .ariaLabel('Remove products/' + id + '?')
                 .targetEvent(ev)
                 .cancel('Cancel')
                 .ok('Remove');
 
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('products/list@selectedSite').child(id).child('_remove').set(true, function () {
+                $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], {
+                    "@all": null
+                }).then(function () {
+                    indexService.remove("products", id);
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Deleted!')

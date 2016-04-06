@@ -1,8 +1,8 @@
 {
     "MENU": {
-        "HOME": "主頁"
-    },
-    "HOME": {
-        "TITLE": "Welcome to the quartz"
+        "USERS": {
+            "SITEUSER":"用戶"
+        },
+        "ALLUSERS": "所有用戶"
     }
 }

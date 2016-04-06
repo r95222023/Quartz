@@ -21,7 +21,7 @@
         var vm = this;
 
         //Todo: 改名 刪除
-        vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
+        vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['setPrivate', 'GENERAL.SETPRIVATE'], ['setPublic', 'GENERAL.SETPUBLIC'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
@@ -30,10 +30,29 @@
                 case 'edit':
                     $state.go('quartz.admin-default-no-scroll.pageEditor', {id: id, pageName: name});
                     break;
-                case 'delete':
-                    $firebase.update(pageRefUrl, ['list/' + id, 'detail/' + id], {
+                case 'setPrivate':
+                    $firebase.update(pageRefUrl, ['list/' + id + '/private', 'detail/' + id + '/private'], {
+                        "@all": true
+                    });
+                    break;
+                case 'setPublic':
+                    $firebase.update(pageRefUrl, ['list/' + id + '/private', 'detail/' + id + '/private'], {
                         "@all": null
                     });
+                    break;
+                case 'delete':
+                    var confirm = $mdDialog.confirm()
+                        .title('Delete this page?')
+                        .ariaLabel('Would you like to delete this page?')
+                        .ok('Confirm')
+                        .cancel('Cancel');
+
+                    $mdDialog.show(confirm).then(function () {
+                        $firebase.update(pageRefUrl, ['list/' + id, 'detail/' + id], {
+                            "@all": null
+                        });
+                    });
+
                     break;
             }
         };
@@ -61,9 +80,18 @@
                     $state.go('quartz.admin-default-no-scroll.widgetEditor', {id: id, widgetName: name});
                     break;
                 case 'delete':
-                    $firebase.update(widgetRefUrl, ['list/' + id, 'detail/' + id], {
-                        "@all": null
+                    var confirm = $mdDialog.confirm()
+                        .title('Delete this widget?')
+                        .ariaLabel('Would you like to delete this widget?')
+                        .ok('Confirm')
+                        .cancel('Cancel');
+
+                    $mdDialog.show(confirm).then(function () {
+                        $firebase.update(widgetRefUrl, ['list/' + id, 'detail/' + id], {
+                            "@all": null
+                        });
                     });
+
                     break;
             }
         };
@@ -170,10 +198,10 @@
     function CustomPageController(injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName,
-            isIndex = !pageName||pageName==="index",
-            orderBy = isIndex? "index":"name",
-            equalTo = isIndex? true: pageName;
-        
+            isIndex = !pageName || pageName === "index",
+            orderBy = isIndex ? "index" : "name",
+            equalTo = isIndex ? true : pageName;
+
 
         $scope.$mdSidenav = $mdSidenav;
         angular.extend(customPage, $stateParams);
@@ -181,9 +209,12 @@
 
         customPage.scope = $scope;
         $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
-            if(parentSnap.val()===null) {$state.go('404');return true;}
+            if (parentSnap.val() === null) {
+                $state.go('404');
+                return true;
+            }
 
-            parentSnap.forEach(function(snap){
+            parentSnap.forEach(function (snap) {
                 $timeout(function () {
                     injectCSS.setDirectly(snap.key(), snap.child('css').val());
                     customPage.pageData = snap.val();
@@ -195,24 +226,27 @@
                         listener();
                     });
             });
+        } ,function(err){
+            $state.go('404');
+            return true;
         });
-        
 
-        customPage.getSites = function(){
-            if(authData) $firebase.ref('users/detail/'+authData.uid+'/sites').once('value', function(snap){
+
+        customPage.getSites = function () {
+            if (authData) $firebase.ref('users/detail/' + authData.uid + '/sites').once('value', function (snap) {
                 customPage.mysites = snap.val();
             })
         };
-        customPage.copyPageTo = function(siteName){
+        customPage.copyPageTo = function (siteName) {
 
             var pid = $firebase.ref('').push().key(),
                 pageData = {
-                    "name": "Copy-"+siteName+"-"+customPage.pageData.name,
+                    "name": "Copy-" + siteName + "-" + customPage.pageData.name,
                     "content@1": customPage.pageData.content,
                     "css@1": customPage.pageData.css || null,
                     "editTime@0": Firebase.ServerValue.TIMESTAMP
                 };
-            $firebase.update('sites/detail/'+siteName+'/pages', ['list/' + pid, 'detail/' + pid], pageData);
+            $firebase.update('sites/detail/' + siteName + '/pages', ['list/' + pid, 'detail/' + pid], pageData);
         }
     }
 
@@ -452,6 +486,7 @@
                 var pid = vm.pageRef.key();
                 $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                     "name": vm.pageName,
+                    "author": $firebase.params["$uid"]||null,
                     "content@1": content,
                     "css@1": css || null,
                     "editTime@0": Firebase.ServerValue.TIMESTAMP
@@ -538,6 +573,7 @@
                 var wid = vm.widgetRef.key();
                 $firebase.update(widgetRefUrl, ['list/' + wid, 'detail/' + wid], {
                     "name": vm.widgetName,
+                    "author": $firebase.params["$uid"],
                     "type@1": 'customWidget',
                     "content@1": customService.convertBack($scope.containers),
                     "css@1": vm.widgetCss || null,

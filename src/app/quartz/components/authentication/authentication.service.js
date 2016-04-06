@@ -97,7 +97,7 @@
                 email = authData[provider].email || null,
                 profileImageURL = authData[provider].profileImageURL || null;
             if (provider === 'password') name = firstPartOfEmail(authData.password.email);
-            var basicUser = {createdTime: Firebase.ServerValue.TIMESTAMP, privider: authData.provider};
+            var basicUser = {createdTime: Firebase.ServerValue.TIMESTAMP, provider: authData.provider};
             basicUser.info = {
                 name: name,
                 email: email,

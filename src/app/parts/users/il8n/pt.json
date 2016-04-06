@@ -1,8 +1,8 @@
 {
     "MENU": {
-        "HOME": "HOME"
-    },
-    "HOME": {
-        "TITLE": "Welcome to the quartz"
+        "USERS": {
+            "SITEUSER":"Users"
+        },
+        "ALLUSERS": "All users"
     }
 }

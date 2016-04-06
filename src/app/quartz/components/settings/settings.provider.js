@@ -14,6 +14,7 @@
             logo: '',
             copyright: '',
             version: '',
+            serverFb: '',
             custom: {}
         };
 
@@ -23,6 +24,7 @@
         this.setCopyright = setCopyright;
         this.setVersion = setVersion;
         this.setCustom = setCustom;
+        this.setServerFb = setServerFb;
 
         function addLanguage(newLanguage) {
             settings.languages.push(newLanguage);
@@ -48,6 +50,10 @@
             settings.custom = settingsGroups
         }
 
+        function setServerFb(fbUrl) {
+            settings.serverFb = fbUrl;
+        }
+
         // Service
         this.$get = /* @ngInject */ function ($firebase, config, FBURL) {
             function setSite(siteName) {
@@ -58,6 +64,10 @@
                 this.name = siteName;
             }
 
+            $firebase.databases.serverFb = {
+                url: settings.serverFb
+            };
+
             return {
                 languages: settings.languages,
                 name: settings.name,
@@ -66,7 +76,8 @@
                 version: settings.version,
                 defaultSkin: settings.defaultSkin,
                 custom: settings.custom,
-                setSite:setSite
+                setSite: setSite,
+                setServerFb: setServerFb
             };
         };
     }

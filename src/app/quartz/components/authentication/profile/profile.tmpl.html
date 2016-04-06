@@ -45,11 +45,6 @@
                         </md-input-container>
 
                         <md-input-container>
-                            <label for="twitter" translate>PROFILE.TWITTER.LABEL</label>
-                            <input id="twitter" label="twitter" name="twitter" type="text" ng-model="vm.user.twitter"/>
-                        </md-input-container>
-
-                        <md-input-container>
                             <label for="bio" translate>PROFILE.BIO.LABEL</label>
                             <textarea id="bio" label="bio" name="bio" ng-model="vm.user.bio"/>
                         </md-input-container>
@@ -58,7 +53,7 @@
                     </form>
                 </md-content>
             </md-tab>
-            <md-tab label="Password">
+            <md-tab ng-if="vm.user.provider==='password'" label="Password">
                 <md-content class="md-padding">
                     <form name="password">
                         <md-input-container>

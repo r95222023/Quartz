@@ -50,7 +50,7 @@
             name: 'MENU.LAYOUTS.TITLE',
             icon: 'zmdi zmdi-view-module',
             type: 'dropdown',
-            priority: 2.1,
+            priority: 2.2,
             children: [{
                 name: 'MENU.LAYOUTS.FULL-WIDTH',
                 type: 'link',

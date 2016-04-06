@@ -88,7 +88,7 @@
             name: 'MENU.DASHBOARDS.DASHBOARDS',
             icon: 'fa fa-dashboard',
             type: 'dropdown',
-            priority: 1.2,
+            priority: 2.1,
             children: [{
                 name: 'MENU.DASHBOARDS.GENERAL',
                 state: 'quartz.admin-default.dashboard-general',

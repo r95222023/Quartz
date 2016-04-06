@@ -8,7 +8,7 @@
         .controller('SiteConfigureController', SiteConfigureController);
 
     /* @ngInject */
-    function MySitesController($firebase, authData, $state, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function MySitesController($firebase, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
@@ -19,7 +19,7 @@
         vm.addSite = function () {
             $firebase.ref('sites/list/' + vm.newSiteName + '/createdTime').once('value', function (snap) {
                 if (snap.val() === null) {
-                    addSite();
+                    sitesService.addSite(vm.newSiteName, authData.uid);
                 } else {
                     alert('This name has been used!');
                     vm.newSiteName = "";
@@ -27,29 +27,23 @@
             });
         };
 
-        function addSite() {
-            if (vm.newSiteName.trim()) {
-                vm.sitesArray.$add({
-                    siteName: vm.newSiteName,
-                    createdTime: Firebase.ServerValue.TIMESTAMP
-                }).then(function () {
-                    $firebase.update('sites', ['detail/' + vm.newSiteName, 'list/' + vm.newSiteName], {
-                        //"toDetail@0": "test",
-                        //"toList@1": "test",
-                        "author@1": authData.uid,
-                        "siteName@1": vm.newSiteName,
-                        "createdTime": Firebase.ServerValue.TIMESTAMP
-                    })
-                });
-            }
-        }
-
         vm.deleteSite = function (site) {
-            vm.sitesArray.$remove(site).then(function () {
-                $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
-                    "@all": null
-                })
+            var confirm = $mdDialog.confirm()
+                .title('Delete the site?')
+                // .textContent('Delete the site?')
+                .ariaLabel('Would you like to delete the site?')
+                .ok('Confirm')
+                .cancel('Cancel');
+            $mdDialog.show(confirm).then(function () {
+                sitesService.removeSite(site.siteName, authData.uid);
+                //
+                // vm.sitesArray.$remove(site).then(function () {
+                //     $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
+                //         "@all": null
+                //     })
+                // });
             });
+
         };
 
     }
@@ -60,8 +54,8 @@
         if (!authData) $state.go('authentication.login');
 
 
-        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'],['user', 'SITES.SHOWUSER'], ['delete', 'GENERAL.DELETE']];
-        vm.action = function (action, site) {
+        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['delete', 'GENERAL.DELETE']];
+        vm.action = function (action, site, ev) {
             switch (action) {
                 case 'configure':
                     $state.go('quartz.admin-default.site-configure', {siteName: site.siteName});
@@ -74,6 +68,9 @@
                     break;
                 case 'user':
                     $state.go('quartz.admin-default.siteusers', {siteName: site.siteName});
+                    break;
+                case 'product':
+                    $state.go('quartz.admin-default.productManager', {siteName: site.siteName});
                     break;
                 case 'delete':
                     vm.deleteSite(site);
@@ -91,13 +88,23 @@
             vm.paginator.onReorder(orderBy);
         };
 
+
         vm.deleteSite = function (site) {
-            $firebase.ref('users/detail/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
-                snap.ref().set(null);
+            var confirm = $mdDialog.confirm()
+                .title('Delete this site?')
+                // .textContent('Delete this site?')
+                .ariaLabel('Would you like to delete the site?')
+                .ok('Confirm')
+                .cancel('Cancel');
+            $mdDialog.show(confirm).then(function () {
+                $firebase.ref('users/detail/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
+                    snap.ref().set(null);
+                });
+                $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
+                    "@all": null
+                });
             });
-            $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
-                "@all": null
-            });
+
         };
 
     }
@@ -105,19 +112,20 @@
     /* @ngInject */
     function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
         var vm = this,
-            siteListRef = $firebase.ref('sites/list'),
+            siteDetailRef = $firebase.ref('sites/detail'),
             pageListRef = $firebase.ref('pages/list@selectedSite'),
             siteName = $stateParams.siteName;
-        siteListRef.child(siteName).child('config').once('value', function (snap) {
-            vm.config = snap.val();
+        siteDetailRef.child(siteName).child('config').once('value', function (snap) {
+            vm.config = snap.val() || {};
+            vm.config.basic = vm.config.basic || {};
         });
         pageListRef.once('value', function (snap) {
             vm.pages = snap.val();
         });
         vm.updateSiteConfig = function () {
-            var pageName = vm.config.index;
+            var pageName = vm.config.basic.index;
             setIndex(pageName, function (data) {
-                $firebase.update('sites/list/'+siteName+'/config', vm.config);
+                $firebase.update('sites/detail/' + siteName + '/config', vm.config);
                 $firebase.update('pages@selectedSite', data);
             });
         };

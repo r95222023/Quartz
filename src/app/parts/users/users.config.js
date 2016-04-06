@@ -27,7 +27,7 @@
 
         qtMenuProvider.addMenu({
             name: 'MENU.ALLUSERS',
-            icon: 'zmdi zmdi-accounts',
+            icon: 'zmdi zmdi-accounts-list',
             type: 'link',
             priority: 1.5,
             state: 'quartz.admin-default.allusers'

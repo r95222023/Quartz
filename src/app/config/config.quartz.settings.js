@@ -7,14 +7,16 @@ window.config.quartzSetting=function() {
         .config(settingConfig);
 
     /* @ngInject */
-    function settingConfig(qtSettingsProvider, APP_LANGUAGES) {
+    function settingConfig(qtSettingsProvider, APP_LANGUAGES, config) {
         var now = new Date();
         // set app name & logo (used in loader, sidemenu, footer, login pages, etc)
-        qtSettingsProvider.setName('quartz');
+        qtSettingsProvider.setName('Dashboard');
         qtSettingsProvider.setCopyright('&copy;' + now.getFullYear() + ' BYH');
         qtSettingsProvider.setLogo('assets/images/logo.png');
         // set current version of app (shown in footer)
-        qtSettingsProvider.setVersion('1.1.0');
+        qtSettingsProvider.setVersion('0.11.0');
+        qtSettingsProvider.setServerFb(config.serverFb);
+
         // set default custom settings
         qtSettingsProvider.setCustom({
             acc: {

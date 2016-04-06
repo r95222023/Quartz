@@ -42,6 +42,7 @@
                     debug: true,
                     shipping: 0,
                     taxRate: 0,
+                    serverFb: 'quartz', /*https://quartz.firebaseio.com*/
                     home:'quartz.admin-default.home',
                     defaultUrl:'/home',
                     // where to redirect users if they need to authenticate

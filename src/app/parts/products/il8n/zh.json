@@ -1,11 +1,11 @@
 {
     "MENU": {
         "PRODUCTS": {
-            "CART":"購物車",
+            "NAME":"產品",
             "LIST": "產品清單",
             "SHOPPINGCART":"購物車",
-            "MANAGER":"產品管理"
+            "MANAGER":"產品"
         },
-        "ORDERHISTORY": "訂單管理"
+        "ORDERHISTORY": "訂單"
     }
 }

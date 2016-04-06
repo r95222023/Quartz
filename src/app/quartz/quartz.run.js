@@ -77,38 +77,44 @@
         }
 
         //// detect if user is logged in
-        Auth.$onAuth(function (user) {
-            $rootScope.user = user;
-            $rootScope.loggedIn = !!user;
+        Auth.$onAuth(function (authData) {
+            $rootScope.user = authData;
+            $rootScope.loggedIn = !!authData;
 
             promiseService.reset('userData');
 
-            if (user) {
-                $firebase.params = {
-                    '$uid': user.uid
-                };
-                $rootScope.loggedIn = !!user;
-
-                var loadList = {
-                    info: {
-                        refUrl: 'users/' + user.uid + '/info'
-                    },
-                    createdTime: {
-                        refUrl: 'users/' + user.uid + '/createdTime'
-                    }
-                };
-
-                $firebase.load(loadList).then(function (res) {
-                    user.createdTime = res.createdTime;
-                    user.info = res.info;
-                    $rootScope.user = user;
-                    promiseService.resolve('userData', $rootScope.user);
-                    console.log($rootScope.user);
+            if (authData) {
+                angular.extend($firebase.params,{
+                    '$uid': authData.uid
                 });
+
+                
+                $firebase.ref('users/detail/' + authData.uid + '/info').once('value', function(snap){
+                    var userData = Auth.basicAccountUserData(authData);
+                    userData.info = snap.val();
+                    promiseService.resolve('userData', userData);
+                    console.log(userData);
+                });
+
+                // var loadList = {
+                //     info: {
+                //         refUrl: 'users/' + authData.uid + '/info'
+                //     },
+                //     createdTime: {
+                //         refUrl: 'users/' + authData.uid + '/createdTime'
+                //     }
+                // };
+                // $firebase.load(loadList).then(function (res) {
+                //     var userData = {};
+                //     userData.createdTime = res.createdTime;
+                //     userData.info = res.info;
+                //     promiseService.resolve('userData', userData);
+                //     console.log(userData);
+                // });
             } else {
-                console.log('no user', user);
-                promiseService.resolve('userData', $rootScope.user);
-                $firebase.params = {};
+                console.log('no user', authData);
+                promiseService.resolve('userData', null);
+                $firebase.params["$uid"] = "";
             }
         });
     }

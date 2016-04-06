@@ -37,7 +37,7 @@
                 }
             })
             .state('quartz.admin-default.productManager', {
-                url: '/products/productmanager/?orderBy&startAt&endAt&equalTo',
+                url: '/:siteName/products/manager/?orderBy&startAt&endAt&equalTo',
                 templateUrl: 'app/parts/products/manager/manager.tmpl.html',
                 controller: 'ProductManagerController',
                 controllerAs: 'vm',
@@ -54,8 +54,8 @@
                 controllerAs: 'vm'
             });
 
-        qtMenuProvider.addMenu({
-            name: 'MENU.PRODUCTS.CART',
+        qtMenuProvider.addMenuToGroup("siteSelected",{
+            name: 'MENU.PRODUCTS.NAME',
             icon: 'fa fa-shopping-cart',
             type: 'dropdown',
             priority: 1.4,
