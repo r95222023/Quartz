@@ -9,6 +9,11 @@
         })
         .service('ngCart', ['$rootScope', 'ngCartItem', 'store', function ($rootScope, ngCartItem, store) {
 
+            var selectedSiteName = "";
+            $rootScope.$on('site:change', function (ev, siteName) {
+                selectedSiteName = siteName;
+            });
+
             this.init = function () {
                 this.$cart = {
                     shipping: null,
@@ -147,7 +152,7 @@
 
                 var items = [];
                 angular.forEach(this.getItems(), function (item) {
-                    items.push (item.toObject());
+                    items.push(item.toObject());
                 });
 
                 return {
@@ -174,7 +179,7 @@
             };
 
             this.$save = function () {
-                return store.set('cart', JSON.stringify(this.getCart()));
+                return store.set(selectedSiteName + '_cart', JSON.stringify(this.getCart()));
             }
 
         }])
@@ -304,6 +309,7 @@
                     } else {
                         $window.localStorage [key] = angular.toJson(val);
                     }
+
                     return $window.localStorage [key];
                 }
             }
@@ -350,10 +356,16 @@
         }])
 
         .service('ngCart.fulfilment.http', ['$http', 'ngCart', function ($http, ngCart) {
-
             this.checkout = function (settings) {
                 return $http.post(settings.url,
-                    {data: ngCart.toObject(), options: settings.options});
+                    {cart: ngCart.toObject(), options: settings.options, payment:settings.payment});
+            }
+        }])
+        .service('ngCart.fulfilment.firebase', ['$firebase', 'ngCart', function ($firebase, ngCart) {
+            this.checkout = function (settings) {
+                return $firebase.update(settings.refUrl,
+                    {cart: ngCart.toObject(), options: settings.options||null, payment:settings.payment||null});
             }
         }]);
+
 })();

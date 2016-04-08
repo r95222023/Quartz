@@ -9,11 +9,17 @@
                 ngCart.$save();
             });
 
-            if (angular.isObject(store.get('cart'))) {
-                ngCart.$restore(store.get('cart'));
+            $rootScope.$on('site:change', function(ev, siteName){
+                init(siteName);
+            });
+            init("main");
 
-            } else {
-                ngCart.init();
+            function init(siteName){
+                if (angular.isObject(store.get(siteName+'_cart'))) {
+                    ngCart.$restore(store.get(siteName+'_cart'));
+                } else {
+                    ngCart.init();
+                }
             }
 
         }])

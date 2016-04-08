@@ -55,13 +55,18 @@
         }
 
         // Service
-        this.$get = /* @ngInject */ function ($firebase, config, FBURL) {
+        this.$get = /* @ngInject */ function ($rootScope, $firebase, config, FBURL) {
             function setSite(siteName) {
-                $firebase.databases.selectedSite = {
-                    siteName: siteName,
-                    url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
-                };
-                this.name = siteName;
+                if(this.siteName!==siteName) {
+                    console.log("change site to "+siteName);
+                    $rootScope.$broadcast('site:change', siteName);
+                    $firebase.databases.selectedSite = {
+                        siteName: siteName,
+                        url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
+                    };
+                    this.siteName = siteName;
+                }
+
             }
 
             $firebase.databases.serverFb = {

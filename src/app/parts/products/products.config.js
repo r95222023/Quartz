@@ -52,6 +52,10 @@
                 templateUrl: 'app/parts/products/order-history/order-history.tmpl.html',
                 controller: 'OrderHistoryController',
                 controllerAs: 'vm'
+            })
+            .state('quartz.admin-default.checkout', {
+                url: '/checkout',
+                templateUrl: 'app/parts/products/checkout/checkout.tmpl.html'
             });
 
         qtMenuProvider.addMenuToGroup("siteSelected",{
@@ -71,6 +75,11 @@
             }, {
                 name: 'MENU.PRODUCTS.SHOPPINGCART',
                 state: 'quartz.admin-default.shoppingCart',
+                type: 'link'
+            },{
+                name: 'MENU.PRODUCTS.CHECKOUT',
+                state: 'quartz.admin-default.checkout',
+                params: {cate: 'all',subCate:'all',queryString:''},
                 type: 'link'
             }, {
                 name: 'MENU.ORDERHISTORY',

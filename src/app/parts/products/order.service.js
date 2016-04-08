@@ -29,7 +29,7 @@
                 }
             };
 
-            _order.cart = buildCart(ngCart);
+            _order.cart = ngCart.toObject();
             _order.totalAmount = ngCart.totalCost();
             var payment = {};
             payment[type] = paymentService[type].getPaymentInfo(_order, _opt);
@@ -44,22 +44,5 @@
             order: order,
             buildOrder: buildOrder
         }
-    }
-
-///////
-    function buildCart(ngCart) {
-        var items = ngCart.getItems(),
-            cart = {};
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            cart[i] = {
-                id: item.getId(),
-                name: item.getName(),
-                price: item.getPrice(),
-                quantity: item.getQuantity(),
-                data: item.getData()
-            }
-        }
-        return cart;
     }
 })();

@@ -28,14 +28,16 @@
                 return;
             }
 
-            var obj = {};
+            var obj = {
+                "_state":"index"
+            };
             obj.index = angular.isString(index) ? index : $firebase.databases.selectedSite.siteName;
             if (angular.isString(task)) obj.task = task;
             if (angular.isString(type)) obj.type = type;
             if (angular.isString(id)) obj.id = id;
             if (body) obj.body = body;
 
-            return $firebase.ref("index@serverFb").push(obj);
+            return $firebase.ref("queue/tasks@serverFb").push(obj);
         }
 
         return {

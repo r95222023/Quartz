@@ -12,22 +12,22 @@
             key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
             //token:'',
             //image: '/img/documentation/checkout/marketplace.png',
-            name:'Quartz',
-            description:'',
-            amount:'',
+            name: 'Quartz',
+            description: '',
+            amount: '',
             locale: 'auto',
-            currency:'USD',
-            panelLabel:'{{amount}}',
-            zipCode:false,
-            billingAddress:false,
-            shippingAddress:false,
+            currency: 'USD',
+            panelLabel: '{{amount}}',
+            zipCode: false,
+            billingAddress: false,
+            shippingAddress: false,
             //email:'',
-            allowRememberMe:true,
+            allowRememberMe: true,
             //opened:'',
             //closed:'',
-            bitcoin:false,
-            alipay:false,
-            alipayReusable:false
+            bitcoin: false,
+            alipay: false,
+            alipayReusable: false
         };
         this.setParams = function (value) {
             defaultConfig = value;
@@ -37,20 +37,25 @@
             this.defaultConfig = defaultConfig;
         }
 
+        Stripe.prototype.setParams = function (value) {
+            this.defaultConfig = value;
+        };
+
         Stripe.prototype.getPaymentInfo = function (order, opt) {
             var cart = order.cart ? order.cart : {},
+                items = cart.items || [],
                 _opt = opt || {},
             //pass opt.config in to override default config
-                config = _opt.config||{};
+                config = _opt.config || {};
 
             //for descriptions
             var description = '';
-            if (angular.isString(order.description)||angular.isString(_opt.description)) {
+            if (angular.isString(order.description) || angular.isString(_opt.description)) {
                 description = order.description
             } else if (angular.isFunction(_opt.description)) {
                 description = _opt.description(order)
             } else {
-                angular.forEach(cart, function (item, name) {
+                angular.forEach(items, function (item, name) {
                     description = description + (_opt.namePrefix || '') + item.name + (_opt.namePostfix || ' ') + (_opt.pricePrefix || '$') + item.price + (_opt.pricePostfix || '') + (_opt.quantityPrefix || '*') + item.quantity + (_opt.quantityPostfix || '') + '#'
                 });
                 description = description.slice(0, -1);
@@ -58,19 +63,19 @@
 
             //for total amount
             var amount = 0;
-            if (angular.isNumber(order.totalAmount)||angular.isNumber(_opt.totalAmount)) {
-                amount = order.totalAmount||_opt.totalAmount;
+            if (angular.isNumber(order.totalAmount) || angular.isNumber(_opt.totalAmount)) {
+                amount = order.totalAmount || _opt.totalAmount;
             } else if (angular.isFunction(_opt.totalAmount)) {
                 amount = _opt.totalAmount(order);
             } else {
                 angular.forEach(cart, function (item, name) {
-                    amount = amount+(item.quantity*item.price);
+                    amount = amount + (item.quantity * item.price);
                 });
             }
 
             return angular.extend({}, this.defaultConfig, config, {
-                description:description,
-                amount:amount
+                description: description,
+                amount: amount
             });
         };
 

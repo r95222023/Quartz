@@ -32,6 +32,7 @@
 
         Allpay.prototype.getPaymentInfo = function (order, opt) {
             var cart = order.cart ? order.cart : {},
+                items= cart.items||[],
                 _opt = opt || {},
                 config = _opt.config || {},
                 now = _opt.timeStamp||(new Date()),
@@ -48,8 +49,8 @@
 
             //for description
             var itemName = '';
-            for (var key in cart) {
-                itemName = itemName + (_opt.namePrefix || '') + cart[key].name + (_opt.namePostfix || ' ') + (_opt.pricePrefix || '$') + cart[key].price + (_opt.pricePostfix || '') + (_opt.quantityPrefix || '*') + cart[key].quantity + (_opt.quantityPostfix || '') + '#'
+            for (var key in items) {
+                itemName = itemName + (_opt.namePrefix || '') + items[key].name + (_opt.namePostfix || ' ') + (_opt.pricePrefix || '$') + items[key].price + (_opt.pricePostfix || '') + (_opt.quantityPrefix || '*') + items[key].quantity + (_opt.quantityPostfix || '') + '#'
             }
             itemName = itemName.slice(0, -1);
 

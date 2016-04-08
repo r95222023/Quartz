@@ -12,7 +12,7 @@
 
         .controller('AddToCartController', AddToCartController)
 
-        .controller('CartTableAdvancedController', CartTableAdvancedController)
+        .controller('CartTableAdvancedController', CartTableAdvancedController);
 
     /* @ngInject */
     function CartController($scope, ngCart) {
