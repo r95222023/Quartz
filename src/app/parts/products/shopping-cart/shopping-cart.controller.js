@@ -18,5 +18,8 @@
         vm.buildStripeOrder = function () {
             return orderService.buildOrder('stripe');
         };
+        vm.buildAllpayOrder = function () {
+            return orderService.buildOrder('allpay');
+        };
     }
 })();

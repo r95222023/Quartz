@@ -466,13 +466,19 @@
             };
         }
 
+        function rectifyUpdateData(data) {
+            var datastring = JSON.stringify(data).replace('undefined', 'null');
+            return JSON.parse(datastring);
+        }
+
         return {
             debounce: debounce,
             md5: MD5,
             Tea:TEA,
             sortObjectByPropery: sortObjectByPropery,
             getFirebaseArrayData: getFirebaseArrayData,
-            removeItemFromArray: removeItemFromArray
+            removeItemFromArray: removeItemFromArray,
+            rectifyUpdateData:rectifyUpdateData
         };
     }
 })();

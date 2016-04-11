@@ -23,7 +23,7 @@
         };
 
 
-        vm.paginator = $firebase.paginator('orders', $stateParams);
+        vm.paginator = $firebase.paginator('orders/list@selectedSite', $stateParams);
         //initiate
         vm.paginator.onReorder($stateParams.orderBy||'id');
 
@@ -37,9 +37,10 @@
         vm.changeStatus = function (status) {
             var data = {};
             angular.forEach(vm.orderSelected, function (orderId) {
-                data[orderId + '/status'] = status;
+                data['detail/'+orderId + '/status'] = status;
+                data['list/'+orderId + '/status'] = status;
             });
-            $firebase.ref('orders').update(data, function () {
+            $firebase.ref('orders@selectedSite').update(data, function () {
                 //
             });
 

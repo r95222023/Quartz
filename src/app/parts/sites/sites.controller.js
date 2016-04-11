@@ -54,7 +54,7 @@
         if (!authData) $state.go('authentication.login');
 
 
-        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['delete', 'GENERAL.DELETE']];
+        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['order', 'SITES.SHOWORDER'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, site, ev) {
             switch (action) {
                 case 'configure':
@@ -71,6 +71,9 @@
                     break;
                 case 'product':
                     $state.go('quartz.admin-default.productManager', {siteName: site.siteName});
+                    break;
+                case 'order':
+                    $state.go('quartz.admin-default.orderHistory', {siteName: site.siteName});
                     break;
                 case 'delete':
                     vm.deleteSite(site);

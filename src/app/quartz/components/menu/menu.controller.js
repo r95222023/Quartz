@@ -6,14 +6,10 @@
         .controller('MenuController', MenuController);
 
     /* @ngInject */
-    function MenuController(qtSettings, qtLayout) {
+    function MenuController(sitesService, qtLayout) {
         var vm = this;
         vm.layout = qtLayout.layout;
-        // vm.sidebarInfo = {
-        //     appName: qtSettings.name,
-        //     appLogo: qtSettings.logo
-        // };
-        vm.qtSettings = qtSettings;
+        vm.siteSettings = sitesService;
         vm.toggleIconMenu = toggleIconMenu;
 
         ////////////

@@ -56,18 +56,6 @@
 
         // Service
         this.$get = /* @ngInject */ function ($rootScope, $firebase, config, FBURL) {
-            function setSite(siteName) {
-                if(this.siteName!==siteName) {
-                    console.log("change site to "+siteName);
-                    $rootScope.$broadcast('site:change', siteName);
-                    $firebase.databases.selectedSite = {
-                        siteName: siteName,
-                        url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
-                    };
-                    this.siteName = siteName;
-                }
-
-            }
 
             $firebase.databases.serverFb = {
                 url: settings.serverFb
@@ -81,7 +69,6 @@
                 version: settings.version,
                 defaultSkin: settings.defaultSkin,
                 custom: settings.custom,
-                setSite: setSite,
                 setServerFb: setServerFb
             };
         };

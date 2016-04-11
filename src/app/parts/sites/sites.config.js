@@ -110,6 +110,11 @@
                     name: 'MENU.USERS.SITEUSER',
                     state: 'quartz.admin-default.siteusers',
                     type: 'link'
+                },
+                {
+                    name: 'MENU.PRODUCTS.ORDERHISTORY',
+                    state: 'quartz.admin-default.orderHistory',
+                    type: 'link'
                 }
             ]
         });

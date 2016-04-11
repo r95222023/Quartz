@@ -89,7 +89,7 @@
         vm.search(); //for query from url
 
 
-        vm.paginator = $elasticSearch.paginator('quartz', 'product', vm.query);
+        vm.paginator = $elasticSearch.paginator($stateParams.siteName||'main', 'products', vm.query);
         //initiate
         vm.paginator.onReorder('itemId');
 

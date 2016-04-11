@@ -7,7 +7,7 @@
             this.$get = function () {
             };
         })
-        .service('ngCart', ['$rootScope', 'ngCartItem', 'store', function ($rootScope, ngCartItem, store) {
+        .service('ngCart', ['$rootScope', 'ngCartItem', 'store', '$window', function ($rootScope, ngCartItem, store, $window) {
 
             var selectedSiteName = "";
             $rootScope.$on('site:change', function (ev, siteName) {
@@ -137,7 +137,7 @@
 
                 $rootScope.$broadcast('ngCart:change', {});
                 this.$cart.items = [];
-                localStorage.removeItem('cart');
+                $window.localStorage.removeItem(selectedSiteName + '_cart');
             };
 
             this.isEmpty = function () {
@@ -293,8 +293,8 @@
             return {
 
                 get: function (key) {
-                    if ($window.localStorage [key]) {
-                        var cart = angular.fromJson($window.localStorage [key]);
+                    if ($window.localStorage.getItem(key)) {
+                        var cart = angular.fromJson($window.localStorage.getItem(key));
                         return JSON.parse(cart);
                     }
                     return false;
@@ -307,10 +307,10 @@
                     if (val === undefined) {
                         $window.localStorage.removeItem(key);
                     } else {
-                        $window.localStorage [key] = angular.toJson(val);
+                        $window.localStorage.setItem(key, angular.toJson(val));
                     }
 
-                    return $window.localStorage [key];
+                    return $window.localStorage.getItem(key);
                 }
             }
         }])
@@ -358,13 +358,13 @@
         .service('ngCart.fulfilment.http', ['$http', 'ngCart', function ($http, ngCart) {
             this.checkout = function (settings) {
                 return $http.post(settings.url,
-                    {cart: ngCart.toObject(), options: settings.options, payment:settings.payment});
+                    {cart: ngCart.toObject(), options: settings.options, payment: settings.payment});
             }
         }])
         .service('ngCart.fulfilment.firebase', ['$firebase', 'ngCart', function ($firebase, ngCart) {
             this.checkout = function (settings) {
                 return $firebase.update(settings.refUrl,
-                    {cart: ngCart.toObject(), options: settings.options||null, payment:settings.payment||null});
+                    {cart: ngCart.toObject(), options: settings.options || null, payment: settings.payment || null});
             }
         }]);
 

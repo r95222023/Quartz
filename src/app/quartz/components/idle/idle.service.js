@@ -1,17 +1,17 @@
 /** modified from https://github.com/HackedByChinese/ng-idle.git
  */
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('quartz.components')
-        .provider('Keepalive', function() {
+        .provider('Keepalive', function () {
             var options = {
                 http: null,
                 interval: 10 * 60
             };
 
-            this.http = function(value) {
+            this.http = function (value) {
                 if (!value) throw new Error('Argument must be a string containing a URL, or an object containing the HTTP request configuration.');
                 if (angular.isString(value)) {
                     value = {
@@ -25,7 +25,7 @@
                 options.http = value;
             };
 
-            var setInterval = this.interval = function(seconds) {
+            var setInterval = this.interval = function (seconds) {
                 seconds = parseInt(seconds);
 
                 if (isNaN(seconds) || seconds <= 0) throw new Error('Interval must be expressed in seconds and be greater than 0.');
@@ -33,7 +33,7 @@
             };
 
             this.$get = ['$rootScope', '$log', '$interval', '$http',
-                function($rootScope, $log, $interval, $http) {
+                function ($rootScope, $log, $interval, $http) {
 
                     var state = {
                         ping: null
@@ -54,271 +54,271 @@
                     }
 
                     return {
-                        _options: function() {
+                        _options: function () {
                             return options;
                         },
                         setInterval: setInterval,
-                        start: function() {
+                        start: function () {
                             $interval.cancel(state.ping);
 
                             state.ping = $interval(ping, options.interval * 1000);
                             return state.ping;
                         },
-                        stop: function() {
+                        stop: function () {
                             $interval.cancel(state.ping);
                         },
-                        ping: function() {
+                        ping: function () {
                             ping();
                         }
                     };
                 }
             ];
         })
-        .provider('Idle', function() {
-        var options = {
-            idle: 20 * 60, // in seconds (default is 20min)
-            timeout: 30, // in seconds (default is 30sec)
-            autoResume: 'idle', // lets events automatically resume (unsets idle state/resets warning)
-            interrupt: 'mousemove keydown DOMMouseScroll mousewheel mousedown touchstart touchmove scroll',
-            keepalive: true
-        };
+        .provider('Idle', function () {
+            var options = {
+                idle: 20 * 60, // in seconds (default is 20min)
+                timeout: 30, // in seconds (default is 30sec)
+                autoResume: 'idle', // lets events automatically resume (unsets idle state/resets warning)
+                interrupt: 'mousemove keydown DOMMouseScroll mousewheel mousedown touchstart touchmove scroll',
+                keepalive: true
+            };
 
-        /**
-         *  Sets the number of seconds a user can be idle before they are considered timed out.
-         *  @param {Number|Boolean} seconds A positive number representing seconds OR 0 or false to disable this feature.
-         */
-        var setTimeout = this.timeout = function(seconds) {
-            if (seconds === false) options.timeout = 0;
-            else if (angular.isNumber(seconds) && seconds >= 0) options.timeout = seconds;
-            else throw new Error('Timeout must be zero or false to disable the feature, or a positive integer (in seconds) to enable it.');
-        };
+            /**
+             *  Sets the number of seconds a user can be idle before they are considered timed out.
+             *  @param {Number|Boolean} seconds A positive number representing seconds OR 0 or false to disable this feature.
+             */
+            var setTimeout = this.timeout = function (seconds) {
+                if (seconds === false) options.timeout = 0;
+                else if (angular.isNumber(seconds) && seconds >= 0) options.timeout = seconds;
+                else throw new Error('Timeout must be zero or false to disable the feature, or a positive integer (in seconds) to enable it.');
+            };
 
-        this.interrupt = function(events) {
-            options.interrupt = events;
-        };
+            this.interrupt = function (events) {
+                options.interrupt = events;
+            };
 
-        var setIdle = this.idle = function(seconds) {
-            if (seconds <= 0) throw new Error('Idle must be a value in seconds, greater than 0.');
+            var setIdle = this.idle = function (seconds) {
+                if (seconds <= 0) throw new Error('Idle must be a value in seconds, greater than 0.');
 
-            options.idle = seconds;
-        };
+                options.idle = seconds;
+            };
 
-        this.autoResume = function(value) {
-            if (value === true) options.autoResume = 'idle';
-            else if (value === false) options.autoResume = 'off';
-            else options.autoResume = value;
-        };
+            this.autoResume = function (value) {
+                if (value === true) options.autoResume = 'idle';
+                else if (value === false) options.autoResume = 'off';
+                else options.autoResume = value;
+            };
 
-        this.keepalive = function(enabled) {
-            options.keepalive = enabled === true;
-        };
+            this.keepalive = function (enabled) {
+                options.keepalive = enabled === true;
+            };
 
-        this.$get = ['$interval', '$log', '$rootScope', '$document', 'Keepalive', 'IdleLocalStorage', '$window',
-            function($interval, $log, $rootScope, $document, Keepalive, LocalStorage, $window) {
-                var state = {
-                    idle: null,
-                    timeout: null,
-                    idling: false,
-                    running: false,
-                    countdown: null
-                };
+            this.$get = ['$interval', '$log', '$rootScope', '$document', 'Keepalive', 'IdleLocalStorage', '$window',
+                function ($interval, $log, $rootScope, $document, Keepalive, LocalStorage, $window) {
+                    var state = {
+                        idle: null,
+                        timeout: null,
+                        idling: false,
+                        running: false,
+                        countdown: null
+                    };
 
-                var id = new Date().getTime();
+                    var id = new Date().getTime();
 
-                function startKeepalive() {
-                    if (!options.keepalive) return;
+                    function startKeepalive() {
+                        if (!options.keepalive) return;
 
-                    if (state.running) Keepalive.ping();
+                        if (state.running) Keepalive.ping();
 
-                    Keepalive.start();
-                }
+                        Keepalive.start();
+                    }
 
-                function stopKeepalive() {
-                    if (!options.keepalive) return;
+                    function stopKeepalive() {
+                        if (!options.keepalive) return;
 
-                    Keepalive.stop();
-                }
+                        Keepalive.stop();
+                    }
 
-                function toggleState() {
-                    state.idling = !state.idling;
-                    var name = state.idling ? 'Start' : 'End';
+                    function toggleState() {
+                        state.idling = !state.idling;
+                        var name = state.idling ? 'Start' : 'End';
 
-                    $rootScope.$broadcast('Idle' + name);
+                        $rootScope.$broadcast('Idle' + name);
 
-                    if (state.idling) {
-                        stopKeepalive();
-                        if (options.timeout) {
-                            state.countdown = options.timeout;
-                            countdown();
-                            state.timeout = $interval(countdown, 1000, options.timeout, false);
+                        if (state.idling) {
+                            stopKeepalive();
+                            if (options.timeout) {
+                                state.countdown = options.timeout;
+                                countdown();
+                                state.timeout = $interval(countdown, 1000, options.timeout, false);
+                            }
+                        } else {
+                            startKeepalive();
                         }
-                    } else {
-                        startKeepalive();
+
+                        $interval.cancel(state.idle);
                     }
 
-                    $interval.cancel(state.idle);
-                }
-
-                function countdown() {
-                    // countdown has expired, so signal timeout
-                    if (state.countdown <= 0) {
-                        timeout();
-                        return;
-                    }
-
-                    // countdown hasn't reached zero, so warn and decrement
-                    $rootScope.$broadcast('IdleWarn', state.countdown);
-                    state.countdown--;
-                }
-
-                function timeout() {
-                    stopKeepalive();
-                    $interval.cancel(state.idle);
-                    $interval.cancel(state.timeout);
-
-                    state.idling = true;
-                    state.running = false;
-                    state.countdown = 0;
-
-                    $rootScope.$broadcast('IdleTimeout');
-                }
-
-                function changeOption(self, fn, value) {
-                    var reset = self.running();
-
-                    self.unwatch();
-                    fn(value);
-                    if (reset) self.watch();
-                }
-
-                function getExpiry() {
-                    var obj = LocalStorage.get('expiry');
-
-                    return obj && obj.time ? new Date(obj.time) : null;
-                }
-
-                function setExpiry(date) {
-                    if (!date) LocalStorage.remove('expiry');
-                    else LocalStorage.set('expiry', {id: id, time: date});
-                }
-
-                var svc = {
-                    _options: function() {
-                        return options;
-                    },
-                    _getNow: function() {
-                        return new Date();
-                    },
-                    getIdle: function(){
-                        return options.idle;
-                    },
-                    getTimeout: function(){
-                        return options.timeout;
-                    },
-                    setIdle: function(seconds) {
-                        changeOption(this, setIdle, seconds);
-                    },
-                    setTimeout: function(seconds) {
-                        changeOption(this, setTimeout, seconds);
-                    },
-                    isExpired: function() {
-                        var expiry = getExpiry();
-                        return expiry !== null && expiry <= this._getNow();
-                    },
-                    running: function() {
-                        return state.running;
-                    },
-                    idling: function() {
-                        return state.idling;
-                    },
-                    watch: function(noExpiryUpdate) {
-                        $interval.cancel(state.idle);
-                        $interval.cancel(state.timeout);
-
-                        // calculate the absolute expiry date, as added insurance against a browser sleeping or paused in the background
-                        var timeout = !options.timeout ? 0 : options.timeout;
-                        if (!noExpiryUpdate) setExpiry(new Date(new Date().getTime() + ((options.idle + timeout) * 1000)));
-
-
-                        if (state.idling) toggleState(); // clears the idle state if currently idling
-                        else if (!state.running) startKeepalive(); // if about to run, start keep alive
-
-                        state.running = true;
-
-                        state.idle = $interval(toggleState, options.idle * 1000, 0, false);
-                    },
-                    unwatch: function() {
-                        $interval.cancel(state.idle);
-                        $interval.cancel(state.timeout);
-
-                        state.idling = false;
-                        state.running = false;
-                        setExpiry(null);
-
-                        stopKeepalive();
-                    },
-                    interrupt: function(noExpiryUpdate) {
-                        if (!state.running) return;
-
-                        if (options.timeout && this.isExpired()) {
+                    function countdown() {
+                        // countdown has expired, so signal timeout
+                        if (state.countdown <= 0) {
                             timeout();
                             return;
                         }
 
-                        // note: you can no longer auto resume once we exceed the expiry; you will reset state by calling watch() manually
-                        if (options.autoResume === 'idle' || (options.autoResume === 'notIdle' && !state.idling)) this.watch(noExpiryUpdate);
-                    }
-                };
-
-                $document.find('html').on(options.interrupt, function(event) {
-                    if (event.type === 'mousemove' && event.originalEvent && event.originalEvent.movementX === 0 && event.originalEvent.movementY === 0) {
-                        return; // Fix for Chrome desktop notifications, triggering mousemove event.
+                        // countdown hasn't reached zero, so warn and decrement
+                        $rootScope.$broadcast('IdleWarn', state.countdown);
+                        state.countdown--;
                     }
 
-                    /*
-                     note:
-                     webkit fires fake mousemove events when the user has done nothing, so the idle will never time out while the cursor is over the webpage
-                     Original webkit bug report which caused this issue:
-                     https://bugs.webkit.org/show_bug.cgi?id=17052
-                     Chromium bug reports for issue:
-                     https://code.google.com/p/chromium/issues/detail?id=5598
-                     https://code.google.com/p/chromium/issues/detail?id=241476
-                     https://code.google.com/p/chromium/issues/detail?id=317007
-                     */
-                    if (event.type !== 'mousemove' || angular.isUndefined(event.movementX) || (event.movementX || event.movementY)) {
-                        svc.interrupt();
+                    function timeout() {
+                        stopKeepalive();
+                        $interval.cancel(state.idle);
+                        $interval.cancel(state.timeout);
+
+                        state.idling = true;
+                        state.running = false;
+                        state.countdown = 0;
+
+                        $rootScope.$broadcast('IdleTimeout');
                     }
-                });
 
-                var wrap = function(event) {
-                    if (event.key === 'ngIdle.expiry' && event.newValue && event.newValue !== event.oldValue) {
-                        var val = angular.fromJson(event.newValue);
-                        if (val.id === id) return;
-                        svc.interrupt(true);
+                    function changeOption(self, fn, value) {
+                        var reset = self.running();
+
+                        self.unwatch();
+                        fn(value);
+                        if (reset) self.watch();
                     }
-                };
 
-                if ($window.addEventListener) $window.addEventListener('storage', wrap, false);
-                else $window.attachEvent('onstorage', wrap);
+                    function getExpiry() {
+                        var obj = LocalStorage.get('expiry');
 
-                return svc;
-            }
-        ];
-    })
-        .provider('Title', function() {
+                        return obj && obj.time ? new Date(obj.time) : null;
+                    }
+
+                    function setExpiry(date) {
+                        if (!date) LocalStorage.remove('expiry');
+                        else LocalStorage.set('expiry', {id: id, time: date});
+                    }
+
+                    var svc = {
+                        _options: function () {
+                            return options;
+                        },
+                        _getNow: function () {
+                            return new Date();
+                        },
+                        getIdle: function () {
+                            return options.idle;
+                        },
+                        getTimeout: function () {
+                            return options.timeout;
+                        },
+                        setIdle: function (seconds) {
+                            changeOption(this, setIdle, seconds);
+                        },
+                        setTimeout: function (seconds) {
+                            changeOption(this, setTimeout, seconds);
+                        },
+                        isExpired: function () {
+                            var expiry = getExpiry();
+                            return expiry !== null && expiry <= this._getNow();
+                        },
+                        running: function () {
+                            return state.running;
+                        },
+                        idling: function () {
+                            return state.idling;
+                        },
+                        watch: function (noExpiryUpdate) {
+                            $interval.cancel(state.idle);
+                            $interval.cancel(state.timeout);
+
+                            // calculate the absolute expiry date, as added insurance against a browser sleeping or paused in the background
+                            var timeout = !options.timeout ? 0 : options.timeout;
+                            if (!noExpiryUpdate) setExpiry(new Date(new Date().getTime() + ((options.idle + timeout) * 1000)));
+
+
+                            if (state.idling) toggleState(); // clears the idle state if currently idling
+                            else if (!state.running) startKeepalive(); // if about to run, start keep alive
+
+                            state.running = true;
+
+                            state.idle = $interval(toggleState, options.idle * 1000, 0, false);
+                        },
+                        unwatch: function () {
+                            $interval.cancel(state.idle);
+                            $interval.cancel(state.timeout);
+
+                            state.idling = false;
+                            state.running = false;
+                            setExpiry(null);
+
+                            stopKeepalive();
+                        },
+                        interrupt: function (noExpiryUpdate) {
+                            if (!state.running) return;
+
+                            if (options.timeout && this.isExpired()) {
+                                timeout();
+                                return;
+                            }
+
+                            // note: you can no longer auto resume once we exceed the expiry; you will reset state by calling watch() manually
+                            if (options.autoResume === 'idle' || (options.autoResume === 'notIdle' && !state.idling)) this.watch(noExpiryUpdate);
+                        }
+                    };
+
+                    $document.find('html').on(options.interrupt, function (event) {
+                        if (event.type === 'mousemove' && event.originalEvent && event.originalEvent.movementX === 0 && event.originalEvent.movementY === 0) {
+                            return; // Fix for Chrome desktop notifications, triggering mousemove event.
+                        }
+
+                        /*
+                         note:
+                         webkit fires fake mousemove events when the user has done nothing, so the idle will never time out while the cursor is over the webpage
+                         Original webkit bug report which caused this issue:
+                         https://bugs.webkit.org/show_bug.cgi?id=17052
+                         Chromium bug reports for issue:
+                         https://code.google.com/p/chromium/issues/detail?id=5598
+                         https://code.google.com/p/chromium/issues/detail?id=241476
+                         https://code.google.com/p/chromium/issues/detail?id=317007
+                         */
+                        if (event.type !== 'mousemove' || angular.isUndefined(event.movementX) || (event.movementX || event.movementY)) {
+                            svc.interrupt();
+                        }
+                    });
+
+                    var wrap = function (event) {
+                        if (event.key === 'ngIdle.expiry' && event.newValue && event.newValue !== event.oldValue) {
+                            var val = angular.fromJson(event.newValue);
+                            if (val.id === id) return;
+                            svc.interrupt(true);
+                        }
+                    };
+
+                    if ($window.addEventListener) $window.addEventListener('storage', wrap, false);
+                    else $window.attachEvent('onstorage', wrap);
+
+                    return svc;
+                }
+            ];
+        })
+        .provider('Title', function () {
             var options = {
                 enabled: true
             };
 
-            var setEnabled = this.enabled = function(enabled) {
+            var setEnabled = this.enabled = function (enabled) {
                 options.enabled = enabled === true;
             };
 
-            function padLeft(nr, n, str){
-                return new Array(n-String(nr).length+1).join(str||'0')+nr;
+            function padLeft(nr, n, str) {
+                return new Array(n - String(nr).length + 1).join(str || '0') + nr;
             }
 
-            this.$get = ['$document', '$interpolate', function($document, $interpolate) {
+            this.$get = ['$document', '$interpolate', function ($document, $interpolate) {
                 var state = {
                     original: null,
                     idle: '{{minutes}}:{{seconds}} until your session times out!',
@@ -327,60 +327,60 @@
 
                 return {
                     setEnabled: setEnabled,
-                    isEnabled: function() {
+                    isEnabled: function () {
                         return options.enabled;
                     },
-                    original: function(val) {
+                    original: function (val) {
                         if (angular.isUndefined(val)) return state.original;
 
                         state.original = val;
                     },
-                    store: function(overwrite) {
+                    store: function (overwrite) {
                         if (overwrite || !state.original) state.original = this.value();
                     },
-                    value: function(val) {
+                    value: function (val) {
                         if (angular.isUndefined(val)) return $document[0].title;
 
                         $document[0].title = val;
                     },
-                    idleMessage: function(val) {
+                    idleMessage: function (val) {
                         if (angular.isUndefined(val)) return state.idle;
 
                         state.idle = val;
                     },
-                    timedOutMessage: function(val) {
+                    timedOutMessage: function (val) {
                         if (angular.isUndefined(val)) return state.timedout;
 
                         state.timedout = val;
                     },
-                    setAsIdle: function(countdown) {
+                    setAsIdle: function (countdown) {
                         this.store();
 
-                        var remaining = { totalSeconds: countdown };
-                        remaining.minutes = Math.floor(countdown/60);
+                        var remaining = {totalSeconds: countdown};
+                        remaining.minutes = Math.floor(countdown / 60);
                         remaining.seconds = padLeft(countdown - remaining.minutes * 60, 2);
 
                         this.value($interpolate(this.idleMessage())(remaining));
                     },
-                    setAsTimedOut: function() {
+                    setAsTimedOut: function () {
                         this.store();
 
                         this.value(this.timedOutMessage());
                     },
-                    restore: function() {
+                    restore: function () {
                         if (this.original()) this.value(this.original());
                     }
                 };
             }];
         })
-        .service('IdleStorageAccessor', ['$window', function($window) {
+        .service('IdleStorageAccessor', ['$window', function ($window) {
             return {
-                get: function() {
+                get: function () {
                     return $window.localStorage;
                 }
             }
         }])
-        .service('IdleLocalStorage', ['IdleStorageAccessor', function(IdleStorageAccessor) {
+        .service('IdleLocalStorage', ['IdleStorageAccessor', function (IdleStorageAccessor) {
             function AlternativeStorage() {
                 var storageMap = {};
 
@@ -389,7 +389,7 @@
                 };
 
                 this.getItem = function (key) {
-                    if(typeof storageMap[key] !== 'undefined' ) {
+                    if (typeof storageMap[key] !== 'undefined') {
                         return storageMap[key];
                     }
                     return null;
@@ -407,7 +407,7 @@
                     s.removeItem('ngIdleStorage');
 
                     return s;
-                } catch(err) {
+                } catch (err) {
                     return new AlternativeStorage();
                 }
             }
@@ -418,19 +418,33 @@
             var storage = getStorage();
 
             return {
-                set: function(key, value) {
-                    storage.setItem('ngIdle.'+key, angular.toJson(value));
+                set: function (key, value) {
+                    storage.setItem('ngIdle.' + key, angular.toJson(value));
                 },
-                get: function(key) {
-                    return angular.fromJson(storage.getItem('ngIdle.'+key));
+                get: function (key) {
+                    return angular.fromJson(storage.getItem('ngIdle.' + key));
                 },
-                remove: function(key) {
-                    storage.removeItem('ngIdle.'+key);
+                remove: function (key) {
+                    storage.removeItem('ngIdle.' + key);
                 },
-                _wrapped: function() {
+                _wrapped: function () {
                     return storage;
                 }
             };
+        }])
+        .run(['$rootScope', 'Idle', function ($rootScope, Idle) {
+            //// watch if user is idle
+            $rootScope.$on('IdleStart', function () {
+                // the user appears to have gone idle
+                console.log('idle start');
+                Firebase.goOffline();
+            });
+            $rootScope.$on('IdleEnd', function () {
+                // the user has come back from AFK and is doing stuff. if you are warning them, you can use this to hide the dialog
+                console.log('idle end');
+                Firebase.goOnline();
+            });
+            if (!($rootScope.user && $rootScope.user.admin)) Idle.watch();
         }]);
 
 })();

@@ -28,9 +28,8 @@
         this.query = function (index, type, option) {
             var def = $q.defer(),
                 refUrl = option.queryUrl || defaultQueryRefUrl,
-                searchData = angular.extend({}, {index: index, type: type}, option),
+                searchData = angular.extend({}, {indexType: index+':'+type}, option),
                 responseUrl = option.responseUrl || defaultResponseRefUrl;
-
 
             if (angular.isString(option.cache) || option.cache === true) {
                 var cacheId = getCacheId(searchData),

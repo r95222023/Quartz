@@ -8,11 +8,11 @@
     ////
 
     /* @ngInject */
-    function stripeCheckout(stripeCheckout, $mdMedia, $firebase, $sce, $timeout) {
+    function stripeCheckout(stripeCheckout, $mdMedia, $firebase, $sce, $timeout, ngCart, sitesService) {
         return {
             restrict: 'E',
             scope: {
-                data: '=',
+                buildData: '=',
                 token: '='
             },
             transclude: true,
@@ -29,30 +29,30 @@
 
                     //TODO: throw error if scope.data is not in correct form
 
-                    var data = angular.isFunction(scope.data) ? scope.data() : scope.data;
-                    //allow scope.data() to be a promise
-                    if(angular.isObject(data)&&angular.isFunction(data.then)){
-                        data.then(onData);
-                    } else {
-                        onData(data);
-                    }
+                    var data = scope.buildData();
+
+                    onData(data);
+
                     function onData(data) {
                         var paymentInfo = data.payment.stripe;
                         if (!angular.isFunction(paymentInfo.token)) {
                             paymentInfo.token = angular.isFunction(scope.token) ? scope.token : function (token) {
-                                data.id = data.id||(new Date()).getTime();
+                                data.id = data.id || (new Date()).getTime();
+                                data.siteName = sitesService.siteName;
                                 data.payment.stripe = token;
                                 data.payment.type = 'stripe';
+                                data['_state'] = 'order_validate';
                                 $firebase.request({
                                     request: [{
-                                        refUrl: 'orders/'+data.id,
+                                        refUrl: 'queue/tasks/$qid@serverFb',
                                         value: data
                                     }],
                                     response: {
-                                        res: 'orders/'+data.id
+                                        "_id": 'queue/tasks/$qid/_id'
                                     }
                                 }).then(function (res) {
                                     console.log(res);
+                                    ngCart.empty();
                                 }, function (error) {
                                     console.log(error);
                                 });

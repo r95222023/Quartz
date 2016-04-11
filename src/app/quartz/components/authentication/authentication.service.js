@@ -3,7 +3,8 @@
 
     angular
         .module('quartz.components')
-        .factory('Auth', Auth);
+        .factory('Auth', Auth)
+        .run(run);
 
     /*@ngInject*/
     function Auth($firebaseAuth, $q, $firebase, $stateParams, config) {
@@ -143,6 +144,42 @@
         };
 
         return Auth;
+    }
+
+    /*@ngInject*/
+    function run($rootScope, promiseService, Auth, $firebase, FBURL){
+        function assignUser(authData) {
+            $firebase.databases.currentUser = {
+                url: FBURL.split("//")[1].split(".fi")[0] + '#users/detail/' + authData.uid
+            };
+        }
+
+        Auth.$onAuth(function (authData) {
+            $rootScope.user = authData;
+            $rootScope.loggedIn = !!authData;
+
+            promiseService.reset('userData');
+
+            if (authData) {
+                angular.extend($firebase.params,{
+                    '$uid': authData.uid
+                });
+
+                assignUser(authData);
+
+                $firebase.ref('users/detail/' + authData.uid + '/info').once('value', function(snap){
+                    var userData = Auth.basicAccountUserData(authData);
+                    userData.info = snap.val();
+                    promiseService.resolve('userData', userData);
+                    console.log(userData);
+                });
+
+            } else {
+                console.log('no user', authData);
+                promiseService.resolve('userData', null);
+                $firebase.params["$uid"] = "";
+            }
+        });
     }
 })();
 

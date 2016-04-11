@@ -11,18 +11,6 @@
                        ng-click="vm.showFilter = !vm.showFilter">
                 <md-icon md-font-icon="zmdi zmdi-filter-list"></md-icon>
             </md-button>
-            <md-menu ng-hide="!vm.orderSelected.length">
-                <md-button class="md-icon-button" aria-label="more action" ng-click="$mdOpenMenu()"
-                           aria-label="more action">
-                    <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
-                </md-button>
-                <md-menu-content width="3">
-                    <md-menu-item ng-repeat="status in vm.statuses">
-                        <md-button ng-click="vm.changeStatus(status)" translate="{{status}}"
-                                   aria-label="{{status}}"></md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
         </div>
 
 
@@ -60,13 +48,13 @@
 
 
     <md-table-container>
-        <table md-table md-row-select ng-model="vm.orderSelected" md-progress="vm.paginator.promise">
+        <table md-table ng-model="vm.orderSelected" md-progress="vm.paginator.promise">
             <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
             <tr md-row>
                 <th md-column md-order-by="id"><span>Order</span></th>
-                <th md-column md-order-by="clientInfo.uid">Client</th>
-                <th md-column md-order-by="paymenTtype">Payment</th>
+                <th md-column md-order-by="paymentType">Payment</th>
                 <th md-column md-order-by="status">Status</th>
+                <th md-column md-order-by="createdTime">Created Time</th>
                 <th md-column md-numeric md-order-by="totalAmount">Total amount</th>
 
             </tr>
@@ -75,9 +63,9 @@
             <tr md-row md-select="order.id" md-select-id="{{order.id}}" md-auto-select
                 ng-repeat="(index, order) in vm.paginator.result.hits">
                 <td md-cell>{{order.id}}</td>
-                <td md-cell>{{order.clientInfo.uid}}</td>
-                <td md-cell>{{order.paymenTtype}}</td>
+                <td md-cell>{{order.paymentType}}</td>
                 <td md-cell>{{order.status}}</td>
+                <td md-cell>{{order.createdTime| date: 'medium'}}</td>
                 <td md-cell>{{order.totalAmount}}</td>
             </tr>
             </tbody>
