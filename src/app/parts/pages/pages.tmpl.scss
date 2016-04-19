@@ -5,3 +5,17 @@
     bottom: 0;
     overflow: hidden;
 }
+
+.docs-title-input{
+    border: 1px solid transparent;
+    border-radius: 2px!important;
+    line-height: 22px;
+    margin: 6px 20px 0 20px;
+    min-width: 1px;
+    padding: 2px 7px;
+}
+
+.editor-toolbar{
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.14);
+    z-index: 4;
+}

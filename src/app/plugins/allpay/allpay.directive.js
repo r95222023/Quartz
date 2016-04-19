@@ -25,12 +25,19 @@
             },
             link: function (scope, element, attrs) {
                 scope.getCheckMacValue = getCheckMacValue;
-                scope.showDialog = showDialog;
+                scope.showDialog = function($event){
+                    var data = scope.buildData();
+                    if(angular.isFunction(data.then)){
+                        data.then(function (_data) {
+                            scope.data = _data;
+                            showDialog($event);
+                        });
+                    } else {
+                        scope.data = data;
+                        showDialog($event);
+                    }
+                };
 
-
-                if(angular.isFunction(scope.buildData)){
-                    scope.data=scope.buildData();
-                }
 
 
                 var allpayFormAction = attrs.stage !== '' ? 'https://payment.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
@@ -121,8 +128,6 @@
                         $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
 
                         $scope.submit = function () {
-                            // send confirm to the server
-                            $firebase.ref('queue/tasks/' + data['_id'] + '@serverFb').child('status').set('established');
                             $scope.closeDialog();
                             var e = document.getElementsByName('allpay-checkout');
                             e[0].submit();

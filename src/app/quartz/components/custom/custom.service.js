@@ -7,16 +7,17 @@
 
     /* @ngInject */
     function CustomService($q, $http, $templateCache) {
-        var increment5 = [0, 5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100],
+        var increment5 = [null, 0, 5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100],
+            flex = ['flex'].concat(increment5),
             layoutOptions = {
                 "breakpoints": ['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'],
                 "layout": {
-                    "flex": increment5,
+                    "flex": flex,
                     "flex-offset": increment5,
-                    "layout": ['row', 'column'],
+                    "layout": [null,'row', 'column'],
                     "layout-align": {
-                        x: ['start', 'center', 'end', 'space-around', 'space-between'],
-                        y: ['start', 'center', 'end', 'stretch']
+                        x: [null, 'start', 'center', 'end', 'space-around', 'space-between'],
+                        y: [null, 'start', 'center', 'end', 'stretch']
                     }
                 }
             };
@@ -143,10 +144,12 @@
                 angular.forEach(item.layout, function (layout, breakpoint) {
                     var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
                     angular.forEach(layout, function (value, key) {
+                        if(value===null) return;
                         var _value = '="' + value + '" ',
                             _property = key + _breakpoint;
                         switch (key) {
                             case 'flex':
+                                if(value==='flex') _value = ' ';
                                 break;
                             case 'flex-offset':
                                 break;

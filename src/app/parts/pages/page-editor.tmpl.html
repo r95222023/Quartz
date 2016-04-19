@@ -1,19 +1,13 @@
 <div ng-hide="vm.preview" ng-if="!destroyDragula" ng-init="initDragula()" class="editor-full-height"
      layout="column">
-    <md-toolbar class="md-menu-toolbar">
+    <md-toolbar class="md-menu-toolbar editor-toolbar">
         <div layout="row">
             <md-toolbar-filler layout layout-align="center center" ui-sref="quartz.admin-default.pageManager">
                 <md-icon md-font-icon="zmdi zmdi-view-web"></md-icon>
             </md-toolbar-filler>
             <div>
-                <h2 class="md-toolbar-tools" ng-if="!vm.showPageNameInput">{{vm.pageName}}</h2>
-                <div class="md-toolbar-tools" ng-if="vm.showPageNameInput">
-                    <md-input-container>
-                        <label>Page Name</label>
-                        <input type="text" ng-model="vm.pageName">
-                    </md-input-container>
-                    <md-button ng-click="vm.showPageNameInput=false">OK</md-button>
-                </div>
+                <input type="text" class="docs-title-input" ng-model="vm.pageName">
+
                 <md-menu-bar>
                     <md-menu>
                         <button ng-click="$mdOpenMenu()">
@@ -28,11 +22,6 @@
                             <md-menu-item>
                                 <md-button ui-sref="quartz.admin-default.pageManager">
                                     Open...
-                                </md-button>
-                            </md-menu-item>
-                            <md-menu-item>
-                                <md-button ng-click="vm.showPageNameInput=true">
-                                    Rename
                                 </md-button>
                             </md-menu-item>
                             <md-menu-item>
@@ -86,7 +75,6 @@
             </div>
         </div>
     </md-toolbar>
-    <br>
     <div layout="row" ng-show="!vm.preview" flex="100">
         <md-content flex="10" style="min-width: 200px">
             <div layout="column" layout-xs="column"

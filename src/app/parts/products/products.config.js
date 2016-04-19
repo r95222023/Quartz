@@ -11,14 +11,14 @@
 
         $stateProvider
             .state('quartz.admin-default.productList', {
-                url: '/prodcuts/list/?siteName&cate&subCate&queryString&tag',
+                url: '/:siteName/prodcuts/list/?&cate&subCate&queryString&tag',
                 templateUrl: 'app/parts/products/list/list.tmpl.html',
                 // set the controller to load for this page
                 controller: 'ProductListController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.productDetail', {
-                url: '/products/:id/detail',
+                url: '/:siteName/products/:id/detail',
                 templateUrl: 'app/parts/products/detail/detail.tmpl.html',
                 // set the controller to load for this page
                 controller: 'ProductDetailController',

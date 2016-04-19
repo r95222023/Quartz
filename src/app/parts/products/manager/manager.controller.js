@@ -145,8 +145,8 @@
                 })
             }
 
-            if (angular.isString(vm.optional.tags)) {
-                vm.product.tags = {};
+            vm.product.tags = {};
+            if (angular.isString(vm.optional.tags)&&vm.optional.tags.trim()) {
                 var tags = vm.optional.tags.split(',');
                 angular.forEach(tags, function (tag, key) {
                     vm.product.tags[tag] = 1;

@@ -11,6 +11,11 @@
 
         $stateProvider
         .state('quartz.admin-default.home', {
+            data: {
+                layout: {
+                    sideMenuSize: 'hidden'
+                }
+            },
             url: '/home',
             templateUrl: 'app/parts/home/home.tmpl.html',
             // set the controller to load for this page

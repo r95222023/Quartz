@@ -50,32 +50,32 @@
                 }
             });
 
-        qtMenuProvider.addMenu({
-            name: 'MENU.AUTH.AUTH',
-            icon: 'zmdi zmdi-account',
-            type: 'dropdown',
-            priority: 3.1,
-            children: [{
-                name: 'MENU.AUTH.LOGIN',
-                state: 'authentication.login',
-                type: 'link'
-            }, {
-                name: 'MENU.AUTH.SIGN_UP',
-                state: 'authentication.signup',
-                type: 'link'
-            }, {
-                name: 'MENU.AUTH.FORGOT',
-                state: 'authentication.forgot',
-                type: 'link'
-            }, {
-                name: 'MENU.AUTH.LOCK',
-                state: 'authentication.lock',
-                type: 'link'
-            }, {
-                name: 'MENU.AUTH.PROFILE',
-                state: 'quartz.admin-default.profile',
-                type: 'link'
-            }]
-        });
+        // qtMenuProvider.addMenu({
+        //     name: 'MENU.AUTH.AUTH',
+        //     icon: 'zmdi zmdi-account',
+        //     type: 'dropdown',
+        //     priority: 3.1,
+        //     children: [{
+        //         name: 'MENU.AUTH.LOGIN',
+        //         state: 'authentication.login',
+        //         type: 'link'
+        //     }, {
+        //         name: 'MENU.AUTH.SIGN_UP',
+        //         state: 'authentication.signup',
+        //         type: 'link'
+        //     }, {
+        //         name: 'MENU.AUTH.FORGOT',
+        //         state: 'authentication.forgot',
+        //         type: 'link'
+        //     }, {
+        //         name: 'MENU.AUTH.LOCK',
+        //         state: 'authentication.lock',
+        //         type: 'link'
+        //     }, {
+        //         name: 'MENU.AUTH.PROFILE',
+        //         state: 'quartz.admin-default.profile',
+        //         type: 'link'
+        //     }]
+        // });
     }
 })();

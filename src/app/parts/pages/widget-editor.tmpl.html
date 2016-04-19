@@ -5,14 +5,8 @@
                 <md-icon md-font-icon="zmdi zmdi-apps"></md-icon>
             </md-toolbar-filler>
             <div>
-                <h2 class="md-toolbar-tools" ng-if="!vm.showWidgetNameInput">{{vm.widgetName}}</h2>
-                <div class="md-toolbar-tools" ng-if="vm.showWidgetNameInput">
-                    <md-input-container>
-                        <label>Widget Name</label>
-                        <input type="text" ng-model="vm.widgetName">
-                    </md-input-container>
-                    <md-button ng-click="vm.showWidgetNameInput=false">OK</md-button>
-                </div>
+                <input type="text" class="docs-title-input" ng-model="vm.widgetName">
+
                 <md-menu-bar>
                     <md-menu>
                         <button ng-click="$mdOpenMenu()">
@@ -27,11 +21,6 @@
                             <md-menu-item>
                                 <md-button ui-sref="quartz.admin-default.widgetManager">
                                     Open...
-                                </md-button>
-                            </md-menu-item>
-                            <md-menu-item>
-                                <md-button ng-click="vm.showWidgetNameInput=true">
-                                    Rename
                                 </md-button>
                             </md-menu-item>
                             <md-menu-item>
@@ -89,7 +78,6 @@
             </div>
         </div>
     </md-toolbar>
-    <br>
     <div layout="row" flex="100">
         <md-content flex="10" style="min-width: 200px">
             <div layout="column" layout-xs="column"

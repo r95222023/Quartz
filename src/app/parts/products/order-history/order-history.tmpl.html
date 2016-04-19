@@ -65,8 +65,9 @@
             <tr md-row>
                 <th md-column md-order-by="id"><span>Order</span></th>
                 <th md-column md-order-by="clientInfo.uid">Client</th>
-                <th md-column md-order-by="paymenTtype">Payment</th>
+                <th md-column md-order-by="paymentType">Payment</th>
                 <th md-column md-order-by="status">Status</th>
+                <th md-column md-order-by="createdTime">Created Time</th>
                 <th md-column md-numeric md-order-by="totalAmount">Total amount</th>
 
             </tr>
@@ -76,8 +77,9 @@
                 ng-repeat="(index, order) in vm.paginator.result.hits">
                 <td md-cell>{{order.id}}</td>
                 <td md-cell>{{order.clientInfo.uid}}</td>
-                <td md-cell>{{order.paymenTtype}}</td>
+                <td md-cell>{{order.paymentType}}</td>
                 <td md-cell>{{order.status}}</td>
+                <td md-cell>{{order.createdTime| date: 'medium'}}</td>
                 <td md-cell>{{order.totalAmount}}</td>
             </tr>
             </tbody>

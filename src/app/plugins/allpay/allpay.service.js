@@ -6,18 +6,10 @@
         .provider('$allpay', allpayProvider);
 
     ////
-
+    
     function allpayProvider() {
         var isStage = true,
-            defaultConfig = {
-                MerchantID: '2000132',
-                PaymentType: "aio",
-                ReturnURL: "http://104.196.19.150/allpayReceive",
-                PaymentInfoURL: "http://104.196.19.150/allpayPaymentInfo",
-                ChoosePayment: "ALL",
-                NeedExtraPaidInfo: "Y",
-                TradeDesc: "required, please set a value."
-            };
+            defaultConfig = {};
 
         this.isStage = function (value) {
             isStage = !!value;
@@ -26,8 +18,11 @@
             defaultConfig = value;
         };
 
-        function Allpay(defaultConfig, isStage) {
+        function Allpay(defaultConfig, sitesService) {
             this.defaultConfig = defaultConfig;
+            this.getSite = function(){
+                return sitesService.siteName;
+            }
         }
 
         Allpay.prototype.getPaymentInfo = function (order, opt) {
@@ -66,7 +61,9 @@
                 });
             }
 
-            var form = angular.extend({}, this.defaultConfig, {
+            var form = angular.extend({}, this.defaultConfig, _opt.paymentParams||{}, {
+                ReturnURL:this.defaultConfig.ReturnURL+'?siteName='+this.getSite(),
+                PaymentInfoURL:this.defaultConfig.PaymentInfoURL+'?siteName='+this.getSite(),
                 MerchantTradeDate: date,
                 TotalAmount: amount
             });
@@ -77,8 +74,8 @@
         };
 
 
-        this.$get = /* @ngInject */ function () {
-            return new Allpay(defaultConfig, isStage)
+        this.$get = /* @ngInject */ function (sitesService) {
+            return new Allpay(defaultConfig, sitesService)
         }
     }
 

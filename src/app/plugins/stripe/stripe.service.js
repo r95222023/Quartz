@@ -44,9 +44,7 @@
         Stripe.prototype.getPaymentInfo = function (order, opt) {
             var cart = order.cart ? order.cart : {},
                 items = cart.items || [],
-                _opt = opt || {},
-            //pass opt.config in to override default config
-                config = _opt.config || {};
+                _opt = opt || {};
 
             //for descriptions
             var description = '';
@@ -73,7 +71,7 @@
                 });
             }
 
-            return angular.extend({}, this.defaultConfig, config, {
+            return angular.extend({}, this.defaultConfig, _opt.paymentParams||{}, {
                 description: description,
                 amount: amount
             });

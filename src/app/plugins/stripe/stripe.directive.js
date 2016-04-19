@@ -31,7 +31,14 @@
 
                     var data = scope.buildData();
 
-                    onData(data);
+                    if(angular.isFunction(data.then)){
+                        data.then(function (_data) {
+                            onData(_data);
+                        });
+                    } else {
+                        onData(data);
+                    }
+
 
                     function onData(data) {
                         var paymentInfo = data.payment.stripe;

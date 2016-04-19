@@ -116,21 +116,34 @@
     function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
         var vm = this,
             siteDetailRef = $firebase.ref('sites/detail'),
+            siteListRef = $firebase.ref('sites/list'),
             pageListRef = $firebase.ref('pages/list@selectedSite'),
             siteName = $stateParams.siteName;
         siteDetailRef.child(siteName).child('config').once('value', function (snap) {
             vm.config = snap.val() || {};
             vm.config.basic = vm.config.basic || {};
         });
+
+        siteListRef.child(siteName).once('value', function (snap) {
+            var val = snap.val();
+            vm.thumbnail = val.thumbnail;
+        });
+        
         pageListRef.once('value', function (snap) {
             vm.pages = snap.val();
         });
         vm.updateSiteConfig = function () {
-            var pageName = vm.config.basic.index;
+            var pageName = vm.config.basic.index,
+                listData = {};
             setIndex(pageName, function (data) {
-                $firebase.update('sites/detail/' + siteName + '/config', vm.config);
                 $firebase.update('pages@selectedSite', data);
             });
+            
+            $firebase.update('sites/detail/' + siteName + '/config', vm.config);
+            
+            listData['thumbnail/']=vm.thumbnail;
+            $firebase.update('sites/list/' + siteName , listData);
+
         };
 
         function setIndex(pageName, cb) {

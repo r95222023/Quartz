@@ -31,6 +31,14 @@
             }
         };
 
+        vm.getProductsByTag=function(tagName, limit){
+            $firebase.ref('products/list@selectedSite')
+                .orderByChild('tags/'+tagName).equalTo(1).limitToFirst(limit||5)
+                .once('value' ,function(snap){
+                    vm[tagName]=snap.val();
+                })
+        };
+
 
         vm.queryString = $stateParams.queryString;
         vm.tag = $stateParams.tag;
