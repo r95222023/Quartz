@@ -73,10 +73,13 @@
                     </md-menu>
                 </md-menu-bar>
             </div>
+            <div flex></div>
+            <user-menu></user-menu>
+
         </div>
     </md-toolbar>
     <div layout="row" ng-show="!vm.preview" flex="100">
-        <md-content flex="10" style="min-width: 200px">
+        <md-content flex="10" style="min-width: 100px">
             <div layout="column" layout-xs="column"
                  layout-align="start center"
                  layout-margin style="overflow: auto">
@@ -121,7 +124,7 @@
                 </div>
             </div>
         </md-content>
-        <md-content flex layout-padding class="overlay-5">
+        <md-content flex layout-padding">
             <div layout="row" ng-if="vm.showCss">
                 <md-input-container flex="50">
                     <label>CSS</label>
@@ -158,13 +161,13 @@
                         </md-menu>
                     </div>
                     <div layout="{{container.layout.all.layout||'column'}}"
-                         style="width:100%;min-width: 300px;min-height: 100px; overflow: hidden;"
+                         style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
                          ng-class="{'layout-wrap': container.layout.all['layout-wrap']}"
                          dragula="'drag-container-lv1'"
                          dragula-scope="$parent"
                          dragula-model="containers[container.cid]">
 
-                        <div style="background-color:#BBDEFB; min-width: 300px;min-height: 100px;"
+                        <div style="background-color:#BBDEFB; min-width: 100px;min-height: 100px;"
                              flex="{{subcontainer.layout.all.flex||''}}"
                              layout="column"
                              layout-padding class="md-whiteframe-3dp"

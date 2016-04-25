@@ -37,8 +37,8 @@
                 }
             })
             .state('quartz.admin-default.productManager', {
-                url: '/:siteName/products/manager/?orderBy&startAt&endAt&equalTo',
-                templateUrl: 'app/parts/products/manager/manager.tmpl.html',
+                url: '/admin/:siteName/products/manager/?orderBy&startAt&endAt&equalTo',
+                templateUrl: 'app/parts/products/manager/products.tmpl.html',
                 controller: 'ProductManagerController',
                 controllerAs: 'vm',
                 resolve: {
@@ -47,8 +47,19 @@
                     }]
                 }
             })
+            .state('quartz.admin-default.categoryManager', {
+                url: '/admin/:siteName/products/manager/?orderBy&startAt&endAt&equalTo',
+                templateUrl: 'app/parts/products/manager/categories.tmpl.html',
+                controller: 'CateManagerController',
+                controllerAs: 'vm',
+                resolve: {
+                    getServerTime: ['syncTime', function (syncTime) {
+                        return syncTime.onReady()
+                    }]
+                }
+            })
             .state('quartz.admin-default.orderHistory', {
-                url: '/:siteName/order-history/?orderBy&startAt&endAt&equalTo',
+                url: '/admin/:siteName/order-history/?orderBy&startAt&endAt&equalTo',
                 templateUrl: 'app/parts/products/order-history/order-history.tmpl.html',
                 controller: 'OrderHistoryController',
                 controllerAs: 'vm'
@@ -65,33 +76,5 @@
                 }
             });
 
-        qtMenuProvider.addMenuToGroup("siteSelected",{
-            name: 'MENU.PRODUCTS.NAME',
-            icon: 'fa fa-shopping-cart',
-            type: 'dropdown',
-            priority: 1.4,
-            children: [{
-                name: 'MENU.PRODUCTS.LIST',
-                state: 'quartz.admin-default.productList',
-                params: {cate: 'all',subCate:'all',queryString:''},
-                type: 'link'
-            }, {
-                name: 'MENU.PRODUCTS.MANAGER',
-                state: 'quartz.admin-default.productManager',
-                type: 'link'
-            }, {
-                name: 'MENU.PRODUCTS.SHOPPINGCART',
-                state: 'quartz.admin-default.shoppingCart',
-                type: 'link'
-            }, {
-                name: 'MENU.ORDERHISTORY',
-                state: 'quartz.admin-default.orderHistory',
-                type: 'link'
-            },{
-                name: 'MENU.YOURORDERS',
-                state: 'quartz.admin-default.yourOrders',
-                type: 'link'
-            }]
-        });
     }
 })();

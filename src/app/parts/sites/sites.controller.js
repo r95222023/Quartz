@@ -5,7 +5,8 @@
         .module('app.parts.sites')
         .controller('MySitesController', MySitesController)
         .controller('AllSitesController', AllSitesController)
-        .controller('SiteConfigureController', SiteConfigureController);
+        .controller('SiteConfigureController', SiteConfigureController)
+        .controller('PaymentSettingController',PaymentSettingController);
 
     /* @ngInject */
     function MySitesController($firebase, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
@@ -157,5 +158,12 @@
                 cb(data);
             })
         }
+    }
+
+    /* @ngInject */
+    function PaymentSettingController($firebase, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+        var vm = this;
+        
+
     }
 })();

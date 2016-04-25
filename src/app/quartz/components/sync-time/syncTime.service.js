@@ -14,12 +14,16 @@
             if (offset) return (new Date()).getTime() + offset;
         }
 
+        function getDate() {
+            var now = getTime();
+            return (new Date(now));
+        }
+
         getServerTime().then(function (now) {
             //the difference between two date object is the time difference in ms
             offset = now - (new Date());
             ready.resolve(getTime);
         });
-
 
 
         function getServerTime() {
@@ -52,10 +56,11 @@
 
         return {
             getTime: getTime,
-            getServerTime: getServerTime,
+            // getServerTime: getServerTime,
             onReady: function () {
                 return ready.promise;
-            }
+            },
+            getDate: getDate
         };
     }
 })();

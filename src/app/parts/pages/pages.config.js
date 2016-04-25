@@ -12,13 +12,13 @@
         $translatePartialLoaderProvider.addPart('app/parts/pages');
         $stateProvider
             .state('quartz.admin-default.pageManager', {
-                url: '/:siteName/pageManager',
+                url: '/admin/:siteName/pageManager',
                 templateUrl: 'app/parts/pages/page-manager.tmpl.html',
                 controller: 'PageManagerController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.widgetManager', {
-                url: '/:siteName/widgetManager',
+                url: '/admin/:siteName/widgetManager',
                 templateUrl: 'app/parts/pages/widget-manager.tmpl.html',
                 controller: 'WidgetManagerController',
                 controllerAs: 'vm'
@@ -46,7 +46,7 @@
                         return def.promise;
                     }]
                 },
-                url: '/:siteName/pageEditor/?id&pageName',
+                url: '/admin/:siteName/pageEditor/?id&pageName',
                 templateUrl: 'app/parts/pages/page-editor.tmpl.html',
                 controller: 'PageEditorController',
                 controllerAs: 'vm'
@@ -65,7 +65,7 @@
                         return customService.getAllTemplates(templateList, tmplRoot)
                     }]
                 },
-                url: '/:siteName/widgetEditor/?id&widgetName',
+                url: '/admin/:siteName/widgetEditor/?id&widgetName',
                 templateUrl: 'app/parts/pages/widget-editor.tmpl.html',
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'

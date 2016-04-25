@@ -71,34 +71,7 @@
         };
         vm.getCateTag();
 
-        vm.addCate = function () {
-            vm.categories.push(['Category Name', []])
-        };
-
-        vm.removeCate = function (ithCate, ithSub) {
-            if (ithSub) {
-                vm.categories[ithCate][1].splice(ithSub, 1);
-            } else {
-                vm.categories.splice(ithCate, 1);
-            }
-        };
-        vm.saveCateTag = function () {
-            var data = {
-                categories: vm.categories,
-                tags: vm.tags ? vm.tags.split(',') : null
-            };
-            productConfigRef.update(data, function () {
-                vm.cateEdit = !vm.cateEdit;
-            });
-        };
-
-        vm.addItem = function (index, value) {
-            if (value) {
-                var length = vm.categories[index].length;
-                vm.categories[index][1].push(value);
-                vm.tempItem = {};
-            }
-        };
+        
 
         ////Products
 

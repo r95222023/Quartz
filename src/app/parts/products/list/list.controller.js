@@ -10,7 +10,7 @@
         var vm = this;
 
         vm.query = {
-            cache: 'query/cache',
+            cache: true/*'query/cache'*/,
             reuse: 200
         };
 

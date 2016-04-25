@@ -33,29 +33,30 @@
 
             if (angular.isString(option.cache) || option.cache === true) {
                 var cacheId = getCacheId(searchData),
-                    cacheRefUrl = option.cache === true ? defaultCacheRefUrl : option.cache,
+                    cacheRefUrl = option.cache === true ? defaultCacheRefUrl+'/'+index+type : option.cache,
                     searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
                 responseUrl = searchCacheRef.toString();
 
-                searchCacheRef.child('result').once('value', function (snap) {
-                    var result = snap.val();
+                searchCacheRef.once('value', function (snap) {
+                    var result = snap.child('result').val(),
+                        usage = snap.child('usage').val();
                     searchData.responseUrl = responseUrl;
                     if (snap.val() === null) {
                         request(refUrl, responseUrl, searchData);
                     } else {
                         //check if the cache is expired or used many times
                         syncTime.onReady().then(function (getTime) {
-                            if (getTime() - result.usage.last > (option.expire || 30 * 24 * 60 * 60 * 1000) || result.usage.times > (option.reuse || 100)) {
+                            if (getTime() - usage.last > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
                                 request(refUrl, responseUrl, searchData);
                             } else {
-                                searchCacheRef.child('result/usage').update({
-                                    times: result.usage.times + 1,
+                                searchCacheRef.child('usage').update({
+                                    times: usage.times + 1,
                                     last: Firebase.ServerValue.TIMESTAMP
                                 }, function (err) {
                                     if (err) {
                                         def.reject(err)
                                     } else {
-                                        def.resolve(snap.val());
+                                        def.resolve(result);
                                     }
                                 });
                             }
@@ -123,7 +124,7 @@
                     _get(name, page, def);
                 } else {
                     out.query.size = limit || 10;
-                    _paginators[name] = new Paginator(self.query, index, type, out.query, defaultCacheRefUrl, $q);
+                    _paginators[name] = new Paginator(self.query, index, type, out.query, defaultCacheRefUrl+'/'+index+type, $q);
                     _get(name, page, def)
                 }
                 out.promise = def.promise;

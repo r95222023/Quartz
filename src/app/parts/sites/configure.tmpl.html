@@ -34,65 +34,6 @@
                     </md-select>
                 </md-input-container>
             </div>
-            <legend><h3>Payment</h3></legend>
-            <md-card layout="row">
-                <md-card-title>
-                    <md-card-title-text>
-                        <span class="md-headline">Stripe</span>
-                    </md-card-title-text>
-                </md-card-title>
-                <md-card-content layout-align="center center">
-                    <md-input-container flex="50">
-                        <label>publicKey</label>
-                        <input type='text' ng-model="vm.config.payment.stripe.public.publicKey">
-                    </md-input-container>
-                    <md-input-container flex="50">
-                        <label>name</label>
-                        <input type='text' ng-model="vm.config.payment.stripe.public.name">
-                    </md-input-container>
-                    <md-input-container flex="50">
-                        <label>currency</label>
-                        <input type='text' ng-model="vm.config.payment.stripe.public.currency">
-                    </md-input-container>
-                </md-card-content>
-            </md-card>
-            <md-card layout="row">
-                <md-card-title>
-                    <md-card-title-text>
-                        <span class="md-headline">Allpay</span>
-                    </md-card-title-text>
-                </md-card-title>
-                <md-card-content layout-align="center center">
-                    <div class="content-padded" layout="row" layout-wrap>
-                        <md-input-container flex="50">
-                            <label>MerchantID</label>
-                            <input type='text' ng-model="vm.config.payment.allpay.public.MerchantID">
-                        </md-input-container>
-                        <md-input-container flex="50">
-                            <label>HashKey</label>
-                            <input type='text' ng-model="vm.config.payment.allpay.private.HashKey">
-                        </md-input-container>
-                        <md-input-container flex="50">
-                            <label>HashIV</label>
-                            <input type='text' ng-model="vm.config.payment.allpay.private.HashIV">
-                        </md-input-container>
-                        <md-input-container flex="50">
-                            <label>PaymentType</label>
-                            <input type='text' ng-model="vm.config.payment.allpay.public.PaymentType">
-                        </md-input-container>
-                        <md-input-container flex="50">
-                            <label>ChoosePayment</label>
-                            <input type='text' ng-model="vm.config.payment.allpay.public.ChoosePayment">
-                        </md-input-container>
-                        <md-input-container flex="50">
-                            <label>TradeDesc</label>
-                            <input type='text' ng-model="vm.config.payment.allpay.public.TradeDesc">
-                        </md-input-container>
-                    </div>
-
-
-                </md-card-content>
-            </md-card>
             <legend><h3>Email</h3></legend>
 
         </fieldset>

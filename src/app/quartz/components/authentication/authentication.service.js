@@ -170,8 +170,10 @@
                 $firebase.ref('users/detail/' + authData.uid + '/info').once('value', function(snap){
                     var userData = Auth.basicAccountUserData(authData);
                     userData.info = snap.val();
+                    userData.info.profileImageURL = authData[authData.provider].profileImageURL;
+                    $rootScope.user = userData;
+
                     promiseService.resolve('userData', userData);
-                    console.log(userData);
                 });
 
             } else {

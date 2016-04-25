@@ -8,6 +8,7 @@
             'app.parts.products',
             'app.parts.pages',
             'app.parts.sites',
-            'app.parts.users'
+            'app.parts.users',
+            'app.parts.analytics'
         ]);
 })();

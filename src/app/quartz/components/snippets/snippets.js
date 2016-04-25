@@ -391,7 +391,7 @@
                 };
             }
             TEA=Tea;
-        })()
+        })();
 
         ///////////
         function sortObjectByPropery(obj) {
@@ -471,10 +471,15 @@
             return JSON.parse(datastring);
         }
 
+        function to2dig(num) {
+            return num < 10 ? ('0' + num) : num;
+        }
+
         return {
             debounce: debounce,
             md5: MD5,
             Tea:TEA,
+            to2dig:to2dig,
             sortObjectByPropery: sortObjectByPropery,
             getFirebaseArrayData: getFirebaseArrayData,
             removeItemFromArray: removeItemFromArray,
