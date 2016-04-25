@@ -34,10 +34,28 @@
             return def.promise;
         }
 
+        function label(key, opt){
+            var time = parseInt(key),
+                year = time.substring(0,2),
+                month = time.substring(2,4),
+                date = time.substring(4);
+            if(opt.monthOnly) {
+                if(date!=='01') {
+                    return '';
+                } else {
+                    return year+'/'+month;
+                }
+            }
+            return year+'/'+month+'/'+date;
+        }
+
+
         function toChartJS(val, opt) {
-            var returnObj = {labels: []};
+            var returnObj = {labels: []},
+                _opt = opt||{};
             for (var key in val) {
-                returnObj.labels.push(parseInt(key), 36);
+
+                returnObj.labels.push(label(key, _opt), 36);
                 for (var subkey in val[key]) {
                     returnObj[subkey] = returnObj[subkey] || [];
                     returnObj[subkey].push(val[key][subkey]);
@@ -46,9 +64,6 @@
             return returnObj;
         }
 
-        function label(key, opt){
-            var time = parseInt(key);
-        }
 
         function getOrderAnalysis(rootRefUrl, start, end) {
             var def = $q.defer();

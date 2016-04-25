@@ -134,11 +134,16 @@
 
         if ($stateParams.pageName) {
             pageRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-                if (snap.val()) {
+                var val = snap.val();
+                if (val) {
                     $timeout(function () {
-                        customService.convert(snap.child('content').val(), $scope['containers'], 3);
+                        var raw = JSON.parse(LZString.decompressFromUTF16(val.compressed)),
+                            content = raw.content,
+                            css = raw.css;
+
+                        customService.convert(content, $scope['containers'], 3);
                         vm.pageRef = snap.ref();
-                        vm.pageCss = snap.child('css').val() || '';
+                        vm.pageCss = css || '';
                     }, 0);
                 }
             });
@@ -178,11 +183,16 @@
 
         if ($stateParams.widgetName) {
             widgetRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-                if (snap.val()) {
+                var val = snap.val();
+                if (val) {
                     $timeout(function () {
-                        customService.convert(snap.child('content').val(), $scope['containers'], 3);
+                        var raw = JSON.parse(LZString.decompressFromUTF16(val.compressed)),
+                            content = raw.content,
+                            css = raw.css;
+
+                        customService.convert(content, $scope['containers'], 3);
                         vm.widgetRef = snap.ref();
-                        vm.widgetCss = snap.child('css').val();
+                        vm.widgetCss = css || '';
                         vm.compile();
                     }, 0);
                 }
@@ -215,10 +225,15 @@
             }
 
             parentSnap.forEach(function (snap) {
+                var val = snap.val(),
+                    raw = JSON.parse(LZString.decompressFromUTF16(val.compressed)),
+                    content = raw.content,
+                    css = raw.css;
+
                 $timeout(function () {
-                    injectCSS.setDirectly(snap.key(), snap.child('css').val());
+                    injectCSS.setDirectly(snap.key(), css);
                     customPage.pageData = snap.val();
-                    customPage.html = customService.compile(snap.val().content);
+                    customPage.html = customService.compile(content);
                 }, 0);
                 var listener = $rootScope.$on('$stateChangeStart',
                     function () {
@@ -226,7 +241,7 @@
                         listener();
                     });
             });
-        } ,function(err){
+        }, function (err) {
             $state.go('404');
             return true;
         });
@@ -483,12 +498,20 @@
                 //    editTime: Firebase.ServerValue.TIMESTAMP
                 //};
                 //vm.pageRef.update(data);
-                var pid = vm.pageRef.key();
+                var pid = vm.pageRef.key(),
+                    compressed = LZString.compressToUTF16(JSON.stringify({
+                        "css": css || '',
+                        "content": content
+                    }));
+                console.log(compressed);
+                console.log(JSON.stringify({
+                    "css": css || '',
+                    "content": content
+                }));
                 $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                     "name": vm.pageName,
-                    "author": $firebase.params["$uid"]||null,
-                    "content@1": content,
-                    "css@1": css || null,
+                    "author": $firebase.params["$uid"] || null,
+                    "compressed@1": compressed,
                     "editTime@0": Firebase.ServerValue.TIMESTAMP
                 });
                 vm.revert();
@@ -569,14 +592,19 @@
                 //    editTime: Firebase.ServerValue.TIMESTAMP
                 //};
                 //vm.widgetRef.update(data);
+                var css = vm.widgetCss || '',
+                    content = customService.convertBack($scope.containers)
 
-                var wid = vm.widgetRef.key();
+                var wid = vm.widgetRef.key(),
+                    compressed = LZString.compressToUTF16(JSON.stringify({
+                        "css": css,
+                        "content": content
+                    }));
                 $firebase.update(widgetRefUrl, ['list/' + wid, 'detail/' + wid], {
                     "name": vm.widgetName,
                     "author": $firebase.params["$uid"],
                     "type@1": 'customWidget',
-                    "content@1": customService.convertBack($scope.containers),
-                    "css@1": vm.widgetCss || null,
+                    "compressed@1": compressed,
                     "editTime@0": Firebase.ServerValue.TIMESTAMP
                 });
 
