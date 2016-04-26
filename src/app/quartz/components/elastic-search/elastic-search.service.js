@@ -18,32 +18,33 @@
         this.setCacheRefUrl = function (value) {
             defaultCacheRefUrl = value;
         };
-        this.$get = /* @ngInject */function (syncTime, $firebase, $q, snippets) {
-            return new ElasticSearch(syncTime, $firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
+        this.$get = /* @ngInject */function (syncTime, lzString, $firebase, $q, snippets) {
+            return new ElasticSearch(syncTime, lzString, $firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
         }
     }
 
-    function ElasticSearch(syncTime, $firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
+    function ElasticSearch(syncTime, lzString, $firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
 
         this.query = function (index, type, option) {
             var def = $q.defer(),
                 refUrl = option.queryUrl || defaultQueryRefUrl,
-                searchData = angular.extend({}, {indexType: index+':'+type}, option),
+                searchData = angular.extend({}, {indexType: index + ':' + type}, option),
                 responseUrl = option.responseUrl || defaultResponseRefUrl;
 
             if (angular.isString(option.cache) || option.cache === true) {
                 var cacheId = getCacheId(searchData),
-                    cacheRefUrl = option.cache === true ? defaultCacheRefUrl+'/'+index+type : option.cache,
+                    cacheRefUrl = option.cache === true ? defaultCacheRefUrl + '/' + index + type : option.cache,
                     searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
                 responseUrl = searchCacheRef.toString();
 
                 searchCacheRef.once('value', function (snap) {
-                    var result = snap.child('result').val(),
-                        usage = snap.child('usage').val();
+                    var val = lzString.decompress(snap.val());
                     searchData.responseUrl = responseUrl;
-                    if (snap.val() === null) {
+                    if (val === null) {
                         request(refUrl, responseUrl, searchData);
                     } else {
+                        var result = val.result,
+                            usage = val.usage;
                         //check if the cache is expired or used many times
                         syncTime.onReady().then(function (getTime) {
                             if (getTime() - usage.last > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
@@ -73,11 +74,11 @@
                         refUrl: refUrl,
                         value: searchData
                     }],
-                    response: [responseUrl + '/result']
+                    response: [responseUrl]
                 };
                 $firebase.request(req)
                     .then(function (res) {
-                        def.resolve(res[0])
+                        def.resolve(lzString.decompress(res[0]).result)
                     }, function (err) {
                         def.reject(err)
                     });
@@ -95,10 +96,10 @@
                 //cache: 'query/cache',
                 reuse: 100, //how many times this cache will be reused
                 expire: 1000000000, //how long does it take for this cache to expire
-                body:{}
+                body: {}
             };
 
-            angular.extend(out.query, query||{});
+            angular.extend(out.query, query || {});
             out.size = 10;
             out.page = 1;
             out.result = {};
@@ -118,13 +119,13 @@
             }
 
             out.get = function (page, limit) {
-                var name = 'p' + page + 'l' + limit + 'o' + out.orderBy||'',
+                var name = 'p' + page + 'l' + limit + 'o' + out.orderBy || '',
                     def = $q.defer();
                 if (_paginators[name]) {
                     _get(name, page, def);
                 } else {
                     out.query.size = limit || 10;
-                    _paginators[name] = new Paginator(self.query, index, type, out.query, defaultCacheRefUrl+'/'+index+type, $q);
+                    _paginators[name] = new Paginator(self.query, index, type, out.query, defaultCacheRefUrl + '/' + index + type, $q);
                     _get(name, page, def)
                 }
                 out.promise = def.promise;

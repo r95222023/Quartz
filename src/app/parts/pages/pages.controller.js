@@ -108,7 +108,7 @@
     }
 
     /* @ngInject */
-    function PageEditorController(injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
+    function PageEditorController(lzString, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
 
         $scope.$mdSidenav = $mdSidenav;
@@ -134,16 +134,13 @@
 
         if ($stateParams.pageName) {
             pageRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-                var val = snap.val();
+                var val = lzString.decompress(snap.val());
                 if (val) {
                     $timeout(function () {
-                        var raw = JSON.parse(LZString.decompressFromUTF16(val.compressed)),
-                            content = raw.content,
-                            css = raw.css;
 
-                        customService.convert(content, $scope['containers'], 3);
+                        customService.convert(val.content, $scope['containers'], 3);
                         vm.pageRef = snap.ref();
-                        vm.pageCss = css || '';
+                        vm.pageCss = val.css || '';
                     }, 0);
                 }
             });
@@ -156,7 +153,7 @@
     }
 
     /* @ngInject */
-    function WidgetEditorController(injectCSS, customService, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
+    function WidgetEditorController(lzString, injectCSS, customService, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
@@ -183,16 +180,13 @@
 
         if ($stateParams.widgetName) {
             widgetRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-                var val = snap.val();
+                var val = lzString.decompress(snap.val());
+
                 if (val) {
                     $timeout(function () {
-                        var raw = JSON.parse(LZString.decompressFromUTF16(val.compressed)),
-                            content = raw.content,
-                            css = raw.css;
-
-                        customService.convert(content, $scope['containers'], 3);
+                        customService.convert(val.content, $scope['containers'], 3);
                         vm.widgetRef = snap.ref();
-                        vm.widgetCss = css || '';
+                        vm.widgetCss = val.css || '';
                         vm.compile();
                     }, 0);
                 }
@@ -205,7 +199,7 @@
     }
 
     /* @ngInject */
-    function CustomPageController(injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
+    function CustomPageController(lzString, injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName,
             isIndex = !pageName || pageName === "index",
@@ -225,15 +219,12 @@
             }
 
             parentSnap.forEach(function (snap) {
-                var val = snap.val(),
-                    raw = JSON.parse(LZString.decompressFromUTF16(val.compressed)),
-                    content = raw.content,
-                    css = raw.css;
+                var val = lzString.decompress(snap.val());
 
                 $timeout(function () {
-                    injectCSS.setDirectly(snap.key(), css);
+                    injectCSS.setDirectly(snap.key(), val.css);
                     customPage.pageData = snap.val();
-                    customPage.html = customService.compile(content);
+                    customPage.html = customService.compile(val.content);
                 }, 0);
                 var listener = $rootScope.$on('$stateChangeStart',
                     function () {
@@ -593,7 +584,7 @@
                 //};
                 //vm.widgetRef.update(data);
                 var css = vm.widgetCss || '',
-                    content = customService.convertBack($scope.containers)
+                    content = customService.convertBack($scope.containers);
 
                 var wid = vm.widgetRef.key(),
                     compressed = LZString.compressToUTF16(JSON.stringify({
