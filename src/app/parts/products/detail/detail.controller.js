@@ -6,13 +6,21 @@
         .controller('ProductDetailController', ProductDetailController);
 
     /* @ngInject */
-    function ProductDetailController($scope,$firebaseObject, $firebase, $location, $stateParams) {
+    function ProductDetailController(lzString,$timeout, $firebase, $stateParams) {
         var vm = this;
-        $scope.id='test';
+
+
         angular.extend(vm, $stateParams);
-        vm.disqusId = vm.siteName+vm.id;
-        vm.selectedOption={};
-        vm.showDetail= function (itemId) {
+
+        $firebase.ref('products/detail/' + vm.id + '@selectedSite').once('value', function (snap) {
+            $timeout(function(){
+                vm.product = lzString.decompress(snap.val());
+
+            },0)
+        });
+        vm.disqusId = vm.siteName + vm.id;
+        vm.selectedOption = {};
+        vm.showDetail = function (itemId) {
             $state.go('quartz.admin-default.productDetail', {id: itemId})
         }
     }

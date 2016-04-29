@@ -78,9 +78,9 @@
                 };
                 $firebase.request(req)
                     .then(function (res) {
-                        def.resolve(lzString.decompress(res[0]).result)
+                        def.resolve(lzString.decompress(res[0]).result);
                     }, function (err) {
-                        def.reject(err)
+                        def.reject(err);
                     });
             }
 

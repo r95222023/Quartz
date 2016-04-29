@@ -199,12 +199,13 @@
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
+    function CustomPageController(lzString, getSyncTime, injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName,
             isIndex = !pageName || pageName === "index",
             orderBy = isIndex ? "index" : "name",
-            equalTo = isIndex ? true : pageName;
+            equalTo = isIndex ? true : pageName,
+            pageCachePath = $stateParams.siteName + 'page' + pageName;
 
 
         $scope.$mdSidenav = $mdSidenav;
@@ -212,30 +213,57 @@
         customPage.settingsGroups = qtSettings.custom;
 
         customPage.scope = $scope;
-        $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
-            if (parentSnap.val() === null) {
+
+
+        if (localStorage && localStorage.getItem(pageCachePath)) {
+            var cachedPage = localStorage.getItem(pageCachePath);
+            $firebase.ref(pageListRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('child_added', function (snap) {
+                var val = snap.val()||{};
+                var cachedVal = lzString.decompress({compressed:cachedPage});
+
+                if(val.editTime< cachedVal.cachedTime){
+                    setModelData(cachedVal,snap.key());
+                } else {
+                    getData();
+                }
+            })
+        } else {
+            getData();
+        }
+
+        function getData() {
+            $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
+                if (parentSnap.val() === null) {
+                    $state.go('404');
+                    return true;
+                }
+
+                parentSnap.forEach(function (snap) {
+                    var val = lzString.decompress(snap.val());
+                    if(localStorage) {
+                        val.cachedTime = getSyncTime();
+                        localStorage.setItem(pageCachePath, lzString.compress(val));
+                    }
+                    setModelData(val, snap.key());
+                });
+            }, function (err) {
                 $state.go('404');
                 return true;
-            }
-
-            parentSnap.forEach(function (snap) {
-                var val = lzString.decompress(snap.val());
-
-                $timeout(function () {
-                    injectCSS.setDirectly(snap.key(), val.css);
-                    customPage.pageData = snap.val();
-                    customPage.html = customService.compile(val.content);
-                }, 0);
-                var listener = $rootScope.$on('$stateChangeStart',
-                    function () {
-                        injectCSS.remove(snap.key());
-                        listener();
-                    });
             });
-        }, function (err) {
-            $state.go('404');
-            return true;
-        });
+        }
+
+        function setModelData(val, key) {
+            $timeout(function () {
+                injectCSS.setDirectly(key, val.css);
+                customPage.pageData = val;
+                customPage.html = customService.compile(val.content);
+            }, 0);
+            var listener = $rootScope.$on('$stateChangeStart',
+                function () {
+                    injectCSS.remove(key);
+                    listener();
+                });
+        }
 
 
         customPage.getSites = function () {

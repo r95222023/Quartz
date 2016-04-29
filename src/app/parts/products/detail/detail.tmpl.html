@@ -1,16 +1,16 @@
 <div class="padded-content-page">
-    <md-content firebase="products/detail/{{vm.id}}@selectedSite"
+    <md-content
          layout="row" layout-xs="column" layout-fill layout-wrap layout-margin>
 
         <md-card class="md-whiteframe-2dp" flex-gt-xs="40">
-            <img class="md-card-image" ng-src="{{ref.$value.image}}">
+            <img class="md-card-image" ng-src="{{vm.product.image}}">
         </md-card>
         <md-card class="md-whiteframe-2dp" flex-gt-xs="40">
             <md-card-content layout-align="center center">
                 <div class="content-padded">
-                    <h1 class="md-headline">{{ref.$value.itemName}}</h1>
+                    <h1 class="md-headline">{{vm.product.itemName}}</h1>
                     <p>
-                        {{ref.$value.description}}
+                        {{vm.product.description}}
                     </p>
                 </div>
             </md-card-content>
@@ -20,7 +20,7 @@
         <md-card class="md-whiteframe-2dp" flex style="min-width: 8em; flex:1 1 8em">
             <md-card-content layout-align="center center">
                 <md-input-container>
-                    <md-select ng-repeat="(optName, optValue) in ref.$value.options" ng-model="vm.selectedOption[optName]">
+                    <md-select ng-repeat="(optName, optValue) in vm.product.options" ng-model="vm.selectedOption[optName]">
                         <label>{{optName}}</label>
                         <md-option ng-repeat="option in optValue" value="{{option}}">
                             {{option}}
@@ -29,17 +29,17 @@
                 </md-input-container>
 
                 <p>
-                    Price:{{ref.$value.price|currency : '$' : 2}}
+                    Price:{{vm.product.price|currency : '$' : 2}}
                 </p>
                 <md-divider></md-divider>
-                <ngcart-addtocart id="{{ ref.$value.itemId }}"
-                                  ng-if="ref.$value.available!==false"
-                                  name="{{ ref.$value.itemName }}"
-                                  price="{{ ref.$value.price }}"
-                                  quantity="{{ref.$value.quantity||1}}"
+                <ngcart-addtocart id="{{ vm.product.itemId }}"
+                                  ng-if="vm.product.available!==false"
+                                  name="{{ vm.product.itemName }}"
+                                  price="{{ vm.product.price }}"
+                                  quantity="{{vm.product.quantity||1}}"
                                   quantity-max="30"
                                   data="vm.selectedOption">Add</ngcart-addtocart>
-                {{ref.$value.status}}
+                {{vm.product.status}}
             </md-card-content>
         </md-card>
 

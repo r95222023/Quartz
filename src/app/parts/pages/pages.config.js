@@ -75,6 +75,8 @@
                 resolve: {
                     getAllTemplates: ['customService', function (customService) {
                         return customService.getAllTemplates(templateList, tmplRoot)
+                    }],getSyncTime:['syncTime', function(syncTime){
+                        return syncTime.onReady();
                     }],
                     authData: ['Auth', function (Auth) {
                         return Auth.$waitForAuth()

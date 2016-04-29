@@ -6,7 +6,7 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController($mdToast, $mdDialog, $firebase, indexService, snippets, $stateParams, $state, $mdMedia) {
+    function ProductManagerController(lzString, $mdToast, $mdDialog, $firebase, indexService, snippets, $stateParams, $state, $mdMedia) {
         var vm = this,
             position = {
                 bottom: true,
@@ -71,7 +71,6 @@
         };
         vm.getCateTag();
 
-        
 
         ////Products
 
@@ -119,7 +118,7 @@
             }
 
             vm.product.tags = {};
-            if (angular.isString(vm.optional.tags)&&vm.optional.tags.trim()) {
+            if (angular.isString(vm.optional.tags) && vm.optional.tags.trim()) {
                 var tags = vm.optional.tags.split(',');
                 angular.forEach(tags, function (tag, key) {
                     vm.product.tags[tag] = 1;
@@ -127,7 +126,13 @@
             }
             var id = vm.product.itemId || (new Date()).getTime();
 
-            $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], vm.product)
+            var listData = angular.extend({}, vm.product, {description: null}),
+                detailData = {compressed:lzString.compress(vm.product)};
+
+            $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], {
+                    '@0': listData,
+                    '@1': detailData
+                })
                 .then(function () {
                     indexService.update("products", id, vm.product);
 
@@ -174,9 +179,11 @@
         vm.showEditor = function (ev, id) {
             resetData();
             if (id) {
-                $firebase.ref('products/list@selectedSite').child(id).once('value', function (snap) {
-                    vm.product = snap.val();
-                    if (angular.isString(snap.val().group)) {
+                $firebase.ref('products/detail@selectedSite').child(id).once('value', function (snap) {
+                    var val = lzString.decompress(snap.val());
+
+                    vm.product = val;
+                    if (angular.isString(val.group)) {
                         var groups = snap.val().group.split('->');
                         vm.optional.group = groups[0];
                         vm.optional.subgroup = groups[1];
@@ -184,8 +191,8 @@
                         vm.optional.group = '';
                         vm.optional.subgroup = '';
                     }
-                    if (angular.isObject(snap.val().options)) {
-                        angular.forEach(snap.val().options, function (item, name) {
+                    if (angular.isObject(val.options)) {
+                        angular.forEach(val.options, function (item, name) {
                             var optArr = [];
                             for (var key in item) {
                                 optArr[key] = item[key]
@@ -193,9 +200,9 @@
                             vm.optional.options[name] = optArr.toString();
                         });
                     }
-                    if (angular.isObject(snap.val().tags)) {
+                    if (angular.isObject(val.tags)) {
                         var tags = [];
-                        angular.forEach(snap.val().tags, function (item, name) {
+                        angular.forEach(val.tags, function (item, name) {
                             tags.push(name);
                         });
                         vm.optional.tags = tags.toString();
