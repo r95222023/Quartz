@@ -214,22 +214,11 @@
 
         customPage.scope = $scope;
 
+        var editTimeRef = $firebase.ref(pageListRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1);
 
-        if (localStorage && localStorage.getItem(pageCachePath)) {
-            var cachedPage = localStorage.getItem(pageCachePath);
-            $firebase.ref(pageListRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('child_added', function (snap) {
-                var val = snap.val()||{};
-                var cachedVal = lzString.decompress({compressed:cachedPage});
-
-                if(val.editTime< cachedVal.cachedTime){
-                    setModelData(cachedVal,snap.key());
-                } else {
-                    getData();
-                }
-            })
-        } else {
-            getData();
-        }
+        $firebase.cache(pageCachePath, editTimeRef,null,{isValue:false, fetchFn:getData}).then(function(cachedVal){
+            setModelData(cachedVal,cachedVal.cssKey);
+        });
 
         function getData() {
             $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
@@ -242,6 +231,7 @@
                     var val = lzString.decompress(snap.val());
                     if(localStorage) {
                         val.cachedTime = getSyncTime();
+                        val.cssKey = snap.key();
                         localStorage.setItem(pageCachePath, lzString.compress(val));
                     }
                     setModelData(val, snap.key());
@@ -522,11 +512,7 @@
                         "css": css || '',
                         "content": content
                     }));
-                console.log(compressed);
-                console.log(JSON.stringify({
-                    "css": css || '',
-                    "content": content
-                }));
+
                 $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                     "name": vm.pageName,
                     "author": $firebase.params["$uid"] || null,

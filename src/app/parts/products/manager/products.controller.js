@@ -127,7 +127,7 @@
             var id = vm.product.itemId || (new Date()).getTime();
 
             var listData = angular.extend({}, vm.product, {description: null}),
-                detailData = {compressed:lzString.compress(vm.product)};
+                detailData = {compressed: lzString.compress(vm.product), editTime: Firebase.ServerValue.TIMESTAMP};
 
             $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], {
                     '@0': listData,

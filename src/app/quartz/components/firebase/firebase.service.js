@@ -17,13 +17,13 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function (FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
-            return new firebase(mainFirebase, params, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
+        this.$get = /* @ngInject */ function (lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
+            return new firebase(mainFirebase, params, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
         }
     }
 
     /*@ngInject*/
-    function firebase(mainFirebase, params, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
+    function firebase(mainFirebase, params, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
 
 
         var activeRefUrl = {};
@@ -360,6 +360,48 @@
             return queryRef('temp').push().key();
         }
 
+        function cache(cachePath, editTimeRef, sourceRef, option) {
+            var def = $q.defer(),
+                _option = option || {},
+                type = _option.isValue === false ? 'child_added' : 'value',
+                fetchFn = _option.fetchFn||fetch;
+            if (false&&localStorage && localStorage.getItem(cachePath)) {
+                var cached = localStorage.getItem(cachePath);
+                editTimeRef.once(type, function (snap) {
+                    var val = snap.val() || {},
+                        editTime = _option.isValue === false ? val.editTime : val;
+                    var cachedVal = lzString.decompress({compressed: cached});
+
+                    if (editTime < cachedVal.cachedTime) {
+                        def.resolve(cachedVal);
+                    } else {
+                        fetchFn();
+                    }
+                })
+            } else {
+                fetchFn();
+            }
+
+            function fetch() {
+                sourceRef.once(_option.sourceType || 'value', function (snap) {
+                    var val = lzString.decompress(snap.val());
+                    if(!val) {def.resolve(null); return}
+                    if(_option.pre) _option.pre(snap, val);
+                    syncTime.onReady().then(function(getTime){
+                        if (localStorage) {
+                            val.cachedTime = getTime();
+                            localStorage.setItem(cachePath, lzString.compress(val));
+                        }
+                        def.resolve(val);
+                    });
+
+
+                });
+            }
+
+            return def.promise;
+        }
+
 
         //EX:
         // request({
@@ -510,7 +552,7 @@
                     });
                     self.assignPage();
                     self.result.total = sortedArr.length;
-                    if(self.result.total===0) self.result.hits = [];
+                    if (self.result.total === 0) self.result.hits = [];
                     def.resolve();
                 }
             },
@@ -545,27 +587,6 @@
             return new Paginator(ref, option)
         }
 
-        // convert a node or Firebase style callback to a future
-        function handler(fn, context) {
-            return defer(function (def) {
-                fn.call(context, function (err, result) {
-                    if (err !== null) {
-                        def.reject(err);
-                    }
-                    else {
-                        def.resolve(result);
-                    }
-                });
-            });
-        }
-
-        // abstract the process of creating a future/promise
-        function defer(fn, context) {
-            var def = $q.defer();
-            fn.call(context, def);
-            return def.promise;
-        }
-
         return firebase = {
             update: update,
             batchUpdate: batchUpdate,
@@ -579,7 +600,7 @@
             isRefUrlValid: isRefUrlValid,
             move: move,
             load: load,
-            handler: handler,
+            cache: cache,
             getUniqeId: getUniqeId
         };
     }
