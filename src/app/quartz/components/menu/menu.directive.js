@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -14,28 +14,43 @@
         var directive = {
             restrict: 'E',
             template: '<md-content><qt-menu-item ng-repeat="item in qtMenuController.menu | orderBy:\'priority\'" item="::item"></qt-menu-item></md-content>',
-            scope: {},
+            scope: {admin: '@', listName: '@'},
             controller: qtMenuController,
             controllerAs: 'qtMenuController',
             link: link
         };
         return directive;
 
-        function link($scope, $element) {
-            $mdTheming($element);
-            var $mdTheme = $element.controller('mdTheme'); //eslint-disable-line
+        function link($scope, $element, attrs) {
+            var menuColorRGBA;
+            if(attrs.backgroundColor){
+                menuColorRGBA = attrs.backgroundColor;
+            } else {
+                $mdTheming($element);
+                var $mdTheme = $element.controller('mdTheme'); //eslint-disable-line
+                var menuColor = qtTheming.getThemeHue($mdTheme.$mdTheme, 'primary', 'default');
+                menuColorRGBA = qtTheming.rgba(menuColor.value);
+            }
 
-            var menuColor = qtTheming.getThemeHue($mdTheme.$mdTheme, 'primary', 'default');
-            var menuColorRGBA = qtTheming.rgba(menuColor.value);
-            $element.parent().css({ 'background-color': menuColorRGBA });
-            $element.children('md-content').css({ 'background-color': menuColorRGBA });
+            $element.parent().css({'background-color': menuColorRGBA});
+            $element.children('md-content').css({'background-color': menuColorRGBA});
         }
     }
 
     /* @ngInject */
-    function qtMenuController(qtMenu) {
+    function qtMenuController($scope, qtMenu, customData, $timeout) {
         var qtMenuController = this;
         // get the menu and order it
-        qtMenuController.menu = qtMenu.menu;
+        if ($scope.admin === '') {
+            qtMenuController.menu = qtMenu.menu
+        } else {
+            var path = 'lists/' + $scope.listName || 'menu';
+            customData.get(path).then(function (val) {
+                if(!val) return;
+                $timeout(function () {
+                    qtMenuController.menu = val;
+                }, 0)
+            });
+        }
     }
 })();

@@ -3,7 +3,8 @@
 
     angular
         .module('quartz.components')
-        .factory('customService', CustomService);
+        .factory('customService', CustomService)
+        .factory('customData', CustomData);
 
     /* @ngInject */
     function CustomService($q, $http, $templateCache) {
@@ -222,6 +223,22 @@
             isTagConfigurable:isTagConfigurable,
             containers: containers,
             items: items
+        }
+    }
+
+    /* @ngInject */
+    function CustomData($q, $firebase,lzString){
+        
+        function get(path){
+            var def = $q.defer();
+            $firebase.ref('config/data/'+path+'@selectedSite').once('value', function(snap){
+                var val = lzString.decompress(snap.val());
+                def.resolve(val);
+            });
+            return def.promise;
+        }
+        return {
+            get:get
         }
     }
 })();

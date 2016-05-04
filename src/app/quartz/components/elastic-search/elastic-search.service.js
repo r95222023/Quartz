@@ -45,53 +45,26 @@
                         var result = val.result,
                             usage = val.usage;
                         //check if the cache is expired or used many times
-                        syncTime.onReady().then(function (getTime) {
-                            if (getTime() - (usage.last||usage.created) > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
-                                request(refUrl, responseUrl, searchData);
-                            } else {
-                                searchCacheRef.child('usage').update({
-                                    times: usage.times + 1,
-                                    last: Firebase.ServerValue.TIMESTAMP
-                                }, function (err) {
-                                    if (err) {
-                                        def.reject(err)
-                                    } else {
-                                        def.resolve(result);
-                                    }
-                                });
-                            }
-                        });
+                        
+                        // syncTime.onReady().then(function (getTime) {
+                        //     if (getTime() - (usage.last||usage.created) > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
+                        //         request(refUrl, responseUrl, searchData);
+                        //     } else {
+                        //         searchCacheRef.child('usage').update({
+                        //             times: usage.times + 1,
+                        //             last: Firebase.ServerValue.TIMESTAMP
+                        //         }, function (err) {
+                        //             if (err) {
+                        //                 def.reject(err)
+                        //             } else {
+                        //                 def.resolve(result);
+                        //             }
+                        //         });
+                        //     }
+                        // });
+                        def.resolve(result);
                     }
                 });
-
-
-                // searchCacheRef.once('value', function (snap) {
-                //     var val = lzString.decompress(snap.val());
-                //     searchData.responseUrl = responseUrl;
-                //     if (val === null) {
-                //         request(refUrl, responseUrl, searchData);
-                //     } else {
-                //         var result = val.result,
-                //             usage = val.usage;
-                //         //check if the cache is expired or used many times
-                //         syncTime.onReady().then(function (getTime) {
-                //             if (getTime() - usage.last||usage.created > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
-                //                 request(refUrl, responseUrl, searchData);
-                //             } else {
-                //                 searchCacheRef.child('usage').update({
-                //                     times: usage.times + 1,
-                //                     last: Firebase.ServerValue.TIMESTAMP
-                //                 }, function (err) {
-                //                     if (err) {
-                //                         def.reject(err)
-                //                     } else {
-                //                         def.resolve(result);
-                //                     }
-                //                 });
-                //             }
-                //         });
-                //     }
-                // });
             } else {
                 request(refUrl, responseUrl, searchData);
             }

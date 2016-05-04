@@ -102,6 +102,27 @@
         });
 
         qtMenuProvider.addMenuToGroup("siteSelected", {
+            name: 'MENU.DATANAME',
+            icon: 'fa fa-database',
+            type: 'dropdown',
+            priority: 1.2,
+            children: [
+                {
+                    name: 'MENU.DATA.LISTS',
+                    state: 'quartz.admin-default.lists',
+                    params: {},
+                    type: 'link'
+                },
+                {
+                    name: 'MENU.DATA.I18N',
+                    state: 'quartz.admin-default.i18n',
+                    params: {},
+                    type: 'link'
+                }
+            ]
+        });
+
+        qtMenuProvider.addMenuToGroup("siteSelected", {
             name: 'MENU.ANALYTICS',
             icon: 'fa fa-bar-chart',
             type: 'link',

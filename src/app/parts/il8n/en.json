@@ -4,6 +4,7 @@
         "ALLSITES":"All Sites",
         "ALLUSERS":"All Users",
         "SUPERADMIN":"Super Admin",
+        "DATANAME":"Data",
         "SITESETTING":"Site Settings",
         "SETTINGS":{
             "BASIC":"Basics",

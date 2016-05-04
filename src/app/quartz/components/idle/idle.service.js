@@ -437,12 +437,12 @@
             $rootScope.$on('IdleStart', function () {
                 // the user appears to have gone idle
                 console.log('idle start');
-                Firebase.goOffline();
+                // Firebase.goOffline();
             });
             $rootScope.$on('IdleEnd', function () {
                 // the user has come back from AFK and is doing stuff. if you are warning them, you can use this to hide the dialog
                 console.log('idle end');
-                Firebase.goOnline();
+                // Firebase.goOnline();
             });
             if (!($rootScope.user && $rootScope.user.admin)) Idle.watch();
         }]);

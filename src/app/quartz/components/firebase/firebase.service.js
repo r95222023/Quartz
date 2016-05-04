@@ -365,7 +365,7 @@
                 _option = option || {},
                 type = _option.isValue === false ? 'child_added' : 'value',
                 fetchFn = _option.fetchFn||fetch;
-            if (false&&localStorage && localStorage.getItem(cachePath)) {
+            if (localStorage && localStorage.getItem(cachePath)) {
                 var cached = localStorage.getItem(cachePath);
                 editTimeRef.once(type, function (snap) {
                     var val = snap.val() || {},
