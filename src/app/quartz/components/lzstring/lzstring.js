@@ -10,7 +10,7 @@
         this.decompress = decompress;
         this.compress = compress;
         function decompress(val) {
-            if (!val) return val;
+            if (!val||!val.compressed) return val;
 
             var decompressed, res;
             if (val.compressed) {

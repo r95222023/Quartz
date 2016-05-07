@@ -6,7 +6,7 @@
         .controller('MySitesController', MySitesController)
         .controller('AllSitesController', AllSitesController)
         .controller('SiteConfigureController', SiteConfigureController)
-        .controller('PaymentSettingController',PaymentSettingController);
+        .controller('PaymentSettingController', PaymentSettingController);
 
     /* @ngInject */
     function MySitesController($firebase, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
@@ -57,24 +57,25 @@
 
         vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['order', 'SITES.SHOWORDER'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, site, ev) {
+            var params = {siteName: site.siteName}
             switch (action) {
                 case 'configure':
-                    $state.go('quartz.admin-default.site-configure', {siteName: site.siteName});
+                    $state.go('quartz.admin-default.site-configure', params);
                     break;
                 case 'page':
-                    $state.go('quartz.admin-default.pageManager', {siteName: site.siteName});
+                    $state.go('quartz.admin-default.pageManager', params);
                     break;
                 case 'widget':
-                    $state.go('quartz.admin-default.widgetManager', {siteName: site.siteName});
+                    $state.go('quartz.admin-default.widgetManager', params);
                     break;
                 case 'user':
-                    $state.go('quartz.admin-default.siteusers', {siteName: site.siteName});
+                    $state.go('quartz.admin-default.siteusers', params);
                     break;
                 case 'product':
-                    $state.go('quartz.admin-default.productManager', {siteName: site.siteName});
+                    $state.go('quartz.admin-default.productManager', params);
                     break;
                 case 'order':
-                    $state.go('quartz.admin-default.orderHistory', {siteName: site.siteName});
+                    $state.go('quartz.admin-default.orderHistory', params);
                     break;
                 case 'delete':
                     vm.deleteSite(site);
@@ -129,7 +130,7 @@
             var val = snap.val();
             vm.thumbnail = val.thumbnail;
         });
-        
+
         pageListRef.once('value', function (snap) {
             vm.pages = snap.val();
         });
@@ -139,11 +140,11 @@
             setIndex(pageName, function (data) {
                 $firebase.update('pages@selectedSite', data);
             });
-            
+
             $firebase.update('sites/detail/' + siteName + '/config', vm.config);
-            
-            listData['thumbnail/']=vm.thumbnail;
-            $firebase.update('sites/list/' + siteName , listData);
+
+            listData['thumbnail/'] = vm.thumbnail;
+            $firebase.update('sites/list/' + siteName, listData);
 
         };
 
@@ -161,9 +162,43 @@
     }
 
     /* @ngInject */
-    function PaymentSettingController($firebase, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
-        var vm = this;
-        
+    function PaymentSettingController($firebase, lzString, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+        var vm = this,
+            paymentRef = $firebase.ref('config/payment@selectedSite');
 
+
+
+        function getPaymentConfig(type){
+            $firebase.cache('payment'+type+'@selectedSite',paymentRef.child(type+'/editTime'),paymentRef.child(type)).then(function(val){
+                var _val=val||{};
+                vm[type]={};
+                vm[type].public=lzString.decompress(_val.public||{});
+                vm[type].private=lzString.decompress(_val.private||{});
+            })
+        }
+
+        getPaymentConfig('allpay');
+        getPaymentConfig('stripe');
+
+
+        function compressData(data) {
+            return {compressed: lzString.compress(data)}
+        }
+
+        vm.updateAllpay = function () {
+            $firebase.update('config/payment/allpay@selectedSite', {
+                editTime: Firebase.ServerValue.TIMESTAMP,
+                public: compressData(vm.allpay.public),
+                private: compressData(vm.allpay.private)
+            })
+        };
+
+        vm.updateStripe = function () {
+            $firebase.update('config/payment/stripe@selectedSite', {
+                editTime: Firebase.ServerValue.TIMESTAMP,
+                public: compressData(vm.stripe.public),
+                private: compressData(vm.stripe.private)
+            })
+        }
     }
 })();

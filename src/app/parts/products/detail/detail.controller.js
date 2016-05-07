@@ -19,7 +19,7 @@
         //     }, 0)
         // });
 
-        var cachePath = vm.siteName + 'product' + vm.id,
+        var cachePath = 'product' + vm.id+'@selectedSite',
             editTimeRef = $firebase.ref('products/detail/' + vm.id + '@selectedSite').child('editTime'),
             sourceRef = $firebase.ref('products/detail/' + vm.id + '@selectedSite');
 

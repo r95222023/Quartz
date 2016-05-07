@@ -4,46 +4,37 @@
     <form>
         <fieldset>
             <md-tabs>
-                <md-tab label="Stripe">
-                    <md-card layout="row">
-                        <md-card-title>
-                            <md-card-title-text>
-                                <span class="md-headline">Allpay</span>
-                            </md-card-title-text>
-                        </md-card-title>
-                        <md-card-content layout-align="center center">
-                            <div class="content-padded" layout="row" layout-wrap>
-                                <md-input-container flex="50">
-                                    <label>MerchantID</label>
-                                    <input type='text' ng-model="vm.config.payment.allpay.public.MerchantID">
-                                </md-input-container>
-                                <md-input-container flex="50">
-                                    <label>HashKey</label>
-                                    <input type='text' ng-model="vm.config.payment.allpay.private.HashKey">
-                                </md-input-container>
-                                <md-input-container flex="50">
-                                    <label>HashIV</label>
-                                    <input type='text' ng-model="vm.config.payment.allpay.private.HashIV">
-                                </md-input-container>
-                                <md-input-container flex="50">
-                                    <label>PaymentType</label>
-                                    <input type='text' ng-model="vm.config.payment.allpay.public.PaymentType">
-                                </md-input-container>
-                                <md-input-container flex="50">
-                                    <label>ChoosePayment</label>
-                                    <input type='text' ng-model="vm.config.payment.allpay.public.ChoosePayment">
-                                </md-input-container>
-                                <md-input-container flex="50">
-                                    <label>TradeDesc</label>
-                                    <input type='text' ng-model="vm.config.payment.allpay.public.TradeDesc">
-                                </md-input-container>
-                            </div>
-
-
-                        </md-card-content>
-                    </md-card>
-                </md-tab>
                 <md-tab label="Allpay">
+                    <div class="content-padded" layout="row" layout-wrap layout-padding>
+                        <md-input-container flex="50">
+                            <label>MerchantID</label>
+                            <input type='text' ng-model="vm.allpay.public.MerchantID">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>HashKey</label>
+                            <input type='text' ng-model="vm.allpay.private.HashKey">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>HashIV</label>
+                            <input type='text' ng-model="vm.allpay.private.HashIV">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>PaymentType</label>
+                            <input type='text' ng-model="vm.allpay.public.PaymentType">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>ChoosePayment</label>
+                            <input type='text' ng-model="vm.allpay.public.ChoosePayment">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>TradeDesc</label>
+                            <input type='text' ng-model="vm.allpay.public.TradeDesc">
+                        </md-input-container>
+                    </div>
+
+                    <md-button ng-click="vm.updateAllpay()">Update</md-button>
+                </md-tab>
+                <md-tab label="Stripe">
                     <md-card layout="row">
                         <md-card-title>
                             <md-card-title-text>
@@ -52,17 +43,22 @@
                         </md-card-title>
                         <md-card-content layout-align="center center">
                             <md-input-container flex="50">
-                                <label>publicKey</label>
-                                <input type='text' ng-model="vm.config.payment.stripe.public.publicKey">
+                                <label>Secret API Key</label>
+                                <input type='text' ng-model="vm.stripe.private.secretKey">
                             </md-input-container>
                             <md-input-container flex="50">
-                                <label>name</label>
-                                <input type='text' ng-model="vm.config.payment.stripe.public.name">
+                                <label>Publishable API Key</label>
+                                <input type='text' ng-model="vm.stripe.public.publicKey">
                             </md-input-container>
                             <md-input-container flex="50">
-                                <label>currency</label>
-                                <input type='text' ng-model="vm.config.payment.stripe.public.currency">
+                                <label>Name</label>
+                                <input type='text' ng-model="vm.stripe.public.name">
                             </md-input-container>
+                            <md-input-container flex="50">
+                                <label>Currency</label>
+                                <input type='text' ng-model="vm.stripe.public.currency">
+                            </md-input-container>
+
                         </md-card-content>
                     </md-card>
                 </md-tab>
@@ -72,6 +68,5 @@
 
         </fieldset>
     </form>
-    <md-button ng-click="vm.updateSiteConfig()">Update</md-button>
 
 </md-content>

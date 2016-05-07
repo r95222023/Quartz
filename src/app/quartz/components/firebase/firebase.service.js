@@ -17,16 +17,14 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function (lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
-            return new firebase(mainFirebase, params, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
+        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
+            return new firebase(mainFirebase, params, $stateParams, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
         }
     }
 
     /*@ngInject*/
-    function firebase(mainFirebase, params, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
+    function firebase(mainFirebase, params, $stateParams, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
 
-
-        var activeRefUrl = {};
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -56,13 +54,7 @@
                 _refUrl = refUrl || '@',
                 db = firebase.databases[_refUrl.split("@")[1]] || {};
 
-            function isDbOnline() {
-                if (_opt.keepOnline !== undefined) return !!_opt.keepOnline;
-                if (db.keepOnline !== undefined) return !!db.keepOnline;
-                return true
-            }
 
-            this.keepOnline = isDbOnline();
             this.params = _opt.params || {};
             this.t = (new Date).getTime().toString();
 
@@ -97,36 +89,6 @@
                 this.url = ref.toString();
                 this.path = this.url.split(".com/")[1];
                 return ref
-            },
-            goOnline: function () {
-                if (activeRefUrl[this.dbUrl] === undefined) {
-                    activeRefUrl[this.dbUrl] = []
-                }
-                if (activeRefUrl[this.dbUrl].length === 0) {
-                    if (!this.keepOnline) {
-                        Firebase.goOnline(this.dbUrl);
-                        console.log(this.dbUrl, "is online", this.t)
-                    }
-                }
-                activeRefUrl[this.dbUrl].push(this.t);
-                return this
-            },
-            goOffline: function () {
-                if (this.keepOnline) return this;
-                if (activeRefUrl[this.dbUrl] === undefined) {
-                    activeRefUrl[this.dbUrl] = []
-                }
-                if (activeRefUrl[this.dbUrl].length === 1) {
-                    if (!this.keepOnline) {
-                        Firebase.goOffline(this.dbUrl);
-                        console.log(this.dbUrl, "is offline", this.t)
-                    }
-                }
-                var tPos = activeRefUrl[this.dbUrl].indexOf(this.t);
-                if (tPos != -1) {
-                    activeRefUrl[this.dbUrl].splice(tPos, 1);
-                }
-                return this
             }
         };
 
@@ -225,8 +187,6 @@
                 }
             }
 
-            fbObj.goOnline();
-
             ref[type](value, function (error) {
                 if (onComplete) onComplete.apply(null, [error]);
                 if (error) {
@@ -238,7 +198,6 @@
                     }
                     def.resolve();
                 }
-                fbObj.goOffline();
             });
 
             def.promise.params = fbObj.params;
@@ -364,9 +323,11 @@
             var def = $q.defer(),
                 _option = option || {},
                 type = _option.isValue === false ? 'child_added' : 'value',
-                fetchFn = _option.fetchFn||fetch;
+                fetchFn = _option.fetchFn || fetch;
+            cachePath = ($stateParams.siteName&&cachePath.split('@')[1]==='selectedSite')? $stateParams.siteName+cachePath.split('@')[0]:cachePath;
             if (localStorage && localStorage.getItem(cachePath)) {
                 var cached = localStorage.getItem(cachePath);
+
                 editTimeRef.once(type, function (snap) {
                     var val = snap.val() || {},
                         editTime = _option.isValue === false ? val.editTime : val;
@@ -385,9 +346,13 @@
             function fetch() {
                 sourceRef.once(_option.sourceType || 'value', function (snap) {
                     var val = lzString.decompress(snap.val());
-                    if(!val) {def.resolve(null); return}
-                    if(_option.pre) _option.pre(snap, val);
-                    syncTime.onReady().then(function(getTime){
+
+                    if (!val) {
+                        def.resolve(null);
+                        return
+                    }
+                    if (_option.pre) _option.pre(snap, val);
+                    syncTime.onReady().then(function (getTime) {
                         if (localStorage) {
                             val.cachedTime = getTime();
                             localStorage.setItem(cachePath, lzString.compress(val));
@@ -490,8 +455,9 @@
                     if (angular.isFunction(self.listenerCallback)) {
                         self.ref.off('value', self.listenerCallback);
                     }
-                    clear();
-                })
+                });
+            clear();
+
 
         }
 
@@ -519,7 +485,7 @@
                 }
 
                 if (this.equalTo) {
-                    if (isFinite(this.equalTo)) this.equalTo = Number(this.equalTo);
+                    if (isFinite(this.equalTo) && this.equalTo !== true && this.equalTo !== false) this.equalTo = Number(this.equalTo);
                     _ref = _ref.equalTo(this.equalTo);
                 } else {
                     if (isFinite(this.startAt)) this.startAt = Number(this.startAt);
@@ -576,9 +542,14 @@
                 }
 
             },
+            //ex: onReorder('uid')
+            //or  onReorder({orderBy:'uid',startAt:'0000001'})
             onReorder: function (value) {
-                value = value || '';
-                this.orderBy = value;
+                if (angular.isString(value)) {
+                    this.orderBy = value
+                } else if (angular.isObject(value)) {
+                    angular.extend(this, value);
+                }
                 this.get(1, this.size);
             }
         };

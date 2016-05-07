@@ -23,6 +23,13 @@
                 // set the controller to load for this page
                 controller: 'SiteUsersController',
                 controllerAs: 'vm'
+            })
+            .state('quartz.admin-default.admins', {
+                url: '/admin/:siteName/admins',
+                templateUrl: 'app/parts/users/admins.tmpl.html',
+                // set the controller to load for this page
+                controller: 'AdminsController',
+                controllerAs: 'vm'
             });
     }
 })();

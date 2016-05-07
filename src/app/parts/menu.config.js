@@ -51,7 +51,7 @@
                 {
                     name: 'MENU.SETTINGS.ADMIN',
                     type: 'link',
-                    state: 'quartz.admin-default.site-admin'
+                    state: 'quartz.admin-default.admins'
                 },
                 {
                     name: 'MENU.SETTINGS.PAYMENT',

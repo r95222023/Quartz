@@ -205,7 +205,7 @@
             isIndex = !pageName || pageName === "index",
             orderBy = isIndex ? "index" : "name",
             equalTo = isIndex ? true : pageName,
-            pageCachePath = $stateParams.siteName + 'page' + pageName;
+            pageCachePath = 'page' + pageName+'@selectedSite';
 
 
         $scope.$mdSidenav = $mdSidenav;

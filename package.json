@@ -43,6 +43,7 @@
         "http-proxy": "~1.7.0",
         "karma-jasmine": "~0.3.1",
         "karma-phantomjs-launcher": "~0.1.4",
+        "lodash": "^4.11.2",
         "main-bower-files": "~2.4.0",
         "map-stream": "0.0.5",
         "protractor": "~1.4.0",
