@@ -3,5 +3,6 @@
 
     angular
         .module('app.parts.analytics', [
+            'app.plugins.analytics'
         ]);
 })();

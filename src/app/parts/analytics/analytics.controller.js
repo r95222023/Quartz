@@ -6,8 +6,27 @@
         .controller('AnalyticsController', AnalyticsController);
 
     /* @ngInject */
-    function AnalyticsController($firebase, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AnalyticsController($firebase, analysisService, qtNotificationsService, Auth, $state, $mdDialog, config) {
         var vm = this;
+        vm.orderData={};
+
+        analysisService.getDataInDays('orders/analysis@selectedSite', 5).then(function (analysis) {
+            console.log(analysis.getChartData());
+            var orderData=analysis.getChartData();
+            vm.orderData={
+                labels:orderData.labels,
+                results:[orderData.count, orderData.count2],
+                series:['count', 'count1']
+            };
+        });
+        analysisService.getDataInDays('products/analysis@selectedSite', 5).then(function (analysis) {
+            console.log(analysis.getRankedArr('count1'));
+            console.log(analysis.getRankedArr('count2'));
+            
+            vm.topProducts1=analysis.getRankedArr('count1');
+            vm.topProducts2=analysis.getRankedArr('count2');
+
+        });
         vm.barChart = {
             type: 'Bar',
             data: [
@@ -30,14 +49,15 @@
 
         vm.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
         vm.series = ['Series A', 'Series B'];
+        vm.orderSeries=['Daily Orders'];
 
         /////////
 
         function randomData() {
             vm.data = [];
-            for(var series = 0; series < vm.series.length; series++) {
+            for (var series = 0; series < vm.series.length; series++) {
                 var row = [];
-                for(var label = 0; label < vm.labels.length; label++) {
+                for (var label = 0; label < vm.labels.length; label++) {
                     row.push(Math.floor((Math.random() * 100) + 1));
                 }
                 vm.data.push(row);

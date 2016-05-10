@@ -164,6 +164,10 @@
                 name: 'MENU.YOURORDERS',
                 state: 'quartz.admin-default.yourOrders',
                 type: 'link'
+            },{
+                name: 'MENU.TEST',
+                state: 'quartz.admin-default.test',
+                type: 'link'
             }]
         });
 

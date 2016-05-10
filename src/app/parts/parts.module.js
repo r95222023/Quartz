@@ -10,6 +10,7 @@
             'app.parts.sites',
             'app.parts.users',
             'app.parts.data',
-            'app.parts.analytics'
+            'app.parts.analytics',
+            'app.parts.test'
         ]);
 })();

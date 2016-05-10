@@ -338,7 +338,7 @@
                     } else {
                         fetchFn();
                     }
-                })
+                });
             } else {
                 fetchFn();
             }
