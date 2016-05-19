@@ -324,24 +324,32 @@
                 _option = option || {},
                 type = _option.isValue === false ? 'child_added' : 'value',
                 fetchFn = _option.fetchFn || fetch;
-            cachePath = ($stateParams.siteName&&cachePath.split('@')[1]==='selectedSite')? $stateParams.siteName+cachePath.split('@')[0]:cachePath;
+            cachePath = ($stateParams.siteName && cachePath.split('@')[1] === 'selectedSite') ? $stateParams.siteName + cachePath.split('@')[0] : cachePath;
             if (localStorage && localStorage.getItem(cachePath)) {
-                var cached = localStorage.getItem(cachePath);
+                var cached = localStorage.getItem(cachePath),
+                    onGettingTime = function (snap) {
+                        var val = angular.isNumber(snap) ? snap : snap.val() || {},
+                            editTime = _option.isValue === false ? val.editTime : val;
+                        var cachedVal = lzString.decompress({compressed: cached});
 
-                editTimeRef.once(type, function (snap) {
-                    var val = snap.val() || {},
-                        editTime = _option.isValue === false ? val.editTime : val;
-                    var cachedVal = lzString.decompress({compressed: cached});
+                        if (editTime < cachedVal.cachedTime) {
+                            def.resolve(cachedVal);
+                        } else {
+                            fetchFn();
+                        }
+                    };
 
-                    if (editTime < cachedVal.cachedTime) {
-                        def.resolve(cachedVal);
-                    } else {
-                        fetchFn();
-                    }
-                });
+                if (angular.isNumber(editTimeRef)) {
+                    onGettingTime(editTimeRef);
+                } else {
+                    editTimeRef.once(type, onGettingTime);
+                }
+
+
             } else {
                 fetchFn();
             }
+
 
             function fetch() {
                 sourceRef.once(_option.sourceType || 'value', function (snap) {

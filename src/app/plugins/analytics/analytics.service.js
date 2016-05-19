@@ -41,14 +41,6 @@
             ref.once('value', resolve);
             return def.promise;
         }
-        
-        function getCachedData(rootRefUrl, startAt, endAt, opt){
-            var def = $q.defer(),
-                ref = $firebase.ref(rootRefUrl).orderByKey(),
-                _opt = opt || {};
-            
-            // $firebase.cache(rootRefUrl+'@selectedSite', )
-        }
 
         function label(key, opt) {
             var time = parseInt(key, 36) + '',
