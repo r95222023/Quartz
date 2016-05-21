@@ -13,7 +13,7 @@
 
 
     /* @ngInject */
-    function run(config, FBURL, $rootScope, $state, $firebase, qtMenu, sitesService) {
+    function run(config, mainFirebase, $rootScope, $state, $firebase, qtMenu, sitesService) {
 
         //// set current site automatically
         function redirect(state, params) {
@@ -29,7 +29,7 @@
                 $rootScope.$broadcast('site:change', siteName);
                 $firebase.databases.selectedSite = {
                     siteName: siteName,
-                    url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
+                    url: config.standalone ? siteName : mainFirebase.ref.toString() + '#sites/detail/' + siteName
                 };
                 sitesService.siteName = siteName;
             }

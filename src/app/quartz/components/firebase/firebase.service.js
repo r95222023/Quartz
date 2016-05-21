@@ -8,24 +8,32 @@
 
     ////
     function firebaseProvider() {
-        var mainFirebase,
-            params;
-        this.setMainFirebase = function (value) {
-            mainFirebase = value;
+        var mainFirebase = {
+                app: firebase.app(),
+                databaseURL: firebase.database().ref().toString(),
+                database: firebase.database()
+            },
+            params = {};
+        this.setMainFirebase = function (config) {
+            firebase.initializeApp(config, "main");
+            var app = firebase.app("main");
+            mainFirebase = {
+                app: app,
+                databaseURL: config.databaseURL,
+                database: app.database()
+            }
         };
         this.setParams = function (value) {
             params = value;
         };
 
-        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
-            return new firebase(mainFirebase, params, $stateParams, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter)
+        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
+            return new Firebase(mainFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter)
         }
     }
 
     /*@ngInject*/
-    function firebase(mainFirebase, params, $stateParams, lzString, syncTime, FBURL, config, $rootScope, $firebaseObject, $firebaseArray, $q, $timeout, $filter) {
-
-
+    function Firebase(mainFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
         function replaceParamsInString(string, params) {
             for (var param in params) {
                 if (params.hasOwnProperty(param)) string = string.replace(eval("/\\" + param + "/g"), params[param]);
@@ -52,42 +60,37 @@
         function FbObj(refUrl, opt) {
             var _opt = opt || {},
                 _refUrl = refUrl || '@',
-                db = firebase.databases[_refUrl.split("@")[1]] || {};
-
+                db = firebase.databases[_refUrl.split("@")[1]] || {},
+                root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || mainFirebase.databaseURL,
+                rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1];
 
             this.params = _opt.params || {};
-            this.t = (new Date).getTime().toString();
+            this.dbUrl = root.split("https")[1] ? root : "https://" + root + ".firebaseio.com";
+            this.path = _refUrl.split("@")[0];
 
-            if (angular.isString(refUrl) && refUrl.split("//")[1]) {
-                this.root = refUrl.split("//")[1].split(".fi")[0];
-                this.rootPath = '';
-                this.dbUrl = refUrl.split(".com")[0] + ".com";
-                this.path = refUrl.split(".com/")[1];
-            } else {
-                this.root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || FBURL.split("//")[1].split(".fi")[0];
-                this.rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1] || FBURL.split(".com/")[1] || '';
-                this.dbUrl = "https://" + this.root + ".firebaseio.com";
-                this.path = _refUrl.split("@")[0];
-            }
-            if (this.rootPath) this.dbUrl += '/' + this.rootPath;
+            if (rootPath) this.dbUrl += '/' + rootPath;
             this.url = this.dbUrl + "/" + this.path;
+            this.appName = _opt.appName || '';
         }
 
         FbObj.prototype = {
             ref: function () {
-                var ref = new Firebase(this.dbUrl);
+                var database = angular.isString(this.appName) ? firebase.database(firebase.app(this.appName)) : mainFirebase.database,
+                    ref = database.refFromURL(this.dbUrl),
+                    path = '';
                 if (this.path === '') return ref;
                 var pathArr = this.path.split("/");
                 for (var i = 0; i < pathArr.length; i++) {
                     if (pathArr[i].charAt(0) === "$") {
                         ref = ref.push();
-                        this.params[pathArr[i]] = ref.key();
+                        this.params[pathArr[i]] = ref.key;
                     } else {
                         ref = ref.child(pathArr[i]);
                     }
+                    path += ref.key + '/'
                 }
                 this.url = ref.toString();
-                this.path = this.url.split(".com/")[1];
+                this.path = path;
                 return ref
             }
         };
@@ -128,41 +131,8 @@
             return ref;
         }
 
-
-        function object(refUrl, options) {
-            return $firebaseObject(queryRef(refUrl, options));
-        }
-
-        function array(refUrl, options) {
-            return $firebaseArray(queryRef(refUrl, options));
-        }
-
         function isRefUrlValid(refUrl) {
             return (typeof refUrl === 'string') && (refUrl.split('/').indexOf('') === -1)
-        }
-
-        function load(loadList, defaultOpt) {
-            var _defaultOpt = (typeof defaultOpt === 'object') ? defaultOpt : {},
-                defers = {},
-                promises = {};
-
-            function onComplete(key) {
-                return function (snap) {
-                    defers[key].resolve(snap.val())
-                }
-            }
-
-            for (var key in loadList) {
-                if (loadList.hasOwnProperty(key)) {
-                    defers[key] = $q.defer();
-                    promises[key] = defers[key].promise;
-                    var loadObj = loadList[key],
-                        ref = queryRef(loadObj.refUrl, loadObj.opt || _defaultOpt);
-
-                    ref.once('value', onComplete(key))
-                }
-            }
-            return $q.all(promises)
         }
 
         function _update(refUrl, value, onComplete, removePrev, refUrlParams) {
@@ -307,16 +277,8 @@
             return def.promise
         }
 
-        function move(from, to) {
-            var sourceRef = new Firebase(from),
-                targetRef = new Firebase(to);
-            sourceRef.once('value', function (snap) {
-                targetRef.update(snap.val());
-            })
-        }
-
         function getUniqeId() {
-            return queryRef('temp').push().key();
+            return queryRef('temp').push().key;
         }
 
         function cache(cachePath, editTimeRef, sourceRef, option) {
@@ -511,7 +473,7 @@
                         arr = [];
 
                     snap.forEach(function (childSnap) {
-                        arr.push(angular.extend({_key: childSnap.key()}, childSnap.val()));
+                        arr.push(angular.extend({_key: childSnap.key}, childSnap.val()));
                     });
                     var sortedArr = $filter('orderBy')(arr, self.orderBy);
 
@@ -574,11 +536,7 @@
             ref: queryRef,
             paginator: paginator,
             request: request,
-            object: object,
-            array: array,
             isRefUrlValid: isRefUrlValid,
-            move: move,
-            load: load,
             cache: cache,
             getUniqeId: getUniqeId
         };
