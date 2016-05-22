@@ -75,9 +75,9 @@
                 Auth.loginWithProvider(provider, vm.loginOption);
             } else {
                 Auth.loginWithProvider(provider, vm.loginOption)
-                    .then(function (user) {
+                    .then(function () {
                         redirect();
-                        return Auth.checkIfAccountExistOnFb(user)
+                        return Auth.checkIfAccountExistOnFb()
                     }, showError)
                     .then(Auth.createAccount, showError)
                     .then(function () {

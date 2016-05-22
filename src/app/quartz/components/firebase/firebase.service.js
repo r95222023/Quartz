@@ -10,13 +10,13 @@
     function firebaseProvider() {
         var mainFirebase = {
                 app: firebase.app(),
-                databaseURL: firebase.database().ref().toString(),
-                database: firebase.database()
+                databaseURL: firebase.app().database().ref().toString(),
+                database: firebase.app().database()
             },
             params = {};
         this.setMainFirebase = function (config) {
-            firebase.initializeApp(config, "main");
-            var app = firebase.app("main");
+            firebase.initializeApp(config, "mainDatabase");
+            var app = firebase.app("mainDatabase");
             mainFirebase = {
                 app: app,
                 databaseURL: config.databaseURL,

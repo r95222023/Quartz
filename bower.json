@@ -25,7 +25,6 @@
         "angular-translate-storage-local": "~2.7.2",
         "angular-ui-calendar": "~1.0.0",
         "angular-ui-router": "~0.2.13",
-        "angularfire": "~1.2.0",
         "animate.css-scss": "https://github.com/geoffgraham/animate.scss.git#master",
         "countUp.js": "1.5.0",
         "font-awesome": "~4.3.0",
