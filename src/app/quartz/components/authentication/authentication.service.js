@@ -9,7 +9,7 @@
     /*@ngInject*/
     function Auth($firebaseAuth, $q, $firebase, $stateParams, config) {
 
-        var Auth = $firebaseAuth($firebase.ref());
+        var Auth = $firebaseAuth((new Firebase('https://quartz.firebaseio.com')));
 
         Auth.checkIfAccountExistOnFb = function (authData) {
             var def = $q.defer(),
