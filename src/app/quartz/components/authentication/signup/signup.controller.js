@@ -6,7 +6,7 @@
         .controller('SignupController', SignupController);
 
     /* @ngInject */
-    function SignupController($state, $mdToast, $filter, qtSettings, Auth, indexService) {
+    function SignupController($state, $mdToast, $filter, qtSettings, $auth, indexService) {
         var vm = this;
         vm.qtSettings = qtSettings;
 
@@ -18,12 +18,12 @@
                 var email = vm.email;
                 var pass = vm.pass;
                 // create user credentials in Firebase auth system
-                Auth.$createUser({email: email, password: pass})
+                $auth.$createUser({email: email, password: pass})
                     .then(function () {
                         // authenticate so we have permission to write to Firebase
-                        return Auth.$authWithPassword({email: email, password: pass});
+                        return $auth.$authWithPassword({email: email, password: pass});
                     })
-                    .then(Auth.createAccount)
+                    .then($auth.createAccount)
                     .then(signupSuccess, signupError);
             }
         };

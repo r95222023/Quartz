@@ -14,6 +14,7 @@
                 database: firebase.app().database()
             },
             params = {};
+
         this.setMainFirebase = function (config) {
             firebase.initializeApp(config, "mainDatabase");
             var app = firebase.app("mainDatabase");
@@ -32,8 +33,10 @@
         }
     }
 
-    /*@ngInject*/
     function Firebase(mainFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
+
+        console.log(mainFirebase);
+
         function replaceParamsInString(string, params) {
             for (var param in params) {
                 if (params.hasOwnProperty(param)) string = string.replace(eval("/\\" + param + "/g"), params[param]);
@@ -60,7 +63,7 @@
         function FbObj(refUrl, opt) {
             var _opt = opt || {},
                 _refUrl = refUrl || '@',
-                db = firebase.databases[_refUrl.split("@")[1]] || {},
+                db = $firebase.databases[_refUrl.split("@")[1]] || {},
                 root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || mainFirebase.databaseURL,
                 rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1];
 
@@ -528,10 +531,10 @@
             return new Paginator(ref, option)
         }
 
-        return firebase = {
+        var $firebase = {
             update: update,
             batchUpdate: batchUpdate,
-            params: {},
+            params: params,
             databases: {},
             ref: queryRef,
             paginator: paginator,
@@ -540,5 +543,7 @@
             cache: cache,
             getUniqeId: getUniqeId
         };
+
+        return $firebase;
     }
 })();

@@ -16,12 +16,7 @@
             $stateProvider.state(state, {
                 url: url,
                 templateUrl: templateUrl,
-                controller: ctrlName,
-                resolve: {
-                    user: ['Auth', function (Auth) {
-                        return Auth.$waitForAuth();
-                    }]
-                }
+                controller: ctrlName
             });
         })
         .factory('$errorHandler', /*@ngInject*/ function ($state) {

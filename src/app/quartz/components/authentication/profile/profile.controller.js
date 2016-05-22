@@ -6,7 +6,7 @@
         .controller('ProfileController', ProfileController);
 
     /* @ngInject */
-    function ProfileController($rootScope, userData, Auth, $firebase, $mdToast, qtSettings) {
+    function ProfileController($rootScope, userData, $auth, $firebase, $mdToast, qtSettings) {
         console.log(userData);
 
         var vm = this;
@@ -57,7 +57,7 @@
         };
         vm.changePassword = function () {
             var userData = $rootScope.user[$rootScope.provider];
-            Auth.$changePassword({
+            $auth.$changePassword({
                 email: userData.email,
                 oldPassword: vm.pass.current,
                 newPassword: vm.pass.new

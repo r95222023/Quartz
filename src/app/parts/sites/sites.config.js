@@ -19,8 +19,8 @@
                     }
                 },
                 resolve: {
-                    authData: ['Auth', function (Auth) {
-                        return Auth.$waitForAuth()
+                    authData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
                     }]
                 },
                 url: '/admin/mysites',
@@ -38,8 +38,8 @@
                     }
                 },
                 resolve: {
-                    authData: ['Auth', function (Auth) {
-                        return Auth.$waitForAuth()
+                    authData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
                     }]
                 },
                 url: '/admin/allsites',

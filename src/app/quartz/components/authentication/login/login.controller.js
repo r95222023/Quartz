@@ -6,7 +6,7 @@
         .controller('LoginController', LoginController);
 
     /* @ngInject */
-    function LoginController($state, $stateParams, $mdMedia, qtSettings, Auth, config) {
+    function LoginController($state, $stateParams, $mdMedia, qtSettings, $auth, config) {
         var vm = this;
 
         vm.email = null;
@@ -60,7 +60,7 @@
 
         function login(email, pass, opt) {
             vm.err = null;
-            Auth.$authWithPassword({email: email, password: pass}, opt)
+            $auth.$authWithPassword({email: email, password: pass}, opt)
                 .then(function (/* user */) {
                     redirect();
                 }, showError);
@@ -72,14 +72,14 @@
                 vm.loginOption.popup = false;
                 vm.loginOption.remember = 'default';
                 window.location.href = homeUrl;
-                Auth.loginWithProvider(provider, vm.loginOption);
+                $auth.loginWithProvider(provider, vm.loginOption);
             } else {
-                Auth.loginWithProvider(provider, vm.loginOption)
+                $auth.loginWithProvider(provider, vm.loginOption)
                     .then(function () {
                         redirect();
-                        return Auth.checkIfAccountExistOnFb()
+                        return $auth.checkIfAccountExistOnFb()
                     }, showError)
-                    .then(Auth.createAccount, showError)
+                    .then($auth.createAccount, showError)
                     .then(function () {
                     }, showError)
             }

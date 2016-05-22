@@ -23,8 +23,8 @@
             $stateProvider.stateAuthenticated = function (name, stateObject) {
                 securedStates.push(name);
                 stateObject.resolve = stateObject.resolve || {};
-                stateObject.resolve.authData = ['Auth', function (Auth) {
-                    return Auth.$requireAuth();
+                stateObject.resolve.authData = ['$auth', function ($auth) {
+                    return $auth.requireAuth();
                 }];
                 $stateProvider.state(name, stateObject);
                 return this;
@@ -37,8 +37,8 @@
      * for changes in auth status which might require us to navigate away from a path
      * that we can no longer view.
      */
-        .run(/*@ngInject*/ function ($rootScope, $location, $state, Auth, config) {
-            Auth.$onAuth(checkState);
+        .run(/*@ngInject*/ function ($rootScope, $location, $state, $auth, config) {
+            $auth.onAuthStateChanged(checkState);
 
             function checkState(user) {
                 if (!user && authStateRequired($state.current.name)) {
@@ -59,28 +59,6 @@
                 console.log('authRequired?', name, securedStates.indexOf(name)); //debug
                 return securedStates.indexOf(name) !== -1;
             }
-
-            //Adds a special `goWithData` method onto $state, which allows users to transfer data from one state to another.
-            var activeStates = {};
-            $state.goWithData = function (to, params, data, options) {
-                var clear = $rootScope.$on('$stateChangeStart', function () {
-                    clear();
-                    activeStates[$state.href(to, params)] = {data: data};
-                    var clearAgain = $rootScope.$on('$stateChangeStart', function () {
-                        clearAgain();
-                        delete activeStates[$state.href(to, params)]
-                    })
-                });
-                return $state.go(to, params, options);
-            };
-
-            //define a getter so that user can retrieve data by using $state.data
-            Object.defineProperty($state, "data", {
-                get: function () {
-                    var state = activeStates[$state.href($state.current.name, $state.params)] || {};
-                    return state.data
-                }
-            });
         }
     );
 })();

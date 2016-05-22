@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -10,18 +10,18 @@
         $translatePartialLoaderProvider.addPart('app/parts/home');
 
         $stateProvider
-        .state('quartz.admin-default.home', {
-            data: {
-                layout: {
-                    sideMenuSize: 'hidden'
-                }
-            },
-            url: '/home',
-            templateUrl: 'app/parts/home/home.tmpl.html',
-            // set the controller to load for this page
-            controller: 'HomePageController',
-            controllerAs: 'vm'
-        });
+            .state('quartz.admin-default.home', {
+                data: {
+                    layout: {
+                        sideMenuSize: 'hidden'
+                    }
+                },
+                url: '/home',
+                templateUrl: 'app/parts/home/home.tmpl.html',
+                // set the controller to load for this page
+                controller: 'HomePageController',
+                controllerAs: 'vm'
+            });
 
         qtMenuProvider.addMenu({
             name: 'MENU.HOME',

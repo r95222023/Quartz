@@ -6,7 +6,7 @@
         .controller('OrderHistoryController', OrderHistoryController);
 
     /* @ngInject */
-    function OrderHistoryController($stateParams, $q, $timeout, $firebase, $rootScope, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function OrderHistoryController($stateParams, $q, $timeout, $firebase, $rootScope, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         vm.filters = [
             ['Order Id', 'id'],

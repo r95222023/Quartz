@@ -17,7 +17,7 @@
         widgetDetailRefUrl = 'widgets/detail@selectedSite';
 
     /* @ngInject */
-    function PageManagerController($firebase, qtNotificationsService, Auth, $state, $stateParams, $mdDialog, config) {
+    function PageManagerController($firebase, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
         var vm = this;
 
         //Todo: 改名 刪除
@@ -69,7 +69,7 @@
     }
 
     /* @ngInject */
-    function WidgetManagerController($firebase, qtNotificationsService, Auth, $state, $stateParams, $mdDialog, config) {
+    function WidgetManagerController($firebase, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
         var vm = this;
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];

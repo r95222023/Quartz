@@ -6,11 +6,11 @@
         .factory('qtNotificationsService', NotificationsService);
 
     /* @ngInject */
-    function NotificationsService(Auth, $firebase) {
+    function NotificationsService($auth, $firebase) {
         var notifications = {},
             ref,
             callback;
-        Auth.$onAuth(function (user) {
+        $auth.onAuthStateChanged(function (user) {
             if (!user) {
                 notifications = {};
                 return;

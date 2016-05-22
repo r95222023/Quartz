@@ -8,13 +8,13 @@
         .controller('AdminsController', AdminsController);
 
     /* @ngInject */
-    function AllUsersController($firebase, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AllUsersController($firebase, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         usersCtrl("users/list", vm, $firebase);
     }
 
     /* @ngInject */
-    function SiteUsersController($firebase, $stateParams, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function SiteUsersController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         vm.paginator = $firebase.paginator("sites/detail/"+$stateParams.siteName+"/users/list");
 
@@ -22,7 +22,7 @@
     }
 
     /* @ngInject */
-    function AdminsController($firebase, $stateParams, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AdminsController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         usersCtrl("sites/detail/"+$stateParams.siteName+"/users/list", vm, $firebase, {orderBy:'access.read', equalTo:true});
 

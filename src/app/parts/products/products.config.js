@@ -70,8 +70,8 @@
                 controller: 'YourOrdersController',
                 controllerAs: 'vm',
                 resolve:{
-                    authData: ['Auth', function (Auth) {
-                        return Auth.$waitForAuth()
+                    authData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
                     }]
                 }
             });

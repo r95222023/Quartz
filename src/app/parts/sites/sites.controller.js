@@ -9,7 +9,7 @@
         .controller('PaymentSettingController', PaymentSettingController);
 
     /* @ngInject */
-    function MySitesController($firebase, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function MySitesController($firebase, authData, $state, sitesService, config, qtNotificationsService, $mdDialog) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
@@ -50,7 +50,7 @@
     }
 
     /* @ngInject */
-    function AllSitesController($firebase, authData, $state, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function AllSitesController($firebase, authData, $state, config, qtNotificationsService, $mdDialog) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
@@ -115,7 +115,7 @@
     }
 
     /* @ngInject */
-    function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, qtNotificationsService, $mdDialog) {
         var vm = this,
             siteDetailRef = $firebase.ref('sites/detail'),
             siteListRef = $firebase.ref('sites/list'),
@@ -162,7 +162,7 @@
     }
 
     /* @ngInject */
-    function PaymentSettingController($firebase, lzString, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function PaymentSettingController($firebase, lzString, sitesService, config, qtNotificationsService, $mdDialog) {
         var vm = this,
             paymentRef = $firebase.ref('config/payment@selectedSite');
 

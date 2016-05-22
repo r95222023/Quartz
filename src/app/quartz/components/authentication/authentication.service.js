@@ -3,18 +3,17 @@
 
     angular
         .module('quartz.components')
-        .factory('Auth', Auth)
         .provider('$auth', authProvider)
         .run(run);
 
     function authProvider() {
         var app = firebase.app(),
             mainFirebase = {
-            app: app,
-            databaseURL: config.databaseURL,
-            database: app.database(),
-            auth: app.auth()
-        };
+                app: app,
+                databaseURL: app.database().ref().toString().databaseURL,
+                database: app.database(),
+                auth: app.auth()
+            };
         this.setMainFirebase = function (config) {
             firebase.initializeApp(config, "mainAuth");
             var app = firebase.app("mainAuth");
@@ -22,18 +21,49 @@
                 app: app,
                 databaseURL: config.databaseURL,
                 database: app.database(),
-                auth: firebase.auth()
+                auth: app.auth()
             }
         };
+
         this.$get = /*@ngInject*/function ($q, $firebase, $stateParams, config) {
             return new Auth(mainFirebase, $q, $firebase, $stateParams, config)
         }
     }
 
-    /*@ngInject*/
     function Auth(mainFirebase, $q, $firebase, $stateParams, config) {
+        var mainFirebase = {
+            app: firebase.app(),
+            databaseURL: firebase.database().ref().toString().databaseURL,
+            database: firebase.database(),
+            auth: firebase.auth()
+        };
+        console.log(mainFirebase)
+        var Auth = mainFirebase.auth,
+            ready = $q.defer(),
+            unsubscribe = Auth.onAuthStateChanged(function () {
+                ready.resolve();
+                // unsubscribe();
+            });
 
-        var Auth = mainFirebase.auth;
+        Auth.waitForAuth = function () {
+            var def = $q.defer();
+            ready.promise.then(function () {
+                def.resolve(Auth.currentUser);
+            });
+            return def.promise;
+        };
+
+        Auth.requireAuth = function () {
+            var def = $q.defer();
+            ready.promise.then(function () {
+                if (Auth.currentUser) {
+                    def.resolve(Auth.currentUser)
+                } else {
+                    def.reject()
+                }
+            });
+            return def.promise;
+        };
 
         Auth.checkIfAccountExistOnFb = function () {
             var user = Auth.currentUser,
@@ -50,6 +80,7 @@
                     def.reject(err)
                 });
             }
+
             checkIfCreated();
 
             if ($stateParams.siteName) {
@@ -131,16 +162,16 @@
                 //     return Auth.$authAnonymously(opt);
                 //     break;
                 case 'google':
-                    authProvider=Auth.GoogleAuthProvider();
+                    authProvider = Auth.GoogleAuthProvider();
                     break;
                 case 'facebook':
-                    authProvider=Auth.FacebookAuthProvider();
+                    authProvider = Auth.FacebookAuthProvider();
                     break;
                 case 'twitter':
-                    authProvider=Auth.TwitterAuthProvider();
+                    authProvider = Auth.TwitterAuthProvider();
                     break;
                 case 'github':
-                    authProvider=Auth.GithubAuthProvider();
+                    authProvider = Auth.GithubAuthProvider();
                     break;
             }
             if (opt.popup === false) {
@@ -163,14 +194,14 @@
     }
 
     /*@ngInject*/
-    function run($rootScope, promiseService, Auth, $firebase, mainFirebase) {
+    function run($rootScope, promiseService, $auth, $firebase, mainFirebase) {
         function assignUser(user) {
             $firebase.databases.currentUser = {
                 url: mainFirebase.databaseURL + '#users/detail/' + user.uid
             };
         }
 
-        Auth.$onAuth(function (authData) {
+        $auth.onAuthStateChanged(function (authData) {
             $rootScope.user = authData;
             $rootScope.loggedIn = !!authData;
 
@@ -184,7 +215,7 @@
                 assignUser(authData);
 
                 $firebase.ref('users/detail/' + authData.uid + '/info').once('value', function (snap) {
-                    var userData = Auth.basicAccountUserData(authData);
+                    var userData = $auth.basicAccountUserData(authData);
                     userData.info = snap.val();
                     userData.info.profileImageURL = authData[authData.provider].profileImageURL;
                     $rootScope.user = userData;
