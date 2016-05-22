@@ -32,7 +32,7 @@
             var clearDate = _opt.removeDataInDays? endAt-_opt.removeDataInDays*24*60*60*1000:_opt.removeDataBefore;
             if (clearDate) {
                 ref.endAt(getKey(clearDate)).once('child_added', function (snap) {
-                    snap.ref().set(null);
+                    snap.ref.set(null);
                 })
             }
 

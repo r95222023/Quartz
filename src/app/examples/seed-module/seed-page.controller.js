@@ -10,7 +10,7 @@
         var vm = this;
         $firebase.ref('test/request').on('child_added', function (snap) {
             setTimeout(function () {
-                $firebase.ref('test/response/' + snap.key()).set('test succeed');
+                $firebase.ref('test/response/' + snap.key).set('test succeed');
             }, 2000);
         });
         vm.comTest = function () {

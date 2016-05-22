@@ -10,9 +10,21 @@
             'app.examples',
             'app.parts'
         ]);
+    
+    
     angular.element(document).ready(function() {
+        var fbconfig = {
+                apiKey: "AIzaSyAfxA30u_wPOkVCn727MJXZ4eFhg4raKdI",
+                authDomain: "quartz.firebaseapp.com",
+                databaseURL: "https://quartz.firebaseio.com",
+                storageBucket: "project-3415547818359859659.appspot.com"
+            },
+            mainApp = firebase.initializeApp(fbconfig),
+            mainDatabase = firebase.database(),
+            mainRef = mainDatabase.ref();
+        
+        
         // your Firebase data URL goes here, no trailing slash
-        var mainRef = new Firebase('https://quartz.firebaseio.com');
         console.log(window.location);
         angular.forEach(window.config,function(config){
             config.apply(null);

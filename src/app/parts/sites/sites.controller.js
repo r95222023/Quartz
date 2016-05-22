@@ -9,13 +9,18 @@
         .controller('PaymentSettingController', PaymentSettingController);
 
     /* @ngInject */
-    function MySitesController($firebase, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function MySitesController($firebase, $timeout, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
         vm.newSiteName = '';
 
-        vm.sitesArray = $firebase.array('users/detail/' + authData.uid + '/sites');
+
+        $firebase.ref('users/detail/' + authData.uid + '/sites').on('value', function (snap) {
+            $timeout(function(){
+                vm.sitesArray = snap.val();
+            },0);
+        });
 
         vm.addSite = function () {
             $firebase.ref('sites/list/' + vm.newSiteName + '/createdTime').once('value', function (snap) {
@@ -103,7 +108,7 @@
                 .cancel('Cancel');
             $mdDialog.show(confirm).then(function () {
                 $firebase.ref('users/detail/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
-                    snap.ref().set(null);
+                    snap.ref.set(null);
                 });
                 $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
                     "@all": null
@@ -153,8 +158,8 @@
             pageListRef.once('value', function (snap) {
                 snap.forEach(function (childSnap) {
                     var isIndex = childSnap.val().name === pageName ? true : null;
-                    data["list/" + childSnap.key() + "/config/index"] = isIndex;
-                    data["detail/" + childSnap.key() + "/config/index"] = isIndex;
+                    data["list/" + childSnap.key + "/config/index"] = isIndex;
+                    data["detail/" + childSnap.key + "/config/index"] = isIndex;
                 });
                 cb(data);
             })
@@ -167,13 +172,12 @@
             paymentRef = $firebase.ref('config/payment@selectedSite');
 
 
-
-        function getPaymentConfig(type){
-            $firebase.cache('payment'+type+'@selectedSite',paymentRef.child(type+'/editTime'),paymentRef.child(type)).then(function(val){
-                var _val=val||{};
-                vm[type]={};
-                vm[type].public=lzString.decompress(_val.public||{});
-                vm[type].private=lzString.decompress(_val.private||{});
+        function getPaymentConfig(type) {
+            $firebase.cache('payment' + type + '@selectedSite', paymentRef.child(type + '/editTime'), paymentRef.child(type)).then(function (val) {
+                var _val = val || {};
+                vm[type] = {};
+                vm[type].public = lzString.decompress(_val.public || {});
+                vm[type].private = lzString.decompress(_val.private || {});
             })
         }
 

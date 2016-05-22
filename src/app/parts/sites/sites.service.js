@@ -7,7 +7,7 @@
 
     /* @ngInject */
     function SitesService($firebase, indexService){
-        
+
         function rectifySiteName(siteName){
             return siteName.trim().replace(".","_")
         }
@@ -32,7 +32,7 @@
 
         function removeSite(siteName, uid){
             $firebase.ref('users/detail/' + uid + '/sites').orderByChild('siteName').equalTo(siteName).once('child_added', function (snap) {
-                snap.ref().set(null);
+                snap.ref.set(null);
             });
             $firebase.update('sites', ['detail/' + siteName, 'list/' + siteName], {
                 "@all": null

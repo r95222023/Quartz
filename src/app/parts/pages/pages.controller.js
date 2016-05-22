@@ -139,7 +139,7 @@
                     $timeout(function () {
 
                         customService.convert(val.content, $scope['containers'], 3);
-                        vm.pageRef = snap.ref();
+                        vm.pageRef = snap.ref;
                         vm.pageCss = val.css || '';
                     }, 0);
                 }
@@ -185,7 +185,7 @@
                 if (val) {
                     $timeout(function () {
                         customService.convert(val.content, $scope['containers'], 3);
-                        vm.widgetRef = snap.ref();
+                        vm.widgetRef = snap.ref;
                         vm.widgetCss = val.css || '';
                         vm.compile();
                     }, 0);
@@ -231,10 +231,10 @@
                     var val = lzString.decompress(snap.val());
                     if(localStorage) {
                         val.cachedTime = getSyncTime();
-                        val.cssKey = snap.key();
+                        val.cssKey = snap.key;
                         localStorage.setItem(pageCachePath, lzString.compress(val));
                     }
-                    setModelData(val, snap.key());
+                    setModelData(val, snap.key);
                 });
             }, function (err) {
                 $state.go('404');

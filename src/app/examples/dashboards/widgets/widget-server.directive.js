@@ -124,7 +124,7 @@
             $firebase.ref('servers/online').on('value', function (snap) {
                 $scope.servers=[];
                 snap.forEach(function (childSnap) {
-                    $scope.servers.push(childSnap.key());
+                    $scope.servers.push(childSnap.key);
                 });
             });
             $scope.changeServer = function (server) {
