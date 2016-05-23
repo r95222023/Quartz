@@ -6,7 +6,7 @@
         .controller('AnalyticsController', AnalyticsController);
 
     /* @ngInject */
-    function AnalyticsController($firebase, analysisService, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function AnalyticsController($firebase, analysisService, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         vm.orderData={};
 

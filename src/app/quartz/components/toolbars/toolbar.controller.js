@@ -6,7 +6,7 @@
         .controller('DefaultToolbarController', DefaultToolbarController);
 
     /* @ngInject */
-    function DefaultToolbarController(config, $scope, $rootScope, Auth, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
+    function DefaultToolbarController(config, $scope, $rootScope, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
         var vm = this;
         vm.breadcrumbs = qtBreadcrumbsService.breadcrumbs;
         vm.emailNew = false;
@@ -27,7 +27,7 @@
             } else {
                 $state.go(config.home);
             }
-            Auth.$unauth();
+            $auth.signOut();
         }
 
         function openSideNav(navID) {

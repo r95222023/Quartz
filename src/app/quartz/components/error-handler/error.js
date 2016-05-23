@@ -18,8 +18,8 @@
                 templateUrl: templateUrl,
                 controller: ctrlName,
                 resolve: {
-                    user: ['Auth', function (Auth) {
-                        return Auth.$waitForAuth();
+                    user: ['$auth', function ($auth) {
+                        return $auth.waitForAuth();
                     }]
                 }
             });

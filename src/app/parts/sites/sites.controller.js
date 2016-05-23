@@ -9,7 +9,7 @@
         .controller('PaymentSettingController', PaymentSettingController);
 
     /* @ngInject */
-    function MySitesController($firebase, $timeout, authData, $state, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function MySitesController($firebase, $timeout, authData, $state, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
@@ -55,7 +55,7 @@
     }
 
     /* @ngInject */
-    function AllSitesController($firebase, authData, $state, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function AllSitesController($firebase, authData, $state, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
@@ -120,7 +120,7 @@
     }
 
     /* @ngInject */
-    function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this,
             siteDetailRef = $firebase.ref('sites/detail'),
             siteListRef = $firebase.ref('sites/list'),
@@ -167,7 +167,7 @@
     }
 
     /* @ngInject */
-    function PaymentSettingController($firebase, lzString, sitesService, config, FBURL, qtNotificationsService, Auth, $mdDialog) {
+    function PaymentSettingController($firebase, lzString, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this,
             paymentRef = $firebase.ref('config/payment@selectedSite');
 
@@ -191,7 +191,7 @@
 
         vm.updateAllpay = function () {
             $firebase.update('config/payment/allpay@selectedSite', {
-                editTime: Firebase.ServerValue.TIMESTAMP,
+                editTime: firebase.database.ServerValue.TIMESTAMP,
                 public: compressData(vm.allpay.public),
                 private: compressData(vm.allpay.private)
             })
@@ -199,7 +199,7 @@
 
         vm.updateStripe = function () {
             $firebase.update('config/payment/stripe@selectedSite', {
-                editTime: Firebase.ServerValue.TIMESTAMP,
+                editTime: firebase.database.ServerValue.TIMESTAMP,
                 public: compressData(vm.stripe.public),
                 private: compressData(vm.stripe.private)
             })

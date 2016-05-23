@@ -78,8 +78,8 @@
                     }],getSyncTime:['syncTime', function(syncTime){
                         return syncTime.onReady();
                     }],
-                    authData: ['Auth', function (Auth) {
-                        return Auth.$waitForAuth()
+                    authData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
                     }]
                 },
                 data: {

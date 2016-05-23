@@ -6,7 +6,7 @@
         .controller('TestPageController', TestPageController);
 
     /* @ngInject */
-    function TestPageController($firebase, snippets, syncTime, analysisService, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function TestPageController($firebase, snippets, syncTime, analysisService, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this,
             to2dig = snippets.to2dig;
 

@@ -6,7 +6,7 @@
         .controller('SeedPageController', SeedPageController);
 
     /* @ngInject */
-    function SeedPageController($firebase, qtNotificationsService, Auth, $state, $mdDialog, config) {
+    function SeedPageController($firebase, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         $firebase.ref('test/request').on('child_added', function (snap) {
             setTimeout(function () {

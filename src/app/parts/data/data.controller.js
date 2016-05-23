@@ -30,7 +30,7 @@
             if (!angular.isObject(data)) return;
             angular.forEach(data, function (val, key) {
                 update[key] = {compressed: lzString.compress(val)};
-                update.editTime = Firebase.ServerValue.TIMESTAMP;
+                update.editTime = firebase.database.ServerValue.TIMESTAMP;
             });
 
             ref.update(update);
@@ -65,7 +65,7 @@
                 update;
 
             if (!angular.isObject(data)) return;
-            update = {compressed: lzString.compress(data), editTime: Firebase.ServerValue.TIMESTAMP};
+            update = {compressed: lzString.compress(data), editTime: firebase.database.ServerValue.TIMESTAMP};
 
             ref.update(update);
         }

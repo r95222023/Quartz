@@ -17,7 +17,7 @@
         widgetDetailRefUrl = 'widgets/detail@selectedSite';
 
     /* @ngInject */
-    function PageManagerController($firebase, qtNotificationsService, Auth, $state, $stateParams, $mdDialog, config) {
+    function PageManagerController($firebase, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
         var vm = this;
 
         //Todo: 改名 刪除
@@ -69,7 +69,7 @@
     }
 
     /* @ngInject */
-    function WidgetManagerController($firebase, qtNotificationsService, Auth, $state, $stateParams, $mdDialog, config) {
+    function WidgetManagerController($firebase, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
         var vm = this;
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
@@ -268,7 +268,7 @@
                     "name": "Copy-" + siteName + "-" + customPage.pageData.name,
                     "content@1": customPage.pageData.content,
                     "css@1": customPage.pageData.css || null,
-                    "editTime@0": Firebase.ServerValue.TIMESTAMP
+                    "editTime@0": firebase.database.ServerValue.TIMESTAMP
                 };
             $firebase.update('sites/detail/' + siteName + '/pages', ['list/' + pid, 'detail/' + pid], pageData);
         }
@@ -517,7 +517,7 @@
                     "name": vm.pageName,
                     "author": $firebase.params["$uid"] || null,
                     "compressed@1": compressed,
-                    "editTime@0": Firebase.ServerValue.TIMESTAMP
+                    "editTime@0": firebase.database.ServerValue.TIMESTAMP
                 });
                 vm.revert();
             };
@@ -610,7 +610,7 @@
                     "author": $firebase.params["$uid"],
                     "type@1": 'customWidget',
                     "compressed@1": compressed,
-                    "editTime@0": Firebase.ServerValue.TIMESTAMP
+                    "editTime@0": firebase.database.ServerValue.TIMESTAMP
                 });
 
                 vm.revert();

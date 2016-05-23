@@ -6,7 +6,7 @@
         .controller('ForgotController', ForgotController);
 
     /* @ngInject */
-    function ForgotController($state, $mdToast, $filter, qtSettings, Auth) {
+    function ForgotController($state, $mdToast, $filter, qtSettings, $auth) {
         var vm = this;
         vm.qtSettings = qtSettings;
         vm.email = '';
@@ -19,7 +19,7 @@
 
         function resetClick() {
 
-            Auth.$resetPassword({email:vm.email})
+            $auth.$resetPassword({email:vm.email})
                 .then(success, error);
 
             function success() {

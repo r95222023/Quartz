@@ -17,14 +17,14 @@
             var _newSiteName = rectifySiteName(newSiteName);
             $firebase.ref('users/detail/'+uid+'/sites').push({
                 siteName: _newSiteName,
-                createdTime: Firebase.ServerValue.TIMESTAMP
+                createdTime: firebase.database.ServerValue.TIMESTAMP
             }).then(function(){
                 $firebase.update('sites', ['detail/' + _newSiteName, 'list/' + _newSiteName], {
                     //"toDetail@0": "test",
                     //"toList@1": "test",
                     "author@1": uid,
                     "siteName@1": _newSiteName,
-                    "createdTime": Firebase.ServerValue.TIMESTAMP
+                    "createdTime": firebase.database.ServerValue.TIMESTAMP
                 });
                 indexService.add("record","created", {siteName:_newSiteName}, _newSiteName);
             });

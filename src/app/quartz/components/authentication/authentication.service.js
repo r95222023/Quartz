@@ -6,46 +6,40 @@
         .provider('$auth', authProvider)
         .run(run);
 
-    var app = firebase.app(),
-        mainFirebase = {
-            app: app,
-            databaseURL: app.database().ref().toString().databaseURL,
-            database: app.database(),
-            auth: app.auth()
-        };
+
 
     function authProvider() {
-        
-        this.setMainFirebase = function (config) {
+        var app = firebase.app(),
+            authFirebase = {
+                app: app,
+                databaseURL: app.options.databaseURL,
+                database: app.database(),
+                auth: app.auth()
+            };
+
+        this.setAuthFirebase = function (config) {
             firebase.initializeApp(config, "mainAuth");
             var app = firebase.app("mainAuth");
-            mainFirebase = {
+            authFirebase = {
                 app: app,
                 databaseURL: config.databaseURL,
                 database: app.database(),
                 auth: app.auth()
             }
         };
-
         this.$get = /*@ngInject*/function ($q, $firebase, $stateParams, config) {
-            return new Auth(mainFirebase, $q, $firebase, $stateParams, config)
+            return new Auth(authFirebase, $q, $firebase, $stateParams, config)
         }
     }
 
-    function Auth(mainFirebase, $q, $firebase, $stateParams, config) {
-        var mainFirebase = {
-            app: firebase.app(),
-            databaseURL: firebase.database().ref().toString().databaseURL,
-            database: firebase.database(),
-            auth: firebase.auth()
-        };
-        console.log(mainFirebase)
-        var Auth = mainFirebase.auth,
+    function Auth(authFirebase, $q, $firebase, $stateParams, config) {
+        var Auth = authFirebase.auth,
             ready = $q.defer(),
             unsubscribe = Auth.onAuthStateChanged(function () {
                 ready.resolve();
                 unsubscribe();
             });
+
 
         Auth.waitForAuth = function () {
             var def = $q.defer();
@@ -108,7 +102,7 @@
                     if (opt.regSite) {
                         var data = {},
                             siteName = opt.regSite;
-                        data["users/detail/" + uid + "/sitesRegistered/" + siteName] = mainFirebase.database.ServerValue.TIMESTAMP;
+                        data["users/detail/" + uid + "/sitesRegistered/" + siteName] = firebase.database.ServerValue.TIMESTAMP;
                         data["sites/detail/" + siteName + "/users/list/" + uid] = basicData;
                         $firebase.update('', data).then(function () {
                             def.resolve();
@@ -136,7 +130,7 @@
             //     email = user[provider].email || null,
             //     profileImageURL = user[provider].profileImageURL || null;
             // if (provider === 'password') name = firstPartOfEmail(user.password.email);
-            var basicUser = {createdTime: mainFirebase.database.ServerValue.TIMESTAMP/*, provider: user.provider*/};
+            var basicUser = {createdTime: firebase.database.ServerValue.TIMESTAMP/*, provider: user.provider*/};
             // basicUser.info = {
             //     name: name,
             //     email: email,
@@ -153,9 +147,6 @@
             var opt = typeof options === 'object' ? options : {},
                 authProvider;
             switch (provider) {
-                case 'password':
-                    return Auth.signInWithEmailAndPassword({email: opt.email, password: opt.password});
-                    break;
                 // case 'custom':
                 //     return Auth.$authWithCustomToken(opt.customToken, opt);
                 //     break;
@@ -164,16 +155,16 @@
                 //     return Auth.$authAnonymously(opt);
                 //     break;
                 case 'google':
-                    authProvider = Auth.GoogleAuthProvider();
+                    authProvider = new firebase.auth.GoogleAuthProvider();
                     break;
                 case 'facebook':
-                    authProvider = Auth.FacebookAuthProvider();
+                    authProvider = new firebase.auth.FacebookAuthProvider();
                     break;
                 case 'twitter':
-                    authProvider = Auth.TwitterAuthProvider();
+                    authProvider = new firebase.auth.TwitterAuthProvider();
                     break;
                 case 'github':
-                    authProvider = Auth.GithubAuthProvider();
+                    authProvider = new firebase.auth.GithubAuthProvider();
                     break;
             }
             if (opt.popup === false) {
@@ -199,7 +190,7 @@
     function run($rootScope, promiseService, $auth, $firebase) {
         function assignUser(user) {
             $firebase.databases.currentUser = {
-                url: mainFirebase.databaseURL + '#users/detail/' + user.uid
+                url: $firebase.databaseURL + '#users/detail/' + user.uid
             };
         }
 

@@ -8,21 +8,20 @@
 
     ////
     function firebaseProvider() {
-        var mainApp = firebase.app(),
+        var app = firebase.app(),
             mainDatabase = firebase.database();
 
-        var mainFirebase = {
-                app: mainApp,
-                databaseURL: mainDatabase.ref().toString(),
+        var dbFirebase = {
+                app: app,
+                databaseURL: app.options.databaseURL,
                 database: mainDatabase
             },
             params = {};
-        console.log(mainFirebase.databaseURL)
 
-        this.setMainFirebase = function (config) {
+        this.setDbFirebase = function (config) {
             firebase.initializeApp(config, "mainDatabase");
             var app = firebase.app("mainDatabase");
-            mainFirebase = {
+            dbFirebase = {
                 app: app,
                 databaseURL: config.databaseURL,
                 database: app.database()
@@ -33,14 +32,12 @@
         };
 
         this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
-            return new Firebase(mainFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter)
+            return new Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter)
         }
     }
 
-    function Firebase(mainFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
-
-        console.log(mainFirebase);
-
+    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
+        
         function replaceParamsInString(string, params) {
             for (var param in params) {
                 if (params.hasOwnProperty(param)) string = string.replace(eval("/\\" + param + "/g"), params[param]);
@@ -68,7 +65,7 @@
             var _opt = opt || {},
                 _refUrl = refUrl || '@',
                 db = $firebase.databases[_refUrl.split("@")[1]] || {},
-                root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || mainFirebase.databaseURL,
+                root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || dbFirebase.databaseURL,
                 rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1];
 
             this.params = _opt.params || {};
@@ -82,7 +79,7 @@
 
         FbObj.prototype = {
             ref: function () {
-                var database = angular.isString(this.appName) ? firebase.database(firebase.app(this.appName)) : mainFirebase.database,
+                var database = angular.isString(this.appName) ? firebase.database(firebase.app(this.appName)) : dbFirebase.database,
                     ref = database.refFromURL(this.dbUrl),
                     path = '';
                 if (this.path === '') return ref;
@@ -545,7 +542,8 @@
             request: request,
             isRefUrlValid: isRefUrlValid,
             cache: cache,
-            getUniqeId: getUniqeId
+            getUniqeId: getUniqeId,
+            databaseURL:dbFirebase.databaseURL
         };
 
         return $firebase;

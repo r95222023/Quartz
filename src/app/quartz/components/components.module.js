@@ -3,7 +3,7 @@
 
     angular
         .module('quartz.components', [
-            'firebase',
+            // 'firebase',
             'ui.router',
             'pascalprecht.translate'
         ]);
