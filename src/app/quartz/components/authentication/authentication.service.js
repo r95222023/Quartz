@@ -120,9 +120,7 @@
             return def.promise
         };
 
-        function firstPartOfEmail(emailAddress) {
-            return emailAddress.substring(0, emailAddress.indexOf("@"));
-        }
+
 
         Auth.basicAccountUserData = function (user) {
             // var provider = user.provider,
@@ -194,34 +192,39 @@
             };
         }
 
-        $auth.onAuthStateChanged(function (authData) {
-            $rootScope.user = authData;
-            $rootScope.loggedIn = !!authData;
+        $auth.onAuthStateChanged(function (user) {
+            $rootScope.user = user;
+            $rootScope.loggedIn = !!user;
 
             promiseService.reset('userData');
 
-            if (authData) {
+            if (user) {
                 angular.extend($firebase.params, {
-                    '$uid': authData.uid
+                    '$uid': user.uid
                 });
 
-                assignUser(authData);
+                assignUser(user);
 
-                $firebase.ref('users/detail/' + authData.uid + '/info').once('value', function (snap) {
-                    var userData = $auth.basicAccountUserData(authData);
-                    userData.info = snap.val();
-                    userData.info.profileImageURL = authData[authData.provider].profileImageURL;
+                $firebase.ref('users/detail/' + user.uid + '/info').once('value', function (snap) {
+                    var userData = $auth.basicAccountUserData(user);
+                    userData.info = snap.val()||{};
+                    userData.info.name = user.displayName||firstPartOfEmail(user.email);
+                    userData.info.photoURL = user.photoURL;
                     $rootScope.user = userData;
 
                     promiseService.resolve('userData', userData);
                 });
 
             } else {
-                console.log('no user', authData);
+                console.log('no user', user);
                 promiseService.resolve('userData', null);
                 $firebase.params["$uid"] = "";
             }
         });
+    }
+
+    function firstPartOfEmail(emailAddress) {
+        return emailAddress.substring(0, emailAddress.indexOf("@"));
     }
 })();
 
