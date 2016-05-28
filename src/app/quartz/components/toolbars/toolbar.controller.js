@@ -6,7 +6,7 @@
         .controller('DefaultToolbarController', DefaultToolbarController);
 
     /* @ngInject */
-    function DefaultToolbarController(config, $scope, $rootScope, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
+    function DefaultToolbarController($auth, config, $scope, $rootScope, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
         var vm = this;
         vm.breadcrumbs = qtBreadcrumbsService.breadcrumbs;
         vm.emailNew = false;

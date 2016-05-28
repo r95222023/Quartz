@@ -81,7 +81,7 @@
 
             if ($stateParams.siteName) {
                 var siteName = $stateParams.siteName;
-                $firebase.ref(userPath + '/sitesRegistered/' + siteName).once('value', function (regSnap) {
+                $firebase.ref(userPath + '/sitesVisited/' + siteName+'/createdTime').once('value', function (regSnap) {
                     if (regSnap.val() === null && !config.standalone) opt.regSite = siteName;
                     checkIfCreated();
                 })
@@ -101,8 +101,8 @@
                 regSite = function () {
                     if (opt.regSite) {
                         var data = {},
-                            siteName = opt.regSite;
-                        data["users/detail/" + uid + "/sitesRegistered/" + siteName] = firebase.database.ServerValue.TIMESTAMP;
+                            siteName = opt.regSite===true? $stateParams.siteName:opt.regSite;
+                        data["users/detail/" + uid + "/sitesVisited/" + siteName+'/createdTime'] = firebase.database.ServerValue.TIMESTAMP;
                         data["sites/detail/" + siteName + "/users/list/" + uid] = basicData;
                         $firebase.update('', data).then(function () {
                             def.resolve();
@@ -195,7 +195,6 @@
         $auth.onAuthStateChanged(function (user) {
             $rootScope.user = user;
             $rootScope.loggedIn = !!user;
-
             promiseService.reset('userData');
 
             if (user) {
@@ -206,10 +205,11 @@
                 assignUser(user);
 
                 $firebase.ref('users/detail/' + user.uid + '/info').once('value', function (snap) {
-                    var userData = $auth.basicAccountUserData(user);
+                    var userData = {},
+                        providerData = user.providerData;
                     userData.info = snap.val()||{};
-                    userData.info.name = user.displayName||firstPartOfEmail(user.email);
-                    userData.info.photoURL = user.photoURL;
+                    userData.info.name = user.displayName||providerData[0].displayName||firstPartOfEmail(user.email);
+                    userData.info.photoURL = user.photoURL||providerData[0].photoURL;
                     $rootScope.user = userData;
 
                     promiseService.resolve('userData', userData);

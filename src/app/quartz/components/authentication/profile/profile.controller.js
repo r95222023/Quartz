@@ -6,7 +6,7 @@
         .controller('ProfileController', ProfileController);
 
     /* @ngInject */
-    function ProfileController($rootScope, userData, $auth, $firebase, $mdToast, qtSettings) {
+    function ProfileController($rootScope, userData, $auth, $firebase, $mdToast, qtSettings, $stateParams) {
         console.log(userData);
 
         var vm = this;
@@ -14,21 +14,20 @@
 
 
         //user profile.
-        vm.user = {};
-        if (userData) {
-            angular.forEach(userData.info, function (value, key) {
-                vm.user[key] = value;
-            });
-        }
+        vm.name = userData.name || userData.providerData[0].displayName;
+        vm.photoURL = userData.photoURL || userData.providerData[0].photoURL;
+        vm.userInfo = {test:'test'};
 
 
         vm.updateProfile = function () {
-            var userUrl = 'users/detail/' + $rootScope.user.uid;
-            $firebase.update(userUrl + '/info', vm.user)
-                .then(success, error);
+            var userUrl = 'users/detail/' + userData.uid;
 
+            userData.updateProfile({displayName: vm.name, photoURL: vm.photoURL}).then(function () {
+                if ($stateParams.siteName) $firebase.update(userUrl + '/sitesVisited/' + $stateParams.siteName + '/info', vm.userInfo)
+                    .then(success, error);
+            });
             function success() {
-                indexService.update("users", userData.uid, userData, "main"); //TODO: 檢查是否有main以外更好的index
+                // indexService.update("users", userData.uid, userData, "main"); //TODO: 檢查是否有main以外更好的index
                 $mdToast.show(
                     $mdToast.simple()
                         .content('profile updated')

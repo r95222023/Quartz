@@ -3,7 +3,7 @@
         <img ng-src="{{user.info.photoURL}}" alt="girl-avatar" class="make-round" width="100"/>
     </div>
     <div class="text-light">
-        <h3 class="font-weight-600 margin-bottom-0 text-light">{{vm.user.name}} / Profile</h3>
+        <h3 class="font-weight-600 margin-bottom-0 text-light">{{user.info.name}} / Profile</h3>
         <p class="font-weight-300 margin-top-0">Edit your name, avatar etc</p>
      </div>
 </div>
@@ -50,6 +50,8 @@
                         </md-input-container>
 
                         <md-button class="md-raised md-primary margin-left-0" ng-click="vm.updateProfile()" ng-disabled="profile.$invalid" translate="PROFILE.BUTTON"></md-button>
+
+                        <md-button class="md-raised md-primary margin-left-0" ng-click="vm.updateProfile()" translate="PROFILE.BUTTON"></md-button>
                     </form>
                 </md-content>
             </md-tab>

@@ -60,14 +60,9 @@
 
         function login(email, pass, opt) {
             vm.err = null;
-            console.log(email, pass)
             $auth.signInWithEmailAndPassword(email,pass).then(function(){
                 redirect();
-            });
-            // Auth.$authWithPassword({email: email, password: pass}, opt)
-            //     .then(function (/* user */) {
-            //         redirect();
-            //     }, showError);
+            }, showError);
         }
 
         function loginWithProvider(provider) {
@@ -78,18 +73,10 @@
                 window.location.href = homeUrl;
                 $auth.loginWithProvider(provider, vm.loginOption);
             } else {
-                $auth.loginWithProvider(provider, vm.loginOption).then(function(res){
+                $auth.loginWithProvider(provider, vm.loginOption).catch(showError).then(function(res){
                     redirect();
                     return $auth.checkIfAccountExistOnFb(res.user)
-                }).then($auth.createAccount).catch(showError);
-                // Auth.loginWithProvider(provider, vm.loginOption)
-                //     .then(function (user) {
-                //         redirect();
-                //         return Auth.checkIfAccountExistOnFb(user)
-                //     }, showError)
-                //     .then(Auth.createAccount, showError)
-                //     .then(function () {
-                //     }, showError)
+                }).then($auth.createAccount);
             }
         }
     }

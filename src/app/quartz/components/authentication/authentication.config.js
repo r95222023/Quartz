@@ -39,14 +39,14 @@
                 controllerAs: 'vm'
             })
             .stateAuthenticated('quartz.admin-default.profile', {
-                url: '/profile',
+                url: '/:siteName/profile',
                 templateUrl: 'app/quartz/components/authentication/profile/profile.tmpl.html',
                 controller: 'ProfileController',
                 controllerAs: 'vm',
                 resolve:{
-                    userData: /*@ngInject*/ function(promiseService){
-                        return promiseService.get('userData')
-                    }
+                    userData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
+                    }]
                 }
             });
 

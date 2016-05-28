@@ -19,12 +19,21 @@
                 var pass = vm.pass;
                 // create user credentials in Firebase auth system
 
-                $auth.createUserWithEmailAndPassword(email, pass).catch(function(error) {
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    // ...
-                });
+                $auth.createUserWithEmailAndPassword(email, pass)
+                    .then(function () {
+                        $auth.signInWithEmailAndPassword(email, pass)
+                            .then(function(){
+                                return $auth.createAccount({regSite:true})
+                            })
+                            .then(signupSuccess)
+                            .catch(signupError);
+                    })
+                    .catch(function (error) {
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        // ...
+                    });
                 // Auth.$createUser({email: email, password: pass})
                 //     .then(function () {
                 //         // authenticate so we have permission to write to Firebase
@@ -62,8 +71,8 @@
                     .highlightAction(true)
                     .hideDelay(0)
             ).then(function () {
-                    $state.go(config.home);
-                });
+                $state.go(config.home);
+            });
         }
 
         function signupError(err) {
