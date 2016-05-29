@@ -13,14 +13,15 @@
         ////////////////
 
         vm.upload2 = function () {
-            $firebaseStorage.update('test/test', {data: 'ajskdlfjkasldfnzxcmvlkxzhcjvhasjdkhfjkasdfhasgtuiwegquasdkfjkasldjfkljaskldfjklasdfm,nzxclvj'})
+            $firebaseStorage.update('test/test@selectedSite', {data: 'ajskdlfjkasldfnzxcmvlkxzhcjvhasjdkhfjkasdfhasgtuiwegquasdkfjkasldjfkljaskldfjklasdfm1234,nzxclvj'})
         };
 
         vm.get = function () {
-            $firebaseStorage.getWithCache('test/test').then(function (res) {
+            $firebaseStorage.getWithCache('test/test@selectedSite').then(function (res) {
                 console.log(res)
             });
         };
+
 
         function upload($files) {
             var storageRef = firebase.storage().ref();

@@ -29,7 +29,10 @@
                 $rootScope.$broadcast('site:change', siteName);
                 $firebase.databases.selectedSite = {
                     siteName: siteName,
-                    url: config.standalone ? siteName : FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
+                    url: FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
+                };
+                $firebase.storages.selectedSite={
+                    path: 'sites/detail/' + siteName
                 };
                 sitesService.siteName = siteName;
             }

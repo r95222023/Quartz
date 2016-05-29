@@ -165,7 +165,7 @@
             templateUrl: 'app/examples/elements/cards.tmpl.html'
         })
         .state('quartz.admin-default.elements-upload', {
-            url: '/elements/upload',
+            url: '/elements/upload/:siteName',
             templateUrl: 'app/examples/elements/upload.tmpl.html'
         });
 

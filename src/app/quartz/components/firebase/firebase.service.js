@@ -9,19 +9,18 @@
     ////
     function firebaseProvider() {
         var app = firebase.app(),
-            mainDatabase = firebase.database();
-
-        var dbFirebase = {
+            mainDatabase = firebase.database(),
+            dbFbApp = {
                 app: app,
                 databaseURL: app.options.databaseURL,
                 database: mainDatabase
             },
             params = {};
 
-        this.setDbFirebase = function (config) {
+        this.setDbFbApp = function (config) {
             firebase.initializeApp(config, "mainDatabase");
             var app = firebase.app("mainDatabase");
-            dbFirebase = {
+            dbFbApp = {
                 app: app,
                 databaseURL: config.databaseURL,
                 database: app.database()
@@ -32,7 +31,7 @@
         };
 
         this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
-            return new Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter)
+            return new Firebase(dbFbApp, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter)
         }
     }
 
@@ -537,6 +536,7 @@
             batchUpdate: batchUpdate,
             params: params,
             databases: {},
+            storages: {},
             ref: queryRef,
             paginator: paginator,
             request: request,

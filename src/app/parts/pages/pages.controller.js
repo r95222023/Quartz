@@ -108,7 +108,7 @@
     }
 
     /* @ngInject */
-    function PageEditorController(lzString, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
+    function PageEditorController(lzString, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
 
         $scope.$mdSidenav = $mdSidenav;
@@ -148,12 +148,12 @@
             vm.pageRef = pageRootRef.push();
         }
 
-        action(vm, 'page', $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
+        action(vm, 'page', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
 
     }
 
     /* @ngInject */
-    function WidgetEditorController(lzString, injectCSS, customService, $state, $stateParams, $firebase, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
+    function WidgetEditorController(lzString, injectCSS, customService, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
@@ -195,17 +195,17 @@
             vm.widgetRef = widgetRootRef.push();
         }
 
-        action(vm, 'widget', $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
+        action(vm, 'widget', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, getSyncTime, injectCSS, authData, $firebase, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
+    function CustomPageController(lzString, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName,
             isIndex = !pageName || pageName === "index",
             orderBy = isIndex ? "index" : "name",
             equalTo = isIndex ? true : pageName,
-            pageCachePath = 'page' + pageName+'@selectedSite';
+            pageCachePath = 'page' + pageName + '@selectedSite';
 
 
         $scope.$mdSidenav = $mdSidenav;
@@ -214,33 +214,40 @@
 
         customPage.scope = $scope;
 
-        var editTimeRef = $firebase.ref(pageListRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1);
 
-        $firebase.cache(pageCachePath, editTimeRef,null,{isValue:false, fetchFn:getData}).then(function(cachedVal){
-            setModelData(cachedVal,cachedVal.cssKey);
+        $firebaseStorage.getWithCache('pages/detail/' + pageName + '@selectedSite').then(function (res) {
+            setModelData(res, res.cssKey);
         });
 
-        function getData() {
-            $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
-                if (parentSnap.val() === null) {
-                    $state.go('404');
-                    return true;
-                }
-
-                parentSnap.forEach(function (snap) {
-                    var val = lzString.decompress(snap.val());
-                    if(localStorage) {
-                        val.cachedTime = getSyncTime();
-                        val.cssKey = snap.key;
-                        localStorage.setItem(pageCachePath, lzString.compress(val));
-                    }
-                    setModelData(val, snap.key);
-                });
-            }, function (err) {
-                $state.go('404');
-                return true;
-            });
-        }
+        //var editTimeRef = $firebase.ref(pageListRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1);
+        // $firebase.cache(pageCachePath, editTimeRef, null, {
+        //     isValue: false,
+        //     fetchFn: getData
+        // }).then(function (cachedVal) {
+        //     setModelData(cachedVal, cachedVal.cssKey);
+        // });
+        //
+        // function getData() {
+        //     $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
+        //         if (parentSnap.val() === null) {
+        //             $state.go('404');
+        //             return true;
+        //         }
+        //
+        //         parentSnap.forEach(function (snap) {
+        //             var val = lzString.decompress(snap.val());
+        //             if (localStorage) {
+        //                 val.cachedTime = getSyncTime();
+        //                 val.cssKey = snap.key;
+        //                 localStorage.setItem(pageCachePath, lzString.compress(val));
+        //             }
+        //             setModelData(val, snap.key);
+        //         });
+        //     }, function (err) {
+        //         $state.go('404');
+        //         return true;
+        //     });
+        // }
 
         function setModelData(val, key) {
             $timeout(function () {
@@ -263,7 +270,7 @@
         };
         customPage.copyPageTo = function (siteName) {
 
-            var pid = $firebase.ref('').push().key(),
+            var pid = $firebase.ref('').push().key,
                 pageData = {
                     "name": "Copy-" + siteName + "-" + customPage.pageData.name,
                     "content@1": customPage.pageData.content,
@@ -412,7 +419,7 @@
         }
     };
 
-    function action(vm, type, $firebase, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService) {
+    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService) {
         vm.getHtmlContent = customService.getHtmlContent;
         vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         vm.isTagConfigurable = customService.isTagConfigurable;
@@ -488,10 +495,10 @@
             };
 
             vm.injectCss = function () {
-                injectCSS.setDirectly(vm.pageRef.key(), vm.pageCss + vm.widgetsCss);
+                injectCSS.setDirectly(vm.pageRef.key, vm.pageCss + vm.widgetsCss);
                 var dereg = $rootScope.$on('$stateChangeStart',
                     function () {
-                        injectCSS.remove(vm.pageRef.key());
+                        injectCSS.remove(vm.pageRef.key);
                         dereg();
                     });
             };
@@ -507,7 +514,7 @@
                 //    editTime: Firebase.ServerValue.TIMESTAMP
                 //};
                 //vm.pageRef.update(data);
-                var pid = vm.pageRef.key(),
+                var pid = vm.pageRef.key,
                     compressed = LZString.compressToUTF16(JSON.stringify({
                         "css": css || '',
                         "content": content
@@ -516,9 +523,15 @@
                 $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                     "name": vm.pageName,
                     "author": $firebase.params["$uid"] || null,
-                    "compressed@1": compressed,
+                    // "compressed@1": compressed,
                     "editTime@0": firebase.database.ServerValue.TIMESTAMP
                 });
+
+                $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite', {
+                    "css": css || '',
+                    "content": content
+                });
+
                 vm.revert();
             };
 
@@ -533,7 +546,7 @@
             };
 
             vm.revert = function () {
-                $state.go($state.current, {pageName: vm.pageName, id: vm.pageRef.key()}, {reload: true});
+                $state.go($state.current, {pageName: vm.pageName, id: vm.pageRef.key}, {reload: true});
             };
 
             vm.undo = dragula.undo;
@@ -580,10 +593,10 @@
             };
 
             vm.injectCss = function () {
-                injectCSS.setDirectly(vm.widgetRef.key(), vm.widgetCss);
+                injectCSS.setDirectly(vm.widgetRef.key, vm.widgetCss);
                 var dereg = $rootScope.$on('$stateChangeStart',
                     function () {
-                        injectCSS.remove(vm.widgetRef.key());
+                        injectCSS.remove(vm.widgetRef.key);
                         dereg();
                     });
             };
@@ -600,7 +613,7 @@
                 var css = vm.widgetCss || '',
                     content = customService.convertBack($scope.containers);
 
-                var wid = vm.widgetRef.key(),
+                var wid = vm.widgetRef.key,
                     compressed = LZString.compressToUTF16(JSON.stringify({
                         "css": css,
                         "content": content
@@ -617,7 +630,7 @@
             };
 
             vm.revert = function () {
-                $state.go($state.current, {widgetName: vm.widgetName, id: vm.widgetRef.key()}, {reload: true});
+                $state.go($state.current, {widgetName: vm.widgetName, id: vm.widgetRef.key}, {reload: true});
             };
 
             vm.undo = function () {
