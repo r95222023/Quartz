@@ -52,6 +52,7 @@
             // get: get,
             getWithCache: getWithCache,
             update: update,
+            remove:remove,
             storages: {}
         };
 
@@ -114,11 +115,16 @@
             var _path = (new FbObj(path)).path;
             syncTime.onReady().then(function (getTime) {
                 var storageRef = storage.ref(),
-                    _value = {path: _path, value: value, updated: getTime()},
+                    _value = {path: _path, updated: getTime(), compressed:lzString.compress({value:value})},
                     dataString = "_getFBS("+JSON.stringify(_value)+")",
                     data = new Blob([dataString], {type: 'text/javascript'});
                 return storageRef.child(_path+'.js').put(data);
             });
+        }
+
+        function remove(path){
+            var _path = (new FbObj(path)).path;
+            return storage.ref().child(_path+'.js').delete();
         }
 
         function loadJsFromUrl(url, id) {
@@ -130,12 +136,13 @@
         }
 
         window._getFBS = function (data) {
-            console.log(data);
-            $rootScope.$broadcast('FBS:' + data.path, data.value);
+            var _data = lzString.decompress(data);
+            console.log(_data);
+            $rootScope.$broadcast('FBS:' + _data.path, _data.value);
             syncTime.onReady().then(function (getTime) {
                 if (localStorage) {
-                    data.cachedTime = getTime();
-                    localStorage.setItem('FBS:' + data.path, lzString.compress(data));
+                    _data.cachedTime = getTime();
+                    localStorage.setItem('FBS:' + _data.path, lzString.compress(_data));
                 }
             })
         };

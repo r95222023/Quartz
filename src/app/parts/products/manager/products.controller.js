@@ -6,7 +6,7 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController(lzString, $mdToast, $mdDialog, $firebase, indexService, snippets, $stateParams, $state, $mdMedia) {
+    function ProductManagerController(lzString, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia) {
         var vm = this,
             position = {
                 bottom: true,
@@ -127,12 +127,15 @@
             var id = vm.product.itemId || (new Date()).getTime();
 
             var listData = angular.extend({}, vm.product, {description: null}),
-                detailData = {compressed: lzString.compress(vm.product), editTime: firebase.database.ServerValue.TIMESTAMP};
+                detailData = {
+                    compressed: lzString.compress(vm.product),
+                    editTime: firebase.database.ServerValue.TIMESTAMP
+                };
 
             $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], {
-                    '@0': listData,
-                    '@1': detailData
-                })
+                '@0': listData,
+                '@1': detailData
+            })
                 .then(function () {
                     indexService.update("products", id, vm.product);
 
@@ -146,6 +149,7 @@
                         resetData();
                     });
                 });
+            $firebaseStorage.update('products/detail/' + id, detailData)
         };
 
         vm.delete = function (ev, id) {
@@ -211,13 +215,13 @@
             }
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
             $mdDialog.show({
-                    controller: EditorController,
-                    templateUrl: 'app/parts/products/manager/editor.tmpl.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: useFullScreen
-                })
+                controller: EditorController,
+                templateUrl: 'app/parts/products/manager/editor.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: useFullScreen
+            })
                 .then(function (onComplete) {
                     if (angular.isFunction(onComplete)) onComplete();
                 }, function (onCancel) {

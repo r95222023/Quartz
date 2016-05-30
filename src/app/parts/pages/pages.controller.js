@@ -17,7 +17,7 @@
         widgetDetailRefUrl = 'widgets/detail@selectedSite';
 
     /* @ngInject */
-    function PageManagerController($firebase, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
+    function PageManagerController($firebase, $firebaseStorage, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
         var vm = this;
 
         //Todo: 改名 刪除
@@ -51,6 +51,7 @@
                         $firebase.update(pageRefUrl, ['list/' + id, 'detail/' + id], {
                             "@all": null
                         });
+                        $firebaseStorage.remove('pages/detail/'+name+'@selectedSite');
                     });
 
                     break;
@@ -523,7 +524,7 @@
                 $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                     "name": vm.pageName,
                     "author": $firebase.params["$uid"] || null,
-                    // "compressed@1": compressed,
+                    "compressed@1": compressed,
                     "editTime@0": firebase.database.ServerValue.TIMESTAMP
                 });
 
