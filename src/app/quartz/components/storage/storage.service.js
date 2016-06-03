@@ -52,7 +52,7 @@
             // get: get,
             getWithCache: getWithCache,
             update: update,
-            remove:remove,
+            remove: remove,
             storages: {}
         };
 
@@ -64,32 +64,61 @@
                 rootPath = (db.path || _refPath.split("@")[1] || '').split("#")[1];
 
             this.rootPath = rootPath ? root + '/' + rootPath : root;
-            this.path = this.rootPath + (root? '/':'') + _refPath.split("@")[0];
+            this.path = this.rootPath + (root ? '/' : '') + _refPath.split("@")[0];
             this.appName = _opt.appName || '';
         }
 
         function ref(refPath, opt) {
-            var path = (new FbObj(refPath, opt)).path+'.js';
+            var path = (new FbObj(refPath, opt)).path + '.js';
             return storage.ref(path);
         }
 
-        function getWithCache(path) {
+        function getWithCache(path, opt) {
             var def = $q.defer(),
-                _ref=ref(path),
+                _opt=opt||{},
+                _ref = ref(path),
                 promise = $q.all({
                     meta: _ref.getMetadata(),
-                    url: _ref.getDownloadURL()
+                    url: _ref.getDownloadURL(),
+                    checksum: getChecksum()
                 }),
-                id='FBS:' + (new FbObj(path)).path,
+                id = 'FBS:' + (new FbObj(path)).path,
                 dereg = $rootScope.$on(id, function (evt, value) {
                     dereg();
-                    def.resolve(value);
+                    if(!_opt.chkRefUrl||snippets.md5Obj(value)===_opt.checksum){
+                        def.resolve(value);
+                    } else {
+                        def.reject('checksum does not match.')
+                    }
                 });
 
-            setTimeout(function(){
-                if(dereg) dereg();
-            },10000);
-            promise.then(function (res) {
+            function getChecksum(){
+                var chkDefer=$q.defer();
+                if(_opt.checksum){
+                    chkDefer.resolve();
+                } else if(_opt.chkRefUrl){
+                    $firebase.ref(_opt.chkRefUrl).once('value', function(snap){
+                        _opt.checksum=snap.val();
+                        chkDefer.resolve();
+                    })
+                } else {
+                    chkDefer.resolve();
+                }
+                return chkDefer.promise;
+            }
+
+
+            setTimeout(function () {
+                if (dereg) dereg();
+            }, 10000);
+            promise.catch(function (error) {
+                if (error.code === 'storage/object-not-found') {
+                    def.resolve(null);
+                } else {
+                    def.reject(error);
+                }
+            }).then(function (res) {
+                if(res===undefined) return;
                 var url = res.url,
                     meta = res.meta,
                     cachePath = id,
@@ -102,10 +131,10 @@
                         console.log('from cache');
                         dereg(); //prevent memory leak
                     } else {
-                        loadJsFromUrl(url,id);
+                        loadJsFromUrl(url, id);
                     }
                 } else {
-                    loadJsFromUrl(url,id);
+                    loadJsFromUrl(url, id);
                 }
             });
             return def.promise;
@@ -115,23 +144,23 @@
             var _path = (new FbObj(path)).path;
             syncTime.onReady().then(function (getTime) {
                 var storageRef = storage.ref(),
-                    _value = {path: _path, updated: getTime(), compressed:lzString.compress({value:value})},
-                    dataString = "_getFBS("+JSON.stringify(_value)+")",
+                    _value = {path: _path, updated: getTime(), compressed: lzString.compress({value: value})},
+                    dataString = "_getFBS(" + JSON.stringify(_value) + ")",
                     data = new Blob([dataString], {type: 'text/javascript'});
-                return storageRef.child(_path+'.js').put(data);
+                return storageRef.child(_path + '.js').put(data);
             });
         }
 
-        function remove(path){
+        function remove(path) {
             var _path = (new FbObj(path)).path;
-            return storage.ref().child(_path+'.js').delete();
+            return storage.ref().child(_path + '.js').delete();
         }
 
         function loadJsFromUrl(url, id) {
             var script = document.createElement('script');
             script.type = "text/javascript";
             script.src = url;
-            if(id) script.id=id;
+            if (id) script.id = id;
             angular.element('head').append(script);
         }
 

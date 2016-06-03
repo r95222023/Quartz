@@ -415,6 +415,11 @@
             return sortedObj;
         }
 
+        function md5Obj(searchObj) {
+            var sorted = sortObjectByPropery(searchObj);
+            return MD5(JSON.stringify(sorted));
+        }
+        
         function removeItemFromArray(arr, item) {
             for (var i = arr.length; i--;) {
                 if (arr[i] === item) {
@@ -478,6 +483,7 @@
         return {
             debounce: debounce,
             md5: MD5,
+            md5Obj:md5Obj,
             Tea:TEA,
             to2dig:to2dig,
             sortObjectByPropery: sortObjectByPropery,

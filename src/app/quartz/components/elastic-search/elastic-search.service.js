@@ -18,12 +18,12 @@
         this.setCacheRefUrl = function (value) {
             defaultCacheRefUrl = value;
         };
-        this.$get = /* @ngInject */function (syncTime, lzString, $firebase, $q, snippets) {
-            return new ElasticSearch(syncTime, lzString, $firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
+        this.$get = /* @ngInject */function (syncTime, lzString, $firebase, $firebaseStorage, $q, snippets) {
+            return new ElasticSearch(syncTime, lzString, $firebase, $firebaseStorage, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
         }
     }
 
-    function ElasticSearch(syncTime, lzString, $firebase, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
+    function ElasticSearch(syncTime, lzString, $firebase, $firebaseStorage, $q, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
 
         this.query = function (index, type, option) {
             var def = $q.defer(),
@@ -32,39 +32,45 @@
                 responseUrl = option.responseUrl || defaultResponseRefUrl;
 
             if (angular.isString(option.cache) || option.cache === true) {
-                var cacheId = getCacheId(searchData),
+                var cacheId = snippets.md5Obj(searchData),
                     cacheRefUrl = option.cache === true ? defaultCacheRefUrl + '/' + index + type : option.cache,
                     searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
                 responseUrl = searchCacheRef.toString();
 
-                $firebase.cache(cacheId, searchCacheRef.child('usage/created'),searchCacheRef).then(function(val){
-                    searchData.responseUrl = responseUrl;
-                    if (val === null) {
-                        request(refUrl, responseUrl, searchData);
-                    } else {
-                        var result = val.result,
-                            usage = val.usage;
-                        //check if the cache is expired or used many times
-                        
-                        // syncTime.onReady().then(function (getTime) {
-                        //     if (getTime() - (usage.last||usage.created) > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
-                        //         request(refUrl, responseUrl, searchData);
-                        //     } else {
-                        //         searchCacheRef.child('usage').update({
-                        //             times: usage.times + 1,
-                        //             last: Firebase.ServerValue.TIMESTAMP
-                        //         }, function (err) {
-                        //             if (err) {
-                        //                 def.reject(err)
-                        //             } else {
-                        //                 def.resolve(result);
-                        //             }
-                        //         });
-                        //     }
-                        // });
-                        def.resolve(result);
-                    }
+                $firebaseStorage.getWithCache(cacheRefUrl + '/' + cacheId,{chkRefUrl:searchCacheRef.child('checksum').toString().split('.com/')[1]}).then(function (res) {
+                    console.log(res);
                 });
+                var getFromDatabase=function(){
+                    $firebase.cache(cacheId, searchCacheRef.child('usage/created'), searchCacheRef).then(function (val) {
+                        searchData.responseUrl = responseUrl;
+                        if (val === null) {
+                            request(refUrl, responseUrl, searchData);
+                        } else {
+                            var result = val.result,
+                                usage = val.usage;
+                            //check if the cache is expired or used many times
+
+                            // syncTime.onReady().then(function (getTime) {
+                            //     if (getTime() - (usage.last||usage.created) > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
+                            //         request(refUrl, responseUrl, searchData);
+                            //     } else {
+                            //         searchCacheRef.child('usage').update({
+                            //             times: usage.times + 1,
+                            //             last: Firebase.ServerValue.TIMESTAMP
+                            //         }, function (err) {
+                            //             if (err) {
+                            //                 def.reject(err)
+                            //             } else {
+                            //                 def.resolve(result);
+                            //             }
+                            //         });
+                            //     }
+                            // });
+                            def.resolve(result);
+                        }
+                    });
+                };
+                getFromDatabase();
             } else {
                 request(refUrl, responseUrl, searchData);
             }
@@ -146,12 +152,6 @@
 
             return out
         };
-
-
-        function getCacheId(searchObj) {
-            var sorted = snippets.sortObjectByPropery(searchObj);
-            return snippets.md5(JSON.stringify(sorted));
-        }
 
         function buildQuery(term, words) {
             // See the following document for more query options:

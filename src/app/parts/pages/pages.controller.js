@@ -51,7 +51,7 @@
                         $firebase.update(pageRefUrl, ['list/' + id, 'detail/' + id], {
                             "@all": null
                         });
-                        $firebaseStorage.remove('pages/detail/'+name+'@selectedSite');
+                        $firebaseStorage.remove('pages/detail/' + name + '@selectedSite');
                     });
 
                     break;
@@ -116,6 +116,7 @@
         vm.scope = $scope;
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
+        vm.originalPageName = $stateParams.pageName+'';
 
         var widgetSource = angular.extend({}, customWidgets, customService.items),
             containerSource = customService.containers,
@@ -272,13 +273,23 @@
         customPage.copyPageTo = function (siteName) {
 
             var pid = $firebase.ref('').push().key,
+                css = customPage.pageData.css,
+                content = customPage.pageData.content,
+                name = "Copy-" + siteName + "-" + customPage.pageName,
+                compressed = lzString.compress({
+                    "css": css || '',
+                    "content": content
+                }),
                 pageData = {
-                    "name": "Copy-" + siteName + "-" + customPage.pageData.name,
-                    "content@1": customPage.pageData.content,
-                    "css@1": customPage.pageData.css || null,
+                    "name": name,
+                    "compressed@1": compressed,
                     "editTime@0": firebase.database.ServerValue.TIMESTAMP
                 };
             $firebase.update('sites/detail/' + siteName + '/pages', ['list/' + pid, 'detail/' + pid], pageData);
+            $firebaseStorage.update('pages/detail/' + name + '@selectedSite', {
+                "css": css || null,
+                "content": content
+            });
         }
     }
 
@@ -532,6 +543,9 @@
                     "css": css || '',
                     "content": content
                 });
+                if(vm.originalPageName&&vm.originalPageName!==vm.pageName){
+                    $firebaseStorage.ref('pages/detail/' + vm.originalPageName + '@selectedSite').remove();
+                }
 
                 vm.revert();
             };
