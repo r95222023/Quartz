@@ -126,9 +126,9 @@
             siteListRef = $firebase.ref('sites/list'),
             pageListRef = $firebase.ref('pages/list@selectedSite'),
             siteName = $stateParams.siteName;
-        siteDetailRef.child(siteName).child('config').once('value', function (snap) {
-            vm.config = snap.val() || {};
-            vm.config.basic = vm.config.basic || {};
+        siteDetailRef.child(siteName).child('config/basic').once('value', function (snap) {
+            vm.config = {};
+            vm.config.basic = snap.val() || {};
         });
 
         siteListRef.child(siteName).once('value', function (snap) {
@@ -146,11 +146,10 @@
                 $firebase.update('pages@selectedSite', data);
             });
 
-            $firebase.update('sites/detail/' + siteName + '/config', vm.config);
-            angular.forEach(vm.config, function(subConfig, subConfigName){
-                $firebaseStorage.update('sites/detail/' + siteName+'/config/'+subConfigName, subConfig);
-            });
-            
+            $firebase.update('sites/detail/' + siteName + '/config/basic', vm.config.basic);
+            $firebaseStorage.update('sites/detail/' + siteName + '/config/basic', vm.config.basic);
+
+
             listData['thumbnail/'] = vm.thumbnail;
             $firebase.update('sites/list/' + siteName, listData);
 
@@ -170,42 +169,31 @@
     }
 
     /* @ngInject */
-    function PaymentSettingController($firebase, lzString, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
-        var vm = this,
-            paymentRef = $firebase.ref('config/payment@selectedSite');
-
-
-        function getPaymentConfig(type) {
-            $firebase.cache('payment' + type + '@selectedSite', paymentRef.child(type + '/editTime'), paymentRef.child(type)).then(function (val) {
-                var _val = val || {};
-                vm[type] = {};
-                vm[type].public = lzString.decompress(_val.public || {});
-                vm[type].private = lzString.decompress(_val.private || {});
-            })
+    function PaymentSettingController($firebase, $firebaseStorage, lzString, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
+        var vm = this;
+        
+        function getPaymentConfig(provider) {
+            angular.forEach(['public', 'private'], function (pubOrPri) {
+                $firebaseStorage.getWithCache('config/payment/' + provider + '/' + pubOrPri + '@selectedSite').then(function (val) {
+                    vm[provider] = vm[provider]||{};
+                    vm[provider][pubOrPri] = val || {};
+                });
+            });
         }
 
         getPaymentConfig('allpay');
         getPaymentConfig('stripe');
 
 
-        function compressData(data) {
-            return {compressed: lzString.compress(data)}
-        }
 
         vm.updateAllpay = function () {
-            $firebase.update('config/payment/allpay@selectedSite', {
-                editTime: firebase.database.ServerValue.TIMESTAMP,
-                public: compressData(vm.allpay.public),
-                private: compressData(vm.allpay.private)
-            })
+            $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
+            $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
         };
 
         vm.updateStripe = function () {
-            $firebase.update('config/payment/stripe@selectedSite', {
-                editTime: firebase.database.ServerValue.TIMESTAMP,
-                public: compressData(vm.stripe.public),
-                private: compressData(vm.stripe.private)
-            })
+            $firebaseStorage.update('config/payment/stripe/public@selectedSite', vm.stripe.public);
+            $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
         }
     }
 })();

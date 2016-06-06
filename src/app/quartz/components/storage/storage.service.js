@@ -186,7 +186,6 @@
 
         window._getFBS = function (data) {
             var _data = lzString.decompress(data);
-            console.log(_data);
             $rootScope.$broadcast('FBS:' + _data.path, _data.value);
             syncTime.onReady().then(function (getTime) {
                 if (localStorage) {
