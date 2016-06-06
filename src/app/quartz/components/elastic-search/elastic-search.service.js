@@ -29,18 +29,16 @@
             var def = $q.defer(),
                 refUrl = option.queryUrl || defaultQueryRefUrl,
                 searchData = angular.extend({}, {indexType: index + ':' + type}, option),
+                cacheId = snippets.md5Obj(searchData),
+                cacheRefUrl = option.cache === true ? defaultCacheRefUrl + '/' + index + type : option.cache,
+                storageRefPath = cacheRefUrl + '/' + cacheId,
                 responseUrl = option.responseUrl || defaultResponseRefUrl;
 
             if (angular.isString(option.cache) || option.cache === true) {
-                var cacheId = snippets.md5Obj(searchData),
-                    cacheRefUrl = option.cache === true ? defaultCacheRefUrl + '/' + index + type : option.cache,
-                    searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
+                var searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
                 responseUrl = searchCacheRef.toString();
 
-                $firebaseStorage.getWithCache(cacheRefUrl + '/' + cacheId,{chkRefUrl:searchCacheRef.child('checksum').toString().split('.com/')[1]}).then(function (res) {
-                    console.log(res);
-                });
-                var getFromDatabase=function(){
+                var getFromDatabase = function () {
                     $firebase.cache(cacheId, searchCacheRef.child('usage/created'), searchCacheRef).then(function (val) {
                         searchData.responseUrl = responseUrl;
                         if (val === null) {
@@ -48,29 +46,21 @@
                         } else {
                             var result = val.result,
                                 usage = val.usage;
-                            //check if the cache is expired or used many times
-
-                            // syncTime.onReady().then(function (getTime) {
-                            //     if (getTime() - (usage.last||usage.created) > (option.expire || 30 * 24 * 60 * 60 * 1000) || usage.times > (option.reuse || 100)) {
-                            //         request(refUrl, responseUrl, searchData);
-                            //     } else {
-                            //         searchCacheRef.child('usage').update({
-                            //             times: usage.times + 1,
-                            //             last: Firebase.ServerValue.TIMESTAMP
-                            //         }, function (err) {
-                            //             if (err) {
-                            //                 def.reject(err)
-                            //             } else {
-                            //                 def.resolve(result);
-                            //             }
-                            //         });
-                            //     }
-                            // });
                             def.resolve(result);
                         }
                     });
                 };
-                getFromDatabase();
+
+                $firebaseStorage.getWithCache(storageRefPath, {chkRefUrl: searchCacheRef.child('checksum').toString().split('.com/')[1]}).then(function (res) {
+                    if (!res) {
+                        getFromDatabase();
+                    } else {
+                        def.resolve(res);
+                    }
+                });
+
+
+                // getFromDatabase();
             } else {
                 request(refUrl, responseUrl, searchData);
             }
@@ -85,7 +75,9 @@
                 };
                 $firebase.request(req)
                     .then(function (res) {
-                        def.resolve(lzString.decompress(res[0]).result);
+                        var _res = lzString.decompress(res[0]).result;
+                        $firebaseStorage.update(storageRefPath, _res);
+                        def.resolve(_res);
                     }, function (err) {
                         def.reject(err);
                     });
@@ -93,7 +85,6 @@
 
             return def.promise;
         };
-
         this.paginator = function (index, type, query) {
             var _paginators = {},
                 self = this,

@@ -62,7 +62,7 @@
 
         function FbObj(refUrl, opt) {
             var _opt = opt || {},
-                _refUrl = refUrl || '@',
+                _refUrl = (refUrl.split(".com/")[1]? refUrl.split(".com/")[1]:refUrl) || '@',
                 db = $firebase.databases[_refUrl.split("@")[1]] || {},
                 root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || dbFirebase.databaseURL,
                 rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1];
@@ -88,7 +88,7 @@
                         ref = ref.push();
                         this.params[pathArr[i]] = ref.key;
                     } else {
-                        ref = ref.child(pathArr[i]);
+                        ref =pathArr[i]? ref.child(pathArr[i]):ref;
                     }
                     path += ref.key + '/'
                 }

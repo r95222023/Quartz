@@ -6,7 +6,7 @@
         .controller('ProductDetailController', ProductDetailController);
 
     /* @ngInject */
-    function ProductDetailController(lzString, $timeout, $firebase, $stateParams) {
+    function ProductDetailController(lzString, $timeout, $firebase, $firebaseStorage, $stateParams) {
         var vm = this;
 
 
@@ -19,13 +19,15 @@
         //     }, 0)
         // });
 
-        var cachePath = 'product' + vm.id+'@selectedSite',
+        var cachePath = 'product' + vm.id + '@selectedSite',
             editTimeRef = $firebase.ref('products/detail/' + vm.id + '@selectedSite').child('editTime'),
             sourceRef = $firebase.ref('products/detail/' + vm.id + '@selectedSite');
 
-        $firebase.cache(cachePath, editTimeRef, sourceRef).then(setModelData);
+        // $firebase.cache(cachePath, editTimeRef, sourceRef).then(setModelData);
+        $firebaseStorage.getWithCache('products/detail/' + vm.id + '@selectedSite').then(setModelData);
 
         function setModelData(data) {
+            console.log(data);
             $timeout(function () {
                 vm.product = data;
             }, 0)

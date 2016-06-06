@@ -13,7 +13,7 @@
         function buildOrder(type, opt) {
             var def = $q.defer();
             $firebase.ref('config/payment/' + type + '/public@selectedSite').once('value', function (snap) {
-                var _opt = (snap.val !== null) ? angular.extend({}, {paymentParams: snap.val()}, opt || {}) : opt || {},
+                var _opt = (snap.val() !== null) ? angular.extend({}, {paymentParams: snap.val()}, opt || {}) : opt || {},
                     now = _opt.timeStamp || (new Date(syncTime.getTime())) || (new Date());
 
                 _opt.id = _opt.id || (sitesService.siteName + now.getTime());

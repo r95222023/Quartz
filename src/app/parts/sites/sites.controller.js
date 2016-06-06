@@ -17,9 +17,9 @@
 
 
         $firebase.ref('users/detail/' + authData.uid + '/sites').on('value', function (snap) {
-            $timeout(function(){
+            $timeout(function () {
                 vm.sitesArray = snap.val();
-            },0);
+            }, 0);
         });
 
         vm.addSite = function () {
@@ -120,7 +120,7 @@
     }
 
     /* @ngInject */
-    function SiteConfigureController($firebase, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, $mdDialog) {
+    function SiteConfigureController($firebase, $firebaseStorage, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this,
             siteDetailRef = $firebase.ref('sites/detail'),
             siteListRef = $firebase.ref('sites/list'),
@@ -147,7 +147,10 @@
             });
 
             $firebase.update('sites/detail/' + siteName + '/config', vm.config);
-
+            angular.forEach(vm.config, function(subConfig, subConfigName){
+                $firebaseStorage.update('sites/detail/' + siteName+'/config/'+subConfigName, subConfig);
+            });
+            
             listData['thumbnail/'] = vm.thumbnail;
             $firebase.update('sites/list/' + siteName, listData);
 

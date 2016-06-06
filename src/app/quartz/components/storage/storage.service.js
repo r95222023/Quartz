@@ -20,13 +20,13 @@
                 storage: app.database()
             }
         };
-        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, syncTime) {
-            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, syncTime)
+        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, snippets, syncTime) {
+            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime)
         }
     }
 
     /* @ngInject */
-    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, syncTime) {
+    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime) {
         // function get(path) {
         //     var def = $q.defer(),
         //         dereg = $rootScope.$on('FBS:' + path, function (evt, data) {
@@ -75,7 +75,7 @@
 
         function getWithCache(path, opt) {
             var def = $q.defer(),
-                _opt=opt||{},
+                _opt = opt || {},
                 _ref = ref(path),
                 promise = $q.all({
                     meta: _ref.getMetadata(),
@@ -85,20 +85,20 @@
                 id = 'FBS:' + (new FbObj(path)).path,
                 dereg = $rootScope.$on(id, function (evt, value) {
                     dereg();
-                    if(!_opt.chkRefUrl||snippets.md5Obj(value)===_opt.checksum){
+                    if (!_opt.chkRefUrl || snippets.md5Obj(value) === _opt.checksum) {
                         def.resolve(value);
                     } else {
                         def.reject('checksum does not match.')
                     }
                 });
 
-            function getChecksum(){
-                var chkDefer=$q.defer();
-                if(_opt.checksum){
+            function getChecksum() {
+                var chkDefer = $q.defer();
+                if (_opt.checksum) {
                     chkDefer.resolve();
-                } else if(_opt.chkRefUrl){
-                    $firebase.ref(_opt.chkRefUrl).once('value', function(snap){
-                        _opt.checksum=snap.val();
+                } else if (_opt.chkRefUrl) {
+                    $firebase.ref(_opt.chkRefUrl).once('value', function (snap) {
+                        _opt.checksum = snap.val();
                         chkDefer.resolve();
                     })
                 } else {
@@ -118,7 +118,7 @@
                     def.reject(error);
                 }
             }).then(function (res) {
-                if(res===undefined) return;
+                if (res === undefined) return;
                 var url = res.url,
                     meta = res.meta,
                     cachePath = id,
@@ -144,9 +144,29 @@
             var _path = (new FbObj(path)).path;
             syncTime.onReady().then(function (getTime) {
                 var storageRef = storage.ref(),
-                    _value = {path: _path, updated: getTime(), compressed: lzString.compress({value: value})},
-                    dataString = "_getFBS(" + JSON.stringify(_value) + ")",
-                    data = new Blob([dataString], {type: 'text/javascript'});
+                    isCompress = true,
+                    _value = {
+                        path: _path,
+                        updated: getTime()/*,value: value*/,
+                        compressed: lzString.compress({value: value})
+                    },
+                    _valStr = JSON.stringify(_value),
+                    dataString;
+                try {
+                    eval("angular.noop(" + _valStr + ")");
+                }
+                catch (err) {
+                    isCompress = false;
+                }
+                if (!isCompress) {
+                    _valStr = JSON.stringify({
+                        path: _path,
+                        updated: getTime(), value: value
+                    });
+                }
+                dataString = "_getFBS(" + _valStr + ");";
+                var data = new Blob([dataString], {type: 'text/javascript'});
+
                 return storageRef.child(_path + '.js').put(data);
             });
         }

@@ -149,7 +149,7 @@
                         resetData();
                     });
                 });
-            $firebaseStorage.update('products/detail/' + id, detailData)
+            $firebaseStorage.update('products/detail/' + id+'@selectedSite', vm.product);
         };
 
         vm.delete = function (ev, id) {
