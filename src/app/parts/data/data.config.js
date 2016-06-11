@@ -20,15 +20,15 @@
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.i18n', {
-            data: {
-                //toolbarShrink: true,
-                footer: false
-            },
-            url: '/admin/:siteName/i18n',
-            templateUrl: 'app/parts/data/i18n.tmpl.html',
-            // set the controller to load for this page
-            controller: 'I18nController',
-            controllerAs: 'vm'
-        });
+                data: {
+                    //toolbarShrink: true,
+                    footer: false
+                },
+                url: '/admin/:siteName/i18n',
+                templateUrl: 'app/parts/data/i18n.tmpl.html',
+                // set the controller to load for this page
+                controller: 'I18nController',
+                controllerAs: 'vm'
+            });
     }
 })();

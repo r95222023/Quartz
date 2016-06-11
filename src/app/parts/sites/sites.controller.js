@@ -62,7 +62,7 @@
 
         vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['order', 'SITES.SHOWORDER'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, site, ev) {
-            var params = {siteName: site.siteName}
+            var params = {siteName: site.siteName};
             switch (action) {
                 case 'configure':
                     $state.go('quartz.admin-default.site-configure', params);
@@ -171,7 +171,7 @@
     /* @ngInject */
     function PaymentSettingController($firebase, $firebaseStorage, lzString, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this;
-        
+
         function getPaymentConfig(provider) {
             angular.forEach(['public', 'private'], function (pubOrPri) {
                 $firebaseStorage.getWithCache('config/payment/' + provider + '/' + pubOrPri + '@selectedSite').then(function (val) {
@@ -187,11 +187,13 @@
 
 
         vm.updateAllpay = function () {
+            $firebase.update('config/payment/allpay@selectedSite',vm.allpay);
             $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
             $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
         };
 
         vm.updateStripe = function () {
+            $firebase.update('config/payment/stripe@selectedSite',vm.stripe);
             $firebaseStorage.update('config/payment/stripe/public@selectedSite', vm.stripe.public);
             $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
         }

@@ -6,7 +6,7 @@
         .provider('$allpay', allpayProvider);
 
     ////
-    
+
     function allpayProvider() {
         var isStage = true,
             defaultConfig = {};
@@ -62,8 +62,8 @@
             }
 
             var form = angular.extend({}, this.defaultConfig, _opt.paymentParams||{}, {
-                ReturnURL:this.defaultConfig.ReturnURL+'?siteName='+this.getSite(),
-                PaymentInfoURL:this.defaultConfig.PaymentInfoURL+'?siteName='+this.getSite(),
+                ReturnURL:this.defaultConfig.ReturnURL+'?sitename='+this.getSite()+'&uid='+order.clientInfo.uid,
+                PaymentInfoURL:this.defaultConfig.PaymentInfoURL+'?sitename='+this.getSite()+'&uid='+order.clientInfo.uid,
                 MerchantTradeDate: date,
                 TotalAmount: amount
             });

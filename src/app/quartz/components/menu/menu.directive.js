@@ -44,8 +44,8 @@
         if ($scope.admin === '') {
             qtMenuController.menu = qtMenu.menu
         } else {
-            var path = 'lists/' + $scope.listName || 'menu';
-            customData.get(path).then(function (val) {
+            var name = $scope.listName || 'menu';
+            customData.get(name).then(function (val) {
                 if(!val) return;
                 $timeout(function () {
                     qtMenuController.menu = val;

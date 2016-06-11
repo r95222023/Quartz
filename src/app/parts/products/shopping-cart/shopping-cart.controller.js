@@ -8,7 +8,6 @@
     /* @ngInject */
     function ShoppingCartController(getServerTime, $q, ngCart, qtNotificationsService, $state, $mdDialog, config, orderService) {
         var vm = this;
-        vm.order = orderService.order;
         vm.isCartEmpty = function () {
             return ngCart.getTotalItems() !== 0
         };

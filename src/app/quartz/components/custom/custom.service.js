@@ -15,7 +15,7 @@
                 "layout": {
                     "flex": flex,
                     "flex-offset": increment5,
-                    "layout": [null,'row', 'column'],
+                    "layout": [null, 'row', 'column'],
                     "layout-align": {
                         x: [null, 'start', 'center', 'end', 'space-around', 'space-between'],
                         y: [null, 'start', 'center', 'end', 'stretch']
@@ -139,18 +139,18 @@
 
             var res = '';
             if (item.id) {
-                res+='id="'+item.id+'" '
+                res += 'id="' + item.id + '" '
             }
             if (item.layout) {
                 angular.forEach(item.layout, function (layout, breakpoint) {
                     var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
                     angular.forEach(layout, function (value, key) {
-                        if(value===null) return;
+                        if (value === null) return;
                         var _value = '="' + value + '" ',
                             _property = key + _breakpoint;
                         switch (key) {
                             case 'flex':
-                                if(value==='flex') _value = ' ';
+                                if (value === 'flex') _value = ' ';
                                 break;
                             case 'flex-offset':
                                 break;
@@ -205,11 +205,12 @@
             return html;
         }
 
-        function isAttrsConfigurable(html){
-            return html.search('!--custom--')!==-1;
+        function isAttrsConfigurable(html) {
+            return html.search('!--custom--') !== -1;
         }
-        function isTagConfigurable(html){
-            return html.search('!--tag--')!==-1&&html.search('!--endtag--')!==-1;
+
+        function isTagConfigurable(html) {
+            return html.search('!--tag--') !== -1 && html.search('!--endtag--') !== -1;
         }
 
         return {
@@ -219,26 +220,27 @@
             compile: compile,
             getHtmlContent: getHtmlContent,
             getAllTemplates: getAllTemplates,
-            isAttrsConfigurable:isAttrsConfigurable,
-            isTagConfigurable:isTagConfigurable,
+            isAttrsConfigurable: isAttrsConfigurable,
+            isTagConfigurable: isTagConfigurable,
             containers: containers,
             items: items
         }
     }
 
     /* @ngInject */
-    function CustomData($q, $firebase,lzString){
-        
-        function get(path){
+    function CustomData($q, $firebase, $firebaseStorage, lzString) {
+
+        function get(name) {
             var def = $q.defer();
-            $firebase.ref('config/data/'+path+'@selectedSite').once('value', function(snap){
-                var val = lzString.decompress(snap.val());
-                def.resolve(val);
+
+            $firebaseStorage.getWithCache('config/data/lists@selectedSite').then(function(val){
+                def.resolve(val[name]);
             });
             return def.promise;
         }
+
         return {
-            get:get
+            get: get
         }
     }
 })();
