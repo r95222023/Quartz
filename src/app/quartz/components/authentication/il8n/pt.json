@@ -102,9 +102,6 @@
             "PLEASE_ENTER": "Por favor, digite seu endereço de e-mail",
             "PLEASE_VALID": "Por favor introduza um endereço de email válido"
         },
-        "LOCATION": {
-            "LABEL": "localização"
-        },
         "WEBSITE": {
             "LABEL": "site"
         },

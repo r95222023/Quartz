@@ -15,7 +15,6 @@
         };
 
         vm.menuWidth = vm.tags ? 6 : 4;
-
         $firebase.ref("products/config@selectedSite").once("value", function(snap){
             vm.productConfig = snap.val();
         });

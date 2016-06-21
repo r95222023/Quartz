@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.plugins.analytics')
+        .module('app.plugins.analytics');
         // .directive('allpayCheckout', allpayCheckout);
 
     ////

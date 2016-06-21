@@ -17,7 +17,14 @@
         "EDIT": "編輯",
         "DELETE": "刪除",
         "COPY":"複製",
-        "VIEW": "檢視"
+        "VIEW": "檢視",
+        "SEARCH":"搜索",
+        "ID":"編號",
+        "NAME":"名稱",
+        "CATEGORY":"類別",
+        "SUBCATEGORY":"子類別",
+        "QUANTITY":"數量",
+        "PRICE":"價格"
     },
     "ADMIN": {
         "TOOLBAR": {

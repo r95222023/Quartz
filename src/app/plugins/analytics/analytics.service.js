@@ -11,10 +11,10 @@
         var to2dig = snippets.to2dig;
 
         function getKey(time) {
-            var _date = new Date(time),
-                year = to2dig(_date.getFullYear() - 2000),
-                month = to2dig(_date.getMonth() + 1),
-                date = to2dig(_date.getDate()),
+            var _date = time ? new Date(time) : new Date(),
+                year = to2dig(_date.getUTCFullYear() - 2000),
+                month = to2dig(_date.getUTCMonth() + 1),
+                date = to2dig(_date.getUTCDate()),
                 key = year + '' + month + '' + date;
 
             return parseInt(key).toString(36);
@@ -22,18 +22,10 @@
 
         function getData(rootRefUrl, startAt, endAt, opt) {
             var def = $q.defer(),
-                ref = $firebase.ref(rootRefUrl).orderByKey(),
-                _opt = opt || {};
+                ref = $firebase.ref(rootRefUrl).orderByKey();
 
             function resolve(snap) {
                 def.resolve(snap.val());
-            }
-
-            var clearDate = _opt.removeDataInDays? endAt-_opt.removeDataInDays*24*60*60*1000:_opt.removeDataBefore;
-            if (clearDate) {
-                ref.endAt(getKey(clearDate)).once('child_added', function (snap) {
-                    snap.ref.set(null);
-                })
             }
 
             ref = ref.startAt(getKey(startAt));

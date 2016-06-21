@@ -6,10 +6,9 @@
         .controller('SignupController', SignupController);
 
     /* @ngInject */
-    function SignupController($state, $mdToast, $filter, qtSettings, $auth, indexService) {
+    function SignupController($previousState, $mdToast, $filter, qtSettings, $auth, indexService) {
         var vm = this;
         vm.qtSettings = qtSettings;
-
         ////////////////
 
         vm.createAccount = function () {
@@ -71,7 +70,7 @@
                     .highlightAction(true)
                     .hideDelay(0)
             ).then(function () {
-                $state.go(config.home);
+                $previousState.go();
             });
         }
 

@@ -113,10 +113,12 @@
         var vm = this;
 
         $scope.$mdSidenav = $mdSidenav;
+        $scope.$get = $firebaseStorage.$get;
+
         vm.scope = $scope;
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-        vm.originalPageName = $stateParams.pageName+'';
+        vm.originalPageName = $stateParams.pageName + '';
 
         var widgetSource = angular.extend({}, customWidgets, customService.items),
             containerSource = customService.containers,
@@ -210,7 +212,10 @@
             pageCachePath = 'page' + pageName + '@selectedSite';
 
 
+
         $scope.$mdSidenav = $mdSidenav;
+        $scope.$get = $firebaseStorage.$get;
+
         angular.extend(customPage, $stateParams);
         customPage.settingsGroups = qtSettings.custom;
 
@@ -543,7 +548,7 @@
                     "css": css || '',
                     "content": content
                 });
-                if(vm.originalPageName&&vm.originalPageName!==vm.pageName){
+                if (vm.originalPageName && vm.originalPageName !== vm.pageName) {
                     $firebaseStorage.ref('pages/detail/' + vm.originalPageName + '@selectedSite').remove();
                 }
 

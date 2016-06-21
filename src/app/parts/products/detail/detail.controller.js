@@ -28,9 +28,7 @@
 
         function setModelData(data) {
             console.log(data);
-            $timeout(function () {
-                vm.product = data;
-            }, 0)
+            vm.product = data;
         }
 
         vm.disqusId = vm.siteName + vm.id;

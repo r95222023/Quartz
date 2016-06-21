@@ -105,6 +105,18 @@
             vm.optional.optValue = '';
         };
 
+        vm.addCustom = function () {
+            if (!vm.product.custom) vm.product.custom = {};
+            vm.product.custom[vm.customKey] = vm.customValue;
+            vm.customKey = '';
+            vm.customValue = '';
+        };
+        vm.removeCustom = function (optName) {
+            delete vm.product.custom[optName];
+            vm.customKey = '';
+            vm.customValue = '';
+        };
+
         vm.update = function () {
             if (angular.isObject(vm.optional.options)) {
                 vm.product.options = {};
@@ -126,7 +138,7 @@
             }
             var id = vm.product.itemId || (new Date()).getTime();
 
-            var listData = angular.extend({}, vm.product, {description: null}),
+            var listData = angular.extend({}, vm.product, {description: null, custom: null}),
                 detailData = {
                     compressed: lzString.compress(vm.product),
                     editTime: firebase.database.ServerValue.TIMESTAMP
@@ -149,7 +161,7 @@
                         resetData();
                     });
                 });
-            $firebaseStorage.update('products/detail/' + id+'@selectedSite', vm.product);
+            $firebaseStorage.update('products/detail/' + id + '@selectedSite', vm.product);
         };
 
         vm.delete = function (ev, id) {
@@ -185,7 +197,6 @@
             if (id) {
                 $firebase.ref('products/detail@selectedSite').child(id).once('value', function (snap) {
                     var val = lzString.decompress(snap.val());
-
                     vm.product = val;
                     if (angular.isString(val.group)) {
                         var groups = snap.val().group.split('->');
@@ -204,6 +215,7 @@
                             vm.optional.options[name] = optArr.toString();
                         });
                     }
+
                     if (angular.isObject(val.tags)) {
                         var tags = [];
                         angular.forEach(val.tags, function (item, name) {

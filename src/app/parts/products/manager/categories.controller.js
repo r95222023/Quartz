@@ -6,7 +6,7 @@
         .controller('CateManagerController', CateManagerController);
 
     /* @ngInject */
-    function CateManagerController($mdToast, $mdDialog, $firebase, indexService, snippets, $stateParams, $state, $mdMedia) {
+    function CateManagerController($mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia) {
         var vm = this;
 
         vm.getFiltered = function () {
@@ -20,16 +20,23 @@
 
         ////categories
 
-        var productConfigRef = $firebase.ref('products/config@selectedSite');
+        // var productConfigRef = $firebase.ref('products/config@selectedSite');
         vm.getCateTag = function () {
-            productConfigRef.on('value', function (snap) {
-                if (snap.val() === null) return;
-                vm.productConfig = snap.val();
-                vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
-                vm.tags = snippets.getFirebaseArrayData(snap.val().tags || []).toString();
+            // productConfigRef.on('value', function (snap) {
+            //     if (snap.val() === null) return;
+            //     vm.productConfig = snap.val();
+            //     vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
+            //     vm.tags = snippets.getFirebaseArrayData(snap.val().tags || []).toString();
+            // });
+            $firebaseStorage.getWithCache('products/config/categories@selectedSite').then(function (val) {
+                console.log(val);
+                vm.categories = val;
             });
-        };
-        vm.getCateTag();
+            $firebaseStorage.getWithCache('products/config/tags@selectedSite').then(function (val) {
+                vm.tags = (val || []).toString();
+            });
+
+        };vm.getCateTag();
 
         vm.addCate = function () {
             vm.categories.push(['Category Name', []])
@@ -42,15 +49,6 @@
                 vm.categories.splice(ithCate, 1);
             }
         };
-        vm.saveCateTag = function () {
-            var data = {
-                categories: vm.categories,
-                tags: vm.tags ? vm.tags.split(',') : null
-            };
-            productConfigRef.update(data, function () {
-                vm.cateEdit = !vm.cateEdit;
-            });
-        };
 
         vm.addItem = function (index, value) {
             if (value) {
@@ -59,6 +57,19 @@
                 vm.tempItem = {};
             }
         };
+        
+        vm.saveCateTag = function () {
+            // var data = {
+            //     categories: vm.categories,
+            //     tags: vm.tags ? vm.tags.split(',') : null
+            // };
 
+            if(vm.categories) $firebaseStorage.update('products/config/categories@selectedSite', vm.categories);
+            if(vm.tags) $firebaseStorage.update('products/config/tags@selectedSite', vm.tags.split(','));
+            //
+            // productConfigRef.update(data, function () {
+            //     vm.cateEdit = !vm.cateEdit;
+            // });
+        };
     }
 })();

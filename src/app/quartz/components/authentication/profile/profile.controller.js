@@ -6,26 +6,37 @@
         .controller('ProfileController', ProfileController);
 
     /* @ngInject */
-    function ProfileController($rootScope, userData, $auth, $firebase, $mdToast, qtSettings, $stateParams) {
+    function ProfileController($rootScope, userData, $auth, $firebase, $firebaseStorage, $mdToast, qtSettings, $stateParams) {
         console.log(userData);
 
-        var vm = this;
+        var vm = this,
+            siteUserRefUrl = 'users/detail/' + userData.uid + '@selectedSite',
+            originalEmail = userData.email;
         vm.settingsGroups = qtSettings.custom;
 
 
         //user profile.
-        vm.name = userData.name || userData.providerData[0].displayName;
+        vm.name = userData.displayName||userData.providerData[0].displayName;
         vm.photoURL = userData.photoURL || userData.providerData[0].photoURL;
-        vm.userInfo = {test:'test'};
+        vm.email = userData.email;
+        $firebaseStorage.getWithCache(siteUserRefUrl).then(function(val){
+            vm.userInfo = val;
+        });
 
 
         vm.updateProfile = function () {
             var userUrl = 'users/detail/' + userData.uid;
 
             userData.updateProfile({displayName: vm.name, photoURL: vm.photoURL}).then(function () {
-                if ($stateParams.siteName) $firebase.update(userUrl + '/sitesVisited/' + $stateParams.siteName + '/info', vm.userInfo)
-                    .then(success, error);
+                // if ($stateParams.siteName) $firebase.update(userUrl + '/sitesVisited/' + $stateParams.siteName + '/info', vm.userInfo)
+                //     .then(success, error);
             });
+            if(originalEmail!==vm.email) {
+                userData.updateEmail(vm.email);
+            }
+            if (angular.isObject(vm.userInfo)) {
+                $firebaseStorage.update(siteUserRefUrl, vm.userInfo);
+            }
             function success() {
                 // indexService.update("users", userData.uid, userData, "main"); //TODO: 檢查是否有main以外更好的index
                 $mdToast.show(

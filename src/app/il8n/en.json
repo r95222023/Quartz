@@ -5,7 +5,14 @@
         "EDIT": "Edit",
         "DELETE": "Delete",
         "COPY":"Copy",
-        "VIEW": "View"
+        "VIEW": "View",
+        "SEARCH":"Search",
+        "ID":"Id",
+        "NAME":"Name",
+        "CATEGORY":"Category",
+        "SUBCATEGORY":"Subcategory",
+        "QUANTITY":"Quantity",
+        "PRICE":"Price"
     },
     "ADMIN": {
         "TOOLBAR": {

@@ -103,9 +103,6 @@
             "PLEASE_ENTER": "Please enter your email address",
             "PLEASE_VALID": "Please enter a valid email address"
         },
-        "LOCATION": {
-            "LABEL": "location"
-        },
         "WEBSITE": {
             "LABEL": "website"
         },

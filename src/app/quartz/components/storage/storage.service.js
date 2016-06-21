@@ -20,36 +20,16 @@
                 storage: app.database()
             }
         };
-        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, snippets, syncTime) {
-            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime)
+        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout) {
+            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout)
         }
     }
 
     /* @ngInject */
-    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime) {
-        // function get(path) {
-        //     var def = $q.defer(),
-        //         dereg = $rootScope.$on('FBS:' + path, function (evt, data) {
-        //             dereg();
-        //             def.resolve(data);
-        //         });
-        //
-        //     firebase.storage().ref(path + '.js').getMetadata().then(function (metadata) {
-        //         console.log(metadata)
-        //     });
-        //     firebase.storage().ref(path + '.js').getDownloadURL()
-        //         .then(function (url) {
-        //             var script = document.createElement('script');
-        //             script.type = "text/javascript";
-        //             script.src = url;
-        //
-        //             angular.element('head').append(script);
-        //         });
-        //     return def.promise;
-        // }
+    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout) {
         var storage = storageFbApp.storage;
         var $firebaseStorage = {
-            // get: get,
+            $get: $get,
             getWithCache: getWithCache,
             update: update,
             remove: remove,
@@ -86,11 +66,16 @@
                 dereg = $rootScope.$on(id, function (evt, value) {
                     dereg();
                     if (!_opt.chkRefUrl || snippets.md5Obj(value) === _opt.checksum) {
-                        def.resolve(value);
+                        resolve(value);
                     } else {
                         def.reject('checksum does not match.')
                     }
                 });
+            function resolve(res){
+                $timeout(function(){
+                    def.resolve(res);
+                },0)
+            }
 
             function getChecksum() {
                 var chkDefer = $q.defer();
@@ -113,7 +98,7 @@
             }, 10000);
             promise.catch(function (error) {
                 if (error.code === 'storage/object-not-found') {
-                    def.resolve(null);
+                    resolve(null);
                 } else {
                     def.reject(error);
                 }
@@ -127,7 +112,7 @@
                     var cached = localStorage.getItem(cachePath),
                         cachedVal = lzString.decompress({compressed: cached});
                     if (updated < cachedVal.cachedTime) {
-                        def.resolve(cachedVal.value);
+                        resolve(cachedVal.value);
                         console.log('from cache');
                         dereg(); //prevent memory leak
                     } else {
@@ -182,6 +167,25 @@
             script.src = url;
             if (id) script.id = id;
             angular.element('head').append(script);
+        }
+
+        var temp = {};
+
+        function $get(path, process, reload) {
+            temp[path] = temp[path] || {};
+            if (reload) temp[path] = {};
+            if (temp[path].load === 'loaded') {
+                return temp[path].val;
+            } else if (temp[path].load === 'loading') {
+                return;
+            }
+            temp[path].load = 'loading';
+            getWithCache(path + '@selectedSite').then(function (val) {
+                temp[path] = {
+                    val: angular.isFunction(process) ? process(val) : val,
+                    load: 'loaded'
+                };
+            });
         }
 
         window._getFBS = function (data) {
