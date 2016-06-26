@@ -2,15 +2,14 @@
     'use strict';
 
     angular
-        .module('quartz.plugins.articleproduct', [])
+        .module('app.plugins.articleproduct', [])
         .service('articleProduct', ArticleProduct);
-
     /* @ngInject */
     function ArticleProduct(lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
         function getQueryData(mustArr, mustNotArr, query) {
             var queryData = {
-                cache:true,
-                reuse:200,
+                cache: true,
+                reuse: 200,
                 body: {
                     query: {
                         "filtered": {
@@ -29,27 +28,26 @@
         }
 
         var temp = {};
-
         function queryList(type, params, sort) {
 
             var _params = params || $stateParams,
-                cate = _params.cate||'',
-                subCate = _params.subCate||'',
-                queryString = _params.queryString||'',
+                cate = _params.cate || '',
+                subCate = _params.subCate || '',
+                queryString = _params.queryString || '',
                 query,
                 mustArr = [],
                 mustNotArr = [{"term": {"show": false}}],
-                id = 't-'+type+'c-' + cate + 's-' + subCate + 'q-' + queryString;
+                id = 't-' + type + 'c-' + cate + 's-' + subCate + 'q-' + queryString;
 
             //
             temp[id] = temp[id] || {};
-            if (sort) temp[id] = {};
-            if (temp[id].paginator.result.hits) {
-                temp[id].load = 'loaded';
-                return temp[id].paginator.result;
+
+            if (temp[id].load === 'loaded') {
+                return temp[id].paginator;
             } else if (temp[id].load === 'loading') {
                 return;
             }
+
             temp[id].load = 'loading';
             ////
 
@@ -65,46 +63,63 @@
 
             if (angular.isString(queryString) && queryString.trim() !== '') {
                 query = {
-                    "fields": ["itemName", "description", "name"],
+                    "fields": type === 'article' ? ["title", "description"] : ["itemName", "description"],
                     "query": queryString,
                     "use_dis_max": true
                 };
             }
             temp[id].paginator = $elasticSearch.paginator($stateParams.siteName || 'main', type, getQueryData(mustArr, mustNotArr, query));
-            temp[id].paginator.result.onReorder = temp[id].paginator.onReorder;
             temp[id].paginator.onReorder(sort);
+            temp[id].paginator.promise.then(function () {
+                temp[id].load = 'loaded';
+            })
         }
+        this.queryList=queryList;
 
-        this.cateCtr = function (vm, type) {
+        //// categories and tags
+        var cateTagTemp = {article: {}, product: {}};
+        function getCate(type) {
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite',
                 tagRefPath = _type + 's/config/tags@selectedSite';
+            if(cateTagTemp[_type].load==='loaded') {
+                return cateTagTemp
+            } else if(cateTagTemp[_type].load==='loading') {
+                return
+            }
+            cateTagTemp[_type].load='loading';
+            $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
+                cateTagTemp[_type].categories = val || [];
+                cateTagTemp[_type].load = 'loaded';
+            });
+        }
 
-            ////categories
+        function getCateCrumbs(type, categories, cate, subCate, tag) {
+            var _cate = parseInt(cate || $stateParams.cate),
+                _subCate = parseInt(subCate || $stateParams.subCate),
+                _categories = categories || cateTagTemp[type].categories || [];
+            if (tag || $stateParams.tag) return tag || $stateParams.tag;
+            if (_cate % 1 === 0) {
+                return _categories[_cate][0] + (_subCate % 1 === 0 ? '/' + _categories[_cate][1][_subCate] : '');
+            } else {
+                return 'GENERAL.ALLCATE';
+            }
+        }
+        this.getCate=getCate;
+        this.getCateCrumbs=getCateCrumbs;
 
-            vm.getCateTag = function () {
-                $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
-                    console.log(val);
-                    vm.categories = val;
-                });
-                $firebaseStorage.getWithCache(tagRefPath).then(function (val) {
-                    vm.tags = (val || []).toString();
-                });
+        this.cateCtr = function (vm, type) {
+            var _type = type || 'product',
+                cateRefPath = _type + 's/config/categories@selectedSite';
 
-            };
+            vm.categories = cateTagTemp[_type].categories;
+            vm.tags = cateTagTemp[_type].tags;
 
             vm.cateCrumb = function (categories, cate, subCate, tag) {
-                var _cate = parseInt(cate || $stateParams.cate),
-                    _subCate = parseInt(subCate || $stateParams.subCate);
-                if (tag || $stateParams.tag) return tag || $stateParams.tag;
-                if (_cate % 1 === 0) {
-                    return categories[_cate][0] + (_subCate % 1 === 0 ? '/' + categories[_cate][1][_subCate] : '');
-                } else {
-                    return 'GENERAL.ALLCATE';
-                }
+                return getCateCrumbs(_type, categories, cate, subCate, tag);
             };
 
-            vm.getCateTag();
+            getCate(type);
 
             vm.addCate = function () {
                 vm.categories.push(['Category Name', []])
@@ -128,7 +143,6 @@
 
             vm.saveCateTag = function () {
                 if (vm.categories) $firebaseStorage.update(cateRefPath, vm.categories);
-                if (vm.tags) $firebaseStorage.update(tagRefPath, vm.tags.split(','));
             };
         };
         this.managerCtr = function (vm, type) {
@@ -239,14 +253,13 @@
                         vm[type].tags[tag] = 1;
                     })
                 }
-                var id = vm[type].id || vm[type].itemId || (new Date()).getTime();
+                var id = vm[type].id || vm[type].itemId;
 
                 var listData = angular.extend({}, vm[type], {description: null, custom: null}),
                     detailData = {
                         compressed: lzString.compress(vm[type]),
                         editTime: firebase.database.ServerValue.TIMESTAMP
                     };
-
                 $firebase.update(type + "s@selectedSite", ['list/' + id, 'detail/' + id], {
                     '@0': listData,
                     '@1': detailData
@@ -329,6 +342,8 @@
                             vm.optional.tags = tags.toString();
                         }
                     });
+                } else {
+                    vm[type].id = type + ':' + (new Date()).getTime()
                 }
                 var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
                 $mdDialog.show({
@@ -356,8 +371,10 @@
             vm.menuWidth = vm.tags ? 6 : 4;
 
             vm.queryList = function (params, sort) {
-                return queryList(type, params, type==='article'? 'id':'itemId');
+                return queryList(type, params, sort || (type === 'article' ? 'id' : 'itemId'));
             };
+            vm.queryList();
+
 
             vm.go = function (queryString, cate, subCate, tag, pageName) {
                 $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.productList', {
@@ -370,7 +387,7 @@
             };
 
             vm.showDetail = function (id, pageName) {
-                $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.'+type+'Detail', {
+                $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.' + type + 'Detail', {
                     id: id,
                     pageName: pageName
                 });

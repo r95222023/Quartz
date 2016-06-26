@@ -71,7 +71,7 @@
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.customPage', {
-                url: '/:siteName/:pageName/?id&params1&params2&cate&subCate&queryString&tag&devMode',
+                url: '/:siteName/:pageName/?id&params&params2&cate&subCate&queryString&tag&devMode',
                 resolve: {
                     getAllTemplates: ['customService', function (customService) {
                         return customService.getAllTemplates(templateList, tmplRoot)

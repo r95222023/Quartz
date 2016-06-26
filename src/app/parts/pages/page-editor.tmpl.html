@@ -246,12 +246,12 @@
         <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
     </md-toolbar>
     <md-tabs md-selected="vm.selectedSideEditorTab" md-dynamic-height md-border-bottom>
-        <md-tab label="Options" ng-disabled="vm.item.content&&!vm.isAttrsConfigurable(vm.item.content)">
+        <md-tab label="Options">
             <div class="padding-30 md-tabs-content">
                 <form>
                     <md-input-container>
                         <label>Tag</label>
-                        <input type="text" ng-model="vm.item.tag" ng-disabled="vm.item.content&&!vm.isTagConfigurable(vm.item.content)">
+                        <input type="text" ng-model="vm.item.tag">
                     </md-input-container>
                     <md-input-container>
                         <label>Id</label>
@@ -274,7 +274,7 @@
             </div>
         </md-tab>
 
-        <md-tab label="Layout" ng-disabled="vm.item.content&&!vm.isAttrsConfigurable(vm.item.content)">
+        <md-tab label="Layout">
             <div class="padding-40 md-tabs-content">
                 <form layout="column">
                     <md-input-container ng-init="vm.layoutBreakpoint='all'">

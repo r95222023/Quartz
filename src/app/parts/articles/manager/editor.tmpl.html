@@ -1,4 +1,4 @@
-<md-dialog aria-label="Product Editor" ng-cloak flex="60" style="max-height: 80%">
+<md-dialog aria-label="Article Editor" ng-cloak flex="60" style="max-height: 80%">
     <form ng-submit="vm.update()">
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -15,37 +15,31 @@
                 <div layout="row">
                     <md-input-container flex="50">
                         <label>ID</label>
-                        <input type='text' ng-model="vm.product.itemId" ng-change="vm.merchantChange()">
+                        <input type='text' ng-model="vm.article.id">
                     </md-input-container>
                     <md-input-container flex="50">
-                        <label>Name</label>
-                        <input type='text' ng-model="vm.product.itemName">
+                        <label>Title</label>
+                        <input type='text' ng-model="vm.article.title">
                     </md-input-container>
                 </div>
                 <div layout="row">
                     <md-input-container flex>
                         <label>Image</label>
-                        <input type='text' ng-model="vm.product.image">
-                    </md-input-container>
-                </div>
-                <div layout="row">
-                    <md-input-container flex="33">
-                        <label>Price</label>
-                        <input type='number' ng-model="vm.product.price">
+                        <input type='text' ng-model="vm.article.image">
                     </md-input-container>
                 </div>
                 <div layout="row">
                     <md-input-container flex="50">
                         <label>Category</label>
-                        <md-select ng-model="vm.product.category">
+                        <md-select ng-model="vm.article.category">
                             <md-option ng-value="$index" ng-repeat="cate in vm.categories">{{ cate[0] }}</md-option>
                         </md-select>
                     </md-input-container>
-                    <md-input-container flex="50" ng-if="vm.product.category||vm.product.category===0">
+                    <md-input-container flex="50" ng-if="vm.article.category||vm.article.category===0">
                         <label>Subcategory</label>
-                        <md-select ng-model="vm.product.subcategory">
+                        <md-select ng-model="vm.article.subcategory">
                             <md-option ng-value="null">Empty</md-option>
-                            <md-option ng-value="$index" ng-repeat="subcate in vm.categories[vm.product.category][1]">{{subcate}}
+                            <md-option ng-value="$index" ng-repeat="subcate in vm.categories[vm.article.category][1]">{{subcate}}
                             </md-option>
                         </md-select>
                     </md-input-container>
@@ -53,42 +47,11 @@
                 <div layout="row">
                     <md-input-container flex>
                         <label>Description</label>
-                        <textarea ng-model="vm.product.description" columns="1" md-maxlength="1000" rows="5"></textarea>
+                        <textarea ng-model="vm.article.description" columns="1" md-maxlength="1000" rows="5"></textarea>
                     </md-input-container>
                 </div>
                 <legend><h3>Optional</h3></legend>
 
-                <div layout="row">
-                    <md-input-container flex="33">
-                        <label>List Price</label>
-                        <input type='number' ng-model="vm.product.listPrice">
-                    </md-input-container>
-                    <md-input-container flex="33">
-                        <label>Quantity</label>
-                        <input type='number' ng-model="vm.product.quantity">
-                    </md-input-container>
-                </div>
-                <div layout="row">
-                    <md-input-container flex="33">
-                        <label>Status</label>
-                        <input type='text' ng-model="vm.product.status">
-                    </md-input-container>
-                    <div flex="33">
-                        <md-checkbox ng-model="vm.product.available"
-                                     ng-true-value="false"
-                                     ng-false-value="null">
-                            Not Available
-                        </md-checkbox>
-                    </div>
-                    <div flex="33">
-                        <md-checkbox ng-model="vm.product.show"
-                                     ng-true-value="false"
-                                     ng-false-value="null">
-                            Hide
-                        </md-checkbox>
-                    </div>
-
-                </div>
                 <div layout="row">
                     <md-input-container flex="50">
                         <label>Tags</label>
@@ -123,10 +86,10 @@
                 </div>
                 <legend><h3>Custom</h3></legend>
                 <div layout="row">
-                    <div flex="40" ng-repeat="(customKey, customVal) in vm.product.custom">
+                    <div flex="40" ng-repeat="(customKey, customVal) in vm.article.custom">
                         <md-input-container>
                             <label>{{customKey}}</label>
-                            <input type='text' ng-model="vm.product.custom[customKey]">
+                            <input type='text' ng-model="vm.article.custom[customKey]">
                         </md-input-container>
                         <md-button class="md-icon-button" aria-label="language" ng-click="vm.removeCustom(customKey)"
                                    aria-label="remove this option">

@@ -171,9 +171,9 @@
 
         var temp = {};
 
-        function $get(path, process, reload) {
+        function $get(path, process) {
             temp[path] = temp[path] || {};
-            if (reload) temp[path] = {};
+
             if (temp[path].load === 'loaded') {
                 return temp[path].val;
             } else if (temp[path].load === 'loading') {

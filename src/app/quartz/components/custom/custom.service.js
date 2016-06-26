@@ -24,7 +24,7 @@
             };
 
         var items = [
-                {type: 'custom', content: '<!--tag-- !--custom--><!--include--><!--endtag-->'}
+                {type: 'custom', content: '<!--include-->'}
             ],
             containers = [
                 {
@@ -47,12 +47,12 @@
                 },
                 {
                     type: 'custom',
-                    content: '<!--tag-- !--custom--><!--include--><!--endtag-->'
+                    content: '<!--include-->'
                 }
             ];
         var templates = {
-            "row": "<!--tag-- !--custom--><!--include--><!--endtag-->",
-            "column": "<!--tag-- !--custom--><!--include--><!--endtag-->"
+            "row": "<!--include-->",
+            "column": "<!--include-->"
         };
 
 
@@ -125,7 +125,8 @@
         function getHtmlContent(item) {
             item = item || {};
             var content,
-                tag = item.tag || 'div';
+                tag = item.tag || 'div',
+                singleton = false;
 
             if (item.type === 'customWidget') {
                 content = compile(item.content);
@@ -179,9 +180,11 @@
                 res += ' ' + item.attrs;
             }
 
-            content = content.replace('!--custom--', res);
-            content = content.replace('!--tag--', tag);
-            content = content.replace('!--endtag--', '/' + tag);
+            if(tag.search('/')!==-1) singleton = true;
+            content = "<--tag-- --custom-->"+(singleton? "":content+"<--endtag-->");
+            content = content.replace('--custom--', res);
+            content = content.replace('--tag--', tag);
+            content = content.replace('--endtag--', '/' + tag);
 
             return content
         }

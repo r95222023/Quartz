@@ -21,7 +21,7 @@
         ////categories
 
         // var productConfigRef = $firebase.ref('products/config@selectedSite');
-        vm.getCateTag = function () {
+        vm.getCate = function () {
             // productConfigRef.on('value', function (snap) {
             //     if (snap.val() === null) return;
             //     vm.productConfig = snap.val();
@@ -32,11 +32,8 @@
                 console.log(val);
                 vm.categories = val;
             });
-            $firebaseStorage.getWithCache('products/config/tags@selectedSite').then(function (val) {
-                vm.tags = (val || []).toString();
-            });
 
-        };vm.getCateTag();
+        };vm.getCate();
 
         vm.addCate = function () {
             vm.categories.push(['Category Name', []])
@@ -58,18 +55,8 @@
             }
         };
         
-        vm.saveCateTag = function () {
-            // var data = {
-            //     categories: vm.categories,
-            //     tags: vm.tags ? vm.tags.split(',') : null
-            // };
-
+        vm.saveCate = function () {
             if(vm.categories) $firebaseStorage.update('products/config/categories@selectedSite', vm.categories);
-            if(vm.tags) $firebaseStorage.update('products/config/tags@selectedSite', vm.tags.split(','));
-            //
-            // productConfigRef.update(data, function () {
-            //     vm.cateEdit = !vm.cateEdit;
-            // });
         };
     }
 })();

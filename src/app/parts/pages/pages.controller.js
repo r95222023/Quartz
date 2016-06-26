@@ -109,11 +109,14 @@
     }
 
     /* @ngInject */
-    function PageEditorController(lzString, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
+    function PageEditorController(lzString, articleProduct, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
 
         $scope.$mdSidenav = $mdSidenav;
         $scope.$get = $firebaseStorage.$get;
+        $scope.$queryList = articleProduct.queryList;
+        $scope.$getCate = articleProduct.getCate;
+        $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
 
         vm.scope = $scope;
 
@@ -203,7 +206,7 @@
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
+    function CustomPageController(lzString, articleProduct, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
         var customPage = this,
             pageName = $stateParams.pageName,
             isIndex = !pageName || pageName === "index",
@@ -212,10 +215,12 @@
             pageCachePath = 'page' + pageName + '@selectedSite';
 
 
-
         $scope.$mdSidenav = $mdSidenav;
         $scope.$get = $firebaseStorage.$get;
-
+        $scope.$queryList = articleProduct.queryList;
+        $scope.$getCate = articleProduct.getCate;
+        $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
+        
         angular.extend(customPage, $stateParams);
         customPage.settingsGroups = qtSettings.custom;
 
@@ -225,36 +230,6 @@
         $firebaseStorage.getWithCache('pages/detail/' + pageName + '@selectedSite').then(function (res) {
             setModelData(res, res.cssKey);
         });
-
-        //var editTimeRef = $firebase.ref(pageListRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1);
-        // $firebase.cache(pageCachePath, editTimeRef, null, {
-        //     isValue: false,
-        //     fetchFn: getData
-        // }).then(function (cachedVal) {
-        //     setModelData(cachedVal, cachedVal.cssKey);
-        // });
-        //
-        // function getData() {
-        //     $firebase.ref(pageDetailRefUrl).orderByChild(orderBy).equalTo(equalTo).limitToFirst(1).once('value', function (parentSnap) {
-        //         if (parentSnap.val() === null) {
-        //             $state.go('404');
-        //             return true;
-        //         }
-        //
-        //         parentSnap.forEach(function (snap) {
-        //             var val = lzString.decompress(snap.val());
-        //             if (localStorage) {
-        //                 val.cachedTime = getSyncTime();
-        //                 val.cssKey = snap.key;
-        //                 localStorage.setItem(pageCachePath, lzString.compress(val));
-        //             }
-        //             setModelData(val, snap.key);
-        //         });
-        //     }, function (err) {
-        //         $state.go('404');
-        //         return true;
-        //     });
-        // }
 
         function setModelData(val, key) {
             $timeout(function () {

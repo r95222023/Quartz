@@ -7,8 +7,8 @@
 
     /* @ngInject */
     function articlesConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
-        $translatePartialLoaderProvider.addPart('app/parts/articles');
 
+        $translatePartialLoaderProvider.addPart('app/parts/articles');
         $stateProvider
             .state('quartz.admin-default.articleList', {
                 url: '/:siteName/articles/list/?&cate&subCate&queryString&tag',
@@ -30,7 +30,7 @@
                 controller: 'ArticleManagerController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.categoryManager', {
+            .state('quartz.admin-default.articleCategoryManager', {
                 url: '/admin/:siteName/articles/manager/?orderBy&startAt&endAt&equalTo',
                 templateUrl: 'app/parts/articles/manager/categories.tmpl.html',
                 controller: 'ArticleCateManagerController',

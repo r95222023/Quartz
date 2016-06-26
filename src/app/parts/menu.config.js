@@ -102,6 +102,25 @@
         });
 
         qtMenuProvider.addMenuToGroup("siteSelected", {
+            name: 'MENU.ARTICLESANDCATEGORIES',
+            icon: 'fa fa-barcode',
+            type: 'dropdown',
+            priority: 1.2,
+            children: [
+                {
+                    name: 'MENU.PANDC.ARTICLES',
+                    state: 'quartz.admin-default.articleManager',
+                    type: 'link'
+                },
+                {
+                    name: 'MENU.PANDC.ARTICLECATE',
+                    state: 'quartz.admin-default.articleCategoryManager',
+                    type: 'link'
+                }
+            ]
+        });
+
+        qtMenuProvider.addMenuToGroup("siteSelected", {
             name: 'MENU.DATANAME',
             icon: 'fa fa-database',
             type: 'dropdown',
@@ -152,6 +171,11 @@
             type: 'dropdown',
             priority: 1.2,
             children: [{
+                name: 'MENU.ARTICLES.LIST',
+                state: 'quartz.admin-default.articleList',
+                params: {cate: 'all',subCate:'all',queryString:''},
+                type: 'link'
+            },{
                 name: 'MENU.PRODUCTS.LIST',
                 state: 'quartz.admin-default.productList',
                 params: {cate: 'all',subCate:'all',queryString:''},

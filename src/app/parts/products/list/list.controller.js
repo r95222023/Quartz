@@ -6,7 +6,7 @@
         .controller('ProductListController', ProductListController);
 
     /* @ngInject */
-    function ProductListController($elasticSearch, $stateParams, $rootScope, $firebase, qtNotificationsService, $state, $mdDialog, config) {
+    function ProductListController($filter,$elasticSearch, $stateParams, $rootScope, $firebase, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
 
         vm.query = {
@@ -15,26 +15,27 @@
         };
 
         vm.menuWidth = vm.tags ? 6 : 4;
-        $firebase.ref("products/config@selectedSite").once("value", function(snap){
+        $firebase.ref("products/config@selectedSite").once("value", function (snap) {
             vm.productConfig = snap.val();
         });
         vm.categories = function () {
+            if(!vm.productConfig&&!vm.productConfig.categories) return;
             var cate = parseInt($stateParams.cate),
                 subCate = parseInt($stateParams.subCate),
                 categories = vm.productConfig.categories;
             if ($stateParams.tag) return $stateParams.tag;
             if (cate % 1 === 0) {
-                return categories[cate][0] + (subCate % 1 === 0 ? '/' + categories[cate][1][subCate] : '');
+                return categories[cate][0] + (subCate % 1 === 0 ? '>' + categories[cate][1][subCate] : '');
             } else {
-                return 'GENERAL.ALLCATE';
+                return $filter('translate')('GENERAL.ALLCATE');
             }
         };
 
-        vm.getProductsByTag=function(tagName, limit){
+        vm.getProductsByTag = function (tagName, limit) {
             $firebase.ref('products/list@selectedSite')
-                .orderByChild('tags/'+tagName).equalTo(1).limitToFirst(limit||5)
-                .once('value' ,function(snap){
-                    vm[tagName]=snap.val();
+                .orderByChild('tags/' + tagName).equalTo(1).limitToFirst(limit || 5)
+                .once('value', function (snap) {
+                    vm[tagName] = snap.val();
                 })
         };
 
@@ -42,12 +43,12 @@
         vm.queryString = $stateParams.queryString;
         vm.tag = $stateParams.tag;
         vm.go = function (queryString, cate, subCate, tag, pageName) {
-            $state.go(pageName? 'quartz.admin-default.customPage':'quartz.admin-default.productList', {
+            $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.productList', {
                 queryString: queryString || vm.queryString,
-                cate: cate+'' || $stateParams.cate,
-                subCate: subCate+'' || $stateParams.subCate,
+                cate: cate + '' || $stateParams.cate,
+                subCate: subCate + '' || $stateParams.subCate,
                 tag: tag,
-                pageName:pageName
+                pageName: pageName
             })
         };
         vm.search = function (go) {
@@ -96,13 +97,16 @@
         vm.search(); //for query from url
 
 
-        vm.paginator = $elasticSearch.paginator($stateParams.siteName||'main', 'products', vm.query);
+        vm.paginator = $elasticSearch.paginator($stateParams.siteName || 'main', 'products', vm.query);
         //initiate
         vm.paginator.onReorder('itemId');
 
 
         vm.showDetail = function (itemId, pageName) {
-            $state.go(pageName? 'quartz.admin-default.customPage':'quartz.admin-default.productDetail', {id: itemId, pageName:pageName})
+            $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.productDetail', {
+                id: itemId,
+                pageName: pageName
+            })
         }
     }
 })();

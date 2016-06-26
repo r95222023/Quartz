@@ -8,7 +8,6 @@
     /* @ngInject */
     function productsConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
         $translatePartialLoaderProvider.addPart('app/parts/products');
-
         $stateProvider
             .state('quartz.admin-default.productList', {
                 url: '/:siteName/prodcuts/list/?&cate&subCate&queryString&tag',
