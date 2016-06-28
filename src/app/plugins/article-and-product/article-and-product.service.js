@@ -30,7 +30,7 @@
         var temp = {};
         function queryList(type, params, sort) {
 
-            var _params = params || $stateParams,
+            var _params = params || JSON.parse($stateParams.params||'{}')[type],
                 cate = _params.cate || '',
                 subCate = _params.subCate || '',
                 queryString = _params.queryString || '',
@@ -77,43 +77,52 @@
         this.queryList=queryList;
 
         //// categories and tags
-        var cateTagTemp = {article: {}, product: {}};
+        var cateTemp = {article: {}, product: {}};
         function getCate(type) {
             var _type = type || 'product',
-                cateRefPath = _type + 's/config/categories@selectedSite',
-                tagRefPath = _type + 's/config/tags@selectedSite';
-            if(cateTagTemp[_type].load==='loaded') {
-                return cateTagTemp
-            } else if(cateTagTemp[_type].load==='loading') {
+                cateRefPath = _type + 's/config/categories@selectedSite';
+            if(cateTemp[_type].load==='loaded') {
+                return cateTemp
+            } else if(cateTemp[_type].load==='loading') {
                 return
             }
-            cateTagTemp[_type].load='loading';
+            cateTemp[_type].load='loading';
             $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
-                cateTagTemp[_type].categories = val || [];
-                cateTagTemp[_type].load = 'loaded';
+                cateTemp[_type].categories = val || [];
+                cateTemp[_type].load = 'loaded';
             });
         }
 
         function getCateCrumbs(type, categories, cate, subCate, tag) {
-            var _cate = parseInt(cate || $stateParams.cate),
-                _subCate = parseInt(subCate || $stateParams.subCate),
-                _categories = categories || cateTagTemp[type].categories || [];
-            if (tag || $stateParams.tag) return tag || $stateParams.tag;
+            var params = JSON.parse($stateParams.params||'{}')[type],
+                _cate = parseInt(cate || params.cate),
+                _subCate = parseInt(subCate || params.subCate),
+                _categories = categories || cateTemp[type].categories || [],
+                res=[];
+            if (tag || params.tag) return tag || params.tag;
             if (_cate % 1 === 0) {
-                return _categories[_cate][0] + (_subCate % 1 === 0 ? '/' + _categories[_cate][1][_subCate] : '');
+                res.push(_categories[_cate][0]);
+                if(_subCate % 1 === 0) res.push(_categories[_cate][1][_subCate]);
+                return res;
             } else {
-                return 'GENERAL.ALLCATE';
+                res.push('GENERAL.ALLCATE');
+                return res;
             }
         }
         this.getCate=getCate;
         this.getCateCrumbs=getCateCrumbs;
-
+        this.getProductById = function(id){
+            return $firebaseStorage.get('products/detail/'+id);
+        };
+        this.getArticleById = function(id){
+            return $firebaseStorage.get('articles/detail/'+id);
+        };
         this.cateCtr = function (vm, type) {
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite';
 
-            vm.categories = cateTagTemp[_type].categories;
-            vm.tags = cateTagTemp[_type].tags;
+            vm.categories = cateTemp[_type].categories;
+            vm.tags = cateTemp[_type].tags;
 
             vm.cateCrumb = function (categories, cate, subCate, tag) {
                 return getCateCrumbs(_type, categories, cate, subCate, tag);
@@ -135,7 +144,6 @@
 
             vm.addItem = function (index, value) {
                 if (value) {
-                    var length = vm.categories[index].length;
                     vm.categories[index][1].push(value);
                     vm.tempItem = {};
                 }

@@ -21,7 +21,8 @@
                         y: [null, 'start', 'center', 'end', 'stretch']
                     }
                 }
-            };
+            },
+            ctrls = [[''],['DefaultToolbarController'],['ArticleDetailController'],['ArticleListController'],['ProductDetailController'],['ProductListController']];
 
         var items = [
                 {type: 'custom', content: '<!--include-->'}
@@ -85,14 +86,14 @@
             return promise;
         }
 
-
+        var properties = ['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content', 'ctrl','ctrlAs'];
         function convert(val, target, maxLevel, level) {
             var _level = level || 1,
                 res = [];
             angular.forEach(val, function (item) {
                 var _item = {};
                 _item.cid = Math.random().toString();
-                angular.forEach(['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
+                angular.forEach(properties, function (property) {
                     _item[property] = item[property];
                 });
                 if (item.css) _item.css = item.css;
@@ -112,8 +113,8 @@
             angular.forEach(val[_cid], function (item) {
                 var _item = {};
                 if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
-                angular.forEach(['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content'], function (property) {
-                    _item[property] = item[property] || null;
+                angular.forEach(properties, function (property) {
+                    if(item[property]) _item[property] = item[property];
                 });
                 if (item.cid) _item.divs = convertBack(val, item.cid, styleSheets);
                 result.push(_item);
@@ -179,6 +180,9 @@
             if (item.attrs) {
                 res += ' ' + item.attrs;
             }
+            if (item.ctrl){
+                res += ' ng-controller="'+ item.ctrl+' as '+(item.ctrlAs||'vm')+'"';
+            }
 
             if(tag.search('/')!==-1) singleton = true;
             content = "<--tag-- --custom-->"+(singleton? "":content+"<--endtag-->");
@@ -218,6 +222,7 @@
 
         return {
             layoutOptions: layoutOptions,
+            ctrls:ctrls,
             convert: convert,
             convertBack: convertBack,
             compile: compile,

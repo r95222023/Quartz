@@ -29,7 +29,7 @@
     function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout) {
         var storage = storageFbApp.storage;
         var $firebaseStorage = {
-            $get: $get,
+            get: get,
             getWithCache: getWithCache,
             update: update,
             remove: remove,
@@ -53,16 +53,22 @@
             return storage.ref(path);
         }
 
+        var storagePromises = {},
+            storageReload = {};
         function getWithCache(path, opt) {
+
             var def = $q.defer(),
-                _opt = opt || {},
+                id = 'FBS:' + (new FbObj(path)).path;
+            if (storagePromises[id]&&!storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
+            storagePromises[id] = def.promise;
+            storageReload[id]=false;
+            var _opt = opt || {},
                 _ref = ref(path),
                 promise = $q.all({
                     meta: _ref.getMetadata(),
                     url: _ref.getDownloadURL(),
                     checksum: getChecksum()
                 }),
-                id = 'FBS:' + (new FbObj(path)).path,
                 dereg = $rootScope.$on(id, function (evt, value) {
                     dereg();
                     if (!_opt.chkRefUrl || snippets.md5Obj(value) === _opt.checksum) {
@@ -71,10 +77,11 @@
                         def.reject('checksum does not match.')
                     }
                 });
-            function resolve(res){
-                $timeout(function(){
+
+            function resolve(res) {
+                $timeout(function () {
                     def.resolve(res);
-                },0)
+                }, 0)
             }
 
             function getChecksum() {
@@ -125,8 +132,11 @@
             return def.promise;
         }
 
-        function update(path, value) {
-            var _path = (new FbObj(path)).path;
+        function update(path, value, onState) {
+            var _path = (new FbObj(path)).path,
+                id='FBS:'+_path,
+                _onState = angular.isFunction(onState)? onState:angular.noop,
+                def = $q.defer();
             syncTime.onReady().then(function (getTime) {
                 var storageRef = storage.ref(),
                     isCompress = true,
@@ -151,9 +161,10 @@
                 }
                 dataString = "_getFBS(" + _valStr + ");";
                 var data = new Blob([dataString], {type: 'text/javascript'});
-
-                return storageRef.child(_path + '.js').put(data);
+                storageReload[id]=true;
+                return storageRef.child(_path + '.js').put(data).on('state_changed', _onState, def.reject, def.resolve);
             });
+            return def.promise;
         }
 
         function remove(path) {
@@ -171,7 +182,7 @@
 
         var temp = {};
 
-        function $get(path, process) {
+        function get(path, process) {
             temp[path] = temp[path] || {};
 
             if (temp[path].load === 'loaded') {

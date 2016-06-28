@@ -113,19 +113,24 @@
         var vm = this;
 
         $scope.$mdSidenav = $mdSidenav;
-        $scope.$get = $firebaseStorage.$get;
+        $scope.$get = $firebaseStorage.get;
+        $scope.$getProductById = articleProduct.getProductById;
+        $scope.$getArticleById = articleProduct.getArticleById;
         $scope.$queryList = articleProduct.queryList;
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
+        $scope.params = JSON.parse($stateParams.params||'{}');
+        $scope.$go = function(pageName, params){
+            var _params = {}; if(angular.isObject(params)) angular.extend(_params,params);
+            $state.go('quartz.admin-default.customPage', {pageName:pageName, params:JSON.stringify(_params)});
+        };
 
         vm.scope = $scope;
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-        vm.originalPageName = $stateParams.pageName + '';
 
         var widgetSource = angular.extend({}, customWidgets, customService.items),
-            containerSource = customService.containers,
-            pageRootRef = $firebase.ref(pageDetailRefUrl);
+            containerSource = customService.containers;
         //vm.getHtmlContent = customService.getHtmlContent;
         //vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         //vm.isTagConfigurable = customService.isTagConfigurable;
@@ -139,20 +144,31 @@
 
         $scope.initDragula = dragula.init.bind(dragula);
 
-        if ($stateParams.pageName) {
-            pageRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-                var val = lzString.decompress(snap.val());
-                if (val) {
-                    $timeout(function () {
-
-                        customService.convert(val.content, $scope['containers'], 3);
-                        vm.pageRef = snap.ref;
-                        vm.pageCss = val.css || '';
-                    }, 0);
-                }
+        if ($stateParams.pageName&&$stateParams.id) {
+            $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite').then(function (val) {
+                customService.convert(val.content, $scope['containers'], 3);
+                vm.pageCss = val.css || '';
+                // $timeout(function(){
+                //     customService.convert(val.content, $scope['containers'], 3);
+                //     vm.pageCss = val.css || '';
+                // },0);
             });
+            vm.pageRef = $firebase.ref(pageListRefUrl).child($stateParams.id);
+
+            // pageRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
+            //     var val = lzString.decompress(snap.val());
+            //
+            //     if (val) {
+            //         $timeout(function () {
+            //
+            //             customService.convert(val.content, $scope['containers'], 3);
+            //             vm.pageRef = snap.ref;
+            //             vm.pageCss = val.css || '';
+            //         }, 0);
+            //     }
+            // });
         } else {
-            vm.pageRef = pageRootRef.push();
+            vm.pageRef = $firebase.ref(pageListRefUrl).push();
         }
 
         action(vm, 'page', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
@@ -216,11 +232,18 @@
 
 
         $scope.$mdSidenav = $mdSidenav;
-        $scope.$get = $firebaseStorage.$get;
+        $scope.$get = $firebaseStorage.get;
+        $scope.$getProductById = articleProduct.getProductById;
+        $scope.$getArticleById = articleProduct.getArticleById;
         $scope.$queryList = articleProduct.queryList;
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
-        
+        $scope.params = JSON.parse($stateParams.params||'{}');
+        $scope.$go = function(pageName, params){
+            var _params = {}; if(angular.isObject(params)) angular.extend(_params,params);
+            $state.go('quartz.admin-default.customPage', {pageName:pageName, params:JSON.stringify(_params)});
+        };
+
         angular.extend(customPage, $stateParams);
         customPage.settingsGroups = qtSettings.custom;
 
@@ -416,6 +439,7 @@
         vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         vm.isTagConfigurable = customService.isTagConfigurable;
         vm.layoutOptions = customService.layoutOptions;
+        vm.ctrls = customService.ctrls;
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
 
@@ -435,6 +459,8 @@
         };
 
         if (type === 'page') {
+            vm.originalPageName = $state.params.pageName + '';
+
             vm.action = function (action, cid, index) {
                 switch (action) {
                     case 'edit':
@@ -464,6 +490,7 @@
             vm.updateItem = function () {
                 $mdSidenav('editCustomItem').close();
 
+                console.log(vm.item)
                 if (vm.item.type === 'customWidget') {
                     if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
                         return;
@@ -499,35 +526,32 @@
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
-                //var data = {
-                //    name: vm.pageName,
-                //    content: content,
-                //    css: css || null,
-                //    editTime: Firebase.ServerValue.TIMESTAMP
-                //};
-                //vm.pageRef.update(data);
+                
                 var pid = vm.pageRef.key,
-                    compressed = LZString.compressToUTF16(JSON.stringify({
-                        "css": css || '',
-                        "content": content
-                    }));
+                    upload= function(){
+                        $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
+                            "name": vm.pageName,
+                            "author": $firebase.params["$uid"] || null,
+                            "editTime@0": firebase.database.ServerValue.TIMESTAMP
+                        });
 
-                $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
-                    "name": vm.pageName,
-                    "author": $firebase.params["$uid"] || null,
-                    "compressed@1": compressed,
-                    "editTime@0": firebase.database.ServerValue.TIMESTAMP
-                });
+                        $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite', {
+                            "css": css || '',
+                            "content": content
+                        }).then(vm.revert);
+                    };
 
-                $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite', {
-                    "css": css || '',
-                    "content": content
-                });
                 if (vm.originalPageName && vm.originalPageName !== vm.pageName) {
-                    $firebaseStorage.ref('pages/detail/' + vm.originalPageName + '@selectedSite').remove();
+                    vm.pageRef.parent.orderByChild('name').equalTo(vm.pageName).limitToFirst(1).once('value', function(snap){
+                        snap.forEach(function(child){
+                            child.ref.remove();
+                        });
+                        upload();
+                    });
+                    $firebaseStorage.remove('pages/detail/' + vm.originalPageName + '@selectedSite');
+                } else {
+                    upload();
                 }
-
-                vm.revert();
             };
 
             vm.buildCss = function (styleSheets) {
