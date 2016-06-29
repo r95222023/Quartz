@@ -6,7 +6,7 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController(lzString, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia) {
+    function ProductManagerController(articleProduct, lzString, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia) {
         var vm = this,
             position = {
                 bottom: true,
@@ -70,6 +70,7 @@
             });
         };
         vm.getCateTag();
+        vm.getCate = articleProduct.getCate;
 
 
         ////Products
@@ -147,20 +148,19 @@
             $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], {
                 '@0': listData,
                 '@1': detailData
-            })
-                .then(function () {
-                    indexService.update("products", id, vm.product);
+            }).then(function () {
+                indexService.update("products", id, vm.product);
 
-                    vm.hide(function () {
-                        $mdToast.show(
-                            $mdToast.simple()
-                                .textContent('Saved!')
-                                .position(position)
-                                .hideDelay(3000)
-                        );
-                        resetData();
-                    });
+                vm.hide(function () {
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .textContent('Saved!')
+                            .position(position)
+                            .hideDelay(3000)
+                    );
+                    resetData();
                 });
+            });
             $firebaseStorage.update('products/detail/' + id + '@selectedSite', vm.product);
         };
 

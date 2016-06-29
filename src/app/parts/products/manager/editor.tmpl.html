@@ -38,14 +38,14 @@
                     <md-input-container flex="50">
                         <label>Category</label>
                         <md-select ng-model="vm.product.category">
-                            <md-option ng-value="$index" ng-repeat="cate in vm.categories">{{ cate[0] }}</md-option>
+                            <md-option ng-value="$index" ng-repeat="cate in vm.getCate()">{{ cate[0] }}</md-option>
                         </md-select>
                     </md-input-container>
                     <md-input-container flex="50" ng-if="vm.product.category||vm.product.category===0">
                         <label>Subcategory</label>
                         <md-select ng-model="vm.product.subcategory">
                             <md-option ng-value="null">Empty</md-option>
-                            <md-option ng-value="$index" ng-repeat="subcate in vm.categories[vm.product.category][1]">{{subcate}}
+                            <md-option ng-value="$index" ng-repeat="subcate in vm.getCate()[vm.product.category][1]">{{subcate}}
                             </md-option>
                         </md-select>
                     </md-input-container>

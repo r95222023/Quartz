@@ -36,12 +36,14 @@
                             Edit
                         </button>
                         <md-menu-content>
-                            <md-menu-item>
+                            <md-menu-item class="md-indent">
+                                <md-icon md-svg-icon="undo"></md-icon>
                                 <md-button ng-click="vm.undo()">
                                     Undo
                                 </md-button>
                             </md-menu-item>
-                            <md-menu-item>
+                            <md-menu-item class="md-indent">
+                                <md-icon md-svg-icon="redo"></md-icon>
                                 <md-button ng-click="vm.redo()">
                                     Redo
                                 </md-button>
@@ -53,6 +55,16 @@
                             View
                         </button>
                         <md-menu-content>
+                            <md-menu-item>
+                                <md-menu>
+                                    <md-button ng-click="$mdOpenMenu()">Responsive Mode</md-button>
+                                    <md-menu-content width="3">
+                                        <md-menu-item type="radio" ng-repeat="bp in vm.layoutOptions.breakpoints" ng-model="vm.layoutBreakpoint" value="{{bp}}">{{bp}}</md-menu-item>
+                                    </md-menu-content>
+                                </md-menu>
+                            </md-menu-item>
+
+                            <md-menu-divider></md-menu-divider>
                             <md-menu-item ng-if="!vm.preview">
                                 <md-button ng-click="vm.compile();vm.preview=true">
                                     Preview Mode

@@ -82,7 +82,7 @@
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite';
             if(cateTemp[_type].load==='loaded') {
-                return cateTemp
+                return cateTemp[_type].categories
             } else if(cateTemp[_type].load==='loading') {
                 return
             }

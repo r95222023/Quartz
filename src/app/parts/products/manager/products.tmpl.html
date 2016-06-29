@@ -20,7 +20,7 @@
                     All
                 </md-button>
                 <md-button class="toolbar-button"
-                           ng-repeat="cate in vm.categories"
+                           ng-repeat="cate in vm.getCate()"
                            style="color:black"
                            ng-click="vm.orderBy='category';vm.equalTo=$index;vm.getFiltered()">
                     {{cate[0]}}
@@ -52,7 +52,7 @@
                 <md-input-container class="md-block" flex ng-if="vm.orderBy==='category'">
                     <label>Equal to</label>
                     <md-select ng-model="vm.equalTo">
-                        <md-option ng-repeat="cate in vm.categories" value="{{$index}}">
+                        <md-option ng-repeat="cate in vm.getCate()" value="{{$index}}">
                             {{cate[0]}}
                         </md-option>
                     </md-select>
@@ -89,8 +89,8 @@
                     ng-repeat="(index, product) in vm.paginator.result.hits">
                     <td md-cell>{{product.itemId}}</td>
                     <td md-cell>{{product.itemName}}</td>
-                    <td md-cell>{{vm.categories[product.category][0]}}</td>
-                    <td md-cell>{{vm.categories[product.category][1][product.subcategory]}}</td>
+                    <td md-cell>{{vm.getCate()[product.category][0]}}</td>
+                    <td md-cell>{{vm.getCate()[product.category][1][product.subcategory]}}</td>
                     <td md-cell>{{product.quantity}}</td>
                     <td md-cell>{{product.price}}</td>
                     <td md-cell style="width:50px;">

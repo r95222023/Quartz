@@ -490,7 +490,6 @@
             vm.updateItem = function () {
                 $mdSidenav('editCustomItem').close();
 
-                console.log(vm.item)
                 if (vm.item.type === 'customWidget') {
                     if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
                         return;
