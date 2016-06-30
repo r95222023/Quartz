@@ -59,7 +59,9 @@
                                 <md-menu>
                                     <md-button ng-click="$mdOpenMenu()">Responsive Mode</md-button>
                                     <md-menu-content width="3">
-                                        <md-menu-item type="radio" ng-repeat="bp in vm.layoutOptions.breakpoints" ng-model="vm.layoutBreakpoint" value="{{bp}}">{{bp}}</md-menu-item>
+                                        <md-menu-item type="radio" ng-repeat="bp in vm.layoutOptions.breakpoints"
+                                                      ng-model="vm.layoutBreakpoint" value="{{bp}}">{{bp}}
+                                        </md-menu-item>
                                     </md-menu-content>
                                 </md-menu>
                             </md-menu-item>
@@ -136,20 +138,31 @@
                 </div>
             </div>
         </md-content>
-        <md-content flex layout-padding">
+        <md-content flex>
             <div layout="row" ng-if="vm.showCss">
                 <md-input-container flex="50">
                     <label>CSS</label>
-                    <textarea name="pageCss" ng-model="vm.pageCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
+                <textarea name="pageCss" ng-model="vm.pageCss"
+                          ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
                 </md-input-container>
             </div>
-
-            <div ng-hide="vm.showCss" layout="row" layout-wrap dragula='"drag-container-root"'
+            <div style="cursor: move; width:100%;margin:0;">
+                <md-button class="md-icon-button" aria-label="more action"
+                           ng-click="vm.action('edit','canvas')"
+                           aria-label="edit">
+                    <md-icon md-font-icon="fa fa-pencil-square-o"></md-icon>
+                </md-button>
+            </div>
+            <div ng-hide="vm.showCss" layout="{{vm.canvas.layout[vm.layoutBreakpoint].layout||'row'}}"
+                 dragula='"drag-container-root"'
                  dragula-model='containers.root'
+                 class="layout-wrap"
                  style="min-width: 100px;min-height: 200px">
-                <div flex="{{container.layout.all.flex||''}}"
+                <div style="background-color:#B2DFDB;min-width: 100px;min-height: 200px"
+                     ng-show="container.layout[vm.layoutBreakpoint].show"
+                     ng-hide="container.layout[vm.layoutBreakpoint].hide"
+                     flex="{{container.layout[vm.layoutBreakpoint].flex||container.layout.all.flex||''}}"
                      class="md-whiteframe-3dp"
-                     style="background-color:#B2DFDB;min-width: 100px;min-height: 200px"
                      layout="column"
                      layout-align="start center"
                      layout-padding
@@ -172,7 +185,7 @@
                             </md-menu-content>
                         </md-menu>
                     </div>
-                    <div layout="{{container.layout.all.layout||'column'}}"
+                    <div layout="{{container.layout[vm.layoutBreakpoint].layout||'column'}}"
                          style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
                          ng-class="{'layout-wrap': container.layout.all['layout-wrap']}"
                          dragula="'drag-container-lv1'"
@@ -180,7 +193,9 @@
                          dragula-model="containers[container.cid]">
 
                         <div style="background-color:#BBDEFB; min-width: 100px;min-height: 100px;"
-                             flex="{{subcontainer.layout.all.flex||''}}"
+                             flex="{{subcontainer.layout[vm.layoutBreakpoint].flex||subcontainer.layout.all.flex||''}}"
+                             ng-show="subcontainer.layout[vm.layoutBreakpoint].show"
+                             ng-hide="subcontainer.layout[vm.layoutBreakpoint].hide"
                              layout="column"
                              layout-padding class="md-whiteframe-3dp"
                              ng-repeat="subcontainer in containers[container.cid] track by subcontainer.cid">
@@ -202,7 +217,7 @@
                                     </md-menu-content>
                                 </md-menu>
                             </div>
-                            <div flex layout="{{subcontainer.layout.all.layout||'column'}}"
+                            <div flex layout="{{subcontainer.layout[vm.layoutBreakpoint].layout||'column'}}"
                                  style="width:100%; min-height: 100px;overflow: hidden;"
                                  ng-class="{'layout-wrap': subcontainer.layout.all['layout-wrap']}"
                                  layout-align="space-around center"
@@ -210,8 +225,11 @@
                                  dragula-scope="$parent.$parent"
                                  dragula-model='containers[subcontainer.cid]'>
 
-                                <div style="background-color:#F0F4C3; min-width: 100px; cursor: move" class="md-whiteframe-3dp dragable-widget lv2-handle"
-                                     flex="{{widget.layout.all.flex||''}}"
+                                <div style="background-color:#F0F4C3; min-width: 100px; cursor: move"
+                                     class="md-whiteframe-3dp dragable-widget lv2-handle"
+                                     flex="{{widget.layout[vm.layoutBreakpoint].flex||widget.layout.all.flex||''}}"
+                                     ng-show="container.layout[vm.layoutBreakpoint].show"
+                                     ng-hide="container.layout[vm.layoutBreakpoint].hide"
                                      layout="column"
                                      layout-padding
                                      ng-repeat="widget in containers[subcontainer.cid] track by widget.cid">
@@ -245,13 +263,12 @@
     </div>
 
 
-
 </div>
 <md-content layout="column" ng-if="vm.preview">
     <md-button ng-click="vm.preview=false">
         Back To Edit Mode
     </md-button>
-    <custom-item layout="row" layout-wrap  content="vm.html" scope="vm.scope"></custom-item>
+    <custom-item layout="row" layout-wrap content="vm.html" scope="vm.scope"></custom-item>
 </md-content>
 <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="editCustomItem">
     <md-toolbar class="md-theme-light">
@@ -326,6 +343,10 @@
                                 {{size}}
                             </md-option>
                         </md-select>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>flex-order</label>
+                        <input type="number" ng-model="vm.item.layout[vm.layoutBreakpoint]['flex-order']">
                     </md-input-container>
                     <md-input-container>
                         <label>layout-align-x</label>

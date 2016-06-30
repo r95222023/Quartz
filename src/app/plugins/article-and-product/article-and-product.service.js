@@ -94,7 +94,7 @@
         }
 
         function getCateCrumbs(type, categories, cate, subCate, tag) {
-            var params = JSON.parse($stateParams.params||'{}')[type],
+            var params = JSON.parse($stateParams.params||'{}')[type]||{},
                 _cate = parseInt(cate || params.cate),
                 _subCate = parseInt(subCate || params.subCate),
                 _categories = categories || cateTemp[type].categories || [],

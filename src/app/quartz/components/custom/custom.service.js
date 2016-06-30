@@ -156,6 +156,8 @@
                                 break;
                             case 'flex-offset':
                                 break;
+                            case 'flex-order':
+                                break;
                             case 'layout':
                                 break;
                             case 'layout-align':

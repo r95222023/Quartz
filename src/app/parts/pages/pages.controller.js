@@ -128,7 +128,7 @@
         vm.scope = $scope;
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-
+        
         var widgetSource = angular.extend({}, customWidgets, customService.items),
             containerSource = customService.containers;
         //vm.getHtmlContent = customService.getHtmlContent;
@@ -148,6 +148,7 @@
             $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite').then(function (val) {
                 customService.convert(val.content, $scope['containers'], 3);
                 vm.pageCss = val.css || '';
+                vm.canvas = val.canvas||{};
                 // $timeout(function(){
                 //     customService.convert(val.content, $scope['containers'], 3);
                 //     vm.pageCss = val.css || '';
@@ -475,16 +476,20 @@
                 }
             };
             vm.editItem = function (cid, index) {
-                vm.item = {};
-                vm.item = angular.copy($scope.containers[cid][index]);
+                // vm.item = {};
+                $mdSidenav('editCustomItem').open();
+                vm.selectedContainerId = cid;
+                vm.selectedItemIndex = index;
+                if(cid==='canvas'){
+                    vm.item = angular.copy(vm.canvas||{});
+                    return;
+                }
+                vm.item = angular.extend({},$scope.containers[cid][index]);
                 vm.backUpItem = angular.copy($scope.containers[cid][index]);
                 if (vm.item.type === 'customWidget') {
                     vm.item.content = vm.getHtmlContent(vm.item);
                     vm.item.type = 'custom';
                 }
-                vm.selectedContainerId = cid;
-                vm.selectedItemIndex = index;
-                $mdSidenav('editCustomItem').open();
             };
 
             vm.updateItem = function () {
@@ -497,7 +502,12 @@
                         vm.item.type = 'custom';
                     }
                 }
-                $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
+                if(vm.selectedContainerId==='canvas'){
+                    console.log(vm.item);
+                    vm.canvas = vm.item;
+                } else {
+                    $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
+                }
             };
 
 
@@ -525,7 +535,7 @@
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
-                
+
                 var pid = vm.pageRef.key,
                     upload= function(){
                         $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
@@ -587,8 +597,8 @@
                 }
             };
             vm.editItem = function (cid, index) {
-                vm.item = {};
-                vm.item = angular.copy($scope.containers[cid][index]);
+                // vm.item = {};
+                vm.item = angular.extend({},$scope.containers[cid][index]);
                 vm.selectedContainerId = cid;
                 vm.selectedItemIndex = index;
                 $mdSidenav('editCustomItem').open();
