@@ -121,7 +121,7 @@
             });
             return result;
         }
-
+        
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
         function getHtmlContent(item) {
             item = item || {};

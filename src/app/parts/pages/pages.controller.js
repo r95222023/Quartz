@@ -119,16 +119,17 @@
         $scope.$queryList = articleProduct.queryList;
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
-        $scope.params = JSON.parse($stateParams.params||'{}');
-        $scope.$go = function(pageName, params){
-            var _params = {}; if(angular.isObject(params)) angular.extend(_params,params);
-            $state.go('quartz.admin-default.customPage', {pageName:pageName, params:JSON.stringify(_params)});
+        $scope.params = JSON.parse($stateParams.params || '{}');
+        $scope.$go = function (pageName, params) {
+            var _params = {};
+            if (angular.isObject(params)) angular.extend(_params, params);
+            $state.go('quartz.admin-default.customPage', {pageName: pageName, params: JSON.stringify(_params)});
         };
 
         vm.scope = $scope;
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-        
+
         var widgetSource = angular.extend({}, customWidgets, customService.items),
             containerSource = customService.containers;
         //vm.getHtmlContent = customService.getHtmlContent;
@@ -144,11 +145,11 @@
 
         $scope.initDragula = dragula.init.bind(dragula);
 
-        if ($stateParams.pageName&&$stateParams.id) {
+        if ($stateParams.pageName && $stateParams.id) {
             $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite').then(function (val) {
                 customService.convert(val.content, $scope['containers'], 3);
                 vm.pageCss = val.css || '';
-                vm.canvas = val.canvas||{};
+                vm.canvas = val.canvas || {};
                 // $timeout(function(){
                 //     customService.convert(val.content, $scope['containers'], 3);
                 //     vm.pageCss = val.css || '';
@@ -239,10 +240,11 @@
         $scope.$queryList = articleProduct.queryList;
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
-        $scope.params = JSON.parse($stateParams.params||'{}');
-        $scope.$go = function(pageName, params){
-            var _params = {}; if(angular.isObject(params)) angular.extend(_params,params);
-            $state.go('quartz.admin-default.customPage', {pageName:pageName, params:JSON.stringify(_params)});
+        $scope.params = JSON.parse($stateParams.params || '{}');
+        $scope.$go = function (pageName, params) {
+            var _params = {};
+            if (angular.isObject(params)) angular.extend(_params, params);
+            $state.go('quartz.admin-default.customPage', {pageName: pageName, params: JSON.stringify(_params)});
         };
 
         angular.extend(customPage, $stateParams);
@@ -459,6 +461,100 @@
             $mdSidenav('editCustomItem').toggle();
         };
 
+        vm.isInsideBp = function (mq) {
+            var x = vm.layoutBreakpoint;
+            switch (mq) {
+                case '0~599':
+                    return (x == 'xs');
+                    break;
+                case '600~959':
+                    return (x == 'gt-xs' || x == 'sm');
+                    break;
+                case '960~1280':
+                    return (x == 'gt-xs' || x == 'gt-sm' || x == 'md');
+                    break;
+                case '1280~1919':
+                    return (x == 'gt-xs' || x == 'gt-sm' || x == 'gt-md' || x == 'lg');
+                    break;
+                case '>1920':
+                    return (x == 'gt-xs' || x == 'gt-sm' || x == 'gt-md' || x == 'gt-lg' || x == 'xl');
+                    break;
+                default:
+                    return true;
+                    break;
+            }
+        };
+
+        vm.isInsideMq = function (bp) {
+            var x = vm.viewMediaQuery;
+            switch (bp) {
+                case 'xs':
+                    return (x == '0~599');
+                    break;
+                case 'gt-xs':
+                    return (x == '600~959' || x == '960~1279' || x == '1280~1919' || x == '>1920');
+                    break;
+                case 'sm':
+                    return (x == '600~959');
+                    break;
+                case 'gt-sm':
+                    return (x == '960~1279' || x == '1280~1919' || x == '>1920');
+                    break;
+                case 'md':
+                    return (x == '960~1279');
+                    break;
+                case 'gt-md':
+                    return (x == '1280~1919' || x == '>1920');
+                    break;
+                case 'lg':
+                    return (x == '1280~1919');
+                    break;
+                case 'gt-lg':
+                    return (x == '>1920');
+                    break;
+                case 'xl':
+                    return (x == '>1920');
+                    break;
+                default:
+                    return true;
+                    break;
+            }
+        };
+
+
+        vm.getLayoutClass = function (itemLayout) {
+            var res = '';
+
+            angular.forEach(['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'], function (breakpoint) {
+                var layout = itemLayout[breakpoint];
+                if (!layout || !isInsideMq(breakpoint)) return;
+                angular.forEach(layout, function (value, key) {
+                    if (value === null) return;
+                    var _value = '-' + value + ' ',
+                        _property = key;
+                    switch (key) {
+                        case 'flex':
+                            if (value === 'flex') _value = ' ';
+                            break;
+                        case 'flex-offset':
+                            break;
+                        case 'flex-order':
+                            break;
+                        case 'layout':
+                            break;
+                        // case 'layout-align':
+                        //     _value = '="' + value.x + ' ' + value.y + '" ';
+                        //     break;
+                        default:
+                            _property = value ? _property + ' ' : '';
+                            _value = ''; //ex layout-fill:true will get layout-fill
+                            break;
+                    }
+                    res += _property + _value;
+                })
+            });
+        };
+
         if (type === 'page') {
             vm.originalPageName = $state.params.pageName + '';
 
@@ -480,11 +576,11 @@
                 $mdSidenav('editCustomItem').open();
                 vm.selectedContainerId = cid;
                 vm.selectedItemIndex = index;
-                if(cid==='canvas'){
-                    vm.item = angular.copy(vm.canvas||{});
+                if (cid === 'canvas') {
+                    vm.item = angular.copy(vm.canvas || {});
                     return;
                 }
-                vm.item = angular.extend({},$scope.containers[cid][index]);
+                vm.item = angular.extend({}, $scope.containers[cid][index]);
                 vm.backUpItem = angular.copy($scope.containers[cid][index]);
                 if (vm.item.type === 'customWidget') {
                     vm.item.content = vm.getHtmlContent(vm.item);
@@ -502,7 +598,7 @@
                         vm.item.type = 'custom';
                     }
                 }
-                if(vm.selectedContainerId==='canvas'){
+                if (vm.selectedContainerId === 'canvas') {
                     console.log(vm.item);
                     vm.canvas = vm.item;
                 } else {
@@ -537,7 +633,7 @@
                     css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
 
                 var pid = vm.pageRef.key,
-                    upload= function(){
+                    upload = function () {
                         $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
                             "name": vm.pageName,
                             "author": $firebase.params["$uid"] || null,
@@ -551,8 +647,8 @@
                     };
 
                 if (vm.originalPageName && vm.originalPageName !== vm.pageName) {
-                    vm.pageRef.parent.orderByChild('name').equalTo(vm.pageName).limitToFirst(1).once('value', function(snap){
-                        snap.forEach(function(child){
+                    vm.pageRef.parent.orderByChild('name').equalTo(vm.pageName).limitToFirst(1).once('value', function (snap) {
+                        snap.forEach(function (child) {
                             child.ref.remove();
                         });
                         upload();
@@ -598,7 +694,7 @@
             };
             vm.editItem = function (cid, index) {
                 // vm.item = {};
-                vm.item = angular.extend({},$scope.containers[cid][index]);
+                vm.item = angular.extend({}, $scope.containers[cid][index]);
                 vm.selectedContainerId = cid;
                 vm.selectedItemIndex = index;
                 $mdSidenav('editCustomItem').open();
