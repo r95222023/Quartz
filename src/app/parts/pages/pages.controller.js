@@ -445,6 +445,7 @@
         vm.ctrls = customService.ctrls;
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
+        vm.media = 'all';
 
         vm.copyItem = function (cid, index) {
             var copied = angular.copy($scope.containers[cid][index]);
@@ -470,7 +471,7 @@
                 case '600~959':
                     return (x == 'gt-xs' || x == 'sm');
                     break;
-                case '960~1280':
+                case '960~1279':
                     return (x == 'gt-xs' || x == 'gt-sm' || x == 'md');
                     break;
                 case '1280~1919':
@@ -485,7 +486,7 @@
             }
         };
 
-        vm.isInsideMq = function (bp) {
+        function isInsideMq (bp) {
             var x = vm.viewMediaQuery;
             switch (bp) {
                 case 'xs':
@@ -519,13 +520,16 @@
                     return true;
                     break;
             }
-        };
+        }
 
 
         vm.getLayoutClass = function (itemLayout) {
-            var res = '';
+            var inner = '',
+                outer = '';
 
             angular.forEach(['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'], function (breakpoint) {
+                if (!itemLayout) return;
+                if (vm.media === 'all' && breakpoint!=='all') return;
                 var layout = itemLayout[breakpoint];
                 if (!layout || !isInsideMq(breakpoint)) return;
                 angular.forEach(layout, function (value, key) {
@@ -535,6 +539,8 @@
                     switch (key) {
                         case 'flex':
                             if (value === 'flex') _value = ' ';
+                            outer = _property + _value;
+                            return;
                             break;
                         case 'flex-offset':
                             break;
@@ -542,17 +548,18 @@
                             break;
                         case 'layout':
                             break;
-                        // case 'layout-align':
-                        //     _value = '="' + value.x + ' ' + value.y + '" ';
-                        //     break;
+                        case 'layout-align':
+                            _value = '-' + value.x||'start' + value.y||'stretch';
+                            break;
                         default:
                             _property = value ? _property + ' ' : '';
                             _value = ''; //ex layout-fill:true will get layout-fill
                             break;
                     }
-                    res += _property + _value;
+                    inner += _property + _value;
                 })
             });
+            return {inner:inner, outer:outer}
         };
 
         if (type === 'page') {

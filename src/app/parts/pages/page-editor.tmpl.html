@@ -65,6 +65,16 @@
                                     </md-menu-content>
                                 </md-menu>
                             </md-menu-item>
+                            <md-menu-item>
+                                <md-menu>
+                                    <md-button ng-click="$mdOpenMenu()">Media Width</md-button>
+                                    <md-menu-content width="3">
+                                        <md-menu-item type="radio" ng-repeat="mq in vm.layoutOptions.mediaQueries"
+                                                      ng-model="vm.media" value="{{mq}}">{{mq}}
+                                        </md-menu-item>
+                                    </md-menu-content>
+                                </md-menu>
+                            </md-menu-item>
 
                             <md-menu-divider></md-menu-divider>
                             <md-menu-item ng-if="!vm.preview">
@@ -157,15 +167,11 @@
                  dragula='"drag-container-root"'
                  dragula-model='containers.root'
                  class="layout-wrap"
-                 style="min-width: 100px;min-height: 200px">
+                 style="min-width: 100px;min-height: 100px">
                 <div style="background-color:#B2DFDB;min-width: 100px;min-height: 200px"
-                     ng-show="container.layout[vm.layoutBreakpoint].show"
-                     ng-hide="container.layout[vm.layoutBreakpoint].hide"
-                     flex="{{container.layout[vm.layoutBreakpoint].flex||container.layout.all.flex||''}}"
                      class="md-whiteframe-3dp"
+                     ng-class="vm.getLayoutClass(container.layout).outer"
                      layout="column"
-                     layout-align="start center"
-                     layout-padding
                      ng-repeat="container in containers.root track by container.cid">
                     <div class="root-handle" style="cursor: move; width:100%;margin:0;">
                         {{container.type+' '}}{{container.id}}
@@ -185,19 +191,16 @@
                             </md-menu-content>
                         </md-menu>
                     </div>
-                    <div layout="{{container.layout[vm.layoutBreakpoint].layout||'column'}}"
-                         style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
-                         ng-class="{'layout-wrap': container.layout.all['layout-wrap']}"
+                    <div style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
+                         ng-class="vm.getLayoutClass(container.layout).inner"
                          dragula="'drag-container-lv1'"
                          dragula-scope="$parent"
                          dragula-model="containers[container.cid]">
 
                         <div style="background-color:#BBDEFB; min-width: 100px;min-height: 100px;"
-                             flex="{{subcontainer.layout[vm.layoutBreakpoint].flex||subcontainer.layout.all.flex||''}}"
-                             ng-show="subcontainer.layout[vm.layoutBreakpoint].show"
-                             ng-hide="subcontainer.layout[vm.layoutBreakpoint].hide"
+                             ng-class="vm.getLayoutClass(subcontainer.layout).outer"
                              layout="column"
-                             layout-padding class="md-whiteframe-3dp"
+                             class="md-whiteframe-3dp"
                              ng-repeat="subcontainer in containers[container.cid] track by subcontainer.cid">
                             <div class="lv1-handle" style="cursor: move; margin:0;">
                                 {{subcontainer.type+' '}}{{subcontainer.id}}
@@ -217,19 +220,15 @@
                                     </md-menu-content>
                                 </md-menu>
                             </div>
-                            <div flex layout="{{subcontainer.layout[vm.layoutBreakpoint].layout||'column'}}"
-                                 style="width:100%; min-height: 100px;overflow: hidden;"
-                                 ng-class="{'layout-wrap': subcontainer.layout.all['layout-wrap']}"
-                                 layout-align="space-around center"
+                            <div style="width:100%; min-height: 100px;overflow: hidden;"
+                                 ng-class="vm.getLayoutClass(subcontainer.layout).inner"
                                  dragula='"drag-container-lv2"'
                                  dragula-scope="$parent.$parent"
                                  dragula-model='containers[subcontainer.cid]'>
 
                                 <div style="background-color:#F0F4C3; min-width: 100px; cursor: move"
+                                     ng-class="vm.getLayoutClass(widget.layout).outer"
                                      class="md-whiteframe-3dp dragable-widget lv2-handle"
-                                     flex="{{widget.layout[vm.layoutBreakpoint].flex||widget.layout.all.flex||''}}"
-                                     ng-show="container.layout[vm.layoutBreakpoint].show"
-                                     ng-hide="container.layout[vm.layoutBreakpoint].hide"
                                      layout="column"
                                      layout-padding
                                      ng-repeat="widget in containers[subcontainer.cid] track by widget.cid">

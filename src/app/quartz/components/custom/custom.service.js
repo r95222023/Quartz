@@ -12,6 +12,7 @@
             flex = ['flex'].concat(increment5),
             layoutOptions = {
                 "breakpoints": ['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'],
+                "mediaQueries":['all', '0~599', '600~959', '960~1279', '1280~1919', '>1920'],
                 "layout": {
                     "flex": flex,
                     "flex-offset": increment5,
