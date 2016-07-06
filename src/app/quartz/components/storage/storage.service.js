@@ -33,6 +33,7 @@
             getWithCache: getWithCache,
             update: update,
             remove: remove,
+            clearTemp:clearTemp,
             storages: {}
         };
 
@@ -181,6 +182,11 @@
         }
 
         var temp = {};
+        function clearTemp(){
+            angular.forEach(temp,function(val,key){
+                delete temp[key].load;
+            })
+        }
 
         function get(path, process) {
             temp[path] = temp[path] || {};

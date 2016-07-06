@@ -6,6 +6,11 @@
         .service('articleProduct', ArticleProduct);
     /* @ngInject */
     function ArticleProduct(lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
+        function getParams() {
+            var params = JSON.parse($stateParams.params || '{"product":{}, "article":{}}');
+            return {product: params.product || {}, article: params.article || {}};
+        }
+
         function getQueryData(mustArr, mustNotArr, query) {
             var queryData = {
                 cache: true,
@@ -28,16 +33,19 @@
         }
 
         var temp = {};
-        function queryList(type, params, sort) {
 
-            var _params = params || JSON.parse($stateParams.params||'{}')[type],
-                cate = _params.cate || '',
-                subCate = _params.subCate || '',
+        function queryList(params) {
+            var type = (params || {}).type || 'product',
+                _params = angular.extend({}, getParams()[type], params),
+                sort = _params.sort || (type === 'product' ? 'itemId' : 'id'),
+                cate = angular.isNumber(_params.cate) ? _params.cate : null,
+                subCate = angular.isNumber(_params.subCate) ? _params.subCate : null,
+                tag = _params.tag || null,
                 queryString = _params.queryString || '',
                 query,
                 mustArr = [],
                 mustNotArr = [{"term": {"show": false}}],
-                id = 't-' + type + 'c-' + cate + 's-' + subCate + 'q-' + queryString;
+                id = 't' + type + 'c' + cate + 's' + subCate + 'q' + queryString + 't' + tag + 's' + sort;
 
             //
             temp[id] = temp[id] || {};
@@ -51,9 +59,9 @@
             temp[id].load = 'loading';
             ////
 
-            if (angular.isString(_params.tag)) {
+            if (angular.isString(tag)) {
                 var tagTerm = {};
-                tagTerm['tags_dot_' + _params.tag] = 1;
+                tagTerm['tags_dot_' + tag] = 1;
                 mustArr.push({"term": tagTerm});
             }
             if (parseInt(cate) % 1 === 0) {
@@ -69,53 +77,68 @@
                 };
             }
             temp[id].paginator = $elasticSearch.paginator($stateParams.siteName || 'main', type, getQueryData(mustArr, mustNotArr, query));
+            temp[id].paginator.size = _params.size || 5;
             temp[id].paginator.onReorder(sort);
             temp[id].paginator.promise.then(function () {
                 temp[id].load = 'loaded';
             })
         }
-        this.queryList=queryList;
+
+        this.queryList = queryList;
+        this.queryProduct = function (params) {
+            angular.extend(params || {}, {type: 'product'});
+            return queryList(params);
+        };
+        this.queryArticle = function (params) {
+            angular.extend(params || {}, {type: 'article'});
+            return queryList(params);
+        };
 
         //// categories and tags
         var cateTemp = {article: {}, product: {}};
+
         function getCate(type) {
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite';
-            if(cateTemp[_type].load==='loaded') {
+            if (cateTemp[_type].load === 'loaded') {
                 return cateTemp[_type].categories
-            } else if(cateTemp[_type].load==='loading') {
+            } else if (cateTemp[_type].load === 'loading') {
                 return
             }
-            cateTemp[_type].load='loading';
+            cateTemp[_type].load = 'loading';
             $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
                 cateTemp[_type].categories = val || [];
                 cateTemp[_type].load = 'loaded';
             });
         }
 
+
         function getCateCrumbs(type, categories, cate, subCate, tag) {
-            var params = JSON.parse($stateParams.params||'{}')[type]||{},
+            var params = getParams()[type] || {},
                 _cate = parseInt(cate || params.cate),
                 _subCate = parseInt(subCate || params.subCate),
                 _categories = categories || cateTemp[type].categories || [],
-                res=[];
+                res = [];
             if (tag || params.tag) return tag || params.tag;
             if (_cate % 1 === 0) {
                 res.push(_categories[_cate][0]);
-                if(_subCate % 1 === 0) res.push(_categories[_cate][1][_subCate]);
+                if (_subCate % 1 === 0) res.push(_categories[_cate][1][_subCate]);
                 return res;
             } else {
                 res.push('GENERAL.ALLCATE');
                 return res;
             }
         }
-        this.getCate=getCate;
-        this.getCateCrumbs=getCateCrumbs;
-        this.getProductById = function(id){
-            return $firebaseStorage.get('products/detail/'+id);
+
+        this.getCate = getCate;
+        this.getCateCrumbs = getCateCrumbs;
+        this.getProduct = function (id) {
+            var _id = id||getParams().product.id;
+            return $firebaseStorage.get('products/detail/' + _id);
         };
-        this.getArticleById = function(id){
-            return $firebaseStorage.get('articles/detail/'+id);
+        this.getArticle = function (id) {
+            var _id = id||getParams().article.id;
+            return $firebaseStorage.get('articles/detail/' + _id);
         };
         this.cateCtr = function (vm, type) {
             var _type = type || 'product',

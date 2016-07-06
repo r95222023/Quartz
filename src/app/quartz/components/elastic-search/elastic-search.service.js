@@ -76,7 +76,7 @@
                 $firebase.request(req)
                     .then(function (res) {
                         var _res = lzString.decompress(res[0]).result;
-                        $firebaseStorage.update(storageRefPath, _res);
+                        //$firebaseStorage.update(storageRefPath, _res);
                         def.resolve(_res);
                     }, function (err) {
                         def.reject(err);

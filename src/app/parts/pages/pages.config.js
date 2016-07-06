@@ -46,7 +46,7 @@
                         return def.promise;
                     }]
                 },
-                url: '/admin/:siteName/pageEditor/?id&pageName',
+                url: '/admin/:siteName/pageEditor/?id&pageName&params',
                 templateUrl: 'app/parts/pages/page-editor.tmpl.html',
                 controller: 'PageEditorController',
                 controllerAs: 'vm'

@@ -112,18 +112,30 @@
     function PageEditorController(lzString, articleProduct, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
         var vm = this;
 
+        // angular.extend($scope, articleProduct);
         $scope.$mdSidenav = $mdSidenav;
         $scope.$get = $firebaseStorage.get;
-        $scope.$getProductById = articleProduct.getProductById;
-        $scope.$getArticleById = articleProduct.getArticleById;
+        $scope.$getProduct = articleProduct.getProduct;
+        $scope.$getArticle = articleProduct.getArticle;
         $scope.$queryList = articleProduct.queryList;
+        $scope.$queryProduct = articleProduct.queryProduct;
+        $scope.$queryArticle = articleProduct.queryArticle;
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.params = JSON.parse($stateParams.params || '{}');
         $scope.$go = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
-            $state.go('quartz.admin-default.customPage', {pageName: pageName, params: JSON.stringify(_params)});
+            $state.go('quartz.admin-default.customPage', {
+                pageName: pageName || $stateParams.pageName,
+                params: JSON.stringify(_params)
+            });
+        };
+        $scope.$goTest = function (pageName, params) {
+            var _params = {};
+            if (angular.isObject(params)) angular.extend(_params, params);
+            console.log(params);
+            console.log({pageName: pageName, params: JSON.stringify(_params)});
         };
 
         vm.scope = $scope;
@@ -156,19 +168,6 @@
                 // },0);
             });
             vm.pageRef = $firebase.ref(pageListRefUrl).child($stateParams.id);
-
-            // pageRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-            //     var val = lzString.decompress(snap.val());
-            //
-            //     if (val) {
-            //         $timeout(function () {
-            //
-            //             customService.convert(val.content, $scope['containers'], 3);
-            //             vm.pageRef = snap.ref;
-            //             vm.pageCss = val.css || '';
-            //         }, 0);
-            //     }
-            // });
         } else {
             vm.pageRef = $firebase.ref(pageListRefUrl).push();
         }
@@ -235,16 +234,21 @@
 
         $scope.$mdSidenav = $mdSidenav;
         $scope.$get = $firebaseStorage.get;
-        $scope.$getProductById = articleProduct.getProductById;
-        $scope.$getArticleById = articleProduct.getArticleById;
+        $scope.$getProduct = articleProduct.getProduct;
+        $scope.$getArticle = articleProduct.getArticle;
         $scope.$queryList = articleProduct.queryList;
+        $scope.$queryProduct = articleProduct.queryProduct;
+        $scope.$queryArticle = articleProduct.queryArticle;
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.params = JSON.parse($stateParams.params || '{}');
         $scope.$go = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
-            $state.go('quartz.admin-default.customPage', {pageName: pageName, params: JSON.stringify(_params)});
+            $state.go('quartz.admin-default.customPage', {
+                pageName: pageName || $stateParams.pageName,
+                params: JSON.stringify(_params)
+            });
         };
 
         angular.extend(customPage, $stateParams);
@@ -462,31 +466,7 @@
             $mdSidenav('editCustomItem').toggle();
         };
 
-        vm.isInsideBp = function (mq) {
-            var x = vm.layoutBreakpoint;
-            switch (mq) {
-                case '0~599':
-                    return (x == 'xs');
-                    break;
-                case '600~959':
-                    return (x == 'gt-xs' || x == 'sm');
-                    break;
-                case '960~1279':
-                    return (x == 'gt-xs' || x == 'gt-sm' || x == 'md');
-                    break;
-                case '1280~1919':
-                    return (x == 'gt-xs' || x == 'gt-sm' || x == 'gt-md' || x == 'lg');
-                    break;
-                case '>1920':
-                    return (x == 'gt-xs' || x == 'gt-sm' || x == 'gt-md' || x == 'gt-lg' || x == 'xl');
-                    break;
-                default:
-                    return true;
-                    break;
-            }
-        };
-
-        function isInsideMq (bp) {
+        function isInsideMq(bp) {
             var x = vm.viewMediaQuery;
             switch (bp) {
                 case 'xs':
@@ -525,11 +505,12 @@
 
         vm.getLayoutClass = function (itemLayout) {
             var inner = '',
-                outer = '';
+                flex = '',
+                display = '';
 
             angular.forEach(['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'], function (breakpoint) {
                 if (!itemLayout) return;
-                if (vm.media === 'all' && breakpoint!=='all') return;
+                if (vm.media === 'all' && breakpoint !== 'all') return;
                 var layout = itemLayout[breakpoint];
                 if (!layout || !isInsideMq(breakpoint)) return;
                 angular.forEach(layout, function (value, key) {
@@ -539,7 +520,7 @@
                     switch (key) {
                         case 'flex':
                             if (value === 'flex') _value = ' ';
-                            outer = _property + _value;
+                            flex = _property + _value;
                             return;
                             break;
                         case 'flex-offset':
@@ -549,7 +530,13 @@
                         case 'layout':
                             break;
                         case 'layout-align':
-                            _value = '-' + value.x||'start' + value.y||'stretch';
+                            _value = '-' + (value.x || 'start' + value.y || 'stretch') + ' ';
+                            break;
+                        case 'hide':
+                            display = 'hide';
+                            break;
+                        case 'show':
+                            display = 'show';
                             break;
                         default:
                             _property = value ? _property + ' ' : '';
@@ -559,7 +546,7 @@
                     inner += _property + _value;
                 })
             });
-            return {inner:inner, outer:outer}
+            return {inner: inner, outer: flex + display}
         };
 
         if (type === 'page') {

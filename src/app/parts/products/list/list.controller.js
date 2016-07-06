@@ -14,7 +14,7 @@
             reuse: 200
         };
 
-        vm.menuWidth = vm.tags ? 6 : 4;
+        vm.menuWidth = 4;
         // $firebase.ref("products/config@selectedSite").once("value", function (snap) {
         //     vm.productConfig = snap.val();
         // });
@@ -100,13 +100,5 @@
         vm.paginator = $elasticSearch.paginator($stateParams.siteName || 'main', 'products', vm.query);
         //initiate
         vm.paginator.onReorder('itemId');
-
-
-        vm.showDetail = function (itemId, pageName) {
-            $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.productDetail', {
-                id: itemId,
-                pageName: pageName
-            })
-        }
     }
 })();

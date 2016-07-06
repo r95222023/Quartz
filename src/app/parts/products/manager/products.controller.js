@@ -149,8 +149,7 @@
                 '@0': listData,
                 '@1': detailData
             }).then(function () {
-                indexService.update("products", id, vm.product);
-
+                indexService.update("product", id, vm.product);
                 vm.hide(function () {
                     $mdToast.show(
                         $mdToast.simple()
@@ -161,6 +160,7 @@
                     resetData();
                 });
             });
+            $firebaseStorage.clearTemp();
             $firebaseStorage.update('products/detail/' + id + '@selectedSite', vm.product);
         };
 
@@ -178,7 +178,7 @@
                 $firebase.update("products@selectedSite", ['list/' + id, 'detail/' + id], {
                     "@all": null
                 }).then(function () {
-                    indexService.remove("products", id);
+                    indexService.remove("product", id);
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Deleted!')
