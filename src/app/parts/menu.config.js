@@ -68,6 +68,11 @@
             priority: 1.2,
             children: [
                 {
+                    name: 'MENU.DESIGN.SETTING',
+                    state: 'quartz.admin-default.siteSetting',
+                    type: 'link'
+                },
+                {
                     name: 'MENU.DESIGN.PAGEMANAGER',
                     state: 'quartz.admin-default.pageManager',
                     params: {cate: 'all', subCate: 'all', queryString: ''},

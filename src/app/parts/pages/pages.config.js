@@ -75,7 +75,7 @@
                 resolve: {
                     getAllTemplates: ['customService', function (customService) {
                         return customService.getAllTemplates(templateList, tmplRoot)
-                    }],getSyncTime:['syncTime', function(syncTime){
+                    }], getSyncTime: ['syncTime', function (syncTime) {
                         return syncTime.onReady();
                     }],
                     authData: ['$auth', function ($auth) {
@@ -93,6 +93,28 @@
                 templateUrl: 'app/parts/pages/custom-page.tmpl.html',
                 controller: 'CustomPageController',
                 controllerAs: 'customPage'
+            })
+            .state('quartz.admin-default.siteSetting', {
+                url: '/:siteName/?id&params&params2&devMode',
+                resolve: {
+                    getSyncTime: ['syncTime', function (syncTime) {
+                        return syncTime.onReady();
+                    }],
+                    authData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
+                    }],
+                    sitesData:['sitesService', function(sitesService){
+                        return sitesService.onReady();
+                    }]
+                },
+                data: {
+                    layout: {
+                        footer: false
+                    }
+                },
+                templateUrl: 'app/parts/pages/setting/setting.tmpl.html',
+                controller: 'SiteSettingCtrl',
+                controllerAs: 'vm'
             });
     }
 })();

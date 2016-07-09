@@ -47,16 +47,16 @@
             return injected[id].promise;
         };
 
-        injectJS.setFromFirebase = function (id, refUrl) {
-            var def = $q.defer();
-            $firebase.ref(refUrl).once('value', function (snap) {
-                injectCSS.setDirectly(id, snap.val())
-                    .then(function () {
-                        def.resolve();
-                    });
-            });
-            return def.promise;
-        };
+        // injectJS.setFromFirebase = function (id, refUrl) {
+        //     var def = $q.defer();
+        //     $firebase.ref(refUrl).once('value', function (snap) {
+        //         injectCSS.setDirectly(id, snap.val())
+        //             .then(function () {
+        //                 def.resolve();
+        //             });
+        //     });
+        //     return def.promise;
+        // };
 
         return injectJS;
     }

@@ -1,0 +1,21 @@
+
+<md-tabs md-selected="vm.selectedSideEditorTab" md-dynamic-height md-border-bottom>
+    <md-tab label="CSS" >
+        <br>
+        <md-button ng-click="vm.update()">Update</md-button>
+        <div layout="row" layout-align="center start" layout-margin>
+            <textarea rows="200" cols="150" name="siteCss" ng-model="vm.css"
+                      ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }">
+            </textarea>
+        </div>
+    </md-tab>
+    <md-tab label="JS" >
+        <br>
+        <md-button ng-click="vm.update()">Update</md-button>
+        <div layout="row" layout-align="center start" layout-margin>
+            <textarea rows="200" cols="150" name="siteJs" ng-model="vm.js"
+                      ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }">
+            </textarea>
+        </div>
+    </md-tab>
+</md-tabs>

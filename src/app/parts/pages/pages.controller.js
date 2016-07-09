@@ -121,6 +121,7 @@
         $scope.$queryProduct = articleProduct.queryProduct;
         $scope.$queryArticle = articleProduct.queryArticle;
         $scope.$getCate = articleProduct.getCate;
+        $scope.$cate = articleProduct.cate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.params = JSON.parse($stateParams.params || '{}');
         $scope.$go = function (pageName, params) {
@@ -223,7 +224,7 @@
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, articleProduct, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, qtNotificationsService, $state, $mdDialog, config) {
+    function CustomPageController(lzString, articleProduct, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, $state) {
         var customPage = this,
             pageName = $stateParams.pageName,
             isIndex = !pageName || pageName === "index",
@@ -239,8 +240,9 @@
         $scope.$queryList = articleProduct.queryList;
         $scope.$queryProduct = articleProduct.queryProduct;
         $scope.$queryArticle = articleProduct.queryArticle;
-        $scope.$getCate = articleProduct.getCate;
+        $scope.$getCate =articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
+        $scope.$cate = articleProduct.cate;
         $scope.params = JSON.parse($stateParams.params || '{}');
         $scope.$go = function (pageName, params) {
             var _params = {};

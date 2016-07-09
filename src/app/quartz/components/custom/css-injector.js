@@ -57,15 +57,15 @@
 
             return deferred.promise;
         };
-
-        injectCSS.setFromFirebase = function (id, refUrl) {
-            var def = $q.defer();
-            $firebase.ref(refUrl).once('value', function (snap) {
-                injectCSS.setDirectly(id, snap.val());
-                def.resolve();
-            });
-            return def.promise;
-        };
+        //
+        // injectCSS.setFromFirebase = function (id, refUrl) {
+        //     var def = $q.defer();
+        //     $firebase.ref(refUrl).once('value', function (snap) {
+        //         injectCSS.setDirectly(id, snap.val());
+        //         def.resolve();
+        //     });
+        //     return def.promise;
+        // };
 
         injectCSS.setDirectly = function (id, value) {
             if (!angular.element('style#' + id).length) {

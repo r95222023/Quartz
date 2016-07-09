@@ -5,10 +5,12 @@
         .module('app.plugins.articleproduct', [])
         .service('articleProduct', ArticleProduct);
     /* @ngInject */
-    function ArticleProduct(lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
-        function getParams() {
-            var params = JSON.parse($stateParams.params || '{"product":{}, "article":{}}');
-            return {product: params.product || {}, article: params.article || {}};
+    function ArticleProduct($rootScope, lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
+        var self = this;
+
+        function getParams(stateParams) {
+            var _params = JSON.parse((stateParams || {}).params || $stateParams.params || '{"product":{}, "article":{}}');
+            return {product: _params.product || {}, article: _params.article || {}};
         }
 
         function getQueryData(mustArr, mustNotArr, query) {
@@ -95,57 +97,77 @@
         };
 
         //// categories and tags
-        var cateTemp = {article: {}, product: {}};
-
-        function getCate(type) {
+        this.cate = {
+            article: {}, product: {}
+        };
+        function getCate(type, isCrumbs) {
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite';
-            if (cateTemp[_type].load === 'loaded') {
-                return cateTemp[_type].categories
-            } else if (cateTemp[_type].load === 'loading') {
+            if (self.cate[_type].load === 'loaded') {
+                return isCrumbs ? self.cate[_type].crumbs : self.cate[_type].categories
+            } else if (self.cate[_type].load === 'loading') {
                 return
             }
-            cateTemp[_type].load = 'loading';
+            self.cate[_type].load = 'loading';
             $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
-                cateTemp[_type].categories = val || [];
-                cateTemp[_type].load = 'loaded';
+                self.cate[_type].categories = val || [];
+                self.cate[_type].load = 'loaded';
+                function refreshCrumbs (event, toState, toParams) {
+                    if (toParams.params) getCateCrumbs(_type, getParams(_type, toParams)[_type]);
+                }
+                refreshCrumbs(false,false,$stateParams);
+                $rootScope.$on('$stateChangeSuccess', refreshCrumbs);
             });
         }
 
+        function getCateCrumbs(type, apParams) {
+            var res = [],
+                toParams = {},
+                cate = apParams.cate,
+                subCate = apParams.subCate,
+                tag = apParams.tag,
+                categories = self.cate[type].categories || [];
 
-        function getCateCrumbs(type, categories, cate, subCate, tag) {
-            var params = getParams()[type] || {},
-                _cate = parseInt(cate || params.cate),
-                _subCate = parseInt(subCate || params.subCate),
-                _categories = categories || cateTemp[type].categories || [],
-                res = [];
-            if (tag || params.tag) return tag || params.tag;
-            if (_cate % 1 === 0) {
-                res.push(_categories[_cate][0]);
-                if (_subCate % 1 === 0) res.push(_categories[_cate][1][_subCate]);
-                return res;
+            toParams[type] = {};
+            if (cate % 1 === 0) {
+                toParams[type].cate = cate;
+                var cateParams = angular.copy(toParams);
+                res.push({name: categories[cate][0], params: cateParams});
+                if (subCate % 1 === 0) {
+                    toParams[type].subCate = subCate;
+                    var subParams = angular.copy(toParams);
+                    res.push({name: categories[cate][1][subCate], params: subParams});
+                }
             } else {
-                res.push('GENERAL.ALLCATE');
-                return res;
+                res.push({name: 'GENERAL.ALLCATE', params: toParams});
             }
+            if (tag) {
+                toParams[type].tag = tag;
+                res.push({name: tag, params: toParams});
+            }
+            self.cate[type].crumbs = res;
         }
 
+
         this.getCate = getCate;
-        this.getCateCrumbs = getCateCrumbs;
+        this.getCateCrumbs = function (type) {
+            return getCate(type, true);
+        };
+
         this.getProduct = function (id) {
-            var _id = id||getParams().product.id;
+            var _id = id || getParams().product.id;
             return $firebaseStorage.get('products/detail/' + _id);
         };
         this.getArticle = function (id) {
-            var _id = id||getParams().article.id;
+            var _id = id || getParams().article.id;
             return $firebaseStorage.get('articles/detail/' + _id);
         };
         this.cateCtr = function (vm, type) {
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite';
 
-            vm.categories = cateTemp[_type].categories;
-            vm.tags = cateTemp[_type].tags;
+            vm.categories = self.cate[_type].categories;
+            vm.tags = self.cate[_type].tags;
 
             vm.cateCrumb = function (categories, cate, subCate, tag) {
                 return getCateCrumbs(_type, categories, cate, subCate, tag);
