@@ -12,21 +12,18 @@
             .state('quartz.admin-default.productList', {
                 url: '/:siteName/prodcuts/list/?&cate&subCate&queryString&tag',
                 templateUrl: 'app/parts/products/list/list.tmpl.html',
-                // set the controller to load for this page
                 controller: 'ProductListController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.productDetail', {
                 url: '/:siteName/products/:id/detail',
                 templateUrl: 'app/parts/products/detail/detail.tmpl.html',
-                // set the controller to load for this page
                 controller: 'ProductDetailController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.shoppingCart', {
                 url: '/:siteName/shoppingcart',
                 templateUrl: 'app/parts/products/shopping-cart/shopping-cart.tmpl.html',
-                // set the controller to load for this page
                 controller: 'ShoppingCartController',
                 controllerAs: 'vm',
                 resolve: {
@@ -34,6 +31,12 @@
                         return syncTime.onReady()
                     }]
                 }
+            })
+            .state('quartz.admin-default.allpay-checkout', {
+                url: '/:siteName/checkout',
+                templateUrl: 'app/parts/products/checkout/allpay-checkout.tmpl.html',
+                controller: 'AllpayCheckoutCtrl',
+                controllerAs: 'vm'
             })
             .state('quartz.admin-default.productManager', {
                 url: '/admin/:siteName/products/manager/?orderBy&startAt&endAt&equalTo',

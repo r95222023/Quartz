@@ -172,9 +172,9 @@
                      class="md-whiteframe-3dp"
                      ng-class="vm.getLayoutClass(container.layout).outer"
                      layout="column"
-                     ng-repeat="container in containers.root track by container.cid">
-                    <div class="root-handle" style="cursor: move; width:100%;margin:0;">
-                        {{container.type+' '}}{{container.id}}
+                     ng-repeat="(rootIndex, container) in containers.root track by container.cid">
+                    <div class="root-handle" style="cursor: move; width:100%;margin:0;" layout="row" layout-wrap>
+                        <span>{{container.type+' '}}{{container.id}}</span>
                         <md-menu>
                             <md-button class="md-icon-button" aria-label="more action"
                                        ng-click="$mdOpenMenu();$event.stopPropagation();"
@@ -184,12 +184,16 @@
                             <md-menu-content width="3">
                                 <md-menu-item ng-repeat="action in vm.actions">
                                     <md-button
-                                        ng-click="vm.action(action[0],'root', $parent.$parent.$index)"
+                                        ng-click="vm.action(action[0],'root', rootIndex)"
                                         translate="{{action[1]}}"
                                         aria-label="{{action[1]}}"></md-button>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
+                        <span flex></span>
+                        <select ng-model="vm.widget['root'+rootIndex]" ng-change="vm.action('setWidget','root', rootIndex)" ng-options="widget.name for widget in vm.customWidgets track by widget.name">
+                            <option value="">--- Choose Widget ---</option>
+                        </select>
                     </div>
                     <div style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
                          ng-class="vm.getLayoutClass(container.layout).inner"
@@ -201,7 +205,7 @@
                              ng-class="vm.getLayoutClass(subcontainer.layout).outer"
                              layout="column"
                              class="md-whiteframe-3dp"
-                             ng-repeat="subcontainer in containers[container.cid] track by subcontainer.cid">
+                             ng-repeat="(subIndex,subcontainer) in containers[container.cid] track by subcontainer.cid">
                             <div class="lv1-handle" style="cursor: move; margin:0;">
                                 {{subcontainer.type+' '}}{{subcontainer.id}}
                                 <md-menu>
@@ -213,7 +217,7 @@
                                     <md-menu-content width="3">
                                         <md-menu-item ng-repeat="action in vm.actions">
                                             <md-button
-                                                ng-click="vm.action(action[0],container.cid, $parent.$parent.$index)"
+                                                ng-click="vm.action(action[0],container.cid, subIndex)"
                                                 translate="{{action[1]}}"
                                                 aria-label="{{action[1]}}"></md-button>
                                         </md-menu-item>
@@ -231,7 +235,7 @@
                                      class="md-whiteframe-3dp dragable-widget lv2-handle"
                                      layout="column"
                                      layout-padding
-                                     ng-repeat="widget in containers[subcontainer.cid] track by widget.cid">
+                                     ng-repeat="(widgetIndex,widget) in containers[subcontainer.cid] track by widget.cid">
                                     <div class="lv2-handle" style="cursor: move; margin:0;">
                                         {{widget.name||widget.type+' '}}{{widget.id}}
                                         <md-menu>
@@ -243,7 +247,7 @@
                                             <md-menu-content width="3">
                                                 <md-menu-item ng-repeat="action in vm.actions">
                                                     <md-button
-                                                        ng-click="vm.action(action[0],subcontainer.cid, $parent.$parent.$index)"
+                                                        ng-click="vm.action(action[0],subcontainer.cid, widgetIndex)"
                                                         translate="{{action[1]}}"
                                                         aria-label="{{action[1]}}"></md-button>
                                                 </md-menu-item>
@@ -274,7 +278,7 @@
         <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
     </md-toolbar>
     <md-tabs md-selected="vm.selectedSideEditorTab" md-dynamic-height md-border-bottom>
-        <md-tab label="Options">
+        <md-tab label="Options" ng-disabled="vm.item.type==='customWidget'">
             <div class="padding-30 md-tabs-content">
                 <form>
                     <md-input-container>
@@ -312,7 +316,7 @@
             </div>
         </md-tab>
 
-        <md-tab label="Layout">
+        <md-tab label="Layout" ng-disabled="vm.item.type==='customWidget'">
             <div class="padding-40 md-tabs-content">
                 <form layout="column">
                     <md-input-container ng-init="vm.layoutBreakpoint='all'">
@@ -395,7 +399,7 @@
 
         <md-tab label="HTML" layout-align="center start">
             <div class="padding-10 md-tabs-content">
-                <form ng-if="vm.item.type==='custom'">
+                <form ng-if="vm.item.type==='custom'&&vm.item.type!=='customWidget'">
                     <md-button ng-if="!vm.htmlEditor" ng-click="vm.htmlEditor=true">Edit</md-button>
                     <md-button ng-if="vm.htmlEditor===true" ng-click="vm.htmlEditor=false">Hide</md-button>
 

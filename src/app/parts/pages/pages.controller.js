@@ -143,8 +143,9 @@
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
-        var widgetSource = angular.extend({}, customWidgets, customService.items),
+        var widgetSource = customService.items,
             containerSource = customService.containers;
+        vm.customWidgets = customWidgets;
         //vm.getHtmlContent = customService.getHtmlContent;
         //vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         //vm.isTagConfigurable = customService.isTagConfigurable;
@@ -173,7 +174,7 @@
             vm.pageRef = $firebase.ref(pageListRefUrl).push();
         }
 
-        action(vm, 'page', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
+        action(vm, 'page', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService,lzString);
 
     }
 
@@ -220,7 +221,7 @@
             vm.widgetRef = widgetRootRef.push();
         }
 
-        action(vm, 'widget', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService);
+        action(vm, 'widget', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService,lzString);
     }
 
     /* @ngInject */
@@ -443,7 +444,7 @@
         }
     };
 
-    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService) {
+    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService,lzString) {
         vm.getHtmlContent = customService.getHtmlContent;
         vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         vm.isTagConfigurable = customService.isTagConfigurable;
@@ -565,6 +566,12 @@
                     case 'delete':
                         vm.deleteItem(cid, index);
                         break;
+                    case 'setWidget':
+                        if(!vm.widget[cid+index]) return;
+                        var widget = lzString.decompress(vm.widget[cid+index]);
+                        widget.cid = $scope.containers[cid][index].cid;
+                        $scope.containers[cid][index]=widget;
+                        break;
                 }
             };
             vm.editItem = function (cid, index) {
@@ -578,22 +585,22 @@
                 }
                 vm.item = angular.extend({}, $scope.containers[cid][index]);
                 vm.backUpItem = angular.copy($scope.containers[cid][index]);
-                if (vm.item.type === 'customWidget') {
-                    vm.item.content = vm.getHtmlContent(vm.item);
-                    vm.item.type = 'custom';
-                }
+                // if (vm.item.type === 'customWidget') {
+                //     vm.item.content = vm.getHtmlContent(vm.item);
+                //     vm.item.type = 'custom';
+                // }
             };
 
             vm.updateItem = function () {
                 $mdSidenav('editCustomItem').close();
 
-                if (vm.item.type === 'customWidget') {
-                    if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
-                        return;
-                    } else {
-                        vm.item.type = 'custom';
-                    }
-                }
+                // if (vm.item.type === 'customWidget') {
+                //     if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
+                //         return;
+                //     } else {
+                //         vm.item.type = 'custom';
+                //     }
+                // }
                 if (vm.selectedContainerId === 'canvas') {
                     console.log(vm.item);
                     vm.canvas = vm.item;
@@ -606,11 +613,13 @@
             vm.compile = function () {
                 var styleSheets = {};
                 var compiled = customService.compile(customService.convertBack($scope.containers, 'root', styleSheets));
-                vm.pageRef.once('value', function (snap) {
-                    vm.pageCss = vm.pageCss || snap.child('css').val() || '';
-                    vm.widgetsCss = vm.buildCss(styleSheets);
-                    vm.injectCss();
-                });
+                // vm.pageRef.once('value', function (snap) {
+                //     vm.pageCss = vm.pageCss || snap.child('css').val() || '';
+                //     vm.widgetsCss = vm.buildCss(styleSheets);
+                //     vm.injectCss();
+                // });
+                vm.widgetsCss = vm.buildCss(styleSheets);
+                vm.injectCss();
                 vm.html = compiled
             };
 

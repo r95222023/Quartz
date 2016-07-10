@@ -102,13 +102,23 @@
                             parent: parentEl,
                             targetEvent: $event,
                             template: '<md-dialog aria-label="List dialog">' +
-                            '  <md-dialog-content>' +
+                            '  <input>' +
                             '<form name="allpay-checkout" ng-submit="submit()" target="_blank" method="post" action="{{allpayFormAction}}">' +
                             '<input ng-repeat="(name, value) in data.payment.allpay" name="{{name}}" value="{{value}}">' +
                             '</form>' +
+                            '<form name="form" class="css-form" novalidate>' +
+                            'E-mail: <input type="email" ng-model="data.userInfo.email" name="uEmail" required="" />' +
+                            '<div ng-show="form.$submitted || form.uEmail.$touched">' +
+                            '<span ng-show="form.uEmail.$error.required">Email is required.</span>' +
+                            '<span ng-show="form.uEmail.$error.email">Invalid email.</span>' +
+                            '</div>' +
+                            'I agree:<input type="checkbox" ng-model="data.userInfo.agree" name="userAgree" required="" />' +
+                            '<div ng-show="!data.userInfo.agree">You need to agree term of use.</div>' +
+                            '</div>' +
+                            '</form>' +
                             '  </md-dialog-content>' +
                             '  <md-dialog-actions>' +
-                            '    <input class="md-button md-raised" ng-click="submit()" type="submit" value="Submit">' +
+                            '    <input class="md-button md-raised" ng-disabled="form.$invalid" ng-click="submit()" type="submit" value="Submit">' +
                             '    <md-button ng-click="closeDialog()" class="md-primary">' +
                             '      Cancel' +
                             '    </md-button>' +
@@ -126,6 +136,16 @@
 
                         $scope.data = data;
                         $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
+
+                        var requested=false;
+                        $scope.onFormReady = function (){
+                            if(!requested){
+                                requested=true;
+                                getCheckMacValue(data).then(function(_data){
+                                    $scope.data = _data;
+                                })
+                            }
+                        };
 
                         $scope.submit = function () {
                             $scope.closeDialog();

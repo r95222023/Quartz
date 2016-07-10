@@ -132,6 +132,7 @@
 
             if (item.type === 'customWidget') {
                 content = compile(item.content);
+                return content;
             } else if (item.content) {
                 content = item.content;
             } else if (item.type && templates[item.type]) {
