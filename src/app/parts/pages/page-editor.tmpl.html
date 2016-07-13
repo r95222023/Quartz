@@ -175,6 +175,12 @@
                      ng-repeat="(rootIndex, container) in containers.root track by container.cid">
                     <div class="root-handle" style="cursor: move; width:100%;margin:0;" layout="row" layout-wrap>
                         <span>{{container.type+' '}}{{container.id}}</span>
+
+                        <div>
+                            <md-select ng-model="vm.widget['root'+rootIndex]" ng-change="vm.action('setWidget','root', rootIndex)" placeholder="Select a state">
+                                <md-option ng-value="widget" ng-repeat="widget in vm.customWidgets">{{ widget.name }}</md-option>
+                            </md-select>
+                        </div>
                         <md-menu>
                             <md-button class="md-icon-button" aria-label="more action"
                                        ng-click="$mdOpenMenu();$event.stopPropagation();"
@@ -190,10 +196,7 @@
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
-                        <span flex></span>
-                        <select ng-model="vm.widget['root'+rootIndex]" ng-change="vm.action('setWidget','root', rootIndex)" ng-options="widget.name for widget in vm.customWidgets track by widget.name">
-                            <option value="">--- Choose Widget ---</option>
-                        </select>
+
                     </div>
                     <div style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
                          ng-class="vm.getLayoutClass(container.layout).inner"

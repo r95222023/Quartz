@@ -4,7 +4,8 @@
     angular
         .module('quartz.components')
         .factory('customService', CustomService)
-        .factory('customData', CustomData);
+        .factory('customData', CustomData)
+        .factory('customParams', CustomParams);
 
     /* @ngInject */
     function CustomService($q, $http, $templateCache) {
@@ -12,7 +13,7 @@
             flex = ['flex'].concat(increment5),
             layoutOptions = {
                 "breakpoints": ['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'],
-                "mediaQueries":['all', '0~599', '600~959', '960~1279', '1280~1919', '>1920'],
+                "mediaQueries": ['all', '0~599', '600~959', '960~1279', '1280~1919', '>1920'],
                 "layout": {
                     "flex": flex,
                     "flex-offset": increment5,
@@ -23,7 +24,7 @@
                     }
                 }
             },
-            ctrls = [[''],['DefaultToolbarController'],['ArticleDetailController'],['ArticleListController'],['ProductDetailController'],['ProductListController']];
+            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], ['ProductListController'],['ShoppingCartController'],['AllpayCheckoutCtrl']];
 
         var items = [
                 {type: 'custom', content: '<!--include-->'}
@@ -87,7 +88,8 @@
             return promise;
         }
 
-        var properties = ['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content', 'ctrl','ctrlAs'];
+        var properties = ['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content', 'ctrl', 'ctrlAs'];
+
         function convert(val, target, maxLevel, level) {
             var _level = level || 1,
                 res = [];
@@ -115,14 +117,14 @@
                 var _item = {};
                 if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
                 angular.forEach(properties, function (property) {
-                    if(item[property]) _item[property] = item[property];
+                    if (item[property]) _item[property] = item[property];
                 });
                 if (item.cid) _item.divs = convertBack(val, item.cid, styleSheets);
                 result.push(_item);
             });
             return result;
         }
-        
+
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
         function getHtmlContent(item) {
             item = item || {};
@@ -184,12 +186,12 @@
             if (item.attrs) {
                 res += ' ' + item.attrs;
             }
-            if (item.ctrl){
-                res += ' ng-controller="'+ item.ctrl+' as '+(item.ctrlAs||'vm')+'"';
+            if (item.ctrl) {
+                res += ' ng-controller="' + item.ctrl + ' as ' + (item.ctrlAs || 'vm') + '"';
             }
 
-            if(tag.search('/')!==-1) singleton = true;
-            content = "<--tag-- --custom-->"+(singleton? "":content+"<--endtag-->");
+            if (tag.search('/') !== -1) singleton = true;
+            content = "<--tag-- --custom-->" + (singleton ? "" : content + "<--endtag-->");
             content = content.replace('--custom--', res);
             content = content.replace('--tag--', tag);
             content = content.replace('--endtag--', '/' + tag);
@@ -226,7 +228,7 @@
 
         return {
             layoutOptions: layoutOptions,
-            ctrls:ctrls,
+            ctrls: ctrls,
             convert: convert,
             convertBack: convertBack,
             compile: compile,
@@ -245,7 +247,7 @@
         function get(name) {
             var def = $q.defer();
 
-            $firebaseStorage.getWithCache('config/data/lists@selectedSite').then(function(val){
+            $firebaseStorage.getWithCache('config/data/lists@selectedSite').then(function (val) {
                 def.resolve(val[name]);
             });
             return def.promise;
@@ -253,6 +255,18 @@
 
         return {
             get: get
+        }
+    }
+
+    /* @ngInject */
+    function CustomParams($q, $stateParams) {
+        function getParams(stateParams) {
+            var _params = JSON.parse((stateParams || {}).params || $stateParams.params || '{}');
+            return angular.extend({"product": {}, "article": {}}, _params);
+        }
+
+        return {
+            get: getParams
         }
     }
 })();

@@ -1,23 +1,24 @@
-<md-dialog aria-label="List dialog">
-    <input>
-    <form name="allpay-checkout" ng-submit="submit()" target="_blank" method="post" action="{{allpayFormAction}}">
-        <input ng-repeat="(name, value) in data.payment.allpay" name="{{name}}" value="{{value}}">
-    </form>
-    <form name="form" class="css-form" novalidate>
-        E-mail: <input type="email" ng-model="data.userInfo.email" name="uEmail" required=""/>
-        <div ng-show="form.$submitted || form.uEmail.$touched">
-            <span ng-show="form.uEmail.$error.required">Email is required.</span>
-            <span ng-show="form.uEmail.$error.email">Invalid email.</span>
-        </div>
-        I agree:<input type="checkbox" ng-model="data.userInfo.agree" name="userAgree" required=""/>
-        <div ng-show="!data.userInfo.agree">You need to agree term of use.</div>
-        </div>
-    </form>
-    </md-dialog-content>
-    <md-dialog-actions>
-        <input class="md-button md-raised" ng-disabled="form.$invalid" ng-click="submit()" type="submit" value="Submit">
-        <md-button ng-click="closeDialog()" class="md-primary">
-            Cancel
-        </md-button>
-    </md-dialog-actions>
-</md-dialog>
+<form name="allpay-checkout" ng-submit="submit()" target="_blank" method="post" action="{{allpayFormAction}}">
+    <input ng-repeat="(name, value) in data.payment.allpay" name="{{name}}" value="{{value}}">
+</form>
+<form name="form" class="css-form" novalidate>
+    Address: <input type="text" ng-model="data.userInfo.address" name="uAddress" required=""/>
+    <div ng-show="form.$submitted || form.uAddress.$touched">
+        <span ng-show="form.uAddress.$error.required">Address is required.</span>
+    </div>
+    E-mail: <input type="email" ng-model="data.userInfo.email" name="uEmail" required=""/>
+    <div ng-show="form.$submitted || form.uEmail.$touched">
+        <span ng-show="form.uEmail.$error.required">Email is required.</span>
+        <span ng-show="form.uEmail.$error.email">Invalid email.</span>
+    </div>
+    I agree:<input type="checkbox" ng-model="data.userInfo.agree" name="userAgree" required=""/>
+    <div ng-show="!data.userInfo.agree">You need to agree term of use.</div>
+    <div ng-if="form.$valid&&!excuted" ng-init="excuted=true;onFormReady()"></div>
+
+    <input class="md-button md-raised" ng-disabled="form.$invalid&&!data.payment.allpay.CheckMacValue"
+           ng-click="submit()" type="submit" value="Submit">
+    <md-button ng-click="closeDialog()" class="md-primary">
+        Cancel
+    </md-button>
+</form>
+

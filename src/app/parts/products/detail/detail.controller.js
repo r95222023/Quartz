@@ -8,7 +8,7 @@
     /* @ngInject */
     function ProductDetailController(lzString, $timeout, $firebase, $firebaseStorage, $stateParams) {
         var vm = this,
-            params = JSON.parse($stateParams.params||'{}');
+            params = JSON.parse($stateParams.params||'{"product":{}}');
         
         // $firebase.cache(cachePath, editTimeRef, sourceRef).then(setModelData);
         $firebaseStorage.getWithCache('products/detail/' + params.product.id + '@selectedSite').then(setModelData);

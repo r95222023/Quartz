@@ -659,6 +659,7 @@
                         upload();
                     });
                     $firebaseStorage.remove('pages/detail/' + vm.originalPageName + '@selectedSite');
+                    vm.originalPageName = angular.copy(vm.pageName);
                 } else {
                     upload();
                 }
