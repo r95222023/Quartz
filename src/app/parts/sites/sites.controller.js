@@ -6,8 +6,63 @@
         .controller('MySitesController', MySitesController)
         .controller('AllSitesController', AllSitesController)
         .controller('SiteConfigureController', SiteConfigureController)
-        .controller('PaymentSettingController', PaymentSettingController);
+        .controller('PaymentSettingController', PaymentSettingController)
+        .controller('TemplateCtrl', TemplateCtrl);
 
+    /* @ngInject */
+    function TemplateCtrl($stateParams, $firebase,authData){
+        var vm = this;
+        vm.actions = [['applyTemplate', 'SITES.APPLYTEMPLATE'], ['info', 'GENERAL.INFO']];
+        if($stateParams.superAdmin) vm.actions = vm.actions.concat([['edit', 'GENERAL.EDIT'],['delete', 'GENERAL.DELETE']]);
+
+        $firebase.ref('templates/list').on('value', function (snap) {
+            $timeout(function () {
+                vm.templatesArray = snap.val();
+            }, 0);
+        });
+        
+        function deleteTemplate(site){
+            var confirm = $mdDialog.confirm()
+                .title('Delete this template?')
+                // .textContent('Delete the site?')
+                .ariaLabel('Would you like to delete this template?')
+                .ok('Confirm')
+                .cancel('Cancel'),
+                siteName = site.siteName;
+            $mdDialog.show(confirm).then(function () {
+                angular.forEach(['list','detail'], function(type){
+                    $firebase.ref('templates/'+type+'/'+siteName).remove()
+                })
+            });
+        }
+
+        vm.getMySites=function () {
+            if (authData) $firebase.ref('users/detail/' + authData.uid + '/sites').once('value', function (snap) {
+                vm.mysites = snap.val();
+            })
+        };
+
+        vm.applyTemplateTo =function (siteName){
+            $firebase.ref('templates/detail/'+siteName).once('value', function(snap){
+                var val = snap.val();
+                $firebase.ref('sites/detail/'+siteName).set(val);
+            })
+        };
+        
+        vm.action = function (action, site, ev) {
+            var params = {siteName: site.siteName};
+            switch (action) {
+                case 'edit':
+                    break;
+                case 'info':
+                    break;
+                case 'delete':
+                    deleteTemplate(site);
+                    break;
+            }
+        };
+    }
+    
     /* @ngInject */
     function MySitesController($firebase, $timeout, authData, $state, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this;
@@ -60,7 +115,7 @@
         if (!authData) $state.go('authentication.login');
 
 
-        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['order', 'SITES.SHOWORDER'], ['delete', 'GENERAL.DELETE']];
+        vm.actions = [['configure', 'SITES.CONFIGURE'], ['page', 'SITES.SHOWPAGE'], ['widget', 'SITES.SHOWWIDGET'], ['user', 'SITES.SHOWUSER'], ['product', 'SITES.SHOWPRODUCT'], ['order', 'SITES.SHOWORDER'],['setAsTemplate', 'SITES.SETASTEMPLATE'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, site, ev) {
             var params = {siteName: site.siteName};
             switch (action) {
@@ -82,6 +137,9 @@
                 case 'order':
                     $state.go('quartz.admin-default.orderHistory', params);
                     break;
+                case 'setAsTemplate':
+                    setAsTemplate(site);
+                    break;
                 case 'delete':
                     vm.deleteSite(site);
                     break;
@@ -98,6 +156,25 @@
             vm.paginator.onReorder(orderBy);
         };
 
+        function setAsTemplate(site){
+            var confirm = $mdDialog.confirm()
+                .title('Set this site as template?')
+                // .textContent('Delete this site?')
+                .ariaLabel('Would you like to set this site as template?')
+                .ok('Confirm')
+                .cancel('Cancel'),
+                siteName = site.siteName;
+            $mdDialog.show(confirm).then(function () {
+                $firebase.ref('sites/list/'+siteName).once('value',function(listSnap){
+                    var val = listSnap.val();
+                    $firebase.ref('templates/list/'+siteName).update(val);
+                });
+                $firebase.ref('sites/detail/'+siteName).once('value',function(detailSnap){
+                    var val = detailSnap.val();
+                    $firebase.ref('templates/detail/'+siteName).update(val);
+                });
+            });        
+        }
 
         vm.deleteSite = function (site) {
             var confirm = $mdDialog.confirm()
@@ -198,4 +275,5 @@
             $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
         }
     }
+    
 })();

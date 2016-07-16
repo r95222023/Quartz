@@ -44,12 +44,12 @@
             vm.paginator.onReorder(sort);
         };
 
-        vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
+        vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, event) {
             switch (action) {
-                case 'view':
-                    $state.go('quartz.admin-default.productDetail', {id: id});
-                    break;
+                // case 'view':
+                //     $state.go('quartz.admin-default.productDetail', {id: id});
+                //     break;
                 case 'edit':
                     vm.showEditor(event, id);
                     break;
@@ -93,6 +93,17 @@
         };
         vm.cancel = function () {
             $mdDialog.cancel();
+        };
+
+        vm.addImage = function(){
+            vm.imageUrl = vm.imageUrl||'';
+            if(!vm.imageUrl.trim()) return;
+            vm.product.images=vm.product.images||[];
+            vm.product.images.push(vm.imageUrl);
+            vm.imageUrl=''
+        };
+        vm.removeImage = function(index){
+            vm.product.images.splice(index, 1);
         };
 
         vm.addOption = function () {
@@ -139,7 +150,7 @@
             }
             var id = vm.product.itemId || (new Date()).getTime();
 
-            var listData = angular.extend({}, vm.product, {description: null, custom: null}),
+            var listData = angular.extend({}, vm.product, {description: null, custom: null, images:null}),
                 detailData = {
                     compressed: lzString.compress(vm.product),
                     editTime: firebase.database.ServerValue.TIMESTAMP
@@ -195,8 +206,7 @@
         vm.showEditor = function (ev, id) {
             resetData();
             if (id) {
-                $firebase.ref('products/detail@selectedSite').child(id).once('value', function (snap) {
-                    var val = lzString.decompress(snap.val());
+                $firebaseStorage.getWithCache('products/detail/'+id+'@selectedSite').then(function (val) {
                     vm.product = val;
                     if (angular.isString(val.group)) {
                         var groups = snap.val().group.split('->');
@@ -206,6 +216,7 @@
                         vm.optional.group = '';
                         vm.optional.subgroup = '';
                     }
+
                     if (angular.isObject(val.options)) {
                         angular.forEach(val.options, function (item, name) {
                             var optArr = [];

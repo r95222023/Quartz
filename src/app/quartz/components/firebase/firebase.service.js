@@ -36,7 +36,7 @@
     }
 
     function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
-        
+
         function replaceParamsInString(string, params) {
             for (var param in params) {
                 if (params.hasOwnProperty(param)) string = string.replace(eval("/\\" + param + "/g"), params[param]);
@@ -293,10 +293,11 @@
             if (localStorage && localStorage.getItem(cachePath)) {
                 var cached = localStorage.getItem(cachePath),
                     onGettingTime = function (snap) {
-                        var val = angular.isNumber(snap) ? snap : snap.val() || {},
+                        var val = angular.isNumber(snap) ? snap : (snap.val() || {}),
                             editTime = _option.isValue === false ? val.editTime : val;
+                        
                         var cachedVal = lzString.decompress({compressed: cached});
-
+                        
                         if (editTime < cachedVal.cachedTime) {
                             def.resolve(cachedVal);
                         } else {
@@ -306,6 +307,8 @@
 
                 if (angular.isNumber(editTimeRef)) {
                     onGettingTime(editTimeRef);
+                } else if(angular.isString(editTimeRef)){
+                    sourceRef.child(editTimeRef).once(type, onGettingTime);
                 } else {
                     editTimeRef.once(type, onGettingTime);
                 }

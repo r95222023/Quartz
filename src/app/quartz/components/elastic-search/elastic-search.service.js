@@ -41,6 +41,7 @@
                 var getFromDatabase = function () {
                     $firebase.cache(cacheId, searchCacheRef.child('usage/created'), searchCacheRef).then(function (val) {
                         searchData.responseUrl = responseUrl;
+
                         if (val === null) {
                             request(refUrl, responseUrl, searchData);
                         } else {
@@ -51,11 +52,11 @@
                     });
                 };
 
-                $firebaseStorage.getWithCache(storageRefPath, {chkRefUrl: searchCacheRef.child('checksum').toString().split('.com/')[1]}).then(function (res) {
+                $firebaseStorage.getWithCache(storageRefPath).then(function (res) {
                     if (!res) {
                         getFromDatabase();
                     } else {
-                        def.resolve(res);
+                        def.resolve(res.result||res);
                     }
                 });
 

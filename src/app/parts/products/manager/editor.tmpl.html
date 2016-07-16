@@ -24,10 +24,14 @@
                 </div>
                 <div layout="row">
                     <md-input-container flex>
-                        <label>Image</label>
-                        <input type='text' ng-model="vm.product.image">
+                        <label>Thumbnail</label>
+                        <input type='text' ng-model="vm.product.thumbnail">
                     </md-input-container>
+                    <md-card ng-if="vm.product.thumbnail" flex="20">
+                        <img ng-src="{{vm.product.thumbnail}}" class="md-card-image">
+                    </md-card>
                 </div>
+
                 <div layout="row">
                     <md-input-container flex="33">
                         <label>Price</label>
@@ -45,7 +49,8 @@
                         <label>Subcategory</label>
                         <md-select ng-model="vm.product.subcategory">
                             <md-option ng-value="null">Empty</md-option>
-                            <md-option ng-value="$index" ng-repeat="subcate in vm.getCate()[vm.product.category][1]">{{subcate}}
+                            <md-option ng-value="$index" ng-repeat="subcate in vm.getCate()[vm.product.category][1]">
+                                {{subcate}}
                             </md-option>
                         </md-select>
                     </md-input-container>
@@ -100,11 +105,9 @@
                         <md-input-container>
                             <label>Option: {{optName}}</label>
                             <input type='text' ng-model="vm.optional.options[optName]">
+                            <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
+                                     ng-click="vm.removeOption(optName)"></md-icon>
                         </md-input-container>
-                        <md-button class="md-icon-button" aria-label="language" ng-click="vm.removeOption(optName)"
-                                   aria-label="remove this option">
-                            <md-icon md-font-icon="fa fa-times"></md-icon>
-                        </md-button>
                     </div>
                 </div>
                 <div layout="row">
@@ -115,11 +118,26 @@
                     <md-input-container flex="50">
                         <label>Option Value</label>
                         <input type='text' ng-model="vm.optional.optValue">
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="vm.addOption()"></md-icon>
                     </md-input-container>
-                    <md-button class="md-icon-button" aria-label="language" ng-click="vm.addOption()"
-                               aria-label="add an option">
-                        <md-icon md-font-icon="fa fa-plus"></md-icon>
-                    </md-button>
+                </div>
+
+                <div layout="row">
+                    <md-input-container flex="50" layout-align="start center">
+                        <label>Image url</label>
+                        <input type='text' ng-model="vm.imageUrl">
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer;" ng-click="vm.addImage()"></md-icon>
+                    </md-input-container>
+                </div>
+                <div layout="row" layout-wrap>
+                    <md-card flex="20" ng-repeat="(imageIndex, imageUrl) in vm.product.images">
+                        <md-card-actions layout="row" layout-align="end center">
+                            <md-button class="md-icon-button" aria-label="remove" ng-click="vm.removeImage(imageIndex)">
+                                <md-icon md-font-icon="fa fa-times"></md-icon>
+                            </md-button>
+                        </md-card-actions>
+                        <img ng-src="{{imageUrl}}" class="md-card-image">
+                    </md-card>
                 </div>
                 <legend><h3>Custom</h3></legend>
                 <div layout="row">
@@ -127,11 +145,9 @@
                         <md-input-container>
                             <label>{{customKey}}</label>
                             <input type='text' ng-model="vm.product.custom[customKey]">
+                            <md-icon md-font-icon="fa fa-times" ng-click="vm.removeCustom(customKey)"
+                                     style="cursor: pointer"></md-icon>
                         </md-input-container>
-                        <md-button class="md-icon-button" aria-label="language" ng-click="vm.removeCustom(customKey)"
-                                   aria-label="remove this option">
-                            <md-icon md-font-icon="fa fa-times"></md-icon>
-                        </md-button>
                     </div>
                 </div>
                 <div layout="row">
@@ -142,11 +158,8 @@
                     <md-input-container flex="50">
                         <label>Value</label>
                         <input type='text' ng-model="vm.customValue">
+                        <md-icon md-font-icon="fa fa-plus" ng-click="vm.addCustom()" style="cursor: pointer"></md-icon>
                     </md-input-container>
-                    <md-button class="md-icon-button" aria-label="language" ng-click="vm.addCustom()"
-                               aria-label="add an option">
-                        <md-icon md-font-icon="fa fa-plus"></md-icon>
-                    </md-button>
                 </div>
 
             </fieldset>

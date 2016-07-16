@@ -59,7 +59,8 @@
         function getWithCache(path, opt) {
 
             var def = $q.defer(),
-                id = 'FBS:' + (new FbObj(path)).path;
+                _path = (new FbObj(path)).path,
+                id = 'FBS:' +_path;
             if (storagePromises[id]&&!storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
             storagePromises[id] = def.promise;
             storageReload[id]=false;
@@ -106,7 +107,13 @@
             }, 10000);
             promise.catch(function (error) {
                 if (error.code === 'storage/object-not-found') {
-                    resolve(null);
+                    // def.resolve(null);
+                    // $firebase.ref(path).once('value',function(snap){
+                    //     def.resolve(lzString.decompress(snap.val()));
+                    // });
+                    $firebase.cache(path, 'usage/created', $firebase.ref(path)).then(function(val){
+                        def.resolve(lzString.decompress(val));
+                    });
                 } else {
                     def.reject(error);
                 }
