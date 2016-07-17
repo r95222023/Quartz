@@ -33,6 +33,11 @@
                 // icon: 'zmdi zmdi-accounts-list',
                 type: 'link',
                 state: 'quartz.admin-default.allusers'
+            },{
+                name: 'MENU.TEMPLATES',
+                // icon: 'zmdi zmdi-square-o',
+                type: 'link',
+                state: 'quartz.admin-default.template'
             }]
         });
 

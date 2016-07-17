@@ -298,7 +298,7 @@
                         
                         var cachedVal = lzString.decompress({compressed: cached});
                         
-                        if (editTime < cachedVal.cachedTime) {
+                        if (editTime&&editTime < cachedVal.cachedTime) {
                             def.resolve(cachedVal);
                         } else {
                             fetchFn();
@@ -322,7 +322,6 @@
             function fetch() {
                 sourceRef.once(_option.sourceType || 'value', function (snap) {
                     var val = lzString.decompress(snap.val());
-
                     if (!val) {
                         def.resolve(null);
                         return

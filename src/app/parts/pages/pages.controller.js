@@ -554,7 +554,6 @@
 
         if (type === 'page') {
             vm.originalPageName = $state.params.pageName + '';
-
             vm.action = function (action, cid, index) {
                 switch (action) {
                     case 'edit':
@@ -639,22 +638,25 @@
 
                 var pid = vm.pageRef.key,
                     upload = function () {
-                        $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + pid], {
+                        var data = {
+                            "css": css || '',
+                            "content": content
+                        };
+                        $firebase.update(pageRefUrl, ['list/' + pid, 'detail/' + vm.pageName], {
                             "name": vm.pageName,
                             "author": $firebase.params["$uid"] || null,
+                            "compressed@1": lzString.compress(data),
                             "editTime@0": firebase.database.ServerValue.TIMESTAMP
                         });
 
-                        $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite', {
-                            "css": css || '',
-                            "content": content
-                        }).then(vm.revert);
+                        $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite',data).then(vm.revert);
                     };
 
                 if (vm.originalPageName && vm.originalPageName !== vm.pageName) {
                     vm.pageRef.parent.orderByChild('name').equalTo(vm.pageName).limitToFirst(1).once('value', function (snap) {
                         snap.forEach(function (child) {
                             child.ref.remove();
+                            vm.pageRef.parent.parent.child('detail').child(vm.originalPageName).remove();
                         });
                         upload();
                     });

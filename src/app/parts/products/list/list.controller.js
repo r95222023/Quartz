@@ -15,21 +15,6 @@
         };
 
         vm.menuWidth = 4;
-        // $firebase.ref("products/config@selectedSite").once("value", function (snap) {
-        //     vm.productConfig = snap.val();
-        // });
-        // vm.categories = function () {
-        //     if(!vm.productConfig&&!vm.productConfig.categories) return;
-        //     var cate = parseInt($stateParams.cate),
-        //         subCate = parseInt($stateParams.subCate),
-        //         categories = vm.productConfig.categories;
-        //     if ($stateParams.tag) return $stateParams.tag;
-        //     if (cate % 1 === 0) {
-        //         return categories[cate][0] + (subCate % 1 === 0 ? '>' + categories[cate][1][subCate] : '');
-        //     } else {
-        //         return $filter('translate')('GENERAL.ALLCATE');
-        //     }
-        // };
 
         vm.getProductsByTag = function (tagName, limit) {
             $firebase.ref('products/list@selectedSite')
@@ -97,7 +82,7 @@
         vm.search(); //for query from url
 
 
-        vm.paginator = $elasticSearch.paginator($stateParams.siteName || 'main', 'products', vm.query);
+        vm.paginator = $elasticSearch.paginator($stateParams.siteName || 'main', 'product', vm.query);
         //initiate
         vm.paginator.onReorder('itemId');
     }

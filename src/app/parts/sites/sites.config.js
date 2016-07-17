@@ -75,6 +75,23 @@
                 // set the controller to load for this page
                 controller: 'PaymentSettingController',
                 controllerAs: 'vm'
+            })
+            .state('quartz.admin-default.template', {
+                data: {
+                    layout: {
+                        // sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        footer: false
+                    }
+                },
+                resolve: {
+                    site: function(){return {}}
+                },
+                url: '/admin/templateMgr',
+                templateUrl: 'app/parts/sites/template.tmpl.html',
+                // set the controller to load for this page
+                controller: 'TemplateCtrl',
+                controllerAs: 'vm'
             });
     }
 })();

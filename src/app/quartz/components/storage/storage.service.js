@@ -111,8 +111,8 @@
                     // $firebase.ref(path).once('value',function(snap){
                     //     def.resolve(lzString.decompress(snap.val()));
                     // });
-                    $firebase.cache(path, 'usage/created', $firebase.ref(path)).then(function(val){
-                        def.resolve(lzString.decompress(val));
+                    $firebase.cache(path, 'editTime', $firebase.ref(path)).then(function(val){
+                        def.resolve(val);
                     });
                 } else {
                     def.reject(error);

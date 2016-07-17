@@ -4,9 +4,9 @@
             <md-card>
                 <!--<img class="md-card-image" ng-src="{{product._source.image}}">-->
                 <!--<md-card-title>-->
-                    <!--<md-card-title-text>-->
-                        <!--<span class="md-headline">{{product._source.itemName}}</span>-->
-                    <!--</md-card-title-text>-->
+                <!--<md-card-title-text>-->
+                <!--<span class="md-headline">{{product._source.itemName}}</span>-->
+                <!--</md-card-title-text>-->
                 <!--</md-card-title>-->
                 <md-card-content layout-align="center center">
                     <md-input-container>
@@ -36,6 +36,7 @@
                     <button ui-sref="quartz.admin-default.siteusers({siteName:site.siteName})">user</button>
                     <button ui-sref="quartz.admin-default.productManager({siteName:site.siteName})">product</button>
                     <button ui-sref="quartz.admin-default.orderHistory({siteName:site.siteName})">order</button>
+                    <button ng-click="vm.selectedSite=site;vm.showTemplate($event)">apply template</button>
                     <button ng-click="vm.deleteSite(site)">delete</button>
                 </md-card-content>
             </md-card>

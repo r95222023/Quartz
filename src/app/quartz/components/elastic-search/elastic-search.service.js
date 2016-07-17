@@ -39,7 +39,7 @@
                 responseUrl = searchCacheRef.toString();
 
                 var getFromDatabase = function () {
-                    $firebase.cache(cacheId, searchCacheRef.child('usage/created'), searchCacheRef).then(function (val) {
+                    $firebase.cache(cacheId, 'editTime', searchCacheRef).then(function (val) {
                         searchData.responseUrl = responseUrl;
 
                         if (val === null) {
