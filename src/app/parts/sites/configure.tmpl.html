@@ -6,16 +6,20 @@
             <legend><h3>Basic Info</h3></legend>
             <div layout="row" layout-wrap>
                 <md-input-container flex="50">
-                    <label>Icon</label>
-                    <input type='text' ng-model="vm.config.basic.icon">
+                    <label>Logo</label>
+                    <input type='text' ng-model="vm.preload.logo">
+                </md-input-container>
+                <md-input-container flex="50">
+                    <label>Brand</label>
+                    <input type='text' ng-model="vm.preload.brand">
                 </md-input-container>
                 <md-input-container flex="50">
                     <label>Description</label>
-                    <input type='text' ng-model="vm.config.basic.description">
+                    <input type='text' ng-model="vm.description">
                 </md-input-container>
                 <md-input-container flex="50">
                     <label>Type</label>
-                    <input type='text' ng-model="vm.config.basic.type">
+                    <input type='text' ng-model="vm.type">
                 </md-input-container>
                 <md-input-container flex="50">
                     <label>Thumbnail</label>
@@ -34,7 +38,7 @@
                     </md-select>
                 </md-input-container>
             </div>
-            <legend><h3>Email</h3></legend>
+            <!--<legend><h3>Email</h3></legend>-->
 
         </fieldset>
     </form>

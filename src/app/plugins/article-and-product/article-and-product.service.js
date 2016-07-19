@@ -112,10 +112,11 @@
             $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
                 self.cate[_type].categories = val || [];
                 self.cate[_type].load = 'loaded';
-                function refreshCrumbs (event, toState, toParams) {
+                function refreshCrumbs(event, toState, toParams) {
                     if (toParams.params) getCateCrumbs(_type, getParams(_type, toParams)[_type]);
                 }
-                refreshCrumbs(false,false,$stateParams);
+
+                refreshCrumbs(false, false, $stateParams);
                 $rootScope.$on('$stateChangeSuccess', refreshCrumbs);
             });
         }
@@ -168,6 +169,7 @@
 
             vm.categories = self.cate[_type].categories;
             vm.tags = self.cate[_type].tags;
+            vm.getCate = getCate;
 
             vm.cateCrumb = function (categories, cate, subCate, tag) {
                 return getCateCrumbs(_type, categories, cate, subCate, tag);
@@ -219,6 +221,7 @@
 
             vm.paginator = $firebase.paginator(_type + 's/list@selectedSite', $stateParams);
             //initiate
+            vm.paginator.size = 25;
             vm.paginator.onReorder($stateParams.orderBy || 'itemId');
 
             vm.onPaginate = function (page, size) { //to prevent this being overwritten
@@ -252,7 +255,7 @@
                 vm.optional = {
                     options: {}
                 };
-                vm.paginator.page = 1;
+                vm.paginator.page = vm.paginator.page || 1;
             }
 
 
@@ -262,6 +265,17 @@
 
             vm.cancel = function () {
                 $mdDialog.cancel();
+            };
+
+            vm.addImage = function () {
+                vm.imageUrl = vm.imageUrl || '';
+                if (!vm.imageUrl.trim()) return;
+                vm[type].images = vm[type].images || [];
+                vm[type].images.push(vm.imageUrl);
+                vm.imageUrl = ''
+            };
+            vm.removeImage = function (index) {
+                vm[type].images.splice(index, 1);
             };
 
             vm.addOption = function () {
@@ -306,7 +320,7 @@
                         vm[type].tags[tag] = 1;
                     })
                 }
-                var id = vm[type].id || vm[type].itemId;
+                var id = vm[type].id || vm[type].itemId || (new Date()).getTime();
 
                 var listData = angular.extend({}, vm[type], {description: null, custom: null}),
                     detailData = {
@@ -316,21 +330,19 @@
                 $firebase.update(type + "s@selectedSite", ['list/' + id, 'detail/' + id], {
                     '@0': listData,
                     '@1': detailData
-                })
-                    .then(function () {
-
-                        indexService.update(type, id, vm[type]);
-
-                        vm.hide(function () {
-                            $mdToast.show(
-                                $mdToast.simple()
-                                    .textContent('Saved!')
-                                    .position(position)
-                                    .hideDelay(3000)
-                            );
-                            resetData();
-                        });
+                }).then(function () {
+                    indexService.update(type, id, vm[type]);
+                    vm.hide(function () {
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .textContent('Saved!')
+                                .position(position)
+                                .hideDelay(3000)
+                        );
+                        resetData();
                     });
+                });
+                $firebaseStorage.clearTemp();
                 $firebaseStorage.update(type + 's/detail/' + id + '@selectedSite', vm[type]);
             };
 
@@ -366,17 +378,8 @@
             vm.showEditor = function (ev, id) {
                 resetData();
                 if (id) {
-                    $firebase.ref(type + 's/detail@selectedSite').child(id).once('value', function (snap) {
-                        var val = lzString.decompress(snap.val());
+                    $firebaseStorage.getWithCache(type+'s/detail/' + id + '@selectedSite').then(function (val) {
                         vm[type] = val;
-                        if (angular.isString(val.group)) {
-                            var groups = snap.val().group.split('->');
-                            vm.optional.group = groups[0];
-                            vm.optional.subgroup = groups[1];
-                        } else {
-                            vm.optional.group = '';
-                            vm.optional.subgroup = '';
-                        }
                         if (angular.isObject(val.options)) {
                             angular.forEach(val.options, function (item, name) {
                                 var optArr = [];

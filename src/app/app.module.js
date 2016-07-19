@@ -7,7 +7,7 @@
             'ui.router', 'pascalprecht.translate', 'LocalStorageModule', 'googlechart', 'chart.js', 'linkify', 'ui.calendar', 'angularMoment', 'textAngular', 'uiGmapgoogle-maps', 'hljs', 'md.data.table', angularDragula(angular),'ngFileUpload',
             //'seed-module',
             // uncomment above to activate the example seed module
-            'app.examples',
+            // 'app.examples',
             'app.parts'
         ]);
     

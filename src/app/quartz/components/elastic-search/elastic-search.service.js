@@ -36,7 +36,8 @@
 
             if (angular.isString(option.cache) || option.cache === true) {
                 var searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
-                responseUrl = searchCacheRef.toString();
+
+                responseUrl =searchCacheRef.root.toString()+'/'+ cacheRefUrl+'/'+cacheId;
 
                 var getFromDatabase = function () {
                     $firebase.cache(cacheId, 'editTime', searchCacheRef).then(function (val) {

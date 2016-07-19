@@ -2,7 +2,7 @@
     <form ng-submit="vm.update()">
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Product Editor</h2>
+                <h2>Article Editor</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="vm.cancel()">
                     <md-icon md-font-icon="fa fa-times"></md-icon>
@@ -24,9 +24,12 @@
                 </div>
                 <div layout="row">
                     <md-input-container flex>
-                        <label>Image</label>
-                        <input type='text' ng-model="vm.article.image">
+                        <label>Thumbnail</label>
+                        <input type='text' ng-model="vm.article.thumbnail">
                     </md-input-container>
+                    <md-card ng-if="vm.article.thumbnail" flex="20">
+                        <img ng-src="{{vm.article.thumbnail}}" class="md-card-image">
+                    </md-card>
                 </div>
                 <div layout="row">
                     <md-input-container flex="50">
@@ -79,10 +82,27 @@
                         <label>Option Value</label>
                         <input type='text' ng-model="vm.optional.optValue">
                     </md-input-container>
-                    <md-button class="md-icon-button" aria-label="language" ng-click="vm.addOption()"
+                    <md-button class="md-icon-button" aria-label="add option" ng-click="vm.addOption()"
                                aria-label="add an option">
                         <md-icon md-font-icon="fa fa-plus"></md-icon>
                     </md-button>
+                </div>
+                <div layout="row">
+                    <md-input-container flex="50" layout-align="start center">
+                        <label>Image url</label>
+                        <input type='text' ng-model="vm.imageUrl">
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer;" ng-click="vm.addImage()"></md-icon>
+                    </md-input-container>
+                </div>
+                <div layout="row" layout-wrap>
+                    <md-card flex="20" ng-repeat="(imageIndex, imageUrl) in vm.article.images">
+                        <md-card-actions layout="row" layout-align="end center">
+                            <md-button class="md-icon-button" aria-label="remove" ng-click="vm.removeImage(imageIndex)">
+                                <md-icon md-font-icon="fa fa-times"></md-icon>
+                            </md-button>
+                        </md-card-actions>
+                        <img ng-src="{{imageUrl}}" class="md-card-image">
+                    </md-card>
                 </div>
                 <legend><h3>Custom</h3></legend>
                 <div layout="row">

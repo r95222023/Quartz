@@ -48,6 +48,7 @@
 
         <md-table-pagination ng-show="vm.paginator.size<vm.paginator.result.total"
                              md-limit="vm.paginator.size" md-page="vm.paginator.page"
+                             md-limit-options="[10, 25, 50, 100]"
                              md-total="{{vm.paginator.result.total}}"
                              md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
     </div>

@@ -59,6 +59,7 @@
         };
         vm.paginator = $firebase.paginator(pageListRefUrl);
         //initiate
+        vm.paginator.size = 25;
         vm.paginator.onReorder('name');
 
         vm.onPaginate = function (page, size) { //to prevent this being overwritten
@@ -109,7 +110,7 @@
     }
 
     /* @ngInject */
-    function PageEditorController(lzString, articleProduct, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout) {
+    function PageEditorController(lzString, articleProduct, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout, snippets) {
         var vm = this;
 
         // angular.extend($scope, articleProduct);
@@ -124,15 +125,15 @@
         $scope.$cate = articleProduct.cate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.params = JSON.parse($stateParams.params || '{}');
+        // $scope.$go = function (pageName, params) {
+        //     var _params = {};
+        //     if (angular.isObject(params)) angular.extend(_params, params);
+        //     $state.go('quartz.admin-default.customPage', {
+        //         pageName: pageName || $stateParams.pageName,
+        //         params: JSON.stringify(_params)
+        //     });
+        // };
         $scope.$go = function (pageName, params) {
-            var _params = {};
-            if (angular.isObject(params)) angular.extend(_params, params);
-            $state.go('quartz.admin-default.customPage', {
-                pageName: pageName || $stateParams.pageName,
-                params: JSON.stringify(_params)
-            });
-        };
-        $scope.$goTest = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
             console.log(params);
@@ -174,7 +175,7 @@
             vm.pageRef = $firebase.ref(pageListRefUrl).push();
         }
 
-        action(vm, 'page', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService,lzString);
+        action(vm, 'page', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService, lzString, snippets, $timeout);
 
     }
 
@@ -221,7 +222,7 @@
             vm.widgetRef = widgetRootRef.push();
         }
 
-        action(vm, 'widget', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService,lzString);
+        action(vm, 'widget', $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService, lzString);
     }
 
     /* @ngInject */
@@ -241,7 +242,7 @@
         $scope.$queryList = articleProduct.queryList;
         $scope.$queryProduct = articleProduct.queryProduct;
         $scope.$queryArticle = articleProduct.queryArticle;
-        $scope.$getCate =articleProduct.getCate;
+        $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.$cate = articleProduct.cate;
         $scope.params = JSON.parse($stateParams.params || '{}');
@@ -444,7 +445,7 @@
         }
     };
 
-    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService,lzString) {
+    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService, lzString, snippets,$timeout) {
         vm.getHtmlContent = customService.getHtmlContent;
         vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         vm.isTagConfigurable = customService.isTagConfigurable;
@@ -566,10 +567,10 @@
                         vm.deleteItem(cid, index);
                         break;
                     case 'setWidget':
-                        if(!vm.widget[cid+index]) return;
-                        var widget = lzString.decompress(vm.widget[cid+index]);
+                        if (!vm.widget[cid + index]) return;
+                        var widget = lzString.decompress(vm.widget[cid + index]);
                         widget.cid = $scope.containers[cid][index].cid;
-                        $scope.containers[cid][index]=widget;
+                        $scope.containers[cid][index] = widget;
                         break;
                 }
             };
@@ -584,22 +585,10 @@
                 }
                 vm.item = angular.extend({}, $scope.containers[cid][index]);
                 vm.backUpItem = angular.copy($scope.containers[cid][index]);
-                // if (vm.item.type === 'customWidget') {
-                //     vm.item.content = vm.getHtmlContent(vm.item);
-                //     vm.item.type = 'custom';
-                // }
             };
 
             vm.updateItem = function () {
                 $mdSidenav('editCustomItem').close();
-
-                // if (vm.item.type === 'customWidget') {
-                //     if (vm.getHtmlContent(vm.backUpItem) === vm.item.content) {
-                //         return;
-                //     } else {
-                //         vm.item.type = 'custom';
-                //     }
-                // }
                 if (vm.selectedContainerId === 'canvas') {
                     console.log(vm.item);
                     vm.canvas = vm.item;
@@ -631,6 +620,33 @@
                     });
             };
 
+            vm.import = function($files){
+                if ($files !== null && $files.length > 0) {
+                    var file = $files[0],
+                        reader = new FileReader();
+
+                    reader.onload = function(){
+                        $timeout(function(){
+                            var styleSheets = {},
+                                content = customService.convertBack($scope.containers, 'root', styleSheets)||[],
+                                css = vm.pageCss || '' + vm.buildCss(styleSheets) || '',
+                                result = JSON.parse(reader.result);
+
+                            customService.convert(content.concat(result.content||[]), $scope['containers'], 3);
+                            vm.pageCss = css+' '+(result.css || '');
+                        },0)
+                    };
+                    reader.readAsText(file);
+                }
+            };
+
+            vm.export = function () {
+                var styleSheets = {},
+                    content = customService.convertBack($scope.containers, 'root', styleSheets),
+                    css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
+                snippets.saveData({content:content,css:css},vm.pageName+'.json')
+            };
+
             vm.update = function () {
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
@@ -649,7 +665,7 @@
                             "editTime@0": firebase.database.ServerValue.TIMESTAMP
                         });
 
-                        $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite',data).then(vm.revert);
+                        $firebaseStorage.update('pages/detail/' + vm.pageName + '@selectedSite', data).then(vm.revert);
                     };
 
                 if (vm.originalPageName && vm.originalPageName !== vm.pageName) {
@@ -731,6 +747,10 @@
                         injectCSS.remove(vm.widgetRef.key);
                         dereg();
                     });
+            };
+
+            vm.export = function () {
+
             };
 
             vm.update = function () {

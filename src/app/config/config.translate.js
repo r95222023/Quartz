@@ -41,9 +41,11 @@ window.config.translate=function() {
         $translateProvider
             .registerAvailableLanguageKeys(languageKeys, {
                 'en_US': 'en',
-                'en_UK': 'en'
+                'en_UK': 'en',
+                'zh_TW': 'zh',
+                'zh_CN':'zh'
             })
-            .use('en');
+            .use('zh');
 
         // store the users language preference in a cookie
         $translateProvider.useLocalStorage();

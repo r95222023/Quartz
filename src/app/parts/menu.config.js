@@ -113,7 +113,7 @@
 
         qtMenuProvider.addMenuToGroup("siteSelected", {
             name: 'MENU.ARTICLESANDCATEGORIES',
-            icon: 'fa fa-barcode',
+            icon: 'fa fa-file-text-o ',
             type: 'dropdown',
             priority: 1.2,
             children: [
@@ -123,7 +123,7 @@
                     type: 'link'
                 },
                 {
-                    name: 'MENU.PANDC.ARTICLECATE',
+                    name: 'MENU.PANDC.CATEGORIES',
                     state: 'quartz.admin-default.articleCategoryManager',
                     type: 'link'
                 }

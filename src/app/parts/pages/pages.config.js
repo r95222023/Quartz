@@ -102,10 +102,10 @@
                     }],
                     authData: ['$auth', function ($auth) {
                         return $auth.waitForAuth()
-                    }],
+                    }]/*,
                     sitesData:['sitesService', function(sitesService){
                         return sitesService.onReady();
-                    }]
+                    }]*/
                 },
                 data: {
                     layout: {

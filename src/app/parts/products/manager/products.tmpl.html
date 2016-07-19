@@ -118,6 +118,7 @@
         </md-table-container>
         <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page"
                              md-total="{{vm.paginator.result.total}}"
+                             md-limit-options="[10, 25, 50, 100]"
                              md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
     </md-content>

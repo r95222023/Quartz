@@ -56,7 +56,11 @@
         };
         
         vm.saveCate = function () {
-            if(vm.categories) $firebaseStorage.update('products/config/categories@selectedSite', vm.categories);
+            if(vm.categories) {
+                var path = 'products/config/categories@selectedSite';
+                $firebase.updateCacheable(path, vm.categories);
+                $firebaseStorage.update(path, vm.categories);
+            }
         };
     }
 })();

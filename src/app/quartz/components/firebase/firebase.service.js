@@ -62,7 +62,7 @@
 
         function FbObj(refUrl, opt) {
             var _opt = opt || {},
-                _refUrl = (refUrl.split(".com/")[1]? refUrl.split(".com/")[1]:refUrl) || '@',
+                _refUrl = (refUrl.split(".com/")[1] ? refUrl.split(".com/")[1] : refUrl) || '@',
                 db = $firebase.databases[_refUrl.split("@")[1]] || {},
                 root = (db.url || _refUrl.split("@")[1] || '').split("#")[0] || dbFirebase.databaseURL,
                 rootPath = (db.url || _refUrl.split("@")[1] || '').split("#")[1];
@@ -88,7 +88,7 @@
                         ref = ref.push();
                         this.params[pathArr[i]] = ref.key;
                     } else {
-                        ref =pathArr[i]? ref.child(pathArr[i]):ref;
+                        ref = pathArr[i] ? ref.child(pathArr[i]) : ref;
                     }
                     path += ref.key + '/'
                 }
@@ -219,6 +219,10 @@
             _update(refUrl, value, onComplete, true, refUrlParams);
         }
 
+        function updateCacheable(refUrl, data) {
+            return update(refUrl, {compressed: lzString.compress(data), editTime: firebase.database.ServerValue.TIMESTAMP})
+        }
+
 //TODO: Transaction
 
         function batchUpdate(values, isConsecutive) {
@@ -295,10 +299,10 @@
                     onGettingTime = function (snap) {
                         var val = angular.isNumber(snap) ? snap : (snap.val() || {}),
                             editTime = _option.isValue === false ? val.editTime : val;
-                        
+
                         var cachedVal = lzString.decompress({compressed: cached});
-                        
-                        if (editTime&&editTime < cachedVal.cachedTime) {
+
+                        if (editTime && editTime < cachedVal.cachedTime) {
                             def.resolve(cachedVal);
                         } else {
                             fetchFn();
@@ -307,7 +311,7 @@
 
                 if (angular.isNumber(editTimeRef)) {
                     onGettingTime(editTimeRef);
-                } else if(angular.isString(editTimeRef)){
+                } else if (angular.isString(editTimeRef)) {
                     sourceRef.child(editTimeRef).once(type, onGettingTime);
                 } else {
                     editTimeRef.once(type, onGettingTime);
@@ -535,6 +539,7 @@
 
         var $firebase = {
             update: update,
+            updateCacheable:updateCacheable,
             batchUpdate: batchUpdate,
             params: params,
             databases: {},
@@ -545,7 +550,7 @@
             isRefUrlValid: isRefUrlValid,
             cache: cache,
             getUniqeId: getUniqeId,
-            databaseURL:dbFirebase.databaseURL
+            databaseURL: dbFirebase.databaseURL
         };
 
         return $firebase;

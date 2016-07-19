@@ -100,7 +100,7 @@
                 })
             });
         };
-        
+
         vm.closeDialog = function(){
             $mdDialog.cancel();
         };
@@ -272,50 +272,50 @@
     /* @ngInject */
     function SiteConfigureController($firebase, $firebaseStorage, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this,
-            siteDetailRef = $firebase.ref('sites/detail'),
+            basicPath = 'config/preload@selectedSite',
             siteListRef = $firebase.ref('sites/list'),
             pageListRef = $firebase.ref('pages/list@selectedSite'),
             siteName = $stateParams.siteName;
-        siteDetailRef.child(siteName).child('config/basic').once('value', function (snap) {
-            vm.config = {};
-            vm.config.basic = snap.val() || {};
+        $firebaseStorage.getWithCache(basicPath).then(function (val) {
+            vm.preload = val || {};
         });
 
         siteListRef.child(siteName).once('value', function (snap) {
             var val = snap.val();
             vm.thumbnail = val.thumbnail;
+            vm.description = val.description;
+            vm.type = val.type;
         });
 
         pageListRef.once('value', function (snap) {
             vm.pages = snap.val();
         });
         vm.updateSiteConfig = function () {
-            var pageName = vm.config.basic.index,
-                listData = {};
-            setIndex(pageName, function (data) {
-                $firebase.update('pages@selectedSite', data);
-            });
+            var listData = {},
+                pageName = vm.preload.index;
+            // setIndex(pageName, function (data) {
+            //     $firebase.update('pages@selectedSite', data);
+            // });
 
-            $firebase.update('sites/detail/' + siteName + '/config/basic', vm.config.basic);
-            $firebaseStorage.update('sites/detail/' + siteName + '/config/basic', vm.config.basic);
+            $firebase.updateCacheable(basicPath, vm.preload);
+            $firebaseStorage.update(basicPath, vm.preload);
 
 
-            listData['thumbnail/'] = vm.thumbnail;
+            listData['thumbnail/'] = vm.thumbnail||null;
             $firebase.update('sites/list/' + siteName, listData);
-
         };
 
-        function setIndex(pageName, cb) {
-            var data = {};
-            pageListRef.once('value', function (snap) {
-                snap.forEach(function (childSnap) {
-                    var isIndex = childSnap.val().name === pageName ? true : null;
-                    data["list/" + childSnap.key + "/config/index"] = isIndex;
-                    data["detail/" + childSnap.key + "/config/index"] = isIndex;
-                });
-                cb(data);
-            })
-        }
+        // function setIndex(pageName, cb) {
+        //     var data = {};
+        //     pageListRef.once('value', function (snap) {
+        //         snap.forEach(function (childSnap) {
+        //             var isIndex = childSnap.val().name === pageName ? true : null;
+        //             data["list/" + childSnap.key + "/config/index"] = isIndex;
+        //             data["detail/" + childSnap.key + "/config/index"] = isIndex;
+        //         });
+        //         cb(data);
+        //     })
+        // }
     }
 
     /* @ngInject */
@@ -336,7 +336,7 @@
 
 
         vm.updateAllpay = function () {
-            $firebase.update('config/payment/allpay@selectedSite', vm.allpay);
+            $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
             $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
             $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
         };

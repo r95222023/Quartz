@@ -13,6 +13,7 @@
         },
         "SITEDESIGN":"Site Design",
         "DESIGN": {
+            "SETTING":"Settings",
             "PAGEMANAGER":"Pages",
             "WIDGETMANAGER": "Widgets"
         },

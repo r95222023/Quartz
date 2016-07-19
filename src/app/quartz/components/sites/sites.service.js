@@ -22,7 +22,7 @@
                 clear();
             });
         }
-        
+
         var def;
         function setSite(siteName) {
             if (sitesService.siteName !== siteName) {
@@ -44,16 +44,19 @@
         }
 
         function getPreload() {
-            $firebaseStorage.getWithCache('pages/config/preload@selectedSite').then(function (res) {
-                if (res && res.css) {injectCSS.setDirectly('siteCSS', res.css);sitesService.siteCSS=res.css}
-                if (res && res.js) {injectJS.setDirectly('siteJS', res.js);sitesService.siteJS=res.js}
+            $firebaseStorage.getWithCache('config/preload@selectedSite').then(function (res) {
+                if (res && res.css) {injectCSS.setDirectly('siteCSS', res.css);sitesService.css=res.css}
+                if (res && res.js) {injectJS.setDirectly('siteJS', res.js);sitesService.js=res.js}
+                $rootScope.logo = res.logo;
+                $rootScope.brand = res.brand;
+
                 def.resolve(sitesService);
             });
         }
 
         if (!config.standAlone) {
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-                
+
                 if (toParams.siteName) {
                     setSite(toParams.siteName);
                 } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {

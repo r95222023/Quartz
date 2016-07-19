@@ -6,6 +6,106 @@
                 return items.slice().reverse();
             }
         })
+        .filter('relativeTime', /*@ngInject*/ function ($translate, $timeout, syncTime) {
+            function calculateDelta(now, date) {
+                return Math.round(Math.abs(now - date) / 1000);
+            }
+
+            function relativeTime(date, now) {
+                var _now = now || new Date();
+
+                if (!(date instanceof Date)) {
+                    date = new Date(date);
+                }
+
+                var minute = 60,
+                    hour = minute * 60,
+                    day = hour * 24,
+                    week = day * 7,
+                    month = day * 30,
+                    year = day * 365,
+                    delta = calculateDelta(_now, date),
+                    phrase, t = 1;
+
+                if (delta > day && delta < week) {
+                    date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+                    delta = calculateDelta(_now, date);
+                }
+
+                if (delta < 30) {
+                    phrase = 'JUST';
+                    t = 0;
+                } else if (delta < minute) {
+                    phrase = 'SECS';
+                    t = delta
+                } else if (delta < 2 * minute) {
+                    phrase = 'MIN';
+                } else if (delta < hour) {
+                    phrase = 'MINS';
+                    t = Math.floor(delta / minute);
+                } else if (Math.floor(delta / hour) === 1) {
+                    phrase = 'HOUR';
+                } else if (delta < day) {
+                    phrase = 'HOURS';
+                    t = Math.floor(delta / minute);
+                } else if (delta < day * 2) {
+                    phrase = 'DAY'
+                } else if (delta < week) {
+                    phrase = 'DAYS';
+                    t = Math.floor(delta / hour);
+                } else if (Math.floor(delta / week) === 1) {
+                    phrase = 'WEEK'
+                } else if (delta < month) {
+                    phrase = 'WEEKS';
+                    t = Math.floor(delta / week);
+                } else if (Math.floor(delta / month) === 1) {
+                    phrase = 'MONTH'
+                } else if (delta < year) {
+                    phrase = 'MONTHS';
+                    t = Math.floor(delta / month);
+                } else if (Math.floor(delta / year) === 1) {
+                    phrase = 'YEAR'
+                } else {
+                    phrase = 'YEARS';
+                    t = Math.floor(delta / year);
+                }
+                return [t, 'DATE.' + phrase];
+            }
+            var isWaiting = {},
+                translations = {};
+
+            function $relativeTime(input) {
+                console.log(input)
+                if(!input) return;
+                var translationValue = "",
+                    date=(new Date(input)).getTime();
+                if (translations[date]) {
+
+                    return translations[date];
+                } else {
+                    if (!isWaiting[date]) {
+                        isWaiting[date] = true;
+
+                        syncTime.onReady().then(function (getTime) {
+                            var res = relativeTime(date, (new Date(getTime()))),
+                                refresh = function(trans){
+                                    $timeout(function () {
+                                        translations[date] = trans.split(' ')[1] || !res[0] ? trans : res[0] + ' ' + trans;
+                                        isWaiting[date] = false;
+                                        console.log(translations)
+                                    }, 0);
+                                };
+
+                            $translate(res[1]).then(refresh, refresh);
+                        });
+                    }
+                }
+
+                return translationValue;
+            }
+
+            return $relativeTime;
+        })
         .filter('consecutive', /*@ngInject*/ function ($filter) {
             return function (items, input, isReverse) {
                 var _items = items || [];

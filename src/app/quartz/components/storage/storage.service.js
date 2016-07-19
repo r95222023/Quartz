@@ -112,7 +112,7 @@
                     //     def.resolve(lzString.decompress(snap.val()));
                     // });
                     $firebase.cache(path, 'editTime', $firebase.ref(path)).then(function(val){
-                        def.resolve(val);
+                        resolve(val);
                     });
                 } else {
                     def.reject(error);

@@ -12,7 +12,7 @@
             Edit Mode
         </md-button>
         <md-button ng-if="vm.cateEdit"
-                   ng-click="vm.saveCateTag()"
+                   ng-click="vm.saveCateTag();vm.cateEdit=!vm.cateEdit"
                    aria-label="save categories">
             Save
         </md-button>
@@ -21,19 +21,6 @@
                    aria-label="save categories">
             Cancel
         </md-button>
-    </div>
-
-    <div layout="row" layout-xs="column" layout-wrap layout-padding class="md-whiteframe-2dp">
-        <div flex="100">
-            <h2>Tags</h2>
-            <span ng-if="!vm.cateEdit">{{vm.tags}}</span>
-            <div ng-if="vm.cateEdit">
-                <md-input-container class="md-icon-float md-block">
-                    <label>Tags</label>
-                    <input ng-model="vm.tags" type="text">
-                </md-input-container>
-            </div>
-        </div>
     </div>
 
     <div layout="row" layout-xs="column" layout-wrap layout-padding class="md-whiteframe-2dp">

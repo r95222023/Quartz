@@ -6,20 +6,24 @@
         .controller('SiteSettingCtrl', SiteSettingCtrl);
 
     /* @ngInject */
-    function SiteSettingCtrl($firebaseStorage, sitesData) {
-        var vm= this;
-        vm.css = sitesData.siteCSS;
-        vm.js = sitesData.siteJS;
-
+    function SiteSettingCtrl($firebase, $firebaseStorage) {
+        var vm= this,path='config/preload@selectedSite';
+        
+        $firebaseStorage.getWithCache(path).then(function(preload){
+            vm.css = preload.css;
+            vm.js = preload.js;
+        });
         vm.update = function(){
             var data = {};
             if(vm.css) data.css = vm.css.trim();
             if(vm.js) data.js = vm.js.trim();
 
             if(data.css||data.js) {
-                $firebaseStorage.update('pages/config/preload@selectedSite', data);
+                $firebase.updateCacheable(path,data);
+                $firebaseStorage.update(path, data);
             } else {
-                $firebaseStorage.remove('pages/config/preload@selectedSite');
+                $firebase.ref(path).remove();
+                $firebaseStorage.remove(path);
             }
         };
     }

@@ -12,7 +12,7 @@
             Edit Mode
         </md-button>
         <md-button ng-if="vm.cateEdit"
-                   ng-click="vm.saveCate()"
+                   ng-click="vm.saveCate();vm.cateEdit=false"
                    aria-label="save categories">
             Save
         </md-button>
