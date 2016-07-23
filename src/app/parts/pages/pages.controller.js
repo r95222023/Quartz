@@ -566,7 +566,6 @@
             }, 0)
         }
 
-        var htmlBuilder = new Tautologistics.NodeHtmlParser.HtmlBuilder(angular.noop, {enforceEmptyTags: true});
 
         vm.importHtml = function ($files) {
             if ($files !== null && $files.length > 0) {
@@ -574,99 +573,74 @@
                     reader = new FileReader();
 
                 reader.onload = function () {
-                    parseHtml(reader.result.replace(/(\r\n|\n|\r)/gm, ""), function (error, dom) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            importData({content: formatParsedHtml(dom, 1)})
-                        }
-                    })
+                    importData({content: formatParsedHtml($.parseHTML(getBody(reader.result)), 1)});
                 };
                 reader.readAsText(file);
             }
         };
 
-        function parseHtml(rawHtml, callback) {
-            var handler = new Tautologistics.NodeHtmlParser.HtmlBuilder(callback, {caseSensitiveAttr: true});
-
-            var parser = new Tautologistics.NodeHtmlParser.Parser(handler);
-            parser.parseComplete(getBody(rawHtml));
-        }
-
         function getBody(rawHtml) {
-            var body = /<body.*?>([\s\S]*)<\/body>/.exec(rawHtml) || {};
+            var body = /<body.*?>([\s\S]*)<\/body>/.exec(rawHtml.replace(/(\r\n|\n|\r)/gm, "")) || [];
             return body[1] || rawHtml;
         }
 
-        function htmlize(arr) {
-            var res = '';
-            for (var i = 0; i < arr.length; i++) {
-                var element = arr[i],
-                    type = element.type,
-                    data = element.raw || element.data;
-                if (type === 'tag') {
-                    res += '<' + data + '>';
-
-                    if (element.children) {
-                        res += htmlize(element.children)
-                    }
-
-                    if (!htmlBuilder.isEmptyTag(element)) res += '</' + element.name + '>'
-                } else if (type === 'text') {
-                    res+=data;
-                }
-            }
-            return res;
-        }
-
-        function factorAttr(attrArr) {
+        function factorAttr(outerHTML, attrArr) {
             var res = {},
                 attrString = '';
-            angular.forEach(attrArr || {}, function (val, key) {
-                if (key === 'class') {
-                    res.class = val;
-                } else if (key === 'style') {
-                    res.style = val;
-                } else {
-                    attrString += val ? key + '="' + val + '" ' : key + ' ';
-                }
+            angular.forEach(attrArr || {}, function (attr) {
+                if(attr.name==='class'||attr.name==='style') return;
+                attrString += attr.value ? attr.name + '="' + attr.value + '" ' : attr.name + ' ';
             });
             if (attrString) res.attrs = attrString;
             return res;
         }
 
-        function formatParsedHtml(parsedHtml, level) {
+        // function matchAttr(outerHTML, attrName) {
+        //     var regStr = "\\s*=\\s*"+"['"+'"]'+"(.*?)"+"['"+'"]',
+        //         reg = new RegExp("<.*"+attrName + regStr+".*>"),
+        //         m = reg.exec(outerHTML || '');
+        //
+        //     return (m || [])[1];
+        // }
+
+
+        function formatParsedHtml(dom, level) {
+
             var res = [];
-            for (var i = 0; i < parsedHtml.length; i++) {
-                var rawChild = parsedHtml[i],
+            for (var i = 0; i < dom.length; i++) {
+                var rawChild = dom[i],
                     child = {},
-                    type = rawChild.type,
-                    tag = rawChild.name,
-                    data = rawChild.raw||rawChild.data;
+                    id = rawChild.id,
+                    outerHTML = rawChild.outerHTML,
+                    style = (rawChild.style||{}).cssText,
+                    nodeName = rawChild.nodeName.toLowerCase();
 
-                if (type === 'tag') {
-                    var regId = /id\s*=\s*['"](.*?)['"]/g,
-                        m=regId.exec(data);
-
-                    if (m!== null) {
-                        child.id=m[1];
-                    }
-                    child.tag = rawChild.name;
-                    angular.extend(child, factorAttr(rawChild.attributes));
-                    if (rawChild.children) {
-                        if (level < 3) {
-                            child.content = '<!--include-->';
-                            child.divs = formatParsedHtml(rawChild.children, level + 1);
-                        } else {
-                            child.content = htmlize(rawChild.children);
+                switch (nodeName){
+                    case '#text':
+                        child.type = 'text';
+                        child.content = rawChild.textContent || rawChild.data || '';
+                        res.push(child);
+                        break;
+                    case '#comment':
+                        break;
+                    case 'meta':
+                        break;
+                    default:
+                        if (style) child.style = style;
+                        child.tag = nodeName;
+                        if (id) child.id = id;
+                        if (rawChild.className) child.class = rawChild.className;
+                        angular.extend(child, factorAttr(outerHTML, rawChild.attributes));
+                        if (rawChild.childNodes) {
+                            if (level < 3) {
+                                child.content = '<!--include-->';
+                                child.divs = formatParsedHtml(rawChild.childNodes, level + 1);
+                            } else {
+                                child.content = rawChild.innerHTML;
+                            }
                         }
-                    }
-                } else if (type === 'text') {
-                    child.type = 'text';
-                    child.content = rawChild.raw || rawChild.data || '';
-                }
-                if(type!=='comment'&&tag!=='meta'){
-                    res.push(child);
+                        res.push(child);
+                        break
                 }
             }
             return res;
