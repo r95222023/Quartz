@@ -6,10 +6,6 @@
 
         .controller('CartController', CartController)
 
-        //.controller('CartController', ['$scope', 'ngCart', function ($scope, ngCart) {
-        //    $scope.ngCart = ngCart;
-        //}])
-
         .controller('AddToCartController', AddToCartController)
 
         .controller('CartTableAdvancedController', CartTableAdvancedController);
@@ -62,12 +58,6 @@
                 }
             });
         }
-
-        //function getUsers() {
-        //    GithubService.getUsers(vm.query).then(function(users){
-        //        vm.users = users.data;
-        //    });
-        //}
 
         function removeFilter() {
             vm.filter.show = false;

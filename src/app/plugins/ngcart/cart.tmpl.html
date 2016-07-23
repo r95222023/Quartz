@@ -1,19 +1,10 @@
+<script src="../../quartz/components/storage/storage.service.js"></script>
 <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
     Your cart is empty
 </div>
 
 
 <div ng-controller="CartTableAdvancedController as vm" ng-show="ngCart.getTotalItems() > 0">
-    <!--<md-toolbar class="md-table-toolbar md-default" ng-hide="vm.selected.length || vm.filter.show">-->
-        <!--<div class="md-toolbar-tools">-->
-            <!--<h2 class="md-title">Shopping Cart</h2>-->
-            <!--<span flex></span>-->
-            <!--<md-button class="md-icon-button" ng-click="vm.filter.show = true">-->
-                <!--&lt;!&ndash; <i class="material-icons md-dark">filter_list</i> &ndash;&gt;-->
-                <!--<md-icon md-font-icon="fa fa-search"></md-icon>-->
-            <!--</md-button>-->
-        <!--</div>-->
-    <!--</md-toolbar>-->
     <md-toolbar class="md-table-toolbar md-default">
         <div class="md-toolbar-tools">
             <span>Shopping Cart</span>
@@ -22,9 +13,6 @@
 
     <md-toolbar class="md-table-toolbar md-default" ng-show="vm.filter.show && !vm.selected.length">
         <div class="md-toolbar-tools">
-            <!--<form flex name="vm.filter.form">-->
-                <!--<input type="text" ng-model="vm.query.filter" ng-model-options="vm.filter.options" placeholder="search">-->
-            <!--</form>-->
             <md-input-container flex>
                 <label>search</label>
                 <input ng-model="vm.query.filter">
@@ -39,12 +27,8 @@
 
     <md-table-container>
         <table md-table class="md-primary md-data-table" md-progress="vm.deferred">
-            <!--<thead md-order="vm.query.order" md-trigger="vm.getUsers">-->
             <thead>
             <tr md-row>
-                <!--<th name="avatar"></th>-->
-                <!--<th name="login"></th>-->
-                <!--<th order-by="id" name="ID"></th>-->
                 <th></th>
                 <th>Item Name</th>
                 <th>Quantity</th>
@@ -54,10 +38,6 @@
             </thead>
             <tbody md-body>
             <tr md-row ng-repeat="item in ngCart.getCart().items track by $index">
-
-                <!--<td><a href="{{::user.html_url}}"><img ng-src="{{::user.avatar_url}}"/></a></td>-->
-                <!--<td>{{::user.login}}</td>-->
-                <!--<td>{{::user.id}}</td>-->
                 <td md-cell><span ng-click="ngCart.removeItemById(item.getId())" class="zmdi zmdi-delete"></span></td>
 
                 <td md-cell>{{ item.getName() }}</td>

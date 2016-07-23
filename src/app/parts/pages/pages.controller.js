@@ -162,6 +162,7 @@
 
         if ($stateParams.pageName && $stateParams.id) {
             $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite').then(function (val) {
+                console.log(val.content)
                 customService.convert(val.content, $scope['containers'], 3);
                 vm.pageCss = val.css || '';
                 vm.canvas = val.canvas || {};
@@ -445,7 +446,7 @@
         }
     };
 
-    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService, lzString, snippets,$timeout) {
+    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService, lzString, snippets, $timeout) {
         vm.getHtmlContent = customService.getHtmlContent;
         vm.isAttrsConfigurable = customService.isAttrsConfigurable;
         vm.isTagConfigurable = customService.isTagConfigurable;
@@ -553,6 +554,124 @@
             return {inner: inner, outer: flex + display}
         };
 
+        function importData(data) {
+            $timeout(function () {
+                var styleSheets = {},
+                    content = customService.convertBack($scope.containers, 'root', styleSheets) || [],
+                    css = vm.pageCss || '' + vm.buildCss(styleSheets) || '',
+                    result = angular.isString(data) ? JSON.parse(data) : data;
+
+                customService.convert(content.concat(result.content || []), $scope['containers'], 3);
+                vm.pageCss = css + ' ' + (result.css || '');
+            }, 0)
+        }
+
+        var htmlBuilder = new Tautologistics.NodeHtmlParser.HtmlBuilder(angular.noop, {enforceEmptyTags: true});
+
+        vm.importHtml = function ($files) {
+            if ($files !== null && $files.length > 0) {
+                var file = $files[0],
+                    reader = new FileReader();
+
+                reader.onload = function () {
+                    parseHtml(reader.result.replace(/(\r\n|\n|\r)/gm, ""), function (error, dom) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            importData({content: formatParsedHtml(dom, 1)})
+                        }
+                    })
+                };
+                reader.readAsText(file);
+            }
+        };
+
+        function parseHtml(rawHtml, callback) {
+            var handler = new Tautologistics.NodeHtmlParser.HtmlBuilder(callback, {caseSensitiveAttr: true});
+
+            var parser = new Tautologistics.NodeHtmlParser.Parser(handler);
+            parser.parseComplete(getBody(rawHtml));
+        }
+
+        function getBody(rawHtml) {
+            var body = /<body.*?>([\s\S]*)<\/body>/.exec(rawHtml) || {};
+            return body[1] || rawHtml;
+        }
+
+        function htmlize(arr) {
+            var res = '';
+            for (var i = 0; i < arr.length; i++) {
+                var element = arr[i],
+                    type = element.type,
+                    data = element.raw || element.data;
+                if (type === 'tag') {
+                    res += '<' + data + '>';
+
+                    if (element.children) {
+                        res += htmlize(element.children)
+                    }
+
+                    if (!htmlBuilder.isEmptyTag(element)) res += '</' + element.name + '>'
+                } else if (type === 'text') {
+                    res+=data;
+                }
+            }
+            return res;
+        }
+
+        function factorAttr(attrArr) {
+            var res = {},
+                attrString = '';
+            angular.forEach(attrArr || {}, function (val, key) {
+                if (key === 'class') {
+                    res.class = val;
+                } else if (key === 'style') {
+                    res.style = val;
+                } else {
+                    attrString += val ? key + '="' + val + '" ' : key + ' ';
+                }
+            });
+            if (attrString) res.attrs = attrString;
+            return res;
+        }
+
+        function formatParsedHtml(parsedHtml, level) {
+            var res = [];
+            for (var i = 0; i < parsedHtml.length; i++) {
+                var rawChild = parsedHtml[i],
+                    child = {},
+                    type = rawChild.type,
+                    tag = rawChild.name,
+                    data = rawChild.raw||rawChild.data;
+
+                if (type === 'tag') {
+                    var regId = /id\s*=\s*['"](.*?)['"]/g,
+                        m=regId.exec(data);
+
+                    if (m!== null) {
+                        child.id=m[1];
+                    }
+                    child.tag = rawChild.name;
+                    angular.extend(child, factorAttr(rawChild.attributes));
+                    if (rawChild.children) {
+                        if (level < 3) {
+                            child.content = '<!--include-->';
+                            child.divs = formatParsedHtml(rawChild.children, level + 1);
+                        } else {
+                            child.content = htmlize(rawChild.children);
+                        }
+                    }
+                } else if (type === 'text') {
+                    child.type = 'text';
+                    child.content = rawChild.raw || rawChild.data || '';
+                }
+                if(type!=='comment'&&tag!=='meta'){
+                    res.push(child);
+                }
+            }
+            return res;
+        }
+
         if (type === 'page') {
             vm.originalPageName = $state.params.pageName + '';
             vm.action = function (action, cid, index) {
@@ -620,21 +739,22 @@
                     });
             };
 
-            vm.import = function($files){
+            vm.import = function ($files) {
                 if ($files !== null && $files.length > 0) {
                     var file = $files[0],
                         reader = new FileReader();
 
-                    reader.onload = function(){
-                        $timeout(function(){
-                            var styleSheets = {},
-                                content = customService.convertBack($scope.containers, 'root', styleSheets)||[],
-                                css = vm.pageCss || '' + vm.buildCss(styleSheets) || '',
-                                result = JSON.parse(reader.result);
-
-                            customService.convert(content.concat(result.content||[]), $scope['containers'], 3);
-                            vm.pageCss = css+' '+(result.css || '');
-                        },0)
+                    reader.onload = function () {
+                        importData(reader.result);
+                        // $timeout(function () {
+                        //     var styleSheets = {},
+                        //         content = customService.convertBack($scope.containers, 'root', styleSheets) || [],
+                        //         css = vm.pageCss || '' + vm.buildCss(styleSheets) || '',
+                        //         result = JSON.parse(reader.result);
+                        //
+                        //     customService.convert(content.concat(result.content || []), $scope['containers'], 3);
+                        //     vm.pageCss = css + ' ' + (result.css || '');
+                        // }, 0)
                     };
                     reader.readAsText(file);
                 }
@@ -644,7 +764,7 @@
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
-                snippets.saveData({content:content,css:css},vm.pageName+'.json')
+                snippets.saveData({content: content, css: css}, vm.pageName + '.json')
             };
 
             vm.update = function () {

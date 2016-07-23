@@ -24,7 +24,23 @@
                     }
                 }
             },
-            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], ['ProductListController'],['ShoppingCartController'],['AllpayCheckoutCtrl']];
+            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], ['ProductListController'],['ShoppingCartController'],['AllpayCheckoutCtrl']],
+            emptyTags  = {
+                area: 1,
+                base: 1,
+                basefont: 1,
+                br: 1,
+                col: 1,
+                frame: 1,
+                hr: 1,
+                img: 1,
+                input: 1,
+                isindex: 1,
+                link: 1,
+                meta: 1,
+                param: 1,
+                embed: 1
+            };
 
         var items = [
                 {type: 'custom', content: '<!--include-->'}
@@ -58,6 +74,15 @@
             "column": "<!--include-->"
         };
 
+        function isEmptyTag (name) {
+            if (name.charAt(0) == '?') {
+                return true;
+            }
+            if (name.charAt(0) == '/') {
+                name = name.substring(1);
+            }
+            return !!emptyTags[name];
+        }
 
         function getTemplate(url) {
             var def = $q.defer(),
@@ -130,13 +155,14 @@
             item = item || {};
             var content,
                 tag = item.tag || 'div',
-                singleton = false;
+                singleton = isEmptyTag(tag);
 
             if (item.type === 'customWidget') {
                 content = compile(item.content);
                 return content;
             } else if (item.content) {
                 content = item.content;
+                if(item.type==='text') return content
             } else if (item.type && templates[item.type]) {
                 content = templates[item.type];
             } else {

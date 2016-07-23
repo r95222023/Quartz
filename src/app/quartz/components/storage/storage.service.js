@@ -111,9 +111,13 @@
                     // $firebase.ref(path).once('value',function(snap){
                     //     def.resolve(lzString.decompress(snap.val()));
                     // });
-                    $firebase.cache(path, 'editTime', $firebase.ref(path)).then(function(val){
-                        resolve(val);
-                    });
+                    if(_opt.fromDatabase!==false) {
+                        $firebase.cache(path, 'editTime', $firebase.ref(path)).then(function(val){
+                            resolve(val);
+                        });
+                    } else {
+                        resolve(null);
+                    }
                 } else {
                     def.reject(error);
                 }

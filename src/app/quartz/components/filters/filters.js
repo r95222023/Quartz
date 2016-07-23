@@ -47,12 +47,12 @@
                     phrase = 'HOUR';
                 } else if (delta < day) {
                     phrase = 'HOURS';
-                    t = Math.floor(delta / minute);
+                    t = Math.floor(delta / hour);
                 } else if (delta < day * 2) {
                     phrase = 'DAY'
                 } else if (delta < week) {
                     phrase = 'DAYS';
-                    t = Math.floor(delta / hour);
+                    t = Math.floor(delta / day);
                 } else if (Math.floor(delta / week) === 1) {
                     phrase = 'WEEK'
                 } else if (delta < month) {
@@ -71,27 +71,26 @@
                 }
                 return [t, 'DATE.' + phrase];
             }
+
             var isWaiting = {},
                 translations = {};
 
+            $relativeTime.$stateful = true;
             function $relativeTime(input) {
-                console.log(input)
-                if(!input) return;
-                var translationValue = "",
-                    date=(new Date(input)).getTime();
-                if (translations[date]) {
-
-                    return translations[date];
+                if (!input) return;
+                if (translations[input]) {
+                    return translations[input];
                 } else {
-                    if (!isWaiting[date]) {
-                        isWaiting[date] = true;
+                    if (!isWaiting[input]) {
+                        isWaiting[input] = true;
+                        var date = new Date(input);
 
                         syncTime.onReady().then(function (getTime) {
                             var res = relativeTime(date, (new Date(getTime()))),
-                                refresh = function(trans){
+                                refresh = function (trans) {
                                     $timeout(function () {
-                                        translations[date] = trans.split(' ')[1] || !res[0] ? trans : res[0] + ' ' + trans;
-                                        isWaiting[date] = false;
+                                        translations[input] = (trans.split(' ')[1] || !res[0]) ? trans : res[0] + ' ' + trans;
+                                        isWaiting[input] = false;
                                         console.log(translations)
                                     }, 0);
                                 };
@@ -101,78 +100,78 @@
                     }
                 }
 
-                return translationValue;
+                return translations[input];
             }
 
             return $relativeTime;
         })
-        .filter('consecutive', /*@ngInject*/ function ($filter) {
-            return function (items, input, isReverse) {
-                var _items = items || [];
-                var result = angular.copy(_items);
-
-                if (typeof input === 'object') {
-                    angular.forEach(input, function (value, key) {
-                        if (!value && value !== '') return;
-                        if (value === true) {
-                            result = $filter('filter')(result, key);
-                        } else {
-                            result = $filter('filter')(result, value);
-                        }
-                    });
-                } else if (typeof input === 'string') {
-                    input = input.trim();
-                    var keyArray = input.split(' ');
-                    for (var i = 0; i < keyArray.length; i++) {
-                        result = $filter('filter')(result, keyArray[i]);
-                    }
-                    result = input === '' ? _items : result
-                }
-                return isReverse ? result.slice().reverse() : result
-            }
-        })
-        ////see http://jsfiddle.net/nirmalkumar_86/9F89Q/5/
-        .filter('filterMultiple', /*@ngInject*/ function ($filter) {
-            return function (items, keyObj) {
-                var filterObj = {
-                    data: items,
-                    filteredData: [],
-                    applyFilter: function (obj, key) {
-                        var fData = [];
-                        if (this.filteredData.length == 0)
-                            this.filteredData = this.data;
-                        if (obj) {
-                            var fObj = {};
-                            if (!angular.isArray(obj)) {
-                                fObj[key] = obj;
-                                fData = fData.concat($filter('filter')(this.filteredData, fObj));
-                            } else if (angular.isArray(obj)) {
-                                if (obj.length > 0) {
-                                    for (var i = 0; i < obj.length; i++) {
-                                        if (angular.isDefined(obj[i])) {
-                                            fObj[key] = obj[i];
-                                            fData = fData.concat($filter('filter')(this.filteredData, fObj));
-                                        }
-                                    }
-
-                                }
-                            }
-                            if (fData.length > 0) {
-                                this.filteredData = fData;
-                            }
-                        }
-                    }
-                };
-
-                if (keyObj) {
-                    angular.forEach(keyObj, function (obj, key) {
-                        filterObj.applyFilter(obj, key);
-                    });
-                }
-
-                return filterObj.filteredData;
-            }
-        })
+        // .filter('consecutive', /*@ngInject*/ function ($filter) {
+        //     return function (items, input, isReverse) {
+        //         var _items = items || [];
+        //         var result = angular.copy(_items);
+        //
+        //         if (typeof input === 'object') {
+        //             angular.forEach(input, function (value, key) {
+        //                 if (!value && value !== '') return;
+        //                 if (value === true) {
+        //                     result = $filter('filter')(result, key);
+        //                 } else {
+        //                     result = $filter('filter')(result, value);
+        //                 }
+        //             });
+        //         } else if (typeof input === 'string') {
+        //             input = input.trim();
+        //             var keyArray = input.split(' ');
+        //             for (var i = 0; i < keyArray.length; i++) {
+        //                 result = $filter('filter')(result, keyArray[i]);
+        //             }
+        //             result = input === '' ? _items : result
+        //         }
+        //         return isReverse ? result.slice().reverse() : result
+        //     }
+        // })
+        // ////see http://jsfiddle.net/nirmalkumar_86/9F89Q/5/
+        // .filter('filterMultiple', /*@ngInject*/ function ($filter) {
+        //     return function (items, keyObj) {
+        //         var filterObj = {
+        //             data: items,
+        //             filteredData: [],
+        //             applyFilter: function (obj, key) {
+        //                 var fData = [];
+        //                 if (this.filteredData.length == 0)
+        //                     this.filteredData = this.data;
+        //                 if (obj) {
+        //                     var fObj = {};
+        //                     if (!angular.isArray(obj)) {
+        //                         fObj[key] = obj;
+        //                         fData = fData.concat($filter('filter')(this.filteredData, fObj));
+        //                     } else if (angular.isArray(obj)) {
+        //                         if (obj.length > 0) {
+        //                             for (var i = 0; i < obj.length; i++) {
+        //                                 if (angular.isDefined(obj[i])) {
+        //                                     fObj[key] = obj[i];
+        //                                     fData = fData.concat($filter('filter')(this.filteredData, fObj));
+        //                                 }
+        //                             }
+        //
+        //                         }
+        //                     }
+        //                     if (fData.length > 0) {
+        //                         this.filteredData = fData;
+        //                     }
+        //                 }
+        //             }
+        //         };
+        //
+        //         if (keyObj) {
+        //             angular.forEach(keyObj, function (obj, key) {
+        //                 filterObj.applyFilter(obj, key);
+        //             });
+        //         }
+        //
+        //         return filterObj.filteredData;
+        //     }
+        // })
         .filter('unique', /*@ngInject*/ function () {
             return function (input, key) {
                 var unique = {};

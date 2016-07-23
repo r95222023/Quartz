@@ -6,8 +6,10 @@
         .controller('ShoppingCartController', ShoppingCartController);
 
     /* @ngInject */
-    function ShoppingCartController(getServerTime, $q, ngCart, qtNotificationsService, $state, $mdDialog, config, orderService) {
+    function ShoppingCartController($q, $scope, ngCart, qtNotificationsService, $state, $mdDialog, config, orderService) {
         var vm = this;
+        angular.extend(vm, ngCart);
+        // $scope.cart = ngCart;
         vm.isCartEmpty = function () {
             return ngCart.getTotalItems() !== 0
         };

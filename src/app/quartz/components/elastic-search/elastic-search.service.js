@@ -40,9 +40,8 @@
                 responseUrl =searchCacheRef.root.toString()+'/'+ cacheRefUrl+'/'+cacheId;
 
                 var getFromDatabase = function () {
-                    $firebase.cache(cacheId, 'editTime', searchCacheRef).then(function (val) {
+                    $firebase.cache(responseUrl, 'editTime', searchCacheRef).then(function (val) {
                         searchData.responseUrl = responseUrl;
-
                         if (val === null) {
                             request(refUrl, responseUrl, searchData);
                         } else {
@@ -53,7 +52,7 @@
                     });
                 };
 
-                $firebaseStorage.getWithCache(storageRefPath).then(function (res) {
+                $firebaseStorage.getWithCache(storageRefPath,{fromDatabase:false}).then(function (res) {
                     if (!res) {
                         getFromDatabase();
                     } else {
