@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.parts.pages')
+        .module('app.parts.design')
         .config(pagesConfig);
 
     /* @ngInject */

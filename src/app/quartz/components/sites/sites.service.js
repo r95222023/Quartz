@@ -45,10 +45,11 @@
 
         function getPreload() {
             $firebaseStorage.getWithCache('config/preload@selectedSite').then(function (res) {
-                if (res && res.css) {injectCSS.setDirectly('siteCSS', res.css);sitesService.css=res.css}
-                if (res && res.js) {injectJS.setDirectly('siteJS', res.js);sitesService.js=res.js}
-                $rootScope.logo = res.logo;
-                $rootScope.brand = res.brand;
+                var _res = res||{};
+                if (_res && _res.css) {injectCSS.setDirectly('siteCSS', _res.css);sitesService.css=_res.css}
+                if (_res && _res.js) {injectJS.setDirectly('siteJS', _res.js);sitesService.js=_res.js}
+                $rootScope.logo = _res.logo;
+                $rootScope.brand = _res.brand;
 
                 def.resolve(sitesService);
             });

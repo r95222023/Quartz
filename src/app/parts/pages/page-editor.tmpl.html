@@ -27,9 +27,6 @@
                                 <md-button ng-click="vm.export()" translate>{{'GENERAL.EXPORT'|translate}}</md-button>
                             </md-menu-item>
                             <md-menu-item>
-                                <md-button ngf-select="vm.importHtml($files)">{{'GENERAL.IMPORTHTML'|translate}}</md-button>
-                            </md-menu-item>
-                            <md-menu-item>
                                 <md-button ng-click="vm.update()" translate>{{'GENERAL.SAVE'|translate}}</md-button>
                             </md-menu-item>
                         </md-menu-content>
@@ -146,14 +143,21 @@
             </div>
         </md-content>
         <md-content flex>
-            <div layout="row" ng-if="vm.showCss">
-                <md-input-container flex="50">
-                    <label>CSS</label>
-                <textarea name="pageCss" ng-model="vm.pageCss"
+            <div layout="row" ng-if="vm.showCss" layout-align="center" layout-wrap>
+                <div flex="100" layout="row">
+                    <span flex></span>
+                    <md-button class="md-icon-button" aria-label="more action"
+                               ng-click="vm.showCss=false"
+                               aria-label="close css editor">
+                        <md-icon md-font-icon="fa fa-times"></md-icon>
+                    </md-button>
+                </div>
+                <textarea flex="90" type="text"
+                          rows="100" cols="30"
+                          ng-model="vm.pageCss"
                           ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
-                </md-input-container>
             </div>
-            <div style="cursor: move; width:100%;margin:0;">
+            <div ng-hide="vm.showCss" style="cursor: move; width:100%;margin:0;">
                 <md-button class="md-icon-button" aria-label="more action"
                            ng-click="vm.action('edit','canvas')"
                            aria-label="edit">
@@ -171,7 +175,8 @@
                      layout="column"
                      ng-repeat="(rootIndex, container) in containers.root track by container.cid">
                     <div class="root-handle" style="cursor: move; width:100%;margin:0;">
-                        {{container.type+' '}}{{container.id}}
+                        <span>{{container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
+                        <span ng-show="container.id">#{{container.id}}</span>
 
                         <!--<div>-->
                             <!--<md-select ng-model="vm.widget['root'+rootIndex]" ng-change="vm.action('setWidget','root', rootIndex)" placeholder="Select a state">-->
@@ -207,7 +212,10 @@
                              class="md-whiteframe-3dp"
                              ng-repeat="(subIndex,subcontainer) in containers[container.cid] track by subcontainer.cid">
                             <div class="lv1-handle" style="cursor: move; margin:0;">
-                                {{subcontainer.type+' '}}{{subcontainer.id}}
+                                <!--<span ng-show="subcontainer.type!=='text'"><{{subcontainer.tag||'div'}}></span>-->
+                                <span>{{subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
+                                <span ng-show="subcontainer.id">#{{subcontainer.id}}</span>
+
                                 <md-menu>
                                     <md-button class="md-icon-button" aria-label="more action"
                                                ng-click="$mdOpenMenu();$event.stopPropagation();"
@@ -237,7 +245,9 @@
                                      layout-padding
                                      ng-repeat="(widgetIndex,widget) in containers[subcontainer.cid] track by widget.cid">
                                     <div class="lv2-handle" style="cursor: move; margin:0;">
-                                        {{widget.name||widget.type+' '}}{{widget.id}}
+                                        <span>{{widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
+                                        <span ng-show="widget.id">#{{widget.id}}</span>
+
                                         <md-menu>
                                             <md-button class="md-icon-button" aria-label="more action"
                                                        ng-click="$mdOpenMenu();$event.stopPropagation();"

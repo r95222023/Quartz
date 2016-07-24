@@ -2,13 +2,13 @@
     'use strict';
 
     angular
-        .module('app.parts.pages')
+        .module('app.parts.design')
         .controller('SiteSettingCtrl', SiteSettingCtrl);
 
     /* @ngInject */
     function SiteSettingCtrl($firebase, $firebaseStorage) {
         var vm= this,path='config/preload@selectedSite';
-        
+
         $firebaseStorage.getWithCache(path).then(function(preload){
             vm.css = preload.css;
             vm.js = preload.js;
