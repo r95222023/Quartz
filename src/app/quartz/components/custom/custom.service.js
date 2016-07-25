@@ -43,31 +43,35 @@
             };
 
         var items = [
-                {type: 'custom', content: '<!--include-->'}
+                // {type: 'custom', content: '<!--include-->'},
+                {type: 'tag', content: ''},
+                {type:'text',content:''}
             ],
             containers = [
-                {
-                    type: 'row',
-                    layout: {
-                        all: {
-                            layout: 'row'
-                        }
-                    },
-                    divs: []
-                },
-                {
-                    type: 'column',
-                    layout: {
-                        all: {
-                            layout: 'column'
-                        }
-                    },
-                    divs: []
-                },
-                {
-                    type: 'custom',
-                    content: '<!--include-->'
-                }
+                // {
+                //     type: 'row',
+                //     layout: {
+                //         all: {
+                //             layout: 'row'
+                //         }
+                //     },
+                //     divs: []
+                // },
+                // {
+                //     type: 'column',
+                //     layout: {
+                //         all: {
+                //             layout: 'column'
+                //         }
+                //     },
+                //     divs: []
+                // },
+                // {
+                //     type: 'custom',
+                //     content: '<!--include-->'
+                // }
+                {type:'tag',content:'<!--include-->'},
+                {type:'text'}
             ];
         var templates = {
             "row": "<!--include-->",

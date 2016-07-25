@@ -7,19 +7,19 @@
 
     /* @ngInject */
     function pagesConfig($stateProvider, qtMenuProvider, $translatePartialLoaderProvider) {
-        var tmplRoot = 'app/parts/pages/templates/',
+        var tmplRoot = 'app/parts/design/templates/',
             templateList = ['button'];
-        $translatePartialLoaderProvider.addPart('app/parts/pages');
+        $translatePartialLoaderProvider.addPart('app/parts/design');
         $stateProvider
             .state('quartz.admin-default.pageManager', {
                 url: '/admin/:siteName/pageManager',
-                templateUrl: 'app/parts/pages/page-manager.tmpl.html',
+                templateUrl: 'app/parts/design/page-manager.tmpl.html',
                 controller: 'PageManagerController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.widgetManager', {
                 url: '/admin/:siteName/widgetManager',
-                templateUrl: 'app/parts/pages/widget-manager.tmpl.html',
+                templateUrl: 'app/parts/design/widget-manager.tmpl.html',
                 controller: 'WidgetManagerController',
                 controllerAs: 'vm'
             })
@@ -47,7 +47,7 @@
                     }]
                 },
                 url: '/admin/:siteName/pageEditor/?id&pageName&params',
-                templateUrl: 'app/parts/pages/page-editor.tmpl.html',
+                templateUrl: 'app/parts/design/page-editor.tmpl.html',
                 controller: 'PageEditorController',
                 controllerAs: 'vm'
             })
@@ -66,7 +66,7 @@
                     }]
                 },
                 url: '/admin/:siteName/widgetEditor/?id&widgetName',
-                templateUrl: 'app/parts/pages/widget-editor.tmpl.html',
+                templateUrl: 'app/parts/design/page-editor2.html',
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'
             })
@@ -90,7 +90,7 @@
                         footer: false
                     }
                 },
-                templateUrl: 'app/parts/pages/custom-page.tmpl.html',
+                templateUrl: 'app/parts/design/custom-page.tmpl.html',
                 controller: 'CustomPageController',
                 controllerAs: 'customPage'
             })
@@ -112,7 +112,7 @@
                         footer: false
                     }
                 },
-                templateUrl: 'app/parts/pages/setting/setting.tmpl.html',
+                templateUrl: 'app/parts/design/setting/setting.tmpl.html',
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             });
