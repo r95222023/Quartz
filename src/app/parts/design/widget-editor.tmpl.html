@@ -1,7 +1,9 @@
-<div ng-if="!destroyDragula" ng-init="initDragula()" class="editor-full-height" layout="column">
+<div class="editor-full-height" layout="column">
+    <!--Toolbar-->
     <md-toolbar class="md-menu-toolbar editor-toolbar" style="height:84px">
         <div layout="row">
-            <md-toolbar-filler style="background-color:#00897B" layout layout-align="center center" ui-sref="quartz.admin-default.widgetManager">
+            <md-toolbar-filler style="background-color:#00897B" layout layout-align="center center"
+                               ui-sref="quartz.admin-default.widgetManager">
                 <md-icon md-font-icon="zmdi zmdi-apps"></md-icon>
             </md-toolbar-filler>
             <div>
@@ -14,10 +16,13 @@
                         </button>
                         <md-menu-content width="3">
                             <md-menu-item>
-                                <md-button ui-sref="quartz.admin-default-no-scroll.pageEditor({widgetName:''})">{{'GENERAL.NEW'|translate}}</md-button>
+                                <md-button ui-sref="quartz.admin-default-no-scroll.widgetEditor({widgetName:''})">
+                                    {{'GENERAL.NEW'|translate}}
+                                </md-button>
                             </md-menu-item>
                             <md-menu-item>
-                                <md-button ui-sref="quartz.admin-default.pageManager">{{'GENERAL.OPEN'|translate}}</md-button>
+                                <md-button ui-sref="quartz.admin-default.widgetManager">{{'GENERAL.OPEN'|translate}}
+                                </md-button>
                             </md-menu-item>
                             <md-menu-item>
                                 <md-button ngf-select="vm.import($files)">{{'GENERAL.IMPORT'|translate}}</md-button>
@@ -48,7 +53,8 @@
                         <md-menu-content width="3">
                             <md-menu-item>
                                 <md-menu>
-                                    <md-button ng-click="$mdOpenMenu()">{{'GENERAL.RESPONSIVEMODE'|translate}}</md-button>
+                                    <md-button ng-click="$mdOpenMenu()">{{'GENERAL.RESPONSIVEMODE'|translate}}
+                                    </md-button>
                                     <md-menu-content width="3">
                                         <!--<md-menu-item ng-repeat="bp in vm.layoutOptions.breakpoints" type="radio" ng-model="vm.layoutBreakpoint" value="{{bp}}">{{bp}}</md-menu-item>-->
                                     </md-menu-content>
@@ -58,12 +64,19 @@
                                 <md-menu>
                                     <md-button ng-click="$mdOpenMenu()">{{'GENERAL.MEDIAWIDTH'|translate}}</md-button>
                                     <md-menu-content width="3">
-                                        <md-menu-item type="radio" ng-model="vm.media" value="'all'">{{'GENERAL.ALL'|translate}}</md-menu-item>
-                                        <md-menu-item type="radio" ng-model="vm.media" value="'0~599'">0~599</md-menu-item>
-                                        <md-menu-item type="radio" ng-model="vm.media" value="'600~959'">600~959</md-menu-item>
-                                        <md-menu-item type="radio" ng-model="vm.media" value="'960~1279'">960~1279</md-menu-item>
-                                        <md-menu-item type="radio" ng-model="vm.media" value="'1280~1919'">1280~1919</md-menu-item>
-                                        <md-menu-item type="radio" ng-model="vm.media" value="'>1920'">>1920</md-menu-item>
+                                        <md-menu-item type="radio" ng-model="vm.media" value="'all'">
+                                            {{'GENERAL.ALL'|translate}}
+                                        </md-menu-item>
+                                        <md-menu-item type="radio" ng-model="vm.media" value="'0~599'">0~599
+                                        </md-menu-item>
+                                        <md-menu-item type="radio" ng-model="vm.media" value="'600~959'">600~959
+                                        </md-menu-item>
+                                        <md-menu-item type="radio" ng-model="vm.media" value="'960~1279'">960~1279
+                                        </md-menu-item>
+                                        <md-menu-item type="radio" ng-model="vm.media" value="'1280~1919'">1280~1919
+                                        </md-menu-item>
+                                        <md-menu-item type="radio" ng-model="vm.media" value="'>1920'">>1920
+                                        </md-menu-item>
                                         <!--<md-menu-item type="radio" ng-repeat="mq in vm.layoutOptions.mediaQueries"-->
                                         <!--ng-model="vm.media" value="{{mq}}">{{mq}}-->
                                         <!--</md-menu-item>-->
@@ -72,8 +85,9 @@
                             </md-menu-item>
 
                             <md-menu-divider></md-menu-divider>
-                            <md-menu-item ng-if="!vm.preview">
-                                <md-button ng-click="vm.compile();vm.preview=true">{{'GENERAL.PREVIEW'|translate}}</md-button>
+                            <md-menu-item ng-if="!vm.fullPagePreview">
+                                <md-button ng-click="vm.compile();vm.fullPagePreview=true">{{'GENERAL.PREVIEW'|translate}}
+                                </md-button>
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
@@ -81,10 +95,14 @@
                         <button ng-click="$mdOpenMenu()">{{'GENERAL.TOOLS'|translate}}</button>
                         <md-menu-content width="3">
                             <md-menu-item ng-if="!vm.showCss">
-                                <md-button ng-click="vm.showCss=true">{{'GENERAL.SHOW'|translate}}{{'GENERAL.CSSEDITOR'|translate}}</md-button>
+                                <md-button ng-click="vm.showCss=true">
+                                    {{'GENERAL.SHOW'|translate}}{{'GENERAL.CSSEDITOR'|translate}}
+                                </md-button>
                             </md-menu-item>
                             <md-menu-item ng-if="vm.showCss">
-                                <md-button ng-click="vm.showCss=false">{{'GENERAL.HIDE'|translate}}{{'GENERAL.CSSEDITOR'|translate}}</md-button>
+                                <md-button ng-click="vm.showCss=false">
+                                    {{'GENERAL.HIDE'|translate}}{{'GENERAL.CSSEDITOR'|translate}}
+                                </md-button>
                             </md-menu-item>
                         </md-menu-content>
                     </md-menu>
@@ -96,134 +114,98 @@
         </div>
     </md-toolbar>
 
-    <div layout="row" flex="100">
-        <md-content flex="10" style="min-width: 200px">
-            <div layout="column" layout-xs="column"
-                 layout-align="start center"
-                 layout-margin style="overflow: auto">
-                <div>
-                    Container
-                </div>
-                <div dragula='"drag-container-root"'
-                     dragula-model='containerSource'>
-                    <div style="cursor: move;background-color:#F0F4C3;"
-                         class="md-whiteframe-2dp root-handle rootContainerSource"
-                         layout-padding
-                         layout-margin
-                         ng-repeat="container in containerSource track by container.cid">
-                        {{container.type}}
-                    </div>
-                </div>
-                <div>
-                    Subcontainer
-                </div>
-                <div dragula='"drag-container-lv1"'
-                     dragula-model='subContainerSource'>
-                    <div style="cursor: move;background-color:#A5D6A7;"
-                         class="md-whiteframe-2dp lv1-handle subContainerSource"
-                         layout-padding
-                         layout-margin
-                         ng-repeat="subcontainer in subContainerSource track by subcontainer.cid">
-                        {{subcontainer.type}}
-                    </div>
-                </div>
-                <div>
-                    Elements
-                </div>
-                <div dragula='"drag-container-lv2"'
-                     dragula-model='subSubContainerSource'>
-                    <div style="cursor: move;background-color:#F48FB1;"
-                         class="md-whiteframe-2dp lv2-handle elementSource"
-                         layout-padding
-                         layout-margin
-                         ng-repeat="element in subSubContainerSource track by elementc">
-                        {{element.type}}
-                    </div>
-                </div>
-            </div>
-        </md-content>
-        <md-content flex layout-padding class="overlay-5">
-            <div layout="row" ng-if="vm.showCss">
-                <md-input-container flex="50">
-                    <label>CSS</label>
-                    <textarea name="pageCss" ng-model="vm.pageCss" ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
-                </md-input-container>
-            </div>
-            <div flex ng-hide="vm.showCss" layout="row" dragula='"drag-container-root"'
-                 dragula-model='containers.root'
-                 style="min-width: 100px;min-height: 200px">
-                <div flex="{{container.layout.all.flex||''}}"
-                     class="md-whiteframe-3dp"
-                     style="background-color:#F0F4C3; min-width: 100px;min-height: 200px"
-                     layout="column"
-                     layout-align="start center"
-                     layout-padding
-                     ng-repeat="container in containers.root track by container.cid">
-                    <div class="root-handle" style="cursor: move; width:100%;margin:0;">
-                        {{container.type+' '}}{{container.id}}
-                        <md-menu>
-                            <md-button class="md-icon-button" aria-label="more action"
-                                       ng-click="$mdOpenMenu();$event.stopPropagation();"
-                                       aria-label="more action">
-                                <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
-                            </md-button>
-                            <md-menu-content width="3">
-                                <md-menu-item ng-repeat="action in vm.actions">
-                                    <md-button
-                                        ng-click="vm.action(action[0],'root', $parent.$parent.$index)"
-                                        translate="{{action[1]}}"
-                                        aria-label="{{action[1]}}"></md-button>
-                                </md-menu-item>
-                            </md-menu-content>
-                        </md-menu>
-                    </div>
-                    <div flex layout="{{container.layout.all.layout||'column'}}"
-                         style="width:100%;min-width: 50px;min-height: 50px; overflow: hidden;"
-                         ng-class="{'layout-wrap': container.layout.all['layout-wrap']}"
-                         dragula="'drag-container-lv1'"
-                         dragula-scope="$parent"
-                         dragula-model="containers[container.cid]">
-
-                        <div style="min-width: 50px;min-height: 50px; background-color:#A5D6A7;"
-                             flex="{{subcontainer.layout.all.flex||''}}"
-                             layout="column"
-                             layout-padding class="md-whiteframe-3dp"
-                             ng-repeat="subcontainer in containers[container.cid] track by subcontainer.cid">
-                            <div class="lv1-handle" style="cursor: move; margin:0;">
-                                {{subcontainer.type+' '}}{{subcontainer.id}}
-                                <md-menu>
-                                    <md-button class="md-icon-button" aria-label="more action"
-                                               ng-click="$mdOpenMenu();$event.stopPropagation();"
-                                               aria-label="more action">
-                                        <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
-                                    </md-button>
-                                    <md-menu-content width="3">
-                                        <md-menu-item ng-repeat="action in vm.actions">
-                                            <md-button
-                                                ng-click="vm.action(action[0],container.cid, $parent.$parent.$index)"
-                                                translate="{{action[1]}}"
-                                                aria-label="{{action[1]}}"></md-button>
-                                        </md-menu-item>
-                                    </md-menu-content>
-                                </md-menu>
+    <!--Show Preview Button-->
+    <md-button ng-if="vm.fullPagePreview" class="md-fab" aria-label="back to edit" ng-click="vm.fullPagePreview=false" style="position:fixed; bottom:20px;left:20px">
+        <md-icon md-font-icon="fa fa-pencil"></md-icon>
+    </md-button>
+    <!--Preview-->
+    <md-content ng-show="vm.fullPagePreview" style="height:100%;"
+                flex layout="row"
+                layout-align="center center"
+                layout-padding>
+        <custom-item class="md-whiteframe-2dp" content="vm.html"></custom-item>
+    </md-content>
+    <!--Editor-->
+    <div ng-hide="vm.fullPagePreview" class="resizable-main-container" ng-if="!destroyDragula" ng-init="initDragula()">
+        <!--View buttons-->
+        <div style="position:fixed;left:0;bottom:0; cursor:pointer;z-index:10">
+            <md-icon ng-hide="vm.cssHtmlPanel" ng-click="vm.showCssHtml()" md-font-icon="fa fa-expand"
+                     aria-label="hide html"></md-icon>
+            <md-icon ng-show="vm.cssHtmlPanel" ng-click="vm.hideCssHtml()" md-font-icon="fa fa-compress"
+                     aria-label="hide html"></md-icon>
+            </span>
+        </div>
+        <!--LEFT-->
+        <div style="width:100%" class="resizable" flex>
+            <div class="content">
+                <div resizable r-directions="['bottom']" style="height:500px" ng-style="vm.layoutEditorStyle">
+                    <section style="height:100%" layout="row">
+                        <md-content flex="10" style="min-width: 150px">
+                            <div layout="column" layout-xs="column"
+                                 layout-align="start center"
+                                 layout-margin style="overflow: auto">
+                                <div>
+                                    Container
+                                </div>
+                                <div dragula='"drag-container-root"'
+                                     dragula-model='containerSource'>
+                                    <div style="background-color:#F0F4C3;"
+                                         class="md-whiteframe-2dp root-handle rootContainerSource dSource"
+                                         layout-padding
+                                         layout-margin
+                                         ng-repeat="container in containerSource track by container.cid">
+                                        {{container.type|uppercase}}
+                                    </div>
+                                </div>
+                                <div>
+                                    Subcontainer
+                                </div>
+                                <div dragula='"drag-container-lv1"'
+                                     dragula-model='subContainerSource'>
+                                    <div style="background-color:#A5D6A7;"
+                                         class="md-whiteframe-2dp lv1-handle subContainerSource dSource"
+                                         layout-padding
+                                         layout-margin
+                                         ng-repeat="subcontainer in subContainerSource track by subcontainer.cid">
+                                        {{subcontainer.type|uppercase}}
+                                    </div>
+                                </div>
+                                <div>
+                                    Elements
+                                </div>
+                                <div dragula='"drag-container-lv2"'
+                                     dragula-model='subSubContainerSource'>
+                                    <div style="background-color:#FFB74D;"
+                                         class="md-whiteframe-2dp lv2-handle elementSource dSource"
+                                         layout-padding
+                                         layout-margin
+                                         ng-repeat="element in subSubContainerSource track by element.cid">
+                                        {{element.type|uppercase}}
+                                    </div>
+                                </div>
                             </div>
-
-                            <div flex layout="{{subcontainer.layout.all.layout||'column'}}"
-                                 style="min-width: 50px;min-height: 50px;overflow: hidden;"
-                                 ng-class="{'layout-wrap': subcontainer.layout.all['layout-wrap']}"
-                                 layout-align="space-around center"
-                                 dragula='"drag-container-lv2"'
-                                 dragula-scope="$parent.$parent"
-                                 dragula-model='containers[subcontainer.cid]'>
-
-                                <div style="cursor: move; background-color: #F48FB1;min-width: 50px;"
-                                     class="md-whiteframe-3dp dragable-widget lv2-handle"
-                                     flex="{{widget.layout.all.flex||''}}"
+                        </md-content>
+                        <md-content flex>
+                            <div layout="{{vm.canvas.layout[vm.layoutBreakpoint].layout||'row'}}"
+                                 dragula='"drag-container-root"'
+                                 dragula-model='containers.root'
+                                 class="layout-wrap"
+                                 style="min-width: 100px;min-height: 100px">
+                                <div style="background-color:#F0F4C3;min-width: 100px;min-height: 100px"
+                                     class="md-whiteframe-3dp"
+                                     ng-class="vm.getLayoutClass(container.layout).outer"
                                      layout="column"
-                                     layout-padding
-                                     ng-repeat="widget in containers[subcontainer.cid] track by widget.cid">
-                                    <div class="lv2-handle" style="cursor: move; margin:0;">
-                                        {{widget.name||widget.type+' '}}{{widget.id}}
+                                     ng-repeat="(rootIndex, container) in containers.root track by container.cid"
+                                     ng-click="$event.stopPropagation();vm.action('edit','root',rootIndex)">
+                                    <div class="root-handle" style="cursor: move; width:100%;margin:0;">
+                                        <span>{{container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
+                                        <span ng-show="container.id">#{{container.id}}</span>
+
+                                        <!--<div>-->
+                                        <!--<md-select ng-model="vm.widget['root'+rootIndex]" ng-change="vm.action('setWidget','root', rootIndex)" placeholder="Select a state">-->
+                                        <!--<md-option ng-value="widget" ng-repeat="widget in vm.customWidgets">{{ widget.name }}</md-option>-->
+                                        <!--</md-select>-->
+                                        <!--</div>-->
                                         <md-menu>
                                             <md-button class="md-icon-button" aria-label="more action"
                                                        ng-click="$mdOpenMenu();$event.stopPropagation();"
@@ -233,164 +215,293 @@
                                             <md-menu-content width="3">
                                                 <md-menu-item ng-repeat="action in vm.actions">
                                                     <md-button
-                                                        ng-click="vm.action(action[0],subcontainer.cid, $parent.$parent.$index)"
+                                                        ng-click="vm.action(action[0],'root', rootIndex)"
                                                         translate="{{action[1]}}"
                                                         aria-label="{{action[1]}}"></md-button>
                                                 </md-menu-item>
                                             </md-menu-content>
                                         </md-menu>
+
+                                    </div>
+                                    <div style="width:100%;min-width: 100px;min-height: 100px; overflow: hidden;"
+                                         ng-class="vm.getLayoutClass(container.layout).inner"
+                                         dragula="'drag-container-lv1'"
+                                         dragula-scope="$parent"
+                                         dragula-model="containers[container.cid]">
+
+                                        <div style="background-color:#A5D6A7; min-width: 100px;min-height: 100px;"
+                                             ng-class="vm.getLayoutClass(subcontainer.layout).outer"
+                                             layout="column"
+                                             class="md-whiteframe-3dp"
+                                             ng-repeat="(subIndex,subcontainer) in containers[container.cid] track by subcontainer.cid"
+                                             ng-click="$event.stopPropagation();vm.action('edit',container.cid,subIndex)">
+                                            <div class="lv1-handle" style="cursor: move; margin:0;">
+                                                <!--<span ng-show="subcontainer.type!=='text'"><{{subcontainer.tag||'div'}}></span>-->
+                                                <span>{{subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
+                                                <span ng-show="subcontainer.id">#{{subcontainer.id}}</span>
+
+                                                <md-menu>
+                                                    <md-button class="md-icon-button" aria-label="more action"
+                                                               ng-click="$mdOpenMenu();$event.stopPropagation();"
+                                                               aria-label="more action">
+                                                        <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
+                                                    </md-button>
+                                                    <md-menu-content width="3">
+                                                        <md-menu-item ng-repeat="action in vm.actions">
+                                                            <md-button
+                                                                ng-click="vm.action(action[0],container.cid, subIndex)"
+                                                                translate="{{action[1]}}"
+                                                                aria-label="{{action[1]}}"></md-button>
+                                                        </md-menu-item>
+                                                    </md-menu-content>
+                                                </md-menu>
+                                            </div>
+                                            <div style="width:100%; min-height: 100px;overflow: hidden;"
+                                                 ng-class="vm.getLayoutClass(subcontainer.layout).inner"
+                                                 dragula='"drag-container-lv2"'
+                                                 dragula-scope="$parent.$parent"
+                                                 dragula-model='containers[subcontainer.cid]'>
+
+                                                <div style="background-color:#FFB74D; min-width: 100px; cursor: move"
+                                                     ng-class="vm.getLayoutClass(widget.layout).outer"
+                                                     class="md-whiteframe-3dp dragable-widget lv2-handle"
+                                                     layout="column"
+                                                     layout-padding
+                                                     ng-repeat="(widgetIndex,widget) in containers[subcontainer.cid] track by widget.cid"
+                                                     ng-click="$event.stopPropagation();vm.action('edit',subcontainer.cid,widgetIndex)">
+                                                    <div class="lv2-handle" style="cursor: move; margin:0;">
+                                                        <span>{{widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
+                                                        <span ng-show="widget.id">#{{widget.id}}</span>
+
+                                                        <md-menu>
+                                                            <md-button class="md-icon-button" aria-label="more action"
+                                                                       ng-click="$mdOpenMenu();$event.stopPropagation();"
+                                                                       aria-label="more action">
+                                                                <md-icon md-font-icon="zmdi zmdi-more-vert"></md-icon>
+                                                            </md-button>
+                                                            <md-menu-content width="3">
+                                                                <md-menu-item ng-repeat="action in vm.actions">
+                                                                    <md-button
+                                                                        ng-click="vm.action(action[0],subcontainer.cid, widgetIndex)"
+                                                                        translate="{{action[1]}}"
+                                                                        aria-label="{{action[1]}}"></md-button>
+                                                                </md-menu-item>
+                                                            </md-menu-content>
+                                                        </md-menu>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </md-content>
+                        <md-content style="height:100%;width:340px;" ng-keyup="vm.debouncedUpdateItem()"
+                                    ng-mouseup="vm.debouncedUpdateItem()">
+                            <md-tabs ng-if="vm.item.type&&vm.item.type!=='text'" md-selected="vm.selectedSideEditorTab" md-dynamic-height md-border-bottom>
+                                <md-tab label="Options">
+                                    <div class="padding-30 md-tabs-content">
+                                        <form>
+                                            <md-input-container>
+                                                <label>Tag</label>
+                                                <input type="text" ng-model="vm.item.tag">
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>Id</label>
+                                                <input type="text" ng-model="vm.item.id">
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>Controller</label>
+                                                <md-select ng-model="vm.item.ctrl">
+                                                    <md-option ng-value="ctrl[0]" ng-repeat="ctrl in vm.ctrls">{{ctrl[0] }}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container ng-if="vm.item.ctrl">
+                                                <label>Controller as</label>
+                                                <input type="text" ng-model="vm.item.ctrlAs">
+                                            </md-input-container>
+                                            <br>
+                                            Class
+                                            <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'"
+                                                      type="text"
+                                                      rows="3" cols="30"
+                                                      ng-model="vm.item.class"></textarea>
+                                            Style
+                                            <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'"
+                                                      type="text"
+                                                      rows="3" cols="30"
+                                                      ng-model="vm.item.style"></textarea>
+                                            Attrs
+                                            <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'"
+                                                      type="text"
+                                                      rows="5" cols="30"
+                                                      ng-model="vm.item.attrs"></textarea>
+                                        </form>
+                                    </div>
+                                </md-tab>
 
-                        </div>
-                    </div>
+                                <md-tab label="Layout">
+                                    <div class="padding-40 md-tabs-content">
+                                        <form layout="column">
+                                            <md-input-container ng-init="vm.layoutBreakpoint='all'">
+                                                <label>Breakpoint</label>
+                                                <md-select ng-model="vm.layoutBreakpoint">
+                                                    <md-option ng-value="bp"
+                                                               ng-repeat="bp in vm.layoutOptions.breakpoints">{{ bp }}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>layout</label>
+                                                <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].layout">
+                                                    <md-option ng-value="size"
+                                                               ng-repeat="size in vm.layoutOptions.layout.layout">{{size }}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>flex</label>
+                                                <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].flex">
+                                                    <md-option ng-value="size"
+                                                               ng-repeat="size in vm.layoutOptions.layout.flex">{{ size}}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>flex-offset</label>
+                                                <md-select
+                                                    ng-model="vm.item.layout[vm.layoutBreakpoint]['flex-offset']">
+                                                    <md-option ng-value="size"
+                                                               ng-repeat="size in vm.layoutOptions.layout['flex-offset']">
+                                                        {{size}}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>flex-order</label>
+                                                <input type="number"
+                                                       ng-model="vm.item.layout[vm.layoutBreakpoint]['flex-order']">
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>layout-align-x</label>
+                                                <md-select
+                                                    ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-align'].x">
+                                                    <md-option ng-value="xAlign"
+                                                               ng-repeat="xAlign in vm.layoutOptions.layout['layout-align'].x">
+                                                        {{ xAlign }}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <label>layout-align-y</label>
+                                                <md-select
+                                                    ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-align'].y">
+                                                    <md-option ng-value="yAlign"
+                                                               ng-repeat="yAlign in vm.layoutOptions.layout['layout-align'].y">
+                                                        {{ yAlign }}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                            <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
+                                                         ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-fill']"
+                                                         ng-false-value="null">
+                                                Fill
+                                            </md-checkbox>
+                                            <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
+                                                         ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-wrap']"
+                                                         ng-false-value="null">
+                                                Wrap
+                                            </md-checkbox>
+                                            <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
+                                                         ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-nowrap']"
+                                                         ng-false-value="null">
+                                                Nowrap
+                                            </md-checkbox>
+                                            <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
+                                                         ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-margin']"
+                                                         ng-false-value="null">
+                                                Margin
+                                            </md-checkbox>
+                                            <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
+                                                         ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-padding']"
+                                                         ng-false-value="null">
+                                                Padding
+                                            </md-checkbox>
+                                            <md-checkbox ng-model="vm.item.layout[vm.layoutBreakpoint]['show']"
+                                                         ng-false-value="null">
+                                                Show
+                                            </md-checkbox>
+                                            <md-checkbox ng-model="vm.item.layout[vm.layoutBreakpoint]['hide']"
+                                                         ng-false-value="null">
+                                                hide
+                                            </md-checkbox>
+                                        </form>
+                                    </div>
+                                </md-tab>
+
+                            </md-tabs>
+                            <!--<md-button ng-click="vm.updateItem()">OK</md-button>
+                            <md-button ng-click="vm.toggleEditor()">Cancel</md-button>-->
+
+                        </md-content>
+
+                    </section>
+                </div>
+                <div class="r-row">
+
+                    <section flex>
+                        <span class="titlebar" layout="row">
+                            <span>HTML</span><span flex></span><!--<md-icon md-font-icon="fa fa-times"
+                                                                        aria-label="hide html"></md-icon>-->
+                        </span>
+                        <md-content style="height:100%;">
+                            <code ng-if="vm.item.type==='tag'||vm.item.content.indexOf('<!--include-->')!==-1">{{vm.getHtmlContent(vm.item)}}</code>
+
+                            <textarea ng-if="vm.item.type==='text'||vm.item.content.indexOf('<!--include-->')===-1" type="text" class="borderless" style="height: 90%;width:95%;"
+                                      ng-change="vm.debouncedUpdateItem()"
+                                      ng-model="vm.item.content"
+                                      ng-model-options="{debounce: { 'default': 1000, 'blur': 0 } }"></textarea>
+                        </md-content>
+
+                    </section>
+                    <section resizable r-directions="['left']" r-flex="true">
+                        <span class="titlebar" layout="row">
+                            <span>CSS</span><span flex></span><!--<md-icon md-font-icon="fa fa-times"
+                                                                        aria-label="hide html"></md-icon>-->
+                        </span>
+                        <md-content style="height:100%;width:100%;">
+                            <textarea type="text" class="borderless" style="height: 90%;width:95%;"
+                                      ng-change="vm.debouncedUpdateItem()"
+                                      ng-model="vm.widgetCss"
+                                      ng-model-options="{debounce: { 'default': 1000, 'blur': 0 } }"></textarea>
+                        </md-content>
+                    </section>
                 </div>
             </div>
+        </div>
+        <!--RIGHT-->
+        <div ng-show="vm.previewPanel" resizable r-directions="['left']"
+             style="min-width:400px;height:100%;width:40%;margin-left:8px; ">
+            <span layout="row">
+                            <span>PREVIEW</span><span flex></span><md-icon md-font-icon="fa fa-compress"
+                                                                           ng-click="vm.previewPanel=false"
+                                                                           aria-label="hide html"></md-icon>
+                        </span>
+            <md-content style="height:100%;"
+                        flex layout="row"
+                        layout-align="center center"
+                        layout-padding>
+                <custom-item class="md-whiteframe-2dp" content="vm.html"></custom-item>
+            </md-content>
+        </div>
+        <div ng-hide="vm.previewPanel" ng-click="vm.previewPanel=true"
+             style="height:100%;width:16px;padding:3px; background-color:#DDDDDD;">
+            <md-icon md-font-icon="fa fa-expand" ng-click="vm.hidePreview=true"
+                     aria-label="hide html"></md-icon>
 
-        </md-content>
-        <md-content ng-if="!vm.hidePreview"
-             flex layout="row"
-             layout-align="center center"
-             layout-margin
-             class="md-whiteframe-2dp">
-            <custom-item class="md-whiteframe-2dp" content="vm.html"></custom-item>
-        </md-content>
+        </div>
     </div>
-
 </div>
-<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="editCustomItem">
-    <md-toolbar class="md-theme-light">
-        <h1 class="md-toolbar-tools">{{vm.item.type}}</h1>
-    </md-toolbar>
-    <md-tabs md-selected="vm.selectedSideEditorTab" md-dynamic-height md-border-bottom>
-        <md-tab label="Options" ng-disabled="vm.item.content&&!vm.isAttrsConfigurable(vm.item.content)">
-            <div class="padding-30 md-tabs-content">
-                <form>
-                    <md-input-container>
-                        <label>Tag</label>
-                        <input type="text" ng-model="vm.item.tag" ng-disabled="vm.item.content&&!vm.isTagConfigurable(vm.item.content)">
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Id</label>
-                        <input type="text" ng-model="vm.item.id">
-                    </md-input-container>
-                    <br>
-                    Class
-                    <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'" type="text"
-                              rows="5" cols="30"
-                              ng-model="vm.item.class"></textarea>
-                    Style
-                    <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'" type="text"
-                              rows="5" cols="30"
-                              ng-model="vm.item.style"></textarea>
-                    Attrs
-                    <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'" type="text"
-                              rows="5" cols="30"
-                              ng-model="vm.item.attrs"></textarea>
-                </form>
-            </div>
-        </md-tab>
-
-        <md-tab label="Layout" ng-disabled="vm.item.content&&!vm.isAttrsConfigurable(vm.item.content)">
-            <div class="padding-40 md-tabs-content">
-                <form layout="column">
-                    <md-input-container ng-init="vm.layoutBreakpoint='all'">
-                        <label>Breakpoint</label>
-                        <md-select ng-model="vm.layoutBreakpoint">
-                            <md-option ng-value="bp" ng-repeat="bp in vm.layoutOptions.breakpoints">{{ bp }}</md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>layout</label>
-                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].layout">
-                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout.layout">{{ size }}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>flex</label>
-                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].flex">
-                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout.flex">{{ size }}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>flex-offset</label>
-                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['flex-offset']">
-                            <md-option ng-value="size" ng-repeat="size in vm.layoutOptions.layout['flex-offset']">
-                                {{size}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>layout-align-x</label>
-                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-align'].x">
-                            <md-option ng-value="xAlign"
-                                       ng-repeat="xAlign in vm.layoutOptions.layout['layout-align'].x">{{ xAlign }}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>layout-align-y</label>
-                        <md-select ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-align'].y">
-                            <md-option ng-value="yAlign"
-                                       ng-repeat="yAlign in vm.layoutOptions.layout['layout-align'].y">{{ yAlign }}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
-                                 ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-fill']" ng-false-value="null">
-                        Fill
-                    </md-checkbox>
-                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
-                                 ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-wrap']" ng-false-value="null">
-                        Wrap
-                    </md-checkbox>
-                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
-                                 ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-nowrap']" ng-false-value="null">
-                        Nowrap
-                    </md-checkbox>
-                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
-                                 ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-margin']" ng-false-value="null">
-                        Margin
-                    </md-checkbox>
-                    <md-checkbox ng-disabled="vm.layoutBreakpoint!=='all'"
-                                 ng-model="vm.item.layout[vm.layoutBreakpoint]['layout-padding']" ng-false-value="null">
-                        Padding
-                    </md-checkbox>
-                    <md-checkbox ng-model="vm.item.layout[vm.layoutBreakpoint]['show']" ng-false-value="null">
-                        Show
-                    </md-checkbox>
-                    <md-checkbox ng-model="vm.item.layout[vm.layoutBreakpoint]['hide']" ng-false-value="null">
-                        hide
-                    </md-checkbox>
-                </form>
-            </div>
-        </md-tab>
-
-        <md-tab label="HTML" layout-align="center start">
-            <div class="padding-10 md-tabs-content" ng-if="vm.selectedSideEditorTab===2">
-                <form ng-if="vm.item.type==='custom'">
-                    <md-button ng-if="!vm.htmlEditor" ng-click="vm.htmlEditor=true">Edit</md-button>
-                    <md-button ng-if="vm.htmlEditor===true" ng-click="vm.htmlEditor=false">Hide</md-button>
-                <textarea ng-if="vm.htmlEditor" type="text" id="testInput" rows="35" cols="34"
-                          ng-model="vm.item.content" md-autofocus></textarea>
-                </form>
-                <div>
-                    <code>{{vm.getHtmlContent(vm.item)}}</code>
-                </div>
-            </div>
-        </md-tab>
-    </md-tabs>
-    <md-button ng-click="vm.updateItem()">OK</md-button>
-    <md-button ng-click="vm.toggleEditor()">Cancel</md-button>
-
-</md-sidenav>
-
-
-
-
-
-
-

@@ -20,6 +20,29 @@
     z-index: 4;
 }
 
+.dimmed {
+    position: relative;
+}
+
+.dimmed:after {
+    content: " ";
+    z-index: 10;
+    display: block;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+
+.dSource{
+    cursor: move; width:90px; text-align: center;
+}
+
+
 textarea.borderless{
     border: none;
     overflow: auto;
@@ -30,6 +53,45 @@ textarea.borderless{
     -moz-box-shadow: none;
     box-shadow: none;
 }
+.containerHandle{
+    cursor: move;
+    width:100%;
+    margin:0;
+}
+
+.outerContainer{
+    min-width: 100px;
+    min-height: 100px;
+}
+.outerContainer:focus{
+    outline-color: red;
+}
+.outerContainer.root{
+    border: 1px solid #EEEEEE;
+    background-color:#F0F4C3;
+}
+.outerContainer.lv1{
+    border: 3px solid #F0F4C3;
+    background-color:#A5D6A7;
+}
+.outerContainer.lv2{
+    border: 3px solid #A5D6A7;
+    background-color:#FFB74D;
+}
+
+
+.containerTitle span{
+    padding-top:15px;
+}
+
+.innerContainer{
+    width:100%;
+    min-width: 100px;
+    min-height: 100px;
+    overflow: hidden;
+}
+
+//resizable
 
 .resizable-main-container {
     display: -webkit-box;
@@ -53,7 +115,7 @@ textarea.borderless{
     -ms-flex-flow: column nowrap;
     flex-flow: column nowrap;
     -webkit-justify-content: space-around;
-    -ms-flex-pack: distribute;
+    //-ms-flex-pack: distribute;
     justify-content: space-around;
     -webkit-align-content: space-around;
     -ms-flex-line-pack: distribute;
@@ -64,7 +126,7 @@ textarea.borderless{
 .resizable .titlebar{
     padding-left:20px;
     width:100%;
-    background: #7bd389;
+    //background: #7bd389;
     color: #2d883c;
 }
 
@@ -82,7 +144,7 @@ textarea.borderless{
     -ms-flex-flow: row nowrap;
     flex-flow: row nowrap;
     -webkit-justify-content: space-around;
-    -ms-flex-pack: distribute;
+    //-ms-flex-pack: distribute;
     justify-content: space-around;
     -webkit-align-content: space-around;
     -ms-flex-line-pack: distribute;
@@ -139,11 +201,11 @@ section.resizable {
 
 .rg-right, .rg-left, .rg-top, .rg-bottom {
     display: block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
+    width: 10px;
+    height: 10px;
+    line-height: 10px;
     position: absolute;
-    z-index: 1;
+    z-index: 11;
     -moz-user-select: -moz-none;
     -ms-user-select: none;
     -webkit-user-select: none;
@@ -160,18 +222,18 @@ section.resizable {
 .rg-right span, .rg-left span {
     border-width: 0 1px;
     top: 50%;
-    margin-top: -10px;
-    margin: -10px 0 0 3.5px;
+    margin-top: -8px;
+    margin: -8px 0 0 2.5px;
     height: 20px;
-    width: 7px;
+    width: 4px;
 }
 
 .rg-top span, .rg-bottom span {
     border-width: 1px 0;
     left: 50%;
-    margin: 3.5px 0 0 -10px;
+    margin: 2.5px 0 0 -10px;
     width: 20px;
-    height: 7px;
+    height: 4px;
 }
 
 .rg-top {
@@ -179,7 +241,7 @@ section.resizable {
     width: 100%;
     top: 0;
     left: 0;
-    margin-top: -7px;
+    margin-top: -4px;
 }
 
 .rg-right {
@@ -187,7 +249,7 @@ section.resizable {
     height: 100%;
     right: 0;
     top: 0;
-    margin-right: -14px;
+    margin-right: -8px;
 }
 
 .rg-bottom {
@@ -195,7 +257,7 @@ section.resizable {
     width: 100%;
     bottom: 0;
     left: 0;
-    margin-bottom: -7px;
+    margin-bottom: -4px;
 }
 
 .rg-left {
@@ -203,5 +265,5 @@ section.resizable {
     height: 100%;
     left: 0;
     top: 0;
-    margin-left: -14px;
+    margin-left: -8px;
 }

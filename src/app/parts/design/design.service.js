@@ -6,7 +6,7 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdSidenav, injectCSS, customService, lzString, snippets, $timeout) {
+    function SiteDesign($firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, lzString, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type) {
 
             var listRefUrl = type+'s/list@selectedSite',
@@ -25,7 +25,7 @@
                     //     customService.convert(val.content, $scope['containers'], 3);
                     //     vm.pageCss = val.css || '';
                     // },0);
-                    if(type==='widget') vm.compile();
+                    vm.compile();
                 });
                 vm[typeRef] = $firebase.ref(listRefUrl).child($stateParams.id);
             } else {
@@ -41,22 +41,46 @@
             vm.layoutOptions = customService.layoutOptions;
             vm.ctrls = customService.ctrls;
 
-            vm.actions = [['edit', 'GENERAL.EDIT'], ['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
+            vm.actions = [['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
             vm.media = 'all';
+
+            vm.cssHtmlPanel=true;
+            vm.previewPanel=true;
+            vm.setPreviewScale= function(scale){
+                vm.previewPanelStyle= {
+                    "width": scale<1? 100/scale+'%':'100%',
+                    "transform": "scale("+scale+","+scale+")",
+                    "transform-origin":"0 0"
+                }
+            };
+            vm.showCssHtml=function(){
+                vm.cssHtmlPanel=true;vm.layoutEditorStyle={'height':'500px','padding-top':'0'};
+            };
+            vm.hideCssHtml=function(){
+                vm.cssHtmlPanel=false;vm.layoutEditorStyle={'height':'100%','padding-top':'50px'}
+            };
+            vm.hideCssHtml();
+
+
+            vm.clearAll=function(){
+                customService.convert([], $scope['containers'], 3);
+                vm.compile();
+            };
 
             vm.copyItem = function (cid, index) {
                 var copied = angular.copy($scope.containers[cid][index]);
                 copied.cid = Math.random().toString();
                 $scope.containers[cid].splice(index, 0, copied);
                 $scope.containers[copied.cid] = [];
+                vm.compile();
             };
 
             vm.deleteItem = function (cid, index) {
+                vm.selectedContainerId = '';
+                vm.selectedItemIndex = '';
                 $scope.containers[cid].splice(index, 1);
-            };
-
-            vm.toggleEditor = function () {
-                $mdSidenav('editCustomItem').toggle();
+                vm.item={};
+                vm.compile();
             };
 
             function isInsideMq(bp) {
@@ -171,7 +195,7 @@
 
                     customService.convert(content.concat(result.content || []), $scope['containers'], 3);
                     vm[typeCss] = css + ' ' + (result.css || '');
-                    if(type==='widget') vm.compile();
+                    vm.compile();
                 }, 0)
             }
 
@@ -213,6 +237,7 @@
                         case 'meta':
                             break;
                         default:
+                            child.type = 'tag';
                             if (style) child.style = style;
                             child.tag = nodeName;
                             if (id) child.id = id;
@@ -235,7 +260,6 @@
 
             vm.editItem = function (cid, index) {
                 // vm.item = {};
-                $mdSidenav('editCustomItem').open();
                 vm.selectedContainerId = cid;
                 vm.selectedItemIndex = index;
                 if (cid === 'canvas') {
@@ -247,14 +271,17 @@
             };
 
             vm.updateItem = function () {
-                $mdSidenav('editCustomItem').close();
+                if(!vm.selectedContainerId) return;
                 if (vm.selectedContainerId === 'canvas') {
                     console.log(vm.item);
                     vm.canvas = vm.item;
                 } else {
                     $scope.containers[vm.selectedContainerId][vm.selectedItemIndex] = vm.item;
                 }
+                vm.compile();
             };
+
+            vm.debouncedUpdateItem =snippets.debounce(vm.updateItem,1000);
 
             vm.injectCss = function () {
                 injectCSS.setDirectly(vm[type + 'Ref'].key, vm[type + 'Css'] + (vm.widgetsCss || ''));
@@ -266,6 +293,7 @@
             };
 
             vm.compile = function () {
+                if(!vm.previewPanel) return;
                 var styleSheets = {};
                 var compiled = customService.compile(customService.convertBack($scope.containers, 'root', styleSheets));
                 // vm.pageRef.once('value', function (snap) {
@@ -275,7 +303,9 @@
                 // });
                 vm.widgetsCss = vm.buildCss(styleSheets);
                 vm.injectCss();
-                vm.html = compiled
+                $timeout(function(){
+                    vm.html = compiled
+                },0)
             };
 
             vm.buildCss = function (styleSheets) {
@@ -306,7 +336,14 @@
                             "editTime@0": firebase.database.ServerValue.TIMESTAMP
                         });
 
-                        $firebaseStorage.update(type+'s/detail/' + vm[typeName] + '@selectedSite', data).then(vm.revert);
+                        $firebaseStorage.update(type+'s/detail/' + vm[typeName] + '@selectedSite', data).then(function(){
+                            console.log('saved')
+                            $mdToast.show(
+                                $mdToast.simple()
+                                    .textContent('Saved!')
+                                    .hideDelay(3000)
+                            );
+                        });
                     };
 
                 if (vm.originalName && vm.originalName !== vm[typeName]) {
@@ -326,12 +363,6 @@
             vm.undo = dragula.undo;
             vm.redo = dragula.redo;
 
-            vm.revert = function () {
-                var params = {};
-                params[typeName]=vm[typeName];
-                params.id = vm[typeRef].key;
-                $state.go($state.current, params, {reload: true});
-            };
 
             if (type === 'page') {
                 vm.action = function (action, cid, index) {
@@ -359,11 +390,6 @@
                         content = customService.convertBack($scope.containers, 'root', styleSheets),
                         css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
                     snippets.saveData({content: content, css: css}, vm.pageName + '.json')
-                };
-
-
-                vm.revert = function () {
-                    $state.go($state.current, {pageName: vm.pageName, id: vm.pageRef.key}, {reload: true});
                 };
 
 

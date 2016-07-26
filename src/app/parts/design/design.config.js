@@ -66,7 +66,7 @@
                     }]
                 },
                 url: '/admin/:siteName/widgetEditor/?id&widgetName',
-                templateUrl: 'app/parts/design/page-editor2.html',
+                templateUrl: 'app/parts/design/widget-editor.tmpl.html',
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'
             })

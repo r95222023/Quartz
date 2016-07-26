@@ -156,6 +156,10 @@
             scope: $scope,
             dragulaService: dragulaService,
             $timeout: $timeout
+        },{
+            onDrop: function () {
+                vm.compile();
+            }
         });
 
         $scope.initDragula = dragula.init.bind(dragula);
@@ -199,7 +203,7 @@
             dragulaService: dragulaService,
             $timeout: $timeout
         }, {
-            maxRoot: 1,
+            // maxRoot: 1,
             onDrop: function () {
                 vm.compile();
             }
@@ -445,9 +449,4 @@
             return copy;
         }
     };
-
-    function action(vm, type, $firebase, $firebaseStorage, $scope, $rootScope, $state, $mdSidenav, dragula, injectCSS, customService, lzString, snippets, $timeout) {
-
-    }
-
 })();
