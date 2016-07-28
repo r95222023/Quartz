@@ -24,8 +24,8 @@
                     }
                 }
             },
-            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], ['ProductListController'],['ShoppingCartController'],['AllpayCheckoutCtrl']],
-            emptyTags  = {
+            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], ['ProductListController'], ['ShoppingCartController'], ['AllpayCheckoutCtrl']],
+            emptyTags = {
                 area: 1,
                 base: 1,
                 basefont: 1,
@@ -45,7 +45,7 @@
         var items = [
                 // {type: 'custom', content: '<!--include-->'},
                 {type: 'tag', content: ''},
-                {type:'text',content:''}
+                {type: 'text', content: ''}
             ],
             containers = [
                 // {
@@ -70,15 +70,11 @@
                 //     type: 'custom',
                 //     content: '<!--include-->'
                 // }
-                {type:'tag',content:'<!--include-->'},
-                {type:'text'}
+                {type: 'tag', content: '<!--include-->'},
+                {type: 'text'}
             ];
-        var templates = {
-            "row": "<!--include-->",
-            "column": "<!--include-->"
-        };
 
-        function isEmptyTag (name) {
+        function isEmptyTag(name) {
             if (name.charAt(0) == '?') {
                 return true;
             }
@@ -88,34 +84,6 @@
             return !!emptyTags[name];
         }
 
-        function getTemplate(url) {
-            var def = $q.defer(),
-                tmpl = $templateCache.get(url);
-            if (tmpl) {
-                def.resolve(tmpl);
-            } else {
-                $http.get(url).then(function (res) {
-                    if (res.data) {
-                        def.resolve(res.data);
-                    } else {
-                        def.reject({url: url, message: 'request failed'});
-                    }
-                });
-            }
-            return def.promise;
-        }
-
-        function getAllTemplates(templateList, tmplRoot) {
-            var promises = {};
-            angular.forEach(templateList, function (tmplName) {
-                promises[tmplName] = getTemplate(tmplRoot + tmplName + '.html');
-            });
-            var promise = $q.all(promises);
-            promise.then(function (res) {
-                angular.extend(templates, res);
-            });
-            return promise;
-        }
 
         var properties = ['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content', 'ctrl', 'ctrlAs'];
 
@@ -145,6 +113,7 @@
             angular.forEach(val[_cid], function (item) {
                 var _item = {};
                 if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
+                // if(item.type==='custom'||item.type==='row'||item.type==='column') item.type='tag';
                 angular.forEach(properties, function (property) {
                     if (item[property]) _item[property] = item[property];
                 });
@@ -155,20 +124,18 @@
         }
 
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
-        function getHtmlContent(item) {
+        function compileTag(item) {
             item = item || {};
             var content,
                 tag = item.tag || 'div',
-                singleton = isEmptyTag(tag);
+                singleton = isEmptyTag(tag),
+                type=item.type;
 
-            if (item.type === 'customWidget') {
-                content = compile(item.content);
-                return content;
-            } else if (item.content) {
+            if (item.content) {
                 content = item.content;
-                if(item.type==='text') return content
-            } else if (item.type && templates[item.type]) {
-                content = templates[item.type];
+                if (type === 'text') return content;
+            }  else if (type === 'tag') { //tag without content;
+                content = '<!--include-->'
             } else {
                 content = '';
             }
@@ -233,17 +200,8 @@
         function compile(containers) {
             var html = '';
             angular.forEach(containers, function (container) {
-                var rawContainer = getHtmlContent(container),
-                    subContainerHtml = '';
-                angular.forEach(container.divs, function (subContainer) {
-                    var rawSubContainer = getHtmlContent(subContainer),
-                        widgets = '';
-                    angular.forEach(subContainer.divs, function (widget) {
-                        widgets += getHtmlContent(widget);
-                    });
-                    subContainerHtml += rawSubContainer.replace('<!--include-->', widgets);
-                });
-                html += rawContainer.replace('<!--include-->', subContainerHtml)
+                var rawContainer = compileTag(container);
+                html += rawContainer.replace('<!--include-->', container.divs ? compile(container.divs) : '');
             });
             return html;
         }
@@ -262,8 +220,7 @@
             convert: convert,
             convertBack: convertBack,
             compile: compile,
-            getHtmlContent: getHtmlContent,
-            getAllTemplates: getAllTemplates,
+            compileTag: compileTag,
             isAttrsConfigurable: isAttrsConfigurable,
             isTagConfigurable: isTagConfigurable,
             containers: containers,

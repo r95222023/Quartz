@@ -11,10 +11,8 @@
 
     var pageRefUrl = 'pages@selectedSite',
         pageListRefUrl = 'pages/list@selectedSite',
-        pageDetailRefUrl = 'pages/detail@selectedSite',
         widgetRefUrl = 'widgets@selectedSite',
-        widgetListRefUrl = 'widgets/list@selectedSite',
-        widgetDetailRefUrl = 'widgets/detail@selectedSite';
+        widgetListRefUrl = 'widgets/list@selectedSite';
 
     /* @ngInject */
     function PageManagerController($firebase, $firebaseStorage, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
@@ -125,14 +123,7 @@
         $scope.$cate = articleProduct.cate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.params = JSON.parse($stateParams.params || '{}');
-        // $scope.$go = function (pageName, params) {
-        //     var _params = {};
-        //     if (angular.isObject(params)) angular.extend(_params, params);
-        //     $state.go('quartz.admin-default.customPage', {
-        //         pageName: pageName || $stateParams.pageName,
-        //         params: JSON.stringify(_params)
-        //     });
-        // };
+
         $scope.$go = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
@@ -144,13 +135,12 @@
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
+        vm.previewPanel = false;
+
+
         var widgetSource = customService.items,
             containerSource = customService.containers;
         vm.customWidgets = customWidgets;
-        //vm.getHtmlContent = customService.getHtmlContent;
-        //vm.isAttrsConfigurable = customService.isAttrsConfigurable;
-        //vm.isTagConfigurable = customService.isTagConfigurable;
-        //vm.layoutOptions = customService.layoutOptions;
 
         var dragula = new Dragula(containerSource, containerSource, widgetSource, {
             scope: $scope,
@@ -164,22 +154,6 @@
 
         $scope.initDragula = dragula.init.bind(dragula);
 
-        // if ($stateParams.pageName && $stateParams.id) {
-        //     $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite').then(function (val) {
-        //         console.log(val.content)
-        //         customService.convert(val.content, $scope['containers'], 3);
-        //         vm.pageCss = val.css || '';
-        //         vm.canvas = val.canvas || {};
-        //         // $timeout(function(){
-        //         //     customService.convert(val.content, $scope['containers'], 3);
-        //         //     vm.pageCss = val.css || '';
-        //         // },0);
-        //     });
-        //     vm.pageRef = $firebase.ref(pageListRefUrl).child($stateParams.id);
-        // } else {
-        //     vm.pageRef = $firebase.ref(pageListRefUrl).push();
-        // }
-
         siteDesign.ctr(vm, $scope, dragula, 'page');
 
     }
@@ -190,13 +164,7 @@
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
         var elementSource = customService.items,
-            containerSource = customService.containers,
-            widgetRootRef = $firebase.ref(widgetDetailRefUrl);
-        //vm.getHtmlContent = customService.getHtmlContent;
-        //vm.isAttrsConfigurable = customService.isAttrsConfigurable;
-        //vm.isTagConfigurable = customService.isTagConfigurable;
-        //vm.layoutOptions = customService.layoutOptions;
-
+            containerSource = customService.containers;
 
         var dragula = new Dragula(containerSource, containerSource, elementSource, {
             scope: $scope,
@@ -209,23 +177,7 @@
             }
         });
         $scope.initDragula = dragula.init.bind(dragula);
-
-        // if ($stateParams.widgetName) {
-        //     widgetRootRef.orderByKey().equalTo($stateParams.id).once('child_added', function (snap) {
-        //         var val = lzString.decompress(snap.val());
-        //
-        //         if (val) {
-        //             $timeout(function () {
-        //                 customService.convert(val.content, $scope['containers'], 3);
-        //                 vm.widgetRef = snap.ref;
-        //                 vm.widgetCss = val.css || '';
-        //                 vm.compile();
-        //             }, 0);
-        //         }
-        //     });
-        // } else {
-        //     vm.widgetRef = widgetRootRef.push();
-        // }
+        vm.previewPanel = true;
 
         siteDesign.ctr(vm, $scope, dragula, 'widget');
     }
@@ -390,16 +342,25 @@
             self.dragulaService.options(self.scope, 'drag-container-root', {
                 moves: function (el, container, handle) {
                     return handle.classList.contains('root-handle');
+                },
+                accepts:function(el, target, source, sibling){
+                    return !target.classList.contains('nodrop');
                 }
             });
             self.dragulaService.options(self.scope, 'drag-container-lv1', {
                 moves: function (el, container, handle) {
                     return handle.classList.contains('lv1-handle');
+                },
+                accepts:function(el, target, source, sibling){
+                    return !target.classList.contains('nodrop');
                 }
             });
             self.dragulaService.options(self.scope, 'drag-container-lv2', {
                 moves: function (el, container, handle) {
                     return handle.classList.contains('lv2-handle');
+                },
+                accepts:function(el, target, source, sibling){
+                    return !target.classList.contains('nodrop');
                 }
             });
             self.dragRootOff = self.scope.$on('drag-container-root.drop-model', function (el, target, source) {

@@ -1,21 +1,21 @@
-.editor-full-height{
+.editor-full-height {
     position: absolute;
-    width:100%;
-    top:0;
+    width: 100%;
+    top: 0;
     bottom: 0;
     overflow: hidden;
 }
 
-.docs-title-input{
+.docs-title-input {
     border: 1px solid transparent;
-    border-radius: 2px!important;
+    border-radius: 2px !important;
     line-height: 22px;
     margin: 6px 20px 0 20px;
     min-width: 1px;
     padding: 2px 7px;
 }
 
-.editor-toolbar{
+.editor-toolbar {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.14);
     z-index: 4;
 }
@@ -37,13 +37,13 @@
     background: rgba(0, 0, 0, 0.2);
 }
 
-
-.dSource{
-    cursor: move; width:90px; text-align: center;
+.dSource {
+    cursor: move;
+    width: 90px;
+    text-align: center;
 }
 
-
-textarea.borderless{
+textarea.borderless {
     border: none;
     overflow: auto;
     outline: none;
@@ -53,44 +53,89 @@ textarea.borderless{
     -moz-box-shadow: none;
     box-shadow: none;
 }
-.containerHandle{
+
+.containerHandle {
     cursor: move;
-    width:100%;
-    margin:0;
+    width: 100%;
+    margin: 0;
 }
 
-.outerContainer{
+.outerContainer {
     min-width: 100px;
     min-height: 100px;
-}
-.outerContainer:focus{
-    outline-color: red;
-}
-.outerContainer.root{
-    border: 1px solid #EEEEEE;
-    background-color:#F0F4C3;
-}
-.outerContainer.lv1{
-    border: 3px solid #F0F4C3;
-    background-color:#A5D6A7;
-}
-.outerContainer.lv2{
-    border: 3px solid #A5D6A7;
-    background-color:#FFB74D;
+    :focus {
+        outline: 0;
+    }
 }
 
 
-.containerTitle span{
-    padding-top:15px;
-}
-
-.innerContainer{
+/*.outerContainer .focus{
+    height:100%;
     width:100%;
+    background-color: red;
+}*/
+$rootcolor: #F9CC9D;
+$lv1color:#FDDD9B;
+$lv2color:#C2CF8A;
+$selectedcolor:#8BB5C0;
+
+#root {
+    border: 4px solid white;
+    background-color: $rootcolor;
+}
+
+#lv1 {
+    border: 4px solid $rootcolor;
+    background-color: $lv1color;
+}
+
+#lv2 {
+    border: 4px solid $lv1color;
+    background-color: $lv2color;
+}
+
+.rootfocus {
+    height: 100%;
+    background-color: $selectedcolor;
+    color:white;
+}
+.rootfocus #lv1{
+    border: 4px solid $selectedcolor;
+    color:black;
+}
+.lv1focus {
+    height: 100%;
+    background-color: $selectedcolor;
+    color:white;
+}
+.lv1focus #lv2{
+    border: 4px solid $selectedcolor;
+    color:black;
+}
+.lv2focus {
+    height: 100%;
+    background-color: $selectedcolor;
+    color:white;
+}
+
+
+.containerTitle span {
+    padding-top: 15px;
+}
+
+.innerContainer {
+    width: 100%;
     min-width: 100px;
     min-height: 100px;
     overflow: hidden;
 }
 
+.bgcolor{
+    background-color:#EEEEEE !important;
+}
+.bgcolor.whitebg{
+    background-color:white !important;
+}
 //resizable
 
 .resizable-main-container {
@@ -120,18 +165,19 @@ textarea.borderless{
     -webkit-align-content: space-around;
     -ms-flex-line-pack: distribute;
     align-content: space-around;
-    height:100%;
+    height: 100%;
     //padding: 7px;
 }
-.resizable .titlebar{
-    padding-left:20px;
-    width:100%;
+
+.resizable .titlebar {
+    padding-left: 20px;
+    width: 100%;
     //background: #7bd389;
     color: #2d883c;
 }
 
 .resizable .r-row {
-    min-height: 50px;
+    //min-height: 50px;
     -webkit-box-flex: 1;
     -webkit-flex: 1;
     -ms-flex: 1;
@@ -150,6 +196,7 @@ textarea.borderless{
     -ms-flex-line-pack: distribute;
     align-content: space-around;
 }
+
 //.r-row .resizable {
 //    -webkit-box-flex: 0;
 //    -webkit-flex: 0 0 300px;
@@ -168,7 +215,7 @@ textarea.borderless{
     min-width: 30px;
 }
 
-.resizable section{
+.resizable section {
     box-sizing: border-box;
     //border-radius: 10px;
     //padding: 1.25em 1.75em;
@@ -179,8 +226,9 @@ textarea.borderless{
     -ms-flex: 1;
     flex: 1;
     min-width: 30px;
-    min-height:100px;
+    min-height: 100px;
 }
+
 section.resizable {
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 300px;
@@ -188,12 +236,10 @@ section.resizable {
     flex: 0 0 300px;
 }
 
-
-
-
 .resizable {
     position: relative;
 }
+
 .resizable.no-transition {
     -webkit-transition: none !important;
     transition: none !important;
@@ -210,8 +256,9 @@ section.resizable {
     -ms-user-select: none;
     -webkit-user-select: none;
     user-select: none;
-    background-color:#EEEEEE;
+    background-color: #DDDDDD;
 }
+
 .rg-right span, .rg-left span, .rg-top span, .rg-bottom span {
     position: absolute;
     box-sizing: border-box;
@@ -267,3 +314,4 @@ section.resizable {
     top: 0;
     margin-left: -8px;
 }
+

@@ -35,9 +35,6 @@
                     }
                 },
                 resolve: {
-                    getAllTemplates: ['customService', function (customService) {
-                        return customService.getAllTemplates(templateList, tmplRoot)
-                    }],
                     customWidgets: ['$q', '$firebase', function ($q, $firebase) {
                         var def = $q.defer();
                         $firebase.ref('widgets/detail@selectedSite').once('value', function (snap) {
@@ -60,11 +57,6 @@
                         footer: false
                     }
                 },
-                resolve: {
-                    getAllTemplates: ['customService', function (customService) {
-                        return customService.getAllTemplates(templateList, tmplRoot)
-                    }]
-                },
                 url: '/admin/:siteName/widgetEditor/?id&widgetName',
                 templateUrl: 'app/parts/design/widget-editor.tmpl.html',
                 controller: 'WidgetEditorController',
@@ -73,9 +65,7 @@
             .state('quartz.admin-default.customPage', {
                 url: '/:siteName/:pageName/?id&params&params2&cate&subCate&queryString&tag&devMode',
                 resolve: {
-                    getAllTemplates: ['customService', function (customService) {
-                        return customService.getAllTemplates(templateList, tmplRoot)
-                    }], getSyncTime: ['syncTime', function (syncTime) {
+                    getSyncTime: ['syncTime', function (syncTime) {
                         return syncTime.onReady();
                     }],
                     authData: ['$auth', function ($auth) {
