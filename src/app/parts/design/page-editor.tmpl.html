@@ -544,10 +544,10 @@
                          style="cursor:pointer;"
                          aria-label="hide html"></md-icon>
                         </span>
+
             <md-content ng-init="vm.compile()" ng-if="vm.previewPanel" style="height:100%;width:100%;" >
                 <div ng-style="vm.previewPanelStyle">
-                    <custom-item content="vm.html" scope="vm.scope"></custom-item>
-
+                    <custom-item content="vm.html" scope="vm.scope" ng-init="vm.compile()"></custom-item>
                 </div>
             </md-content>
         </div>
@@ -560,7 +560,9 @@
     </div>
 </div>
 <!--Preview-->
-<md-content ng-if="vm.fullPagePreview" layout="column" ng-init="vm.compile()">
-    <custom-item layout="row" layout-wrap content="vm.html" scope="vm.scope"></custom-item>
+<!--<md-content ng-if="vm.fullPagePreview" layout="column" ng-init="vm.compile()">-->
+    <!--<custom-item layout="row" ng-class="vm.canvas.class" layout-wrap content="vm.html" scope="vm.scope"></custom-item>-->
 
-</md-content>
+<!--</md-content>-->
+<custom-item ng-if="vm.fullPagePreview" content="vm.html" scope="vm.scope" ng-init="vm.compile()"></custom-item>
+

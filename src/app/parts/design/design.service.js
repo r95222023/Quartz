@@ -309,7 +309,7 @@
             vm.compile = function () {
                 if (!vm.previewPanel&&!vm.fullPagePreview) return;
                 var styleSheets = {};
-                var compiled = customService.compile(customService.convertBack($scope.containers, 'root', styleSheets));
+                var compiled = customService.compileAll(customService.convertBack($scope.containers, 'root', styleSheets), vm.canvas);
 
                 vm.partsCss = vm.buildCss(styleSheets);
                 vm.injectCss();
@@ -339,6 +339,7 @@
                             "css": css || '',
                             "content": content
                         };
+                        if(vm.canvas) data.canvas=vm.canvas;
                         $firebase.update(type + 's@selectedSite', ['list/' + id, 'detail/' + vm[typeName]], {
                             "name": vm[typeName],
                             "author": $firebase.params["$uid"] || null,
@@ -406,7 +407,7 @@
                     var styleSheets = {},
                         content = customService.convertBack($scope.containers, 'root', styleSheets),
                         css = vm.css || '' + vm.buildCss(styleSheets) || '',
-                        data=angular.extend({},$scope.containers.canvas, {id:vm[typeName], content:content,css:css});
+                        data=angular.extend({},vm.canvas||{},{id:vm[typeName], content:content,css:css});
                     snippets.saveData(data, vm[typeName] + '.json')
                 };
 

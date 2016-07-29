@@ -123,6 +123,37 @@
             return result;
         }
 
+        function calcLayout(layouts){
+            var res='';
+            angular.forEach(layouts, function (layout, breakpoint) {
+                var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
+                angular.forEach(layout, function (value, key) {
+                    if (value === null) return;
+                    var _value = '="' + value + '" ',
+                        _property = key + _breakpoint;
+                    switch (key) {
+                        case 'flex':
+                            if (value === 'flex') _value = ' ';
+                            break;
+                        case 'flex-offset':
+                            break;
+                        case 'flex-order':
+                            break;
+                        case 'layout':
+                            break;
+                        case 'layout-align':
+                            _value = '="' + value.x + ' ' + value.y + '" ';
+                            break;
+                        default:
+                            _property = value ? _property + ' ' : '';
+                            _value = ''; //ex layout-fill:true will get layout-fill
+                            break;
+                    }
+                    res += _property + _value;
+                })
+            });
+            return res;
+        }
         //the followings only work properly after getAllTemplates() is resolved, remember to add resolve property of this on the state config file.
         function compileTag(item) {
             item = item || {};
@@ -145,33 +176,7 @@
                 res += 'id="' + item.id + '" '
             }
             if (item.layout) {
-                angular.forEach(item.layout, function (layout, breakpoint) {
-                    var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
-                    angular.forEach(layout, function (value, key) {
-                        if (value === null) return;
-                        var _value = '="' + value + '" ',
-                            _property = key + _breakpoint;
-                        switch (key) {
-                            case 'flex':
-                                if (value === 'flex') _value = ' ';
-                                break;
-                            case 'flex-offset':
-                                break;
-                            case 'flex-order':
-                                break;
-                            case 'layout':
-                                break;
-                            case 'layout-align':
-                                _value = '="' + value.x + ' ' + value.y + '" ';
-                                break;
-                            default:
-                                _property = value ? _property + ' ' : '';
-                                _value = ''; //ex layout-fill:true will get layout-fill
-                                break;
-                        }
-                        res += _property + _value;
-                    })
-                });
+                res+=calcLayout(item.layout);
             }
 
             if (item.class) {
@@ -197,6 +202,8 @@
         }
 
 
+
+
         function compile(containers) {
             var html = '';
             angular.forEach(containers, function (container) {
@@ -204,6 +211,14 @@
                 html += rawContainer.replace('<!--include-->', container.divs ? compile(container.divs) : '');
             });
             return html;
+        }
+
+        function compileAll(containers, canvas){
+            var _canvas=angular.copy(canvas)||{};
+            _canvas.content ='<!--include-->';
+            _canvas.tag='md-content';
+            _canvas.style =  (_canvas.style||'')+'height:100%;width:100%;';
+            return compileTag(_canvas).replace('<!--include-->', compile(containers))
         }
 
         function isAttrsConfigurable(html) {
@@ -220,6 +235,7 @@
             convert: convert,
             convertBack: convertBack,
             compile: compile,
+            compileAll:compileAll,
             compileTag: compileTag,
             isAttrsConfigurable: isAttrsConfigurable,
             isTagConfigurable: isTagConfigurable,
