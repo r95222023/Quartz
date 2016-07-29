@@ -1,7 +1,7 @@
 <div class="editor-full-height" layout="column">
     <!--Toolbar-->
     <md-toolbar ng-if="!vm.fullPagePreview" class="md-menu-toolbar editor-toolbar" style="height:84px">
-        <div layout="row">
+        <div layout="row" style="height:84px">
             <md-toolbar-filler style="cursor:pointer" layout layout-align="center center"
                                ui-sref="quartz.admin-default.pageManager">
                 <md-icon md-font-icon="zmdi zmdi-view-web"></md-icon>
@@ -210,7 +210,7 @@
                                         <div ng-class="{rootfocus:vm.selectedContainerId==='root'&&vm.selectedItemIndex===rootIndex}">
                                             <div layout="row" class="containerTitle">
                                                 <md-icon md-font-icon="fa fa-arrows" class="root-handle containerHandle"></md-icon>
-                                                <span >{{container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
+                                                <span >{{container.type==='part'?'part':container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
                                                 <span ng-show="container.id">#{{container.id}}</span>
                                                 <span flex></span>
                                                 <!--<div>-->
@@ -255,8 +255,9 @@
                                                             <md-icon md-font-icon="fa fa-arrows" class="lv1-handle  containerHandle"></md-icon>
 
                                                             <!--<span ng-show="subcontainer.type!=='text'"><{{subcontainer.tag||'div'}}></span>-->
-                                                            <span>{{subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
+                                                            <span>{{subcontainer.type==='part'?'part': subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
                                                             <span ng-show="subcontainer.id">#{{subcontainer.id}}</span>
+                                                            <span flex></span>
 
                                                             <md-menu>
                                                                 <md-button class="md-icon-button" aria-label="more action"
@@ -293,8 +294,9 @@
                                                                     <div layout="row" class="containerTitle">
                                                                         <md-icon md-font-icon="fa fa-arrows" class="lv2-handle  containerHandle"></md-icon>
 
-                                                                        <span>{{widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
+                                                                        <span>{{widget.type==='part'?'part':widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
                                                                         <span ng-show="widget.id">#{{widget.id}}</span>
+                                                                        <span flex></span>
 
                                                                         <md-menu>
                                                                             <md-button class="md-icon-button" aria-label="more action"

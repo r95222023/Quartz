@@ -166,7 +166,7 @@
                         inner += _property + _value;
                     })
                 });
-                return {inner: inner + (container.type === 'text' ? ' nodrop' : ''), outer: flex + display}
+                return {inner: inner + (container.type === 'text'||container.type==='part' ? ' nodrop' : ''), outer: flex + display}
             };
 
             vm.import = function ($files, cid, index) {
@@ -190,13 +190,14 @@
             };
 
             function importData(data, cid, index) {
-                var result = angular.isString(data) ? JSON.parse(data) : data;
+                var isFromHTML=!angular.isString(data),
+                    result = isFromHTML ? data:JSON.parse(data);
                 $timeout(function () {
                     if(cid!==undefined&&index!==undefined){
                         vm.selectedContainerId = cid;
                         vm.selectedItemIndex = index;
-                        data.content = customService.compile(data.content);
-                        vm.item = angular.extend({}, data, {type: 'part'});
+                        result.content = customService.compile(result.content);
+                        vm.item = angular.extend({}, result, {type: 'part', cid:vm.item.cid});
                         $scope.containers[vm.item.cid]=[];
                         vm.updateItem();
                     } else {
@@ -404,8 +405,9 @@
                 vm.export = function () {
                     var styleSheets = {},
                         content = customService.convertBack($scope.containers, 'root', styleSheets),
-                        css = vm.pageCss || '' + vm.buildCss(styleSheets) || '';
-                    snippets.saveData({content: content, css: css}, vm.pageName + '.json')
+                        css = vm.css || '' + vm.buildCss(styleSheets) || '',
+                        data=angular.extend({},$scope.containers.canvas, {id:vm[typeName], content:content,css:css});
+                    snippets.saveData(data, vm[typeName] + '.json')
                 };
 
 
