@@ -29,7 +29,7 @@
                         sideMenuSize: 'hidden',
                         showToolbar: false,
                         // //toolbarShrink: true,
-                        // contentClass: 'full-height',
+                        contentClass: 'full-height',
                         // innerContentClass:'full-height',
                         footer: false
                     }
@@ -54,6 +54,7 @@
                         sideMenuSize: 'hidden',
                         showToolbar: false,
                         //toolbarShrink: true,
+                        contentClass:'full-height',
                         footer: false
                     }
                 },
@@ -62,7 +63,7 @@
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.customPage', {
+            .state('quartz.admin-default-no-scroll.customPage', {
                 url: '/:siteName/:pageName/?id&params&params2&cate&subCate&queryString&tag&devMode',
                 resolve: {
                     getSyncTime: ['syncTime', function (syncTime) {
@@ -77,6 +78,7 @@
                         sideMenuSize: 'hidden',
                         showToolbar: false,
                         //toolbarShrink: true,
+                        contentClass:'full-height',
                         footer: false
                     }
                 },

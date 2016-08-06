@@ -1,7 +1,9 @@
+$editorToolbarHeight:74px;
+
 .editor-full-height {
     position: absolute;
     width: 100%;
-    top: 0;
+    top: $editorToolbarHeight;
     bottom: 0;
     overflow: hidden;
 }
@@ -16,6 +18,7 @@
 }
 
 .editor-toolbar {
+    height:$editorToolbarHeight;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.14);
     z-index: 4;
 }
@@ -39,7 +42,7 @@
 
 .dSource {
     cursor: move;
-    width: 90px;
+    width: 70px;
     text-align: center;
 }
 

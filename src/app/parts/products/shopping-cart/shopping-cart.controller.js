@@ -6,7 +6,7 @@
         .controller('ShoppingCartController', ShoppingCartController);
 
     /* @ngInject */
-    function ShoppingCartController($q, $scope, ngCart, qtNotificationsService, $state, $mdDialog, config, orderService) {
+    function ShoppingCartController(ngCart, orderService) {
         var vm = this;
         angular.extend(vm, ngCart);
         // $scope.cart = ngCart;

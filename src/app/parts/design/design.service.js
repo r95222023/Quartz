@@ -6,7 +6,7 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, lzString, snippets, $timeout) {
+    function SiteDesign($injector, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, lzString, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type) {
 
             var listRefUrl = type + 's/list@selectedSite',
@@ -17,13 +17,26 @@
                 $firebaseStorage.getWithCache(type + 's/detail/' + $stateParams[typeName] + '@selectedSite').then(function (val) {
                     console.log(val.content)
                     customService.convert(val.content, $scope['containers'], 3);
-                    vm[typeName] = val.css || '';
+                    vm.css = val.css || '';
                     vm.canvas = val.canvas || {};
+                    vm.js= val.js;
+
                     vm[typeName] = $state.params[typeName];
-                    // $timeout(function(){
-                    //     customService.convert(val.content, $scope['containers'], 3);
-                    //     vm.pageCss = val.css || '';
-                    // },0);
+                    $timeout(function(){
+                        customService.convert(val.content, $scope['containers'], 3);
+                    },0);
+                    if(val.js) {
+                        var js;
+                        try{
+                            eval("js ="+ val.js);
+                            if(angular.isFunction(js)||(angular.isArray(js)&&angular.isFunction(js[js.length]))){
+                                $injector.invoke(js, vm,{"$scope":$scope});
+                            }
+                        } catch(e){
+                            try{eval(val.js);} catch(e){}
+                        }
+                    }
+
                     vm.compile();
                 });
                 vm[typeRef] = $firebase.ref(listRefUrl).child($stateParams.id);
@@ -52,7 +65,7 @@
             };
             vm.showCssHtml = function () {
                 vm.cssHtmlPanel = true;
-                vm.layoutEditorStyle = {'height': '500px', 'padding-top': '0'};
+                vm.layoutEditorStyle = {'height': '500px'};
             };
             vm.hideCssHtml = function () {
                 vm.cssHtmlPanel = false;
@@ -123,9 +136,11 @@
             }
 
 
+            vm.containerClass={};
             vm.getContainerClass = function (container) {
                 var itemLayout = container.layout || {},
                     inner = '',
+                    outer='',
                     flex = '',
                     display = '';
                 angular.forEach(['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'], function (breakpoint) {
@@ -161,12 +176,17 @@
                             default:
                                 _property = value ? _property + ' ' : '';
                                 _value = ''; //ex layout-fill:true will get layout-fill
+
+                                if(key==='layout-padding'||key==='layout-margin'){
+                                    outer+=_property + _value;
+                                    return;
+                                }
                                 break;
                         }
                         inner += _property + _value;
                     })
                 });
-                return {inner: inner + (container.type === 'text'||container.type==='part' ? ' nodrop' : ''), outer: flex + display}
+                return {inner: inner + (container.type === 'text'||container.type==='part' ? ' nodrop' : ''), outer: outer+ flex + display}
             };
 
             vm.import = function ($files, cid, index) {
@@ -197,7 +217,7 @@
                         vm.selectedContainerId = cid;
                         vm.selectedItemIndex = index;
                         result.content = customService.compile(result.content);
-                        vm.item = angular.extend({}, result, {type: 'part', cid:vm.item.cid});
+                        vm.item = angular.extend({}, result, result.canvas||{}, {type: 'part', cid:vm.item.cid});
                         $scope.containers[vm.item.cid]=[];
                         vm.updateItem();
                     } else {
@@ -207,6 +227,7 @@
 
                         customService.convert(content.concat(result.content || []), $scope['containers'], 3);
                         vm.css = css + ' ' + (result.css || '');
+                        if(!vm.canvas) vm.canvas = result.canvas||{};
                         vm.compile();
                     }
                 }, 0)
@@ -332,6 +353,7 @@
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.css || '' + vm.buildCss(styleSheets) || '';
+                console.log(css)
 
                 var id = vm[typeRef].key,
                     upload = function () {
@@ -339,6 +361,9 @@
                             "css": css || '',
                             "content": content
                         };
+                        if(vm.js&&vm.js.trim()){
+                            data.js = vm.js.trim();
+                        }
                         if(vm.canvas) data.canvas=vm.canvas;
                         $firebase.update(type + 's@selectedSite', ['list/' + id, 'detail/' + vm[typeName]], {
                             "name": vm[typeName],
@@ -407,7 +432,7 @@
                     var styleSheets = {},
                         content = customService.convertBack($scope.containers, 'root', styleSheets),
                         css = vm.css || '' + vm.buildCss(styleSheets) || '',
-                        data=angular.extend({},vm.canvas||{},{id:vm[typeName], content:content,css:css});
+                        data=angular.extend({},{canvas:vm.canvas||{},id:vm[typeName], content:content,css:css});
                     snippets.saveData(data, vm[typeName] + '.json')
                 };
 

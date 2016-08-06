@@ -15,7 +15,7 @@
             $firebaseStorage.getWithCache('config/payment/' + provider + '/public@selectedSite').then(function (val) {
                 var _opt = (!val) ? angular.extend({}, {paymentParams: val}, opt || {}) : opt || {},
                     now = _opt.timeStamp || (new Date(syncTime.getTime())) || (new Date());
-                _opt.id = _opt.id || (sitesService.siteName + ':' + now.getTime());
+                _opt.id = _opt.id || (sitesService.siteName + now.getTime());
                 _opt.timeStamp = _opt.timeStamp || now;
                 var _order = {
                     id: _opt.id,

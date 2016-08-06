@@ -6,68 +6,81 @@
         .controller('AllpayCheckoutCtrl', AllpayCheckoutCtrl);
 
     /* @ngInject */
-    function AllpayCheckoutCtrl($q, $scope, ngCart, $mdMedia, $firebase, $sce, $timeout, snippets, $mdDialog, customParams) {
-        var vm = this,
-            params = customParams.get();
+    function AllpayCheckoutCtrl(orderService,sitesService, $scope, ngCart, $mdMedia, $firebase, $sce, $timeout, snippets, $mdDialog, customParams) {
+        var vm = this, prevTotal;
+        if(ngCart.getTotalItems() === 0) {alert('cart is empty'); return;}
+        vm.allpayFormAction = function () {
+            var allpayFormAction = vm.stage? 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut':'https://payment.allpay.com.tw/Cashier/AioCheckOut';
 
-        var allpayFormAction = !params.stage ? 'https://payment.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
-        $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
+            return $sce.trustAsResourceUrl(allpayFormAction);
+        };
 
+        orderService.buildOrder('allpay').then(function(order){
+            vm.order = order;
+        });
         function getCheckMacValue() {
+            if(!vm.order||vm.order.totalAmount === prevTotal) return;
+
             $firebase.request({
                 request: [{
                     refUrl: 'queue/tasks/$qid@serverFb',
-                    value: buildRequest($scope.data)
+                    value: buildRequest(vm.order)
                 }],
                 response: {
                     "checkMacValue": 'queue/tasks/$qid/payment/allpay/CheckMacValue'
                 }
             }).then(function (res) {
                 $timeout(function () {
-                    $scope.data.payment.allpay['CheckMacValue'] = res.checkMacValue;
-                    $scope.data['_id'] = res.params['$qid'];
+                    vm.order.payment.allpay['CheckMacValue'] = res.checkMacValue;
+                    vm.order['_id'] = res.params['$qid'];
                 }, 0);
-
+                prevTotal = vm.order.totalAmount+0;
                 console.log('order mac: ' + res.checkMacValue);
             }, function (error) {
                 console.log(error);
             });
         }
 
-        function buildRequest(data) {
+        vm.watchForm = function(form){
+            var debounced = snippets.debounce(function(){
+                onFormReady(form);
+            }, 1000);
+            $scope.$watch(angular.bind(this, function(){
+                return this.order;
+            }),debounced,true)
+        };
+
+        function buildRequest(order) {
             var req = {payment: {allpay: {}}};
-            angular.extend(req, data);
+            angular.extend(req, order);
 
             if ($mdMedia('xs')) {
                 req.payment.allpay.DeviceSource = 'M'
             } else {
                 req.payment.allpay.DeviceSource = 'P'
             }
-            req.id = data.id || data.payment.allpay.MerchantTradeNo;
+            req.id = order.id || order.payment.allpay.MerchantTradeNo;
             req.siteName = sitesService.siteName;
             req.payment.type = 'allpay';
-            req['_state'] = 'order_validate';
+            req['_state'] = 'allpay_gen_check_mac';
             return snippets.rectifyUpdateData(req);
         }
 
-        $scope.onFormReady = function () {
-            getCheckMacValue(data);
-        };
+        function onFormReady(form) {
+            //updateTotal();
+            if(form&&form.$valid&&vm.order.acceptTOS){
+                getCheckMacValue();
+            }
+        }
 
-        $scope.submit = function () {
-            $scope.closeDialog();
-            $firebase.ref('queue/tasks/' + $scope.data['_id'] + '@serverFb').update($scope.data);
+        vm.submit = function () {
+            // $firebase.ref('queue/tasks/' + vm.order['_id'] + '@serverFb').update(vm.order);
 
+            $firebase.ref('queue/tasks/' + vm.order['_id'] + '@serverFb').update(angular.extend({"_state":'allpay_reg_temp_order',"siteName":sitesService.siteName},vm.order));
             var e = document.getElementsByName('allpay-checkout');
             e[0].submit();
             //clear cart
             ngCart.empty();
         };
-
-        $scope.closeDialog = function () {
-            // remove data
-            $firebase.ref('queue/tasks/' + data['_id'] + '@serverFb').child('status').set('canceled');
-            $mdDialog.hide();
-        }
     }
 })();

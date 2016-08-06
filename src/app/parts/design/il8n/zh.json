@@ -1,4 +1,8 @@
 {
+    "DESIGN":{
+        "PROP":"屬性",
+        "LAYOUT":"排版"
+    },
     "MENU": {
         "PAGES": {
             "MENUNAME": "頁面",

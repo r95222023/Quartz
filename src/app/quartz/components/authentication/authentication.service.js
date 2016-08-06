@@ -210,7 +210,7 @@
                     userData.info = snap.val()||{};
                     userData.info.name = user.displayName||providerData[0].displayName||firstPartOfEmail(user.email);
                     userData.info.photoURL = user.photoURL||providerData[0].photoURL;
-                    $rootScope.user = userData;
+                    angular.extend($rootScope.user,userData);
 
                     promiseService.resolve('userData', userData);
                 });

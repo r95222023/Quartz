@@ -18,14 +18,15 @@
                     data:'='
                 },
                 transclude: true,
-                templateUrl: function(element, attrs) {
-                    if ( typeof attrs.templateUrl == 'undefined' ) {
-                        return 'app/plugins/ngcart/addtocart.tmpl.html';
-                    } else {
-                        return attrs.templateUrl;
-                    }
-                },
-                link:function(scope, element, attrs){
+                // template:'<div ng-transclude></div>',
+                // templateUrl: function(element, attrs) {
+                //     if ( typeof attrs.templateUrl == 'undefined' ) {
+                //         return 'app/plugins/ngcart/addtocart.tmpl.html';
+                //     } else {
+                //         return attrs.templateUrl;
+                //     }
+                // },
+                link:function(scope, element, attrs, ctrl, transclude){
                     scope.ngCart = ngCart;
                     scope.attrs = attrs;
                     scope.inCart = function () {
@@ -68,8 +69,9 @@
                         }
 
                     };
-
-
+                    transclude(scope, function(clone, scope) {
+                        element.append(clone);
+                    });
                 }
 
             };

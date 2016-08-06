@@ -8,7 +8,7 @@
         .factory('customParams', CustomParams);
 
     /* @ngInject */
-    function CustomService($q, $http, $templateCache) {
+    function CustomService($q, $http, $templateCache,injectCSS) {
         var increment5 = [null, 0, 5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100],
             flex = ['flex'].concat(increment5),
             layoutOptions = {
@@ -179,6 +179,9 @@
                 res+=calcLayout(item.layout);
             }
 
+            // if (item.class||tag==='footer') {
+            //     res += (tag==='footer'? ' class="site-footer ':' class="') + item.class + '"';
+            // }
             if (item.class) {
                 res += ' class="' + item.class + '"';
             }
@@ -212,12 +215,45 @@
             });
             return html;
         }
+        // function compilePage(containers){
+        //     var html = '',
+        //         footer='',
+        //         footerHeight='';
+        //     angular.forEach(containers, function (container) {
+        //         var rawContainer =compileTag(container),
+        //             next = rawContainer.replace('<!--include-->', container.divs ? compile(container.divs) : '');
+        //         if(container.tag==='footer'){
+        //             footer+=next;
+        //             footerHeight=(rawContainer.split('height:')[1]||'').split(';')[0];
+        //             console.log(footerHeight)
+        //         } else {
+        //             html +=next;
+        //         }
+        //     });
+        //     return {html:html, footer:footer, footerHeight:footerHeight};
+        // }
 
+        // function compileAll(containers, canvas){
+        //     var _canvas=angular.copy(canvas)||{};
+        //     _canvas.content ='<!--include-->';
+        //     _canvas.tag='md-content';
+        //     _canvas.style =  (_canvas.style||'')+'height:100%;width:100%;';
+        //     var compiled = compilePage(containers),
+        //         compiledHtml = compileTag(_canvas).replace('<!--include-->', compiled.html);
+        //     if(compiled.footer){
+        //         var footerHeight = (compiled.footerHeight||'200px').trim();
+        //         injectCSS.setDirectly('customfooter','.page-wrap {min-height: 100%;margin-bottom: -'+footerHeight+';}.page-wrap:after {content: "";display: block;}.site-footer, .page-wrap:after {height: '+footerHeight+';}.site-footer{background: orange;}');
+        //
+        //         compiledHtml = '<div class="page-wrap">'+compiledHtml+'</div>'+compiled.footer;
+        //     }
+        //     return compiledHtml;
+        //
+        // }
         function compileAll(containers, canvas){
             var _canvas=angular.copy(canvas)||{};
             _canvas.content ='<!--include-->';
             _canvas.tag='md-content';
-            _canvas.style =  (_canvas.style||'')+'height:100%;width:100%;';
+            _canvas.style =  (_canvas.style||'')+'height:100%;overflow:hidden;';
             return compileTag(_canvas).replace('<!--include-->', compile(containers))
         }
 

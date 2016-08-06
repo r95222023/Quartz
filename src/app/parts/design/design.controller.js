@@ -23,7 +23,7 @@
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
-                    $state.go('quartz.admin-default.customPage', {id: id, pageName: name});
+                    $state.go('quartz.admin-default-no-scroll.customPage', {id: id, pageName: name});
                     break;
                 case 'edit':
                     $state.go('quartz.admin-default-no-scroll.pageEditor', {id: id, pageName: name});
@@ -155,6 +155,7 @@
         $scope.initDragula = dragula.init.bind(dragula);
 
         siteDesign.ctr(vm, $scope, dragula, 'page');
+        vm.setPreviewScale(0.5);
 
     }
 
@@ -183,7 +184,7 @@
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, articleProduct, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, $state) {
+    function CustomPageController(lzString, articleProduct, $injector,getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, $state) {
         var customPage = this,
             pageName = $stateParams.pageName,
             isIndex = !pageName || pageName === "index",
@@ -206,7 +207,7 @@
         $scope.$go = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
-            $state.go('quartz.admin-default.customPage', {
+            $state.go('quartz.admin-default-no-scroll.customPage', {
                 pageName: pageName || $stateParams.pageName,
                 params: JSON.stringify(_params)
             });
@@ -223,16 +224,28 @@
         });
 
         function setModelData(val, key) {
-            $timeout(function () {
-                injectCSS.setDirectly(key, val.css);
-                customPage.pageData = val;
-                customPage.html = customService.compile(val.content);
-            }, 0);
             var listener = $rootScope.$on('$stateChangeStart',
                 function () {
                     injectCSS.remove(key);
                     listener();
                 });
+            $timeout(function () {
+                injectCSS.setDirectly(key, val.css);
+                customPage.pageData = val;
+                customPage.html = customService.compileAll(val.content);
+                if(val.js) {
+                    var js;
+                    try{
+                        eval("js ="+ val.js);
+                        if(angular.isFunction(js)||(angular.isArray(js)&&angular.isFunction(js[js.length]))){
+                            $injector.invoke(js, customPage,{"$scope":$scope});
+                        }
+                    } catch(e){
+                        try{eval(val.js);} catch(e){}
+                    }
+                }
+            }, 0);
+
         }
 
 
