@@ -4,14 +4,14 @@
         .module('app', [
             'quartz',
             'ngAnimate', 'ngCookies', 'ngSanitize', 'ngMessages', 'ngMaterial',
-            'ui.router', 'pascalprecht.translate', 'LocalStorageModule', 'googlechart', 'chart.js', 'linkify', 'ui.calendar', 'angularMoment', 'textAngular', 'uiGmapgoogle-maps', 'hljs', 'md.data.table', angularDragula(angular),'ngFileUpload',
+            'ui.router', 'pascalprecht.translate', 'LocalStorageModule', 'angularMoment', 'textAngular', 'md.data.table', angularDragula(angular),'ngFileUpload',
             //'seed-module',
             // uncomment above to activate the example seed module
             // 'app.examples',
             'app.parts'
         ]);
-    
-    
+
+
     angular.element(document).ready(function() {
         var fbconfig = {
                 apiKey: "AIzaSyAfxA30u_wPOkVCn727MJXZ4eFhg4raKdI",
@@ -22,8 +22,8 @@
             mainApp = firebase.initializeApp(fbconfig),
             mainDatabase = firebase.database(),
             mainRef = mainDatabase.ref();
-        
-        
+
+
         // your Firebase data URL goes here, no trailing slash
         console.log(window.location);
         angular.forEach(window.config,function(config){
