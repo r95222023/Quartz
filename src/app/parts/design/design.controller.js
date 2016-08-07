@@ -7,6 +7,7 @@
         .controller('WidgetManagerController', WidgetManagerController)
         .controller('PageEditorController', PageEditorController)
         .controller('WidgetEditorController', WidgetEditorController)
+        .controller('BasicApiController', BasicApiController)
         .controller('CustomPageController', CustomPageController);
 
     var pageRefUrl = 'pages@selectedSite',
@@ -112,26 +113,26 @@
         var vm = this;
 
         // angular.extend($scope, articleProduct);
-        $scope.$mdSidenav = $mdSidenav;
-        $scope.$get = $firebaseStorage.get;
-        $scope.$getProduct = articleProduct.getProduct;
-        $scope.$getArticle = articleProduct.getArticle;
-        $scope.$queryList = articleProduct.queryList;
-        $scope.$queryProduct = articleProduct.queryProduct;
-        $scope.$queryArticle = articleProduct.queryArticle;
-        $scope.$getCate = articleProduct.getCate;
-        $scope.$cate = articleProduct.cate;
-        $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
-        $scope.params = JSON.parse($stateParams.params || '{}');
-
-        $scope.$go = function (pageName, params) {
-            var _params = {};
-            if (angular.isObject(params)) angular.extend(_params, params);
-            console.log(params);
-            console.log({pageName: pageName, params: JSON.stringify(_params)});
-        };
-
-        vm.scope = $scope;
+        // $scope.$mdSidenav = $mdSidenav;
+        // $scope.$get = $firebaseStorage.get;
+        // $scope.$getProduct = articleProduct.getProduct;
+        // $scope.$getArticle = articleProduct.getArticle;
+        // $scope.$queryList = articleProduct.queryList;
+        // $scope.$queryProduct = articleProduct.queryProduct;
+        // $scope.$queryArticle = articleProduct.queryArticle;
+        // $scope.$getCate = articleProduct.getCate;
+        // $scope.$cate = articleProduct.cate;
+        // $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
+        // $scope.params = JSON.parse($stateParams.params || '{}');
+        //
+        // $scope.$go = function (pageName, params) {
+        //     var _params = {};
+        //     if (angular.isObject(params)) angular.extend(_params, params);
+        //     console.log(params);
+        //     console.log({pageName: pageName, params: JSON.stringify(_params)});
+        // };
+        //
+        // vm.scope = $scope;
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
@@ -146,7 +147,7 @@
             scope: $scope,
             dragulaService: dragulaService,
             $timeout: $timeout
-        },{
+        }, {
             onDrop: function () {
                 vm.compile();
             }
@@ -156,7 +157,6 @@
 
         siteDesign.ctr(vm, $scope, dragula, 'page');
         vm.setPreviewScale(0.5);
-
     }
 
     /* @ngInject */
@@ -184,15 +184,7 @@
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, articleProduct, $injector,getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, $state) {
-        var customPage = this,
-            pageName = $stateParams.pageName,
-            isIndex = !pageName || pageName === "index",
-            orderBy = isIndex ? "index" : "name",
-            equalTo = isIndex ? true : pageName,
-            pageCachePath = 'page' + pageName + '@selectedSite';
-
-
+    function BasicApiController(articleProduct, $firebaseStorage, $scope, $mdSidenav, $stateParams) {
         $scope.$mdSidenav = $mdSidenav;
         $scope.$get = $firebaseStorage.get;
         $scope.$getProduct = articleProduct.getProduct;
@@ -204,6 +196,35 @@
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.$cate = articleProduct.cate;
         $scope.params = JSON.parse($stateParams.params || '{}');
+        if (!$scope.$go) $scope.$go = function (pageName, params) {
+            var _params = {};
+            if (angular.isObject(params)) angular.extend(_params, params);
+            console.log(params);
+            console.log({pageName: pageName, params: JSON.stringify(_params)});
+        };
+    }
+
+    /* @ngInject */
+    function CustomPageController(lzString, articleProduct, $injector, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, $state) {
+        var customPage = this,
+            pageName = $stateParams.pageName,
+            isIndex = !pageName || pageName === "index",
+            orderBy = isIndex ? "index" : "name",
+            equalTo = isIndex ? true : pageName,
+            pageCachePath = 'page' + pageName + '@selectedSite';
+
+
+        // $scope.$mdSidenav = $mdSidenav;
+        // $scope.$get = $firebaseStorage.get;
+        // $scope.$getProduct = articleProduct.getProduct;
+        // $scope.$getArticle = articleProduct.getArticle;
+        // $scope.$queryList = articleProduct.queryList;
+        // $scope.$queryProduct = articleProduct.queryProduct;
+        // $scope.$queryArticle = articleProduct.queryArticle;
+        // $scope.$getCate = articleProduct.getCate;
+        // $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
+        // $scope.$cate = articleProduct.cate;
+        // $scope.params = JSON.parse($stateParams.params || '{}');
         $scope.$go = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
@@ -216,7 +237,6 @@
         angular.extend(customPage, $stateParams);
         customPage.settingsGroups = qtSettings.custom;
 
-        customPage.scope = $scope;
 
 
         $firebaseStorage.getWithCache('pages/detail/' + pageName + '@selectedSite').then(function (res) {
@@ -233,17 +253,21 @@
                 injectCSS.setDirectly(key, val.css);
                 customPage.pageData = val;
                 customPage.html = customService.compileAll(val.content);
-                if(val.js) {
-                    var js;
-                    try{
-                        eval("js ="+ val.js);
-                        if(angular.isFunction(js)||(angular.isArray(js)&&angular.isFunction(js[js.length]))){
-                            $injector.invoke(js, customPage,{"$scope":$scope});
-                        }
-                    } catch(e){
-                        try{eval(val.js);} catch(e){}
-                    }
-                }
+                customPage.js = val.js;
+                // if (val.js) {
+                //     var js;
+                //     try {
+                //         eval("js =" + val.js);
+                //         if (angular.isFunction(js) || (angular.isArray(js) && angular.isFunction(js[js.length]))) {
+                //             $injector.invoke(js, customPage, {"$scope": $scope});
+                //         }
+                //     } catch (e) {
+                //         try {
+                //             eval(val.js);
+                //         } catch (e) {
+                //         }
+                //     }
+                // }
             }, 0);
 
         }
@@ -356,7 +380,7 @@
                 moves: function (el, container, handle) {
                     return handle.classList.contains('root-handle');
                 },
-                accepts:function(el, target, source, sibling){
+                accepts: function (el, target, source, sibling) {
                     return !target.classList.contains('nodrop');
                 }
             });
@@ -364,7 +388,7 @@
                 moves: function (el, container, handle) {
                     return handle.classList.contains('lv1-handle');
                 },
-                accepts:function(el, target, source, sibling){
+                accepts: function (el, target, source, sibling) {
                     return !target.classList.contains('nodrop');
                 }
             });
@@ -372,7 +396,7 @@
                 moves: function (el, container, handle) {
                     return handle.classList.contains('lv2-handle');
                 },
-                accepts:function(el, target, source, sibling){
+                accepts: function (el, target, source, sibling) {
                     return !target.classList.contains('nodrop');
                 }
             });

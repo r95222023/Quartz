@@ -25,17 +25,7 @@
                     $timeout(function(){
                         customService.convert(val.content, $scope['containers'], 3);
                     },0);
-                    if(val.js) {
-                        var js;
-                        try{
-                            eval("js ="+ val.js);
-                            if(angular.isFunction(js)||(angular.isArray(js)&&angular.isFunction(js[js.length]))){
-                                $injector.invoke(js, vm,{"$scope":$scope});
-                            }
-                        } catch(e){
-                            try{eval(val.js);} catch(e){}
-                        }
-                    }
+
 
                     vm.compile();
                 });
