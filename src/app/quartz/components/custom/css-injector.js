@@ -72,6 +72,7 @@
 
         injectCSS.remove = function(id){
             angular.element('style#' + id).remove();
+            angular.element('link#' + id).remove();
         };
 
         return injectCSS;

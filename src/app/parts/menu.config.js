@@ -143,6 +143,12 @@
                     type: 'link'
                 },
                 {
+                    name: 'MENU.DATA.FILES',
+                    state: 'quartz.admin-default.fileManager',
+                    params: {},
+                    type: 'link'
+                },
+                {
                     name: 'MENU.DATA.I18N',
                     state: 'quartz.admin-default.i18n',
                     params: {},
