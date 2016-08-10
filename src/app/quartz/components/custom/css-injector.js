@@ -1,12 +1,5 @@
 (function () {
     'use strict';
-    /*
-     * angular-css-injector v1.0.4
-     * Written by Gabriel Delépine
-     * Special thanks to (github users) : @kleiinnn
-     * License: MIT
-     * https://github.com/Yappli/angular-css-injector/
-     */
     angular.module('quartz.components')
         .factory("injectCSS", CssInjector);
 

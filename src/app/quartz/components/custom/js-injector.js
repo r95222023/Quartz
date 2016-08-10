@@ -1,12 +1,5 @@
 (function () {
     'use strict';
-    /*
-     * angular-css-injector v1.0.4
-     * Written by Gabriel Delépine
-     * Special thanks to (github users) : @kleiinnn
-     * License: MIT
-     * https://github.com/Yappli/angular-css-injector/
-     */
     angular.module('quartz.components')
         .factory("injectJS", JsInjector);
 
@@ -46,17 +39,6 @@
             }
             return injected[id].promise;
         };
-
-        // injectJS.setFromFirebase = function (id, refUrl) {
-        //     var def = $q.defer();
-        //     $firebase.ref(refUrl).once('value', function (snap) {
-        //         injectCSS.setDirectly(id, snap.val())
-        //             .then(function () {
-        //                 def.resolve();
-        //             });
-        //     });
-        //     return def.promise;
-        // };
 
         return injectJS;
     }

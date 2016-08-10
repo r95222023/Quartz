@@ -179,15 +179,6 @@
         }
 
         function update(refUrl, pathArr, data) {
-            //Usage example:
-            // $firebase.update('sites', ['detail/123', 'list/123', extra/123], {
-            //    "toDetail@0": "test", <- 0 means the zeroth component of the array which is detail/123
-            //    "toList@1": "test",   <- similarly, list/123/toList will be set to "test"
-            //    "toBoth@0;1": "test",   <- detail/123/toBoth and list/123/toBoth will be set to "test"
-            //    "createdTime": Firebase.ServerValue.TIMESTAMP <- this will go to both paths (this equal to "createdTime@all")
-            //    "@2": null <-extra/123 will be set to null
-            //});
-            // $firebase.update(refUrl, data) is just the normal firebase update
             var _data = {},
                 ref;
             if (angular.isString(refUrl)) {
@@ -288,7 +279,7 @@
             return queryRef('temp').push().key;
         }
 
-        function cache(cachePath, editTimeRef, sourceRef, option) {
+        function getWithCache(cachePath, editTimeRef, sourceRef, option) {
             var def = $q.defer(),
                 _option = option || {},
                 type = _option.isValue === false ? 'child_added' : 'value',
@@ -548,7 +539,11 @@
             paginator: paginator,
             request: request,
             isRefUrlValid: isRefUrlValid,
-            cache: cache,
+            cache: getWithCache,
+            getWithCache:function(sourcePath, option){
+                var sourceRef = queryRef(sourcePath);
+                return getWithCache(sourceRef.toSource(), 'editTime', sourceRef, option)
+            },
             getUniqeId: getUniqeId,
             databaseURL: dbFirebase.databaseURL
         };

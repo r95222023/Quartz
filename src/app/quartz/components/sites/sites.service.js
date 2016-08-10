@@ -13,7 +13,7 @@
 
 
     /* @ngInject */
-    function run($q,config, FBURL, $rootScope, $state, $firebase, qtMenu, sitesService, $firebaseStorage, injectJS, injectCSS) {
+    function run($q,config, FBURL, $rootScope, $state, $firebase, qtMenu, sitesService, $firebaseStorage, injectJS, injectCSS, $ocLazyLoad) {
 
         //// set current site automatically
         function redirect(state, params) {
@@ -46,12 +46,18 @@
         function getPreload() {
             $firebaseStorage.getWithCache('config/preload@selectedSite').then(function (res) {
                 var _res = res||{};
+
                 if (_res && _res.css) {injectCSS.setDirectly('siteCSS', _res.css);sitesService.css=_res.css}
                 if (_res && _res.js) {injectJS.setDirectly('siteJS', _res.js);sitesService.js=_res.js}
                 $rootScope.logo = _res.logo;
                 $rootScope.brand = _res.brand;
-
-                def.resolve(sitesService);
+                if(_res.sources) {
+                    $ocLazyLoad.load(_res.sources).then(function(){
+                        def.resolve(sitesService);
+                    })
+                } else{
+                    def.resolve(sitesService);
+                }
             });
         }
 
@@ -65,6 +71,9 @@
                 } else if (toParams.siteName === '' && !$firebase.databases.selectedSite) {
                     redirect('quartz.admin-default.sites')
                 }
+
+                sitesService.pageName=toParams.pageName;
+
                 if ($firebase.databases.selectedSite) {
                     var siteName = $firebase.databases.selectedSite.siteName;
 

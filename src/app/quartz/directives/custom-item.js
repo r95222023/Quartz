@@ -13,10 +13,27 @@
     }
 
     /* @ngInject */
-    function customItem($compile, $injector) {
+    function customItem($compile, $injector, $ocLazyLoad) {
         var linker = function (scope, element, attrs, ctrl) {
             var _ctrl = angular.copy(ctrl),
                 status;
+
+            function injectCustomJs(){
+                if (scope.customJs) {
+                    var js, customJs = scope.customJs;
+                    try {
+                        eval("js =" + customJs);
+                        if (angular.isFunction(js) || (angular.isArray(js) && angular.isFunction(js[js.length]))) {
+                            $injector.invoke(js, ctrl, {"$scope": scope});
+                        }
+                    } catch (e) {
+                        try {
+                            eval(customJs);
+                        } catch (e) {
+                        }
+                    }
+                }
+            }
 
             function compile() {
                 if(status==='compiling'||!scope.content) return;
@@ -30,20 +47,7 @@
                 if (angular.isString(scope.content)) {
                     if (attrs.modelAs) scope[attrs.modelAs] = scope.model;
                     element.html(scope.content).show();
-                    if (scope.customJs) {
-                        var js, customJs = scope.customJs;
-                        try {
-                            eval("js =" + customJs);
-                            if (angular.isFunction(js) || (angular.isArray(js) && angular.isFunction(js[js.length]))) {
-                                $injector.invoke(js, ctrl, {"$scope": scope});
-                            }
-                        } catch (e) {
-                            try {
-                                eval(customJs);
-                            } catch (e) {
-                            }
-                        }
-                    }
+                    injectCustomJs();
 
                     $compile(element.contents())(scope);
                 }
@@ -53,8 +57,16 @@
                 },1000)
             }
 
-            scope.$watch('customJs', compile);
-            scope.$watch('content', compile);
+            function init(){
+                if(scope.sources){
+                    $ocLazyLoad.load(scope.sources).then(compile);
+                } else {
+                    compile();
+                }
+            }
+
+            scope.$watch('customJs', init);
+            scope.$watch('content', init);
         };
 
         return {
@@ -64,9 +76,8 @@
             link: linker,
             scope: {
                 content: '=',
-                model: '=',
-                scope: '=',
-                customJs: '='
+                customJs: '=',
+                sources:'='
             }
         };
     }
