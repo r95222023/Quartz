@@ -527,6 +527,15 @@
         function paginator(ref, option) {
             return new Paginator(ref, option)
         }
+        function getValidKey(key){
+            //TODO
+            var res=key, replace=[['.','^0'],['#','^1'],['$','^2'],['[','^3'],[']','^4']];
+            angular.forEach(replace, function(val){
+                res=res.replace(val[0],val[1]);
+            });
+            // ".", "#", "$", "/", "[", or "]"
+            return res;
+        }
 
         var $firebase = {
             update: update,
@@ -544,6 +553,7 @@
                 var sourceRef = queryRef(sourcePath);
                 return getWithCache(sourceRef.toSource(), 'editTime', sourceRef, option)
             },
+            getValidKey: getValidKey,
             getUniqeId: getUniqeId,
             databaseURL: dbFirebase.databaseURL
         };

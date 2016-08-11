@@ -144,7 +144,7 @@
                 },
                 {
                     name: 'MENU.DATA.FILES',
-                    state: 'quartz.admin-default.fileManager',
+                    state: 'quartz.admin-default-no-scroll.fileManager',
                     params: {},
                     type: 'link'
                 },

@@ -19,10 +19,16 @@
                 controller: 'CustomListController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.fileManager', {
+            .state('quartz.admin-default-no-scroll.fileManager', {
                 data: {
-                    //toolbarShrink: true,
-                    footer: false
+                    layout: {
+                        // sideMenuSize: 'hidden',
+                        // showToolbar: false,
+                        // //toolbarShrink: true,
+                        contentClass: 'full-height',
+                        // innerContentClass:'full-height',
+                        footer: false
+                    }
                 },
                 resolve:{
                     fileManager:['$ocLazyLoad','$rootScope','injectCSS',function($ocLazyLoad,$rootScope,injectCSS){
@@ -50,7 +56,7 @@
                 // set the controller to load for this page
                 // controller: 'FileManagerController',
                 // controllerAs: 'vm',
-                templateUrl: 'app/parts/data/fileManager.tmpl.html'
+                template: '<angular-filemanager></angular-filemanager>'
             })
             .state('quartz.admin-default.i18n', {
                 data: {

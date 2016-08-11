@@ -494,6 +494,28 @@
             window.URL.revokeObjectURL(url);
         }
 
+        function downloadURI(uri, name) {
+            var link = document.createElement("a");
+            if(name) link.download = name;
+            link.href = uri;
+            link.click();
+        }
+
+        //http://stackoverflow.com/questions/6150289/how-to-convert-image-into-base64-string-using-javascript
+        function toDataUrl(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'blob';
+            xhr.onload = function() {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    callback(reader.result);
+                }
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.open('GET', url);
+            xhr.send();
+        }
+
         return {
             debounce: debounce,
             md5: MD5,
@@ -502,6 +524,8 @@
             to2dig: to2dig,
             sortObjectByPropery: sortObjectByPropery,
             saveData: saveData,
+            downloadURI:downloadURI,
+            toDataUrl:toDataUrl,
             getFirebaseArrayData: getFirebaseArrayData,
             removeItemFromArray: removeItemFromArray,
             rectifyUpdateData: rectifyUpdateData

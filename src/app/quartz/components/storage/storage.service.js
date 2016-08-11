@@ -33,6 +33,7 @@
             getWithCache: getWithCache,
             update: update,
             remove: remove,
+            ref:ref,
             clearTemp:clearTemp,
             storages: {}
         };
@@ -50,7 +51,8 @@
         }
 
         function ref(refPath, opt) {
-            var path = (new FbObj(refPath, opt)).path + '.js';
+            var _opt=opt||{},
+                path = (new FbObj(refPath, _opt)).path + (_opt.isJs===false? '':'.js');
             return storage.ref(path);
         }
 
