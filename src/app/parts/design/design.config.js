@@ -29,7 +29,7 @@
                         sideMenuSize: 'hidden',
                         showToolbar: false,
                         // //toolbarShrink: true,
-                        contentClass: 'full-height',
+                        contentClass: 'layout-fill',
                         // innerContentClass:'full-height',
                         footer: false
                     }
@@ -42,8 +42,8 @@
                         });
                         return def.promise;
                     }],
-                    pageData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
-                        return $lazyLoad.load('page',$stateParams.pageName);
+                    pageData:['$firebaseStorage', '$stateParams', function($firebaseStorage, $stateParams){
+                        return $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite');
                     }]
                 },
                 url: '/admin/:siteName/pageEditor/?id&pageName&params',
@@ -89,7 +89,7 @@
                 controllerAs: 'customPage'
             })
             .state('previewFrame', {
-                url: '/preview',
+                url: '/preview/:siteName/:pageName/',
                 templateUrl: 'app/parts/design/custom-page.tmpl.html',
                 controller: 'PreviewFrameController',
                 controllerAs: 'customPage'

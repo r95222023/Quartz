@@ -67,7 +67,7 @@
         //     return def.promise;
         // };
 
-        injectCSS.setDirectly = function (id, value, isRemovable, pageName) {
+        injectCSS.setDirectly = function (id, value, isRemovable) {
             if (!angular.element('style#' + id).length) {
                 var style = createStyle(id, value);
                 angular.element('head').append(style);
@@ -78,8 +78,6 @@
             if(isRemovable){
                 var listener = $rootScope.$on('$stateChangeStart',
                     function (event, toState, toParams, fromState, fromParams, options) {
-                        if (pageName&&toParams.pageName === pageName) return;
-
                         injectCSS.remove(id);
                         listener();
                     });

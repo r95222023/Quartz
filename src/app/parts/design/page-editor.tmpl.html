@@ -33,6 +33,7 @@
                                 {{'EDITOR.SETTINGS'|translate}}
                             </md-button>
                         </md-menu-item>
+                        <md-menu-divider></md-menu-divider>
 
                         <md-menu-item>
                             <md-button ngf-select="vm.import($files)">{{'GENERAL.IMPORT'|translate}}</md-button>
@@ -395,8 +396,7 @@
                                                 <label>layout</label>
                                                 <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].layout">
                                                     <md-option ng-value="size"
-                                                               ng-repeat="size in vm.layoutOptions.layout.layout">{{size
-                                                        }}
+                                                               ng-repeat="size in vm.layoutOptions.layout.layout">{{size}}
                                                     </md-option>
                                                 </md-select>
                                             </md-input-container>
@@ -404,8 +404,7 @@
                                                 <label>flex</label>
                                                 <md-select ng-model="vm.item.layout[vm.layoutBreakpoint].flex">
                                                     <md-option ng-value="size"
-                                                               ng-repeat="size in vm.layoutOptions.layout.flex">{{
-                                                        size}}
+                                                               ng-repeat="size in vm.layoutOptions.layout.flex">{{size}}
                                                     </md-option>
                                                 </md-select>
                                             </md-input-container>
@@ -558,9 +557,9 @@
                          aria-label="hide html"></md-icon>
                         </span>
 
-            <md-content ng-init="vm.compile()" ng-if="vm.previewPanel" style="height:100%;width:100%;" >
+            <md-content ng-init="vm.compile()" ng-show="vm.previewPanel" style="height:100%;width:100%; position:absolute;" >
                 <div ng-style="vm.previewPanelStyle">
-                    <iframe name="preview-frame" src="https://quartz.firebaseapp.com/#!/preview"></iframe>
+                    <iframe ng-if="!vm.fullPagePreview"  name="preview-frame" ng-src="{{vm.previewUrl}}" style="height:100%;width:100%"></iframe>
 
                     <!--<custom-item content="vm.html" api-ctrl="BasicApiController" custom-js="vm.js"></custom-item>-->
                 </div>
@@ -579,7 +578,8 @@
     <!--<custom-item layout="row" ng-class="vm.canvas.class" layout-wrap content="vm.html" scope="vm.scope"></custom-item>-->
 
 <!--</md-content>-->
-<custom-item ng-if="vm.fullPagePreview" content="vm.html" api-ctrl="BasicApiController" custom-js="vm.js" ng-init="vm.compile()" class="full-height"></custom-item>
+<!--<custom-item ng-if="vm.fullPagePreview" content="vm.html" api-ctrl="BasicApiController" custom-js="vm.js" ng-init="vm.compile()" class="full-height"></custom-item>-->
+<iframe ng-if="vm.fullPagePreview" name="preview-full-frame" ng-src="{{vm.previewUrl}}" style="height:100%;width:100%"></iframe>
 
 
 <md-button ng-if="vm.fullPagePreview" class="md-fab" aria-label="back to edit" ng-click="vm.fullPagePreview=false"

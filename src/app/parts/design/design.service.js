@@ -14,7 +14,6 @@
                 typeRef = type + 'Ref';
 
             if ($stateParams[type + 'Name']) {
-                console.log(data.content)
                 customService.convert(data.content, $scope['containers'], 3);
                 vm.css = data.css || '';
                 vm.canvas = data.canvas || {};
@@ -45,6 +44,7 @@
 
             vm.setPreviewScale = function (scale) {
                 vm.previewPanelStyle = {
+                    "height": scale < 1 ? 100 / scale + '%' : '100%',
                     "width": scale < 1 ? 100 / scale + '%' : '100%',
                     "transform": "scale(" + scale + "," + scale + ")",
                     "transform-origin": "0 0"
@@ -322,17 +322,22 @@
                 });
                 return partsCss;
             }
+            vm.buildCss=buildCss;
 
             vm.compile = function () {
                 if (!vm.previewPanel&&!vm.fullPagePreview) return;
-                var styleSheets = {};
-                var compiled = customService.compileAll(customService.convertBack($scope.containers, 'root', styleSheets), vm.canvas);
+                if(vm.refreshPreview){
+                    vm.refreshPreview();
+                } else {
+                    var styleSheets = {};
+                    var compiled = customService.compileAll(customService.convertBack($scope.containers, 'root', styleSheets), vm.canvas);
 
-                vm.partsCss = buildCss(styleSheets);
-                // vm.injectCss();
-                $timeout(function () {
-                    vm.html = compiled
-                }, 0)
+                    vm.partsCss = buildCss(styleSheets);
+                    // vm.injectCss();
+                    $timeout(function () {
+                        vm.html = compiled
+                    }, 0)
+                }
             };
             vm.compile();
 

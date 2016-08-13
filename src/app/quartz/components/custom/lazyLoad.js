@@ -16,22 +16,21 @@
                 }
             });
 
-            angular.forEach(cssArr, function (cssUrl) {
+            angular.forEach(cssArr, function (cssUrl,index) {
                 if (cssUrl.search('://') !== -1) {
-                    injectCSS.set('pageStyle' + pageName, cssUrl, true);
+                    injectCSS.set('style' + pageName+index, cssUrl, true);
                 } else {
+                    var _index = angular.copy(index);
                     $firebaseStorage.ref('files/' + cssUrl + '@selectedSite', {isJs: false}).getDownloadURL()
                         .then(function (url) {
-                            injectCSS.set('pageStyle' + pageName, url, true);
+                            injectCSS.set('style' + pageName+_index, url, true);
                         });
                 }
             });
 
             var promises = {};
             angular.forEach(jsArr, function (jsUrl, index) {
-                if (jsUrl.search('://') !== -1) {
-                    injectCSS.set('pageStyle' + pageName, jsUrl, true);
-                } else {
+                if (jsUrl.search('://') === -1) {
                     promises[index + ''] = $firebaseStorage.ref('files/' + jsUrl + '@selectedSite', {isJs: false}).getDownloadURL();
                 }
             });
@@ -46,31 +45,40 @@
             return def.promise;
         }
 
+        function loadData(val, def, pageId) {
+            var sources = val.sources;
+            injectCSS.setDirectly('style' + pageId, val.css, true);
+
+            if (sources) {
+                getLazyLoadArgs(sources, pageId).then(function (args) {
+                    if (args.files.length) {
+                        $ocLazyLoad.load(args).then(function () {
+                            def.resolve(val);
+                        })
+                    } else {
+                        def.resolve(val);
+
+                    }
+                });
+            } else {
+                def.resolve(val);
+            }
+        }
+
         function load(type, name) {
 
             var _name = name,
                 pageId = _name.replace(/\s+/g, ''),
                 def = $q.defer();
 
-            $firebaseStorage.getWithCache(type + 's/detail/' + _name + '@selectedSite').then(function (val) {
-                var sources = val.sources;
-                injectCSS.setDirectly(type + 'Style' + pageId, val.css, true, type === 'page' ? _name : '');
+            if(angular.isObject(type)){
+                loadData(type, def, pageId);
+            } else {
+                $firebaseStorage.getWithCache(type + 's/detail/' + _name + '@selectedSite').then(function (val) {
+                    loadData(val, def, pageId);
+                });
+            }
 
-                if (sources) {
-                    getLazyLoadArgs(sources, pageId).then(function (args) {
-                        if (args.files.length) {
-                            $ocLazyLoad.load(args).then(function () {
-                                def.resolve(val);
-                            })
-                        } else {
-                            def.resolve(val);
-
-                        }
-                    });
-                } else {
-                    def.resolve(val);
-                }
-            });
             return def.promise;
         }
 

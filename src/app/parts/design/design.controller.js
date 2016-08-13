@@ -9,7 +9,7 @@
         .controller('WidgetEditorController', WidgetEditorController)
         .controller('BasicApiController', BasicApiController)
         .controller('CustomPageController', CustomPageController)
-        .controller('PreviewFrameController',PreviewFrameController);
+        .controller('PreviewFrameController', PreviewFrameController);
 
     var pageRefUrl = 'pages@selectedSite',
         pageListRefUrl = 'pages/list@selectedSite',
@@ -110,48 +110,81 @@
     }
 
     /* @ngInject */
-    function PageEditorController(pageData, $mdDialog,customService, customWidgets, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
-        var vm = this;
-        window.initPreviewFrame=function(){
-            var frame = window.frames['preview-frame'];
-            frame.previewRefresh(pageData);
+    function PageEditorController(pageData, $mdDialog, customService, customWidgets, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
+        var vm = this, frame,frameData = angular.copy(pageData);
+        window.initPreviewFrame = function () {
+            if(vm.fullPagePreview){
+                frame = window.frames['preview-full-frame']
+            } else {
+                frame = window.frames['preview-frame']
+            }
+            frame.refreshPreview(frameData, 'init');
         };
 
+        vm.refreshPreview =function(){
+            var styleSheets = {},
+                reload,
+                content = customService.convertBack($scope.containers, 'root', styleSheets),
+                css = vm.css || '' + vm.buildCss(styleSheets) || '';
+            frameData = angular.extend(frameData,{
+                "css": css || '',
+                "content": content
+            });
+            if(vm.canvas) frameData.canvas=vm.canvas;
+            if(angular.isArray(vm.sources)) {
+                frameData.sources=frameData.sources||[];
+                if(JSON.stringify(vm.sources)!==JSON.stringify(frameData.sources)){
+                    reload=true;
+                    frameData.sources = angular.copy(vm.sources);
+                }
+            }
+            if(vm.js&&vm.js.trim()){
+                frameData.js = vm.js.trim();
+            }
+            if(reload){
+                console.log('Reloading preview');
+                frame.location.reload(true);
+            } else{
+                frame.refreshPreview(frameData);
+            }
+        };
+
+        vm.previewUrl ='#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
         vm.previewPanel = false;
 
 
-        vm.selectedSettingsTab=1;
-        vm.sources=pageData.sources||[];
-        vm.showSettinsTab = function(ev) {
+        vm.selectedSettingsTab = 1;
+        vm.sources = pageData.sources || [];
+        vm.showSettinsTab = function (ev) {
             $mdDialog.show({
                 controller: SettingsCtrl,
                 templateUrl: 'app/parts/design/editor-settings-dialog.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
-                clickOutsideToClose:true
+                clickOutsideToClose: true
             });
-                // .then(function(answer) {
-                //     $scope.status = 'You said the information was "' + answer + '".';
-                // }, function() {
-                //     $scope.status = 'You cancelled the dialog.';
-                // });
+            // .then(function(answer) {
+            //     $scope.status = 'You said the information was "' + answer + '".';
+            // }, function() {
+            //     $scope.status = 'You cancelled the dialog.';
+            // });
         };
 
         /* @ngInject */
         function SettingsCtrl($scope, $mdDialog) {
-            $scope.vm=vm;
-            $scope.hide = function() {
+            $scope.vm = vm;
+            $scope.hide = function () {
                 $mdDialog.hide();
             };
-            $scope.cancel = function() {
+            $scope.cancel = function () {
                 $mdDialog.cancel();
             };
-            $scope.addSource=function(input){
-                vm.sources.push((input||'').replace(/\s+/g, ''));
+            $scope.addSource = function (input) {
+                vm.sources.push((input || '').replace(/\s+/g, ''));
             };
-            $scope.removeSource=function(index){
+            $scope.removeSource = function (index) {
                 vm.sources.splice(index, 1);
             };
         }
@@ -223,11 +256,11 @@
     }
 
     /* @ngInject */
-    function CustomPageController(pageData, qtSettings, $scope,customService, $stateParams, $timeout, $state) {
+    function CustomPageController(pageData, qtSettings, $scope, customService, $stateParams, $timeout, $state) {
         var customPage = this;
         // window.parent.setUpPreviewFrame();
 
-        window.previewRefresh= function(data){
+        window.previewRefresh = function (data) {
             console.log(data);
         };
 
@@ -285,18 +318,23 @@
     }
 
     /* @ngInject */
-    function PreviewFrameController(qtSettings,$lazyLoad, $scope,customService, $stateParams, $timeout, $state) {
+    function PreviewFrameController(qtSettings, $lazyLoad, $scope, customService, $stateParams, $timeout, $state) {
         var customPage = this;
 
         angular.extend(customPage, $stateParams);
         customPage.settingsGroups = qtSettings.custom;
 
 
-        window.previewRefresh = function(data,reload){
-            if(!reload){
-                $lazyLoad.loadPreview(data).then(function(pageData){
-                    setModelData(pageData);
-                })
+        window.refreshPreview = function (data, type) {
+            switch (type) {
+                case 'init':
+                    $lazyLoad.load(data, $stateParams.pageName).then(function (pageData) {
+                        setModelData(pageData);
+                    });
+                    break;
+                default:
+                    setModelData(data);
+                    break;
             }
         };
         window.parent.initPreviewFrame();

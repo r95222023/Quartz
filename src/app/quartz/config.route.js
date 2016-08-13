@@ -92,7 +92,7 @@
                     },
                     content: {
                         // template: '<div flex ui-view layout="column" class="{{layout.innerContentClass}} overflow-hidden quartz-no-scroll"></div>'
-                        template: '<div flex ui-view class="{{layout.innerContentClass}} overflow-hidden quartz-no-scroll"></div>'
+                        template: '<div flex ui-view class="{{layout.innerContentClass}} overflow-hidden quartz-no-scroll layout-fill" style="position:absolute;"></div>'
                     }
                 }
             });

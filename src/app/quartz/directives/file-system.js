@@ -24,7 +24,6 @@
             }
             $firebaseStorage.ref('files/'+attrs['fsSrc']+'@selectedSite', {isJs:false}).getMetadata()
                 .then(function(meta){
-                    console.log(meta);
                     attrs.$set('src', meta.downloadURLs);
                     $usage.useBandwidth(meta.size);
                 });
