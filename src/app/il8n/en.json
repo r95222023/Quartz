@@ -2,6 +2,9 @@
     "DATE":{
         "MINS":"minutes"
     },
+    "EDITOR":{
+        "SETTINGS":"Settings"
+    },
     "GENERAL": {
         "FILE":"File",
         "NEW":"New",

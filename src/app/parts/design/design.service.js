@@ -7,28 +7,25 @@
 
     /* @ngInject */
     function SiteDesign($injector, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, lzString, snippets, $timeout) {
-        function ctr(vm, $scope, dragula, type) {
+        function ctr(vm, $scope, dragula, type, data) {
 
             var listRefUrl = type + 's/list@selectedSite',
                 typeName = type + 'Name',
                 typeRef = type + 'Ref';
 
             if ($stateParams[type + 'Name']) {
-                $firebaseStorage.getWithCache(type + 's/detail/' + $stateParams[typeName] + '@selectedSite').then(function (val) {
-                    console.log(val.content)
-                    customService.convert(val.content, $scope['containers'], 3);
-                    vm.css = val.css || '';
-                    vm.canvas = val.canvas || {};
-                    vm.js= val.js;
+                console.log(data.content)
+                customService.convert(data.content, $scope['containers'], 3);
+                vm.css = data.css || '';
+                vm.canvas = data.canvas || {};
+                vm.js= data.js;
 
-                    vm[typeName] = $state.params[typeName];
-                    $timeout(function(){
-                        customService.convert(val.content, $scope['containers'], 3);
-                    },0);
+                vm[typeName] = $state.params[typeName];
+                $timeout(function(){
+                    customService.convert(data.content, $scope['containers'], 3);
+                },0);
 
 
-                    vm.compile();
-                });
                 vm[typeRef] = $firebase.ref(listRefUrl).child($stateParams.id);
             } else {
                 vm[typeRef] = $firebase.ref(listRefUrl).push();
@@ -213,7 +210,7 @@
                     } else {
                         var styleSheets = {},
                             content = customService.convertBack($scope.containers, 'root', styleSheets) || [],
-                            css = vm.css || '' + vm.buildCss(styleSheets) || '';
+                            css = vm.css || '' + buildCss(styleSheets) || '';
 
                         customService.convert(content.concat(result.content || []), $scope['containers'], 3);
                         vm.css = css + ' ' + (result.css || '');
@@ -308,28 +305,15 @@
 
             vm.debouncedUpdateItem = snippets.debounce(vm.updateItem, 1000);
 
-            vm.injectCss = function () {
-                injectCSS.setDirectly(vm[type + 'Ref'].key, vm.css+ (vm.partsCss || ''));
-                var dereg = $rootScope.$on('$stateChangeStart',
-                    function () {
-                        injectCSS.remove(vm[type + 'Ref'].key);
-                        dereg();
-                    });
-            };
-
-            vm.compile = function () {
-                if (!vm.previewPanel&&!vm.fullPagePreview) return;
-                var styleSheets = {};
-                var compiled = customService.compileAll(customService.convertBack($scope.containers, 'root', styleSheets), vm.canvas);
-
-                vm.partsCss = vm.buildCss(styleSheets);
-                vm.injectCss();
-                $timeout(function () {
-                    vm.html = compiled
-                }, 0)
-            };
-
-            vm.buildCss = function (styleSheets) {
+            // vm.injectCss = function () {
+            //     injectCSS.setDirectly(vm[type + 'Ref'].key, vm.css+ (vm.partsCss || ''));
+            //     var dereg = $rootScope.$on('$stateChangeStart',
+            //         function () {
+            //             injectCSS.remove(vm[type + 'Ref'].key);
+            //             dereg();
+            //         });
+            // };
+            function buildCss(styleSheets) {
                 var partsCss = '';
                 angular.forEach(styleSheets, function (partCss) {
                     if (vm.pageCss.indexOf(partCss) === -1) {
@@ -337,12 +321,28 @@
                     }
                 });
                 return partsCss;
+            }
+
+            vm.compile = function () {
+                if (!vm.previewPanel&&!vm.fullPagePreview) return;
+                var styleSheets = {};
+                var compiled = customService.compileAll(customService.convertBack($scope.containers, 'root', styleSheets), vm.canvas);
+
+                vm.partsCss = buildCss(styleSheets);
+                // vm.injectCss();
+                $timeout(function () {
+                    vm.html = compiled
+                }, 0)
             };
+            vm.compile();
+
+
+
 
             vm.update = function () {
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
-                    css = vm.css || '' + vm.buildCss(styleSheets) || '';
+                    css = vm.css || '' + buildCss(styleSheets) || '';
                 console.log(css)
 
                 var id = vm[typeRef].key,
@@ -355,6 +355,7 @@
                             data.js = vm.js.trim();
                         }
                         if(vm.canvas) data.canvas=vm.canvas;
+                        if(angular.isArray(vm.sources)) data.sources = vm.sources;
                         $firebase.update(type + 's@selectedSite', ['list/' + id, 'detail/' + vm[typeName]], {
                             "name": vm[typeName],
                             "author": $firebase.params["$uid"] || null,
@@ -421,7 +422,7 @@
                 vm.export = function () {
                     var styleSheets = {},
                         content = customService.convertBack($scope.containers, 'root', styleSheets),
-                        css = vm.css || '' + vm.buildCss(styleSheets) || '',
+                        css = vm.css || '' + buildCss(styleSheets) || '',
                         data=angular.extend({},{canvas:vm.canvas||{},id:vm[typeName], content:content,css:css});
                     snippets.saveData(data, vm[typeName] + '.json')
                 };

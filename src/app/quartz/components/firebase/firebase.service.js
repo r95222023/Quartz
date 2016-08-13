@@ -30,12 +30,12 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
-            return new Firebase(dbFbApp, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter)
+        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter, $usage) {
+            return new Firebase(dbFbApp, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter, $usage)
         }
     }
 
-    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter) {
+    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter,$usage) {
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -211,7 +211,10 @@
         }
 
         function updateCacheable(refUrl, data) {
-            return update(refUrl, {compressed: lzString.compress(data), editTime: firebase.database.ServerValue.TIMESTAMP})
+            return update(refUrl, {
+                compressed: lzString.compress(data),
+                editTime: firebase.database.ServerValue.TIMESTAMP
+            })
         }
 
 //TODO: Transaction
@@ -316,6 +319,7 @@
 
             function fetch() {
                 sourceRef.once(_option.sourceType || 'value', function (snap) {
+                    $usage.useBandwidth(snap.val());
                     var val = lzString.decompress(snap.val());
                     if (!val) {
                         def.resolve(null);
@@ -527,11 +531,12 @@
         function paginator(ref, option) {
             return new Paginator(ref, option)
         }
-        function getValidKey(key){
+
+        function getValidKey(key) {
             //TODO
-            var res=key, replace=[['.','^0'],['#','^1'],['$','^2'],['[','^3'],[']','^4']];
-            angular.forEach(replace, function(val){
-                res=res.replace(val[0],val[1]);
+            var res = key, replace = [['.', '^0'], ['#', '^1'], ['$', '^2'], ['[', '^3'], [']', '^4']];
+            angular.forEach(replace, function (val) {
+                res = res.replace(val[0], val[1]);
             });
             // ".", "#", "$", "/", "[", or "]"
             return res;
@@ -539,7 +544,7 @@
 
         var $firebase = {
             update: update,
-            updateCacheable:updateCacheable,
+            updateCacheable: updateCacheable,
             batchUpdate: batchUpdate,
             params: params,
             databases: {},
@@ -549,7 +554,7 @@
             request: request,
             isRefUrlValid: isRefUrlValid,
             cache: getWithCache,
-            getWithCache:function(sourcePath, option){
+            getWithCache: function (sourcePath, option) {
                 var sourceRef = queryRef(sourcePath);
                 return getWithCache(sourceRef.toSource(), 'editTime', sourceRef, option)
             },

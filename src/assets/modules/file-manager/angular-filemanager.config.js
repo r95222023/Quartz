@@ -1,5 +1,7 @@
-angular.module('FileManagerApp').config(['fileManagerConfigProvider', function (config) {
+angular.module('FileManagerApp').config(['fileManagerConfigProvider', '$translatePartialLoaderProvider', function (config,$translatePartialLoaderProvider) {
     var defaults = config.$get();
+    $translatePartialLoaderProvider.addPart('assets/modules/file-manager');
+
     config.set({
         appName: 'angular-filemanager',
         pickCallback: function(item) {

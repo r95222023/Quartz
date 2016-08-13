@@ -1,7 +1,8 @@
 {
     "DESIGN":{
         "PROP":"屬性",
-        "LAYOUT":"排版"
+        "LAYOUT":"排版",
+        "EXTERNAL":"外部資源"
     },
     "MENU": {
         "PAGES": {

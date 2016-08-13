@@ -73,6 +73,10 @@ gulp.task('images', function () {
   return gulp.src(paths.src + '/assets/images/**/*')
     .pipe(gulp.dest(paths.dist + '/assets/images/'));
 });
+gulp.task('modules', function(){
+    return gulp.src(paths.src+'/assets/modules/**/*')
+        .pipe(gulp.dest(paths.dist+'/assets/modules'));
+});
 
 gulp.task('fonts', function () {
   return gulp.src($.mainBowerFiles())
@@ -108,4 +112,4 @@ gulp.task('clean', function (done) {
   $.del([paths.dist + '/', paths.tmp + '/'], done);
 });
 
-gulp.task('buildapp', ['html', 'images', 'fonts', 'translations', 'misc', 'data', 'examplejs']);
+gulp.task('buildapp', ['html', 'images', 'modules', 'fonts', 'translations', 'misc', 'data', 'examplejs']);

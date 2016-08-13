@@ -26,7 +26,7 @@
                         // showToolbar: false,
                         // //toolbarShrink: true,
                         contentClass: 'full-height',
-                        // innerContentClass:'full-height',
+                        innerContentClass:'filemanager-container',
                         footer: false
                     }
                 },
@@ -44,7 +44,6 @@
                         injectCSS.set('filemanagercss', 'assets/modules/file-manager/angular-filemanager.min.css');
 
                         var clean =$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
-                            console.log(event, toState, toParams, fromState, fromParams, options)
                             injectCSS.remove('bootstrapcss');
                             injectCSS.remove('filemanagercss');
                             clean();

@@ -1,7 +1,8 @@
 {
     "DESIGN":{
         "PROP":"Properties",
-        "LAYOUT":"Layout"
+        "LAYOUT":"Layout",
+        "EXTERNAL":"External Library"
     },
     "MENU": {
 

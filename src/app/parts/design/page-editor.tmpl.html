@@ -23,14 +23,22 @@
                             <md-button ui-sref="quartz.admin-default.pageManager">{{'GENERAL.OPEN'|translate}}
                             </md-button>
                         </md-menu-item>
+
+                        <md-menu-item>
+                            <md-button ng-click="vm.update()" translate>{{'GENERAL.SAVE'|translate}}</md-button>
+                        </md-menu-item>
+                        <md-menu-divider></md-menu-divider>
+                        <md-menu-item>
+                            <md-button ng-click="vm.selectedSettingsTab=0;vm.showSettinsTab($event)">
+                                {{'EDITOR.SETTINGS'|translate}}
+                            </md-button>
+                        </md-menu-item>
+
                         <md-menu-item>
                             <md-button ngf-select="vm.import($files)">{{'GENERAL.IMPORT'|translate}}</md-button>
                         </md-menu-item>
                         <md-menu-item>
                             <md-button ng-click="vm.export()" translate>{{'GENERAL.EXPORT'|translate}}</md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ng-click="vm.update()" translate>{{'GENERAL.SAVE'|translate}}</md-button>
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
@@ -552,7 +560,9 @@
 
             <md-content ng-init="vm.compile()" ng-if="vm.previewPanel" style="height:100%;width:100%;" >
                 <div ng-style="vm.previewPanelStyle">
-                    <custom-item content="vm.html" api-ctrl="BasicApiController" custom-js="vm.js"></custom-item>
+                    <iframe name="preview-frame" src="https://quartz.firebaseapp.com/#!/preview"></iframe>
+
+                    <!--<custom-item content="vm.html" api-ctrl="BasicApiController" custom-js="vm.js"></custom-item>-->
                 </div>
             </md-content>
         </div>

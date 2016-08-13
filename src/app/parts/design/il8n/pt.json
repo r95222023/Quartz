@@ -1,4 +1,9 @@
 {
+    "DESIGN":{
+        "PROP":"Properties",
+        "LAYOUT":"Layout",
+        "EXTERNAL":"External Library"
+    },
     "MENU": {
         "PAGES": {
             "MENUNAME": "Pages",

@@ -4,7 +4,7 @@
         .factory("injectCSS", CssInjector);
 
     /* @ngInject */
-    function CssInjector($q, $firebase) {
+    function CssInjector($q, $rootScope) {
         var injectCSS = {};
 
         var createLink = function (id, url) {
@@ -36,7 +36,7 @@
             }, 50);
         };
 
-        injectCSS.set = function (id, url) {
+        injectCSS.set = function (id, url, isRemovable) {
             var tries = 0,
                 deferred = $q.defer(),
                 link;
@@ -47,6 +47,13 @@
                 angular.element('head').append(link);
             }
             checkLoaded(url, deferred, tries);
+            if(isRemovable){
+                var listener = $rootScope.$on('$stateChangeStart',
+                    function () {
+                        injectCSS.remove(id);
+                        listener();
+                    });
+            }
 
             return deferred.promise;
         };
@@ -60,7 +67,7 @@
         //     return def.promise;
         // };
 
-        injectCSS.setDirectly = function (id, value) {
+        injectCSS.setDirectly = function (id, value, isRemovable, pageName) {
             if (!angular.element('style#' + id).length) {
                 var style = createStyle(id, value);
                 angular.element('head').append(style);
@@ -68,11 +75,19 @@
                 angular.element('style#' + id).remove();
                 injectCSS.setDirectly(id,value);
             }
+            if(isRemovable){
+                var listener = $rootScope.$on('$stateChangeStart',
+                    function (event, toState, toParams, fromState, fromParams, options) {
+                        if (pageName&&toParams.pageName === pageName) return;
+
+                        injectCSS.remove(id);
+                        listener();
+                    });
+            }
         };
 
         injectCSS.remove = function(id){
-            angular.element('style#' + id).remove();
-            angular.element('link#' + id).remove();
+            angular.element('#' + id).remove();
         };
 
         return injectCSS;

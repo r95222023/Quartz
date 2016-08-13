@@ -11,6 +11,9 @@
         "DESCRIPTION": "對不起，出問題了",
         "HOME": "回主頁"
     },
+    "EDITOR":{
+        "SETTINGS":"設定"
+    },
     "GENERAL": {
         "FILE":"檔案",
         "NEW":"新增",

@@ -26,7 +26,7 @@
     }
 
     /* @ngInject */
-    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout) {
+    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage) {
         var storage = storageFbApp.storage;
         var $firebaseStorage = {
             get: get,
@@ -70,7 +70,7 @@
                 _ref = ref(path),
                 promise = $q.all({
                     meta: _ref.getMetadata(),
-                    url: _ref.getDownloadURL(),
+                    // url: _ref.getDownloadURL(),
                     checksum: getChecksum()
                 }),
                 dereg = $rootScope.$on(id, function (evt, value) {
@@ -125,10 +125,12 @@
                 }
             }).then(function (res) {
                 if (res === undefined) return;
-                var url = res.url,
+                var urlArr= res.meta.downloadURLs,
+                    url = urlArr[Math.floor(Math.random() * (urlArr.length))],
                     meta = res.meta,
                     cachePath = id,
                     updated = (new Date(meta.updated)).getTime();
+
                 if (localStorage && localStorage.getItem(cachePath)) {
                     var cached = localStorage.getItem(cachePath),
                         cachedVal = lzString.decompress({compressed: cached});
@@ -219,6 +221,7 @@
         }
 
         window._getFBS = function (data) {
+            window._FBUsg.useBandwidth(data);
             var _data = lzString.decompress(data);
             $rootScope.$broadcast('FBS:' + _data.path, _data.value);
             syncTime.onReady().then(function (getTime) {

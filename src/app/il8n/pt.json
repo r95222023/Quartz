@@ -15,6 +15,9 @@
         "CANCEL": "Cancelar",
         "OK": "Ok"
     },
+    "EDITOR":{
+        "SETTINGS":"Settings"
+    },
     "ADMIN": {
         "TOOLBAR": {
             "SETTINGS": "Definições",

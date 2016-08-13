@@ -41,6 +41,9 @@
                             def.resolve(snap.val())
                         });
                         return def.promise;
+                    }],
+                    pageData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
+                        return $lazyLoad.load('page',$stateParams.pageName);
                     }]
                 },
                 url: '/admin/:siteName/pageEditor/?id&pageName&params',
@@ -58,12 +61,17 @@
                         footer: false
                     }
                 },
+                resolve:{
+                    widgetData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
+                        return $lazyLoad.load('widget',$stateParams.widgetName);
+                    }]
+                },
                 url: '/admin/:siteName/widgetEditor/?id&widgetName',
                 templateUrl: 'app/parts/design/widget-editor.tmpl.html',
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default-no-scroll.customPage', {
+            .state('customPage', {
                 url: '/:siteName/:pageName/?id&params&params2&cate&subCate&queryString&tag&devMode',
                 resolve: {
                     getSyncTime: ['syncTime', function (syncTime) {
@@ -71,19 +79,19 @@
                     }],
                     authData: ['$auth', function ($auth) {
                         return $auth.waitForAuth()
+                    }],
+                    pageData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
+                        return $lazyLoad.load('page', $stateParams.pageName);
                     }]
-                },
-                data: {
-                    layout: {
-                        sideMenuSize: 'hidden',
-                        showToolbar: false,
-                        //toolbarShrink: true,
-                        contentClass:'full-height',
-                        footer: false
-                    }
                 },
                 templateUrl: 'app/parts/design/custom-page.tmpl.html',
                 controller: 'CustomPageController',
+                controllerAs: 'customPage'
+            })
+            .state('previewFrame', {
+                url: '/preview',
+                templateUrl: 'app/parts/design/custom-page.tmpl.html',
+                controller: 'PreviewFrameController',
                 controllerAs: 'customPage'
             })
             .state('quartz.admin-default.siteSetting', {

@@ -8,7 +8,8 @@
         .controller('PageEditorController', PageEditorController)
         .controller('WidgetEditorController', WidgetEditorController)
         .controller('BasicApiController', BasicApiController)
-        .controller('CustomPageController', CustomPageController);
+        .controller('CustomPageController', CustomPageController)
+        .controller('PreviewFrameController',PreviewFrameController);
 
     var pageRefUrl = 'pages@selectedSite',
         pageListRefUrl = 'pages/list@selectedSite',
@@ -24,7 +25,7 @@
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
-                    $state.go('quartz.admin-default-no-scroll.customPage', {id: id, pageName: name});
+                    $state.go('customPage', {id: id, pageName: name});
                     break;
                 case 'edit':
                     $state.go('quartz.admin-default-no-scroll.pageEditor', {id: id, pageName: name});
@@ -109,34 +110,51 @@
     }
 
     /* @ngInject */
-    function PageEditorController(lzString, articleProduct, injectCSS, customService, customWidgets, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout, snippets, siteDesign) {
+    function PageEditorController(pageData, $mdDialog,customService, customWidgets, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
         var vm = this;
-
-        // angular.extend($scope, articleProduct);
-        // $scope.$mdSidenav = $mdSidenav;
-        // $scope.$get = $firebaseStorage.get;
-        // $scope.$getProduct = articleProduct.getProduct;
-        // $scope.$getArticle = articleProduct.getArticle;
-        // $scope.$queryList = articleProduct.queryList;
-        // $scope.$queryProduct = articleProduct.queryProduct;
-        // $scope.$queryArticle = articleProduct.queryArticle;
-        // $scope.$getCate = articleProduct.getCate;
-        // $scope.$cate = articleProduct.cate;
-        // $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
-        // $scope.params = JSON.parse($stateParams.params || '{}');
-        //
-        // $scope.$go = function (pageName, params) {
-        //     var _params = {};
-        //     if (angular.isObject(params)) angular.extend(_params, params);
-        //     console.log(params);
-        //     console.log({pageName: pageName, params: JSON.stringify(_params)});
-        // };
-        //
-        // vm.scope = $scope;
+        window.initPreviewFrame=function(){
+            var frame = window.frames['preview-frame'];
+            frame.previewRefresh(pageData);
+        };
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
         vm.previewPanel = false;
+
+
+        vm.selectedSettingsTab=1;
+        vm.sources=pageData.sources||[];
+        vm.showSettinsTab = function(ev) {
+            $mdDialog.show({
+                controller: SettingsCtrl,
+                templateUrl: 'app/parts/design/editor-settings-dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true
+            });
+                // .then(function(answer) {
+                //     $scope.status = 'You said the information was "' + answer + '".';
+                // }, function() {
+                //     $scope.status = 'You cancelled the dialog.';
+                // });
+        };
+
+        /* @ngInject */
+        function SettingsCtrl($scope, $mdDialog) {
+            $scope.vm=vm;
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.addSource=function(input){
+                vm.sources.push((input||'').replace(/\s+/g, ''));
+            };
+            $scope.removeSource=function(index){
+                vm.sources.splice(index, 1);
+            };
+        }
 
 
         var widgetSource = customService.items,
@@ -155,12 +173,12 @@
 
         $scope.initDragula = dragula.init.bind(dragula);
 
-        siteDesign.ctr(vm, $scope, dragula, 'page');
+        siteDesign.ctr(vm, $scope, dragula, 'page', pageData);
         vm.setPreviewScale(0.5);
     }
 
     /* @ngInject */
-    function WidgetEditorController(lzString, injectCSS, customService, $state, $stateParams, $firebase, $firebaseStorage, $rootScope, $scope, dragulaService, $mdSidenav, $timeout, siteDesign) {
+    function WidgetEditorController(widgetData, customService, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
         var vm = this;
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
@@ -180,7 +198,7 @@
         $scope.initDragula = dragula.init.bind(dragula);
         vm.previewPanel = true;
 
-        siteDesign.ctr(vm, $scope, dragula, 'widget');
+        siteDesign.ctr(vm, $scope, dragula, 'widget', widgetData);
     }
 
     /* @ngInject */
@@ -205,30 +223,19 @@
     }
 
     /* @ngInject */
-    function CustomPageController(lzString, articleProduct, $injector, getSyncTime, injectCSS, authData, $firebase, $firebaseStorage, qtSettings, $scope, $rootScope, $mdSidenav, customService, $stateParams, $timeout, $state) {
-        var customPage = this,
-            pageName = $stateParams.pageName,
-            isIndex = !pageName || pageName === "index",
-            orderBy = isIndex ? "index" : "name",
-            equalTo = isIndex ? true : pageName,
-            pageCachePath = 'page' + pageName + '@selectedSite';
+    function CustomPageController(pageData, qtSettings, $scope,customService, $stateParams, $timeout, $state) {
+        var customPage = this;
+        // window.parent.setUpPreviewFrame();
+
+        window.previewRefresh= function(data){
+            console.log(data);
+        };
 
 
-        // $scope.$mdSidenav = $mdSidenav;
-        // $scope.$get = $firebaseStorage.get;
-        // $scope.$getProduct = articleProduct.getProduct;
-        // $scope.$getArticle = articleProduct.getArticle;
-        // $scope.$queryList = articleProduct.queryList;
-        // $scope.$queryProduct = articleProduct.queryProduct;
-        // $scope.$queryArticle = articleProduct.queryArticle;
-        // $scope.$getCate = articleProduct.getCate;
-        // $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
-        // $scope.$cate = articleProduct.cate;
-        // $scope.params = JSON.parse($stateParams.params || '{}');
         $scope.$go = function (pageName, params) {
             var _params = {};
             if (angular.isObject(params)) angular.extend(_params, params);
-            $state.go('quartz.admin-default-no-scroll.customPage', {
+            $state.go('customPage', {
                 pageName: pageName || $stateParams.pageName,
                 params: JSON.stringify(_params)
             });
@@ -238,66 +245,68 @@
         customPage.settingsGroups = qtSettings.custom;
 
 
-
-        $firebaseStorage.getWithCache('pages/detail/' + pageName + '@selectedSite').then(function (res) {
-            setModelData(res, res.cssKey);
-        });
+        setModelData(pageData, pageData.cssKey);
 
         function setModelData(val, key) {
-            var listener = $rootScope.$on('$stateChangeStart',
-                function () {
-                    injectCSS.remove(key);
-                    listener();
-                });
             $timeout(function () {
-                injectCSS.setDirectly(key, val.css);
                 customPage.pageData = val;
                 customPage.html = customService.compileAll(val.content);
                 customPage.js = val.js;
-                // if (val.js) {
-                //     var js;
-                //     try {
-                //         eval("js =" + val.js);
-                //         if (angular.isFunction(js) || (angular.isArray(js) && angular.isFunction(js[js.length]))) {
-                //             $injector.invoke(js, customPage, {"$scope": $scope});
-                //         }
-                //     } catch (e) {
-                //         try {
-                //             eval(val.js);
-                //         } catch (e) {
-                //         }
-                //     }
-                // }
             }, 0);
-
         }
 
 
-        customPage.getSites = function () {
-            if (authData) $firebase.ref('users/detail/' + authData.uid + '/sites').once('value', function (snap) {
-                customPage.mysites = snap.val();
-            })
-        };
-        customPage.copyPageTo = function (siteName) {
+        // customPage.getSites = function () {
+        //     if (authData) $firebase.ref('users/detail/' + authData.uid + '/sites').once('value', function (snap) {
+        //         customPage.mysites = snap.val();
+        //     })
+        // };
+        // customPage.copyPageTo = function (siteName) {
+        //
+        //     var pid = $firebase.ref('').push().key,
+        //         css = customPage.pageData.css,
+        //         content = customPage.pageData.content,
+        //         name = "Copy-" + siteName + "-" + customPage.pageName,
+        //         compressed = lzString.compress({
+        //             "css": css || '',
+        //             "content": content
+        //         }),
+        //         pageData = {
+        //             "name": name,
+        //             "compressed@1": compressed,
+        //             "editTime@0": firebase.database.ServerValue.TIMESTAMP
+        //         };
+        //     $firebase.update('sites/detail/' + siteName + '/pages', ['list/' + pid, 'detail/' + pid], pageData);
+        //     $firebaseStorage.update('pages/detail/' + name + '@selectedSite', {
+        //         "css": css || null,
+        //         "content": content
+        //     });
+        // }
+    }
 
-            var pid = $firebase.ref('').push().key,
-                css = customPage.pageData.css,
-                content = customPage.pageData.content,
-                name = "Copy-" + siteName + "-" + customPage.pageName,
-                compressed = lzString.compress({
-                    "css": css || '',
-                    "content": content
-                }),
-                pageData = {
-                    "name": name,
-                    "compressed@1": compressed,
-                    "editTime@0": firebase.database.ServerValue.TIMESTAMP
-                };
-            $firebase.update('sites/detail/' + siteName + '/pages', ['list/' + pid, 'detail/' + pid], pageData);
-            $firebaseStorage.update('pages/detail/' + name + '@selectedSite', {
-                "css": css || null,
-                "content": content
-            });
+    /* @ngInject */
+    function PreviewFrameController(qtSettings,$lazyLoad, $scope,customService, $stateParams, $timeout, $state) {
+        var customPage = this;
+
+        angular.extend(customPage, $stateParams);
+        customPage.settingsGroups = qtSettings.custom;
+
+
+        window.previewRefresh = function(data,reload){
+            if(!reload){
+                $lazyLoad.loadPreview(data).then(function(pageData){
+                    setModelData(pageData);
+                })
+            }
+        };
+        window.parent.initPreviewFrame();
+
+        function setModelData(val) {
+            $timeout(function () {
+                customPage.pageData = val;
+                customPage.html = customService.compileAll(val.content);
+                customPage.js = val.js;
+            }, 0);
         }
     }
 
