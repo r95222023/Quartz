@@ -51,7 +51,7 @@
                 {
                     name: 'MENU.SETTINGS.BASIC',
                     type: 'link',
-                    state: 'quartz.admin-default.site-configure'
+                    state: 'quartz.admin-default.siteSetting-basic'
                 },
                 {
                     name: 'MENU.SETTINGS.ADMIN',
@@ -59,9 +59,14 @@
                     state: 'quartz.admin-default.admins'
                 },
                 {
+                    name: 'MENU.SETTINGS.EXTERNALLIB',
+                    type: 'link',
+                    state: 'quartz.admin-default.siteSetting-external-lib'
+                },
+                {
                     name: 'MENU.SETTINGS.PAYMENT',
                     type: 'link',
-                    state: 'quartz.admin-default.site-payment'
+                    state: 'quartz.admin-default.siteSetting-payment'
                 }
             ]
         });
@@ -72,11 +77,6 @@
             type: 'dropdown',
             priority: 1.2,
             children: [
-                {
-                    name: 'MENU.DESIGN.SETTING',
-                    state: 'quartz.admin-default.siteSetting',
-                    type: 'link'
-                },
                 {
                     name: 'MENU.DESIGN.PAGEMANAGER',
                     state: 'quartz.admin-default.pageManager',

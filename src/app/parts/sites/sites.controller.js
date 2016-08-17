@@ -291,11 +291,7 @@
             vm.pages = snap.val();
         });
         vm.updateSiteConfig = function () {
-            var listData = {},
-                pageName = vm.preload.index;
-            // setIndex(pageName, function (data) {
-            //     $firebase.update('pages@selectedSite', data);
-            // });
+            var listData = {};
 
             $firebase.updateCacheable(basicPath, vm.preload);
             $firebaseStorage.update(basicPath, vm.preload);
@@ -304,18 +300,6 @@
             listData['thumbnail/'] = vm.thumbnail||null;
             $firebase.update('sites/list/' + siteName, listData);
         };
-
-        // function setIndex(pageName, cb) {
-        //     var data = {};
-        //     pageListRef.once('value', function (snap) {
-        //         snap.forEach(function (childSnap) {
-        //             var isIndex = childSnap.val().name === pageName ? true : null;
-        //             data["list/" + childSnap.key + "/config/index"] = isIndex;
-        //             data["detail/" + childSnap.key + "/config/index"] = isIndex;
-        //         });
-        //         cb(data);
-        //     })
-        // }
     }
 
     /* @ngInject */

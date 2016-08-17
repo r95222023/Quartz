@@ -23,7 +23,7 @@
 
         function logout() {
             if($stateParams.siteName&&$stateParams.pageName){
-                $state.go('quartz.admin-default.customPage',$stateParams);
+                $state.go($stateParams.stateName||'customPage',$stateParams);
             } else {
                 $state.go(config.home);
             }

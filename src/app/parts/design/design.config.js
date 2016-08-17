@@ -7,8 +7,6 @@
 
     /* @ngInject */
     function pagesConfig($stateProvider, qtMenuProvider, $translatePartialLoaderProvider) {
-        var tmplRoot = 'app/parts/design/templates/',
-            templateList = ['button'];
         $translatePartialLoaderProvider.addPart('app/parts/design');
         $stateProvider
             .state('quartz.admin-default.pageManager', {
@@ -23,17 +21,7 @@
                 controller: 'WidgetManagerController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default-no-scroll.pageEditor', {
-                data: {
-                    layout: {
-                        sideMenuSize: 'hidden',
-                        showToolbar: false,
-                        // //toolbarShrink: true,
-                        contentClass: 'layout-fill',
-                        // innerContentClass:'full-height',
-                        footer: false
-                    }
-                },
+            .state('pageEditor', {
                 resolve: {
                     customWidgets: ['$q', '$firebase', function ($q, $firebase) {
                         var def = $q.defer();
@@ -51,16 +39,7 @@
                 controller: 'PageEditorController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default-no-scroll.widgetEditor', {
-                data: {
-                    layout: {
-                        sideMenuSize: 'hidden',
-                        showToolbar: false,
-                        //toolbarShrink: true,
-                        contentClass:'full-height',
-                        footer: false
-                    }
-                },
+            .state('widgetEditor', {
                 resolve:{
                     widgetData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
                         return $lazyLoad.load('widget',$stateParams.widgetName);
@@ -78,10 +57,16 @@
                         return syncTime.onReady();
                     }],
                     authData: ['$auth', function ($auth) {
-                        return $auth.waitForAuth()
+                        return $auth.waitForAuth();
                     }],
-                    pageData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
-                        return $lazyLoad.load('page', $stateParams.pageName);
+                    pageData:['$q','sitesService', '$lazyLoad', '$stateParams', function($q, sitesService, $lazyLoad, $stateParams){
+                        var def=$q.defer();
+                        sitesService.onReady().then(function(){
+                            $lazyLoad.load('page', $stateParams.pageName).then(function(pageData){
+                                def.resolve(pageData);
+                            });
+                        });
+                        return def.promise;
                     }]
                 },
                 templateUrl: 'app/parts/design/custom-page.tmpl.html',
@@ -94,27 +79,5 @@
                 controller: 'PreviewFrameController',
                 controllerAs: 'customPage'
             })
-            .state('quartz.admin-default.siteSetting', {
-                url: '/:siteName/?id&params&params2&devMode',
-                resolve: {
-                    getSyncTime: ['syncTime', function (syncTime) {
-                        return syncTime.onReady();
-                    }],
-                    authData: ['$auth', function ($auth) {
-                        return $auth.waitForAuth()
-                    }]/*,
-                    sitesData:['sitesService', function(sitesService){
-                        return sitesService.onReady();
-                    }]*/
-                },
-                data: {
-                    layout: {
-                        footer: false
-                    }
-                },
-                templateUrl: 'app/parts/design/setting/setting.tmpl.html',
-                controller: 'SiteSettingCtrl',
-                controllerAs: 'vm'
-            });
     }
 })();

@@ -194,6 +194,7 @@
 
         $auth.onAuthStateChanged(function (user) {
             $rootScope.user = user;
+            console.log(user, user===$auth.currentUser);
             $rootScope.loggedIn = !!user;
             promiseService.reset('userData');
 

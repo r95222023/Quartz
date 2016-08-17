@@ -28,7 +28,7 @@
                     $state.go('customPage', {id: id, pageName: name});
                     break;
                 case 'edit':
-                    $state.go('quartz.admin-default-no-scroll.pageEditor', {id: id, pageName: name});
+                    $state.go('pageEditor', {id: id, pageName: name});
                     break;
                 case 'setPrivate':
                     $firebase.update(pageRefUrl, ['list/' + id + '/private', 'detail/' + id + '/private'], {
@@ -71,7 +71,7 @@
     }
 
     /* @ngInject */
-    function WidgetManagerController($firebase, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
+    function WidgetManagerController($firebase, $state, $mdDialog) {
         var vm = this;
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
@@ -79,7 +79,7 @@
             console.log(action, id, name);
             switch (action) {
                 case 'edit':
-                    $state.go('quartz.admin-default-no-scroll.widgetEditor', {id: id, widgetName: name});
+                    $state.go('widgetEditor', {id: id, widgetName: name});
                     break;
                 case 'delete':
                     var confirm = $mdDialog.confirm()
@@ -156,7 +156,7 @@
 
 
         vm.selectedSettingsTab = 1;
-        vm.sources = pageData.sources || [];
+        vm.sources = pageData&&pageData.sources || [];
         vm.showSettinsTab = function (ev) {
             $mdDialog.show({
                 controller: SettingsCtrl,
@@ -165,11 +165,6 @@
                 targetEvent: ev,
                 clickOutsideToClose: true
             });
-            // .then(function(answer) {
-            //     $scope.status = 'You said the information was "' + answer + '".';
-            // }, function() {
-            //     $scope.status = 'You cancelled the dialog.';
-            // });
         };
 
         /* @ngInject */
@@ -235,7 +230,7 @@
     }
 
     /* @ngInject */
-    function BasicApiController(articleProduct, $firebaseStorage, $scope, $mdSidenav, $stateParams) {
+    function BasicApiController(articleProduct, $auth, $firebaseStorage, $scope, $mdSidenav,$state, $stateParams) {
         $scope.$mdSidenav = $mdSidenav;
         $scope.$get = $firebaseStorage.get;
         $scope.$getProduct = articleProduct.getProduct;
@@ -246,6 +241,17 @@
         $scope.$getCate = articleProduct.getCate;
         $scope.$getCateCrumbs = articleProduct.getCateCrumbs;
         $scope.$cate = articleProduct.cate;
+        $scope.$auth = $auth;
+        $scope.$login = function(pageName, state){
+            var toParams = {
+                pageName: pageName || $stateParams.pageName,
+                params: JSON.stringify($stateParams.params)
+            };
+            if($state.name!=='customPage'){
+                toParams.stateName=$state.name;
+            }
+            $state.go('authentication.login', toParams);
+        };
         $scope.params = JSON.parse($stateParams.params || '{}');
         if (!$scope.$go) $scope.$go = function (pageName, params) {
             var _params = {};
@@ -287,34 +293,6 @@
                 customPage.js = val.js;
             }, 0);
         }
-
-
-        // customPage.getSites = function () {
-        //     if (authData) $firebase.ref('users/detail/' + authData.uid + '/sites').once('value', function (snap) {
-        //         customPage.mysites = snap.val();
-        //     })
-        // };
-        // customPage.copyPageTo = function (siteName) {
-        //
-        //     var pid = $firebase.ref('').push().key,
-        //         css = customPage.pageData.css,
-        //         content = customPage.pageData.content,
-        //         name = "Copy-" + siteName + "-" + customPage.pageName,
-        //         compressed = lzString.compress({
-        //             "css": css || '',
-        //             "content": content
-        //         }),
-        //         pageData = {
-        //             "name": name,
-        //             "compressed@1": compressed,
-        //             "editTime@0": firebase.database.ServerValue.TIMESTAMP
-        //         };
-        //     $firebase.update('sites/detail/' + siteName + '/pages', ['list/' + pid, 'detail/' + pid], pageData);
-        //     $firebaseStorage.update('pages/detail/' + name + '@selectedSite', {
-        //         "css": css || null,
-        //         "content": content
-        //     });
-        // }
     }
 
     /* @ngInject */

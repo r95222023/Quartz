@@ -57,7 +57,6 @@
                         })
                     } else {
                         def.resolve(val);
-
                     }
                 });
             } else {
@@ -82,8 +81,29 @@
             return def.promise;
         }
 
+        function loadSite(data){
+            var def = $q.defer();
+
+            if (data.sources) {
+                getLazyLoadArgs(data.sources, 'selectedSite').then(function (args) {
+                    if (args.files.length) {
+                        $ocLazyLoad.load(args).then(function () {
+                            def.resolve();
+                        })
+                    } else {
+                        def.resolve();
+
+                    }
+                });
+            } else {
+                def.resolve();
+            }
+            return def.promise;
+        }
+
         return {
-            load: load
+            load: load,
+            loadSite:loadSite
         }
     }
 })();

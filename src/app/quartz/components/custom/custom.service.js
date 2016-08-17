@@ -195,7 +195,7 @@
             var _canvas=angular.copy(canvas)||{};
             _canvas.content ='<!--include-->';
             _canvas.tag='md-content';
-            _canvas.style =  (_canvas.style||'')+'height:100%;overflow:hidden;';
+            _canvas.style =  _canvas.style||'';
             return compileTag(_canvas).replace('<!--include-->', compile(containers))
         }
 

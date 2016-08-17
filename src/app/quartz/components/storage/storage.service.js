@@ -20,23 +20,33 @@
                 storage: app.database()
             }
         };
-        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout) {
-            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout)
+        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage, $http) {
+            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage, $http)
         }
     }
 
     /* @ngInject */
-    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage) {
+    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage, $http) {
         var storage = storageFbApp.storage;
         var $firebaseStorage = {
             get: get,
             getWithCache: getWithCache,
+            copy: copy,
             update: update,
             remove: remove,
-            ref:ref,
-            clearTemp:clearTemp,
+            ref: ref,
+            getSingleDownloadUrl: getSingleDownloadUrl,
+            clearTemp: clearTemp,
             storages: {}
         };
+
+        function getSingleDownloadUrl(url) {
+            if (angular.isArray(url)) {
+                return url[Math.floor(Math.random() * (url.length))];
+            } else {
+                return url;
+            }
+        }
 
         function FbObj(refPath, opt) {
             var _opt = opt || {},
@@ -51,21 +61,22 @@
         }
 
         function ref(refPath, opt) {
-            var _opt=opt||{},
-                path = (new FbObj(refPath, _opt)).path + (_opt.isJs===false? '':'.js');
+            var _opt = opt || {},
+                path = (new FbObj(refPath, _opt)).path + (_opt.isJs === false ? '' : '.js');
             return storage.ref(path);
         }
 
         var storagePromises = {},
             storageReload = {};
+
         function getWithCache(path, opt) {
 
             var def = $q.defer(),
                 _path = (new FbObj(path)).path,
-                id = 'FBS:' +_path;
-            if (storagePromises[id]&&!storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
+                id = 'FBS:' + _path;
+            if (storagePromises[id] && !storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
             storagePromises[id] = def.promise;
-            storageReload[id]=false;
+            storageReload[id] = false;
             var _opt = opt || {},
                 _ref = ref(path),
                 promise = $q.all({
@@ -113,8 +124,8 @@
                     // $firebase.ref(path).once('value',function(snap){
                     //     def.resolve(lzString.decompress(snap.val()));
                     // });
-                    if(_opt.fromDatabase!==false) {
-                        $firebase.cache(path, 'editTime', $firebase.ref(path)).then(function(val){
+                    if (_opt.fromDatabase !== false) {
+                        $firebase.cache(path, 'editTime', $firebase.ref(path)).then(function (val) {
                             resolve(val);
                         });
                     } else {
@@ -125,8 +136,7 @@
                 }
             }).then(function (res) {
                 if (res === undefined) return;
-                var urlArr= res.meta.downloadURLs,
-                    url = urlArr[Math.floor(Math.random() * (urlArr.length))],
+                var url = getSingleDownloadUrl(res.meta.downloadURLs),
                     meta = res.meta,
                     cachePath = id,
                     updated = (new Date(meta.updated)).getTime();
@@ -148,10 +158,59 @@
             return def.promise;
         }
 
+        function copy(srcPath, destPath, removeSrc, onMeta, onState) {
+            var def = $q.defer(),
+                _onState = angular.isFunction(onState) ? onState : angular.noop,
+                _onMeta = angular.isFunction(onMeta) ? onMeta : angular.noop,
+                srcRef = ref((new FbObj(srcPath)).path, {isJs: false}),
+                destRef = ref((new FbObj(destPath)).path, {isJs: false});
+
+            srcRef.getMetadata().then(function (meta) {
+                var url = getSingleDownloadUrl(meta.downloadURLs);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+
+                xhr.responseType = 'arraybuffer';
+                _onMeta(meta);
+
+                xhr.onload = function () {
+                    if (this.status == 200) {
+                        var bin = new window.Blob([xhr.response], {type: meta.contentType});
+                        destRef.put(bin).on('state_changed', _onState, def.reject, function () {
+                            if (removeSrc) {
+                                srcRef.delete();
+                            }
+                            def.resolve();
+                        });
+                        def.resolve();
+                    }
+                };
+                xhr.addEventListener('error', function () {
+                    def.reject('GET error:' + xhr.status);
+                });
+                xhr.send();
+
+                // $http.get(url).success(function (data) {
+                //     var bin = new window.Blob([data]);
+                //     destRef.put(bin).on('state_changed', _onState, def.reject, function () {
+                //         if (removeSrc) {
+                //             srcRef.delete();
+                //         }
+                //         def.resolve();
+                //     });
+                //     def.resolve(data);
+                // }).error(function (data, code) {
+                //     def.reject(code);
+                // })
+            });
+            return def.promise;
+        }
+
         function update(path, value, onState) {
             var _path = (new FbObj(path)).path,
-                id='FBS:'+_path,
-                _onState = angular.isFunction(onState)? onState:angular.noop,
+                id = 'FBS:' + _path,
+                _onState = angular.isFunction(onState) ? onState : angular.noop,
                 def = $q.defer();
             syncTime.onReady().then(function (getTime) {
                 var storageRef = storage.ref(),
@@ -177,7 +236,7 @@
                 }
                 dataString = "_getFBS(" + _valStr + ");";
                 var data = new Blob([dataString], {type: 'text/javascript'});
-                storageReload[id]=true;
+                storageReload[id] = true;
                 return storageRef.child(_path + '.js').put(data).on('state_changed', _onState, def.reject, def.resolve);
             });
             return def.promise;
@@ -197,8 +256,9 @@
         }
 
         var temp = {};
-        function clearTemp(){
-            angular.forEach(temp,function(val,key){
+
+        function clearTemp() {
+            angular.forEach(temp, function (val, key) {
                 delete temp[key].load;
             })
         }

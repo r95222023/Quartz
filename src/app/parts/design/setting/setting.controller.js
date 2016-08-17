@@ -3,28 +3,34 @@
 
     angular
         .module('app.parts.design')
-        .controller('SiteSettingCtrl', SiteSettingCtrl);
+        .controller('SiteSettingOLDCtrl', SiteSettingCtrl);
 
     /* @ngInject */
-    function SiteSettingCtrl($firebase, $firebaseStorage) {
+    function SiteSettingCtrl($firebase, $firebaseStorage,$mdToast) {
         var vm= this,path='config/preload@selectedSite';
-
+        vm.addSource = function (input) {
+            var _input = (input || '').replace(/\s+/g, '');
+            if(input) vm.sources.push(_input);
+        };
+        vm.removeSource = function (index) {
+            vm.sources.splice(index, 1);
+        };
         $firebaseStorage.getWithCache(path).then(function(preload){
-            vm.css = preload.css;
-            vm.js = preload.js;
+            console.log(preload)
+            vm.preload = preload||{};
+            vm.sources = vm.preload.sources||[];
         });
         vm.update = function(){
-            var data = {};
-            if(vm.css) data.css = vm.css.trim();
-            if(vm.js) data.js = vm.js.trim();
-
-            if(data.css||data.js) {
-                $firebase.updateCacheable(path,data);
-                $firebaseStorage.update(path, data);
-            } else {
-                $firebase.ref(path).remove();
-                $firebaseStorage.remove(path);
-            }
+            if(vm.sources.length===0) return;
+            var data = angular.extend({},vm.preload);
+            data.sources= vm.sources;
+            $firebase.updateCacheable(path,data);
+            $firebaseStorage.update(path, data);
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Saved!')
+                    .hideDelay(3000)
+            );
         };
     }
 })();

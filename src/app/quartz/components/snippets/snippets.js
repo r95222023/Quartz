@@ -481,12 +481,15 @@
             return num < 10 ? ('0' + num) : num;
         }
 
-        function saveData(data, fileName) {
-            var a = document.createElement("a");
+        function saveData(data, fileName, type) {
+            var a = document.createElement("a"),
+                _data=data;
             document.body.appendChild(a);
             a.style = "display: none";
-            var json = JSON.stringify(data),
-                blob = new Blob([json], {type: "octet/stream"}),
+            if(fileName.split('.json')[1]==='') {
+                _data = JSON.stringify(data);
+            }
+            var blob = new Blob([_data], {type: type||"text/plain"}),
                 url = window.URL.createObjectURL(blob);
             a.href = url;
             a.download = fileName;

@@ -1,10 +1,6 @@
 (function() {
     'use strict';
-
-    var fsUrlType=['src','href'];
-    function getDirectiveName(type){
-        return ('fs'+type.charAt(0).toUpperCase() + type.slice(1))
-    }
+    
     angular.module('quartz.directives')
         .directive('fsSrc', fsSrc)
         .directive('fsHref', fsHref);

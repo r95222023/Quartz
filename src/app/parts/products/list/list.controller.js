@@ -28,7 +28,7 @@
         vm.queryString = $stateParams.queryString;
         vm.tag = $stateParams.tag;
         vm.go = function (queryString, cate, subCate, tag, pageName) {
-            $state.go(pageName ? 'quartz.admin-default.customPage' : 'quartz.admin-default.productList', {
+            $state.go(pageName ? 'customPage' : 'quartz.admin-default.productList', {
                 queryString: queryString || vm.queryString,
                 cate: cate + '' || $stateParams.cate,
                 subCate: subCate + '' || $stateParams.subCate,

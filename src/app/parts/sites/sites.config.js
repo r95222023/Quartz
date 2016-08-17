@@ -48,7 +48,7 @@
                 controller: 'AllSitesController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.site-configure', {
+            .state('quartz.admin-default.siteSetting-basic', {
                 data: {
                     layout: {
                         // sideMenuSize: 'hidden',
@@ -59,10 +59,30 @@
                 url: '/admin/:siteName/configure',
                 templateUrl: 'app/parts/sites/configure.tmpl.html',
                 // set the controller to load for this page
-                controller: 'SiteConfigureController',
+                controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.site-payment', {
+            .state('quartz.admin-default.siteSetting-external-lib', {
+                url: '/:siteName/?id&params&params2&devMode',
+                resolve: {
+                    getSyncTime: ['syncTime', function (syncTime) {
+                        return syncTime.onReady();
+                    }],
+                    authData: ['$auth', function ($auth) {
+                        return $auth.waitForAuth()
+                    }]
+                },
+                data: {
+                    layout: {
+                        footer: false
+                    }
+                },
+                templateUrl: 'app/parts/sites/settings/external-lib.tmpl.html',
+                controller: 'SiteSettingCtrl',
+                controllerAs: 'vm'
+            })
+
+            .state('quartz.admin-default.siteSetting-payment', {
                 data: {
                     layout: {
                         // sideMenuSize: 'hidden',
@@ -73,7 +93,7 @@
                 url: '/admin/:siteName/payment',
                 templateUrl: 'app/parts/sites/payment.tmpl.html',
                 // set the controller to load for this page
-                controller: 'PaymentSettingController',
+                controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.template', {
@@ -85,7 +105,9 @@
                     }
                 },
                 resolve: {
-                    site: function(){return {}}
+                    site: function () {
+                        return {}
+                    }
                 },
                 url: '/admin/templateMgr',
                 templateUrl: 'app/parts/sites/template.tmpl.html',
