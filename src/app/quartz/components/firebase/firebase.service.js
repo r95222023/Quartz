@@ -35,7 +35,7 @@
         }
     }
 
-    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter,$usage) {
+    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter, $usage) {
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -208,6 +208,26 @@
 
         function _set(refUrl, value, onComplete, refUrlParams) {
             _update(refUrl, value, onComplete, true, refUrlParams);
+        }
+
+        function copy (srcPath, destPath,removeSrc, opt){
+            var def=$q.defer(),
+                _opt=opt||{},
+                srcRef = queryRef(srcPath, _opt.src);
+            srcRef.once('value').then(function(snap){
+                var resolve=function(){
+                    def.resolve(snap.val())
+                };
+                queryRef(destPath, _opt.dest)[_opt.set===true? 'set':'update'](snap.val())
+                    .then(function(){
+                        if(removeSrc){
+                            srcRef.set(null).then(resolve)
+                        } else {
+                            resolve();
+                        }
+                    });
+            });
+            return def.promise;
         }
 
         function updateCacheable(refUrl, data) {
@@ -534,7 +554,7 @@
 
         function getValidKey(key) {
             //TODO
-            var res = key, replace = [['.', '^0'], ['#', '^1'], ['$', '^2'], ['[', '^3'], [']', '^4']];
+            var res = key, replace = [['.', '^%0'], ['#', '^%1'], ['$', '^%2'], ['[', '^%3'], [']', '^%4']];
             angular.forEach(replace, function (val) {
                 res = res.replace(val[0], val[1]);
             });
@@ -542,10 +562,31 @@
             return res;
         }
 
+        function getFileTableFromList(refUrl, opt) {
+            var _opt = opt || {},
+                def = $q.defer(),
+                res = {},
+                ref = queryRef(refUrl, _opt);
+            ref.once('value', function (snap) {
+                snap.forEach(function (childSnap) {
+                    var val = childSnap.val(),
+                        key = childSnap.key;
+                    res[key] = {
+                        name: (_opt.fileName ? val[_opt.fileName] : key) + (_opt.fileExtension || '.js'),
+                        date: val.editTime,
+                        type: 'file'
+                    }
+                });
+                def.resolve(res);
+            });
+            return def.promise;
+        }
+
         var $firebase = {
             update: update,
             updateCacheable: updateCacheable,
             batchUpdate: batchUpdate,
+            copy:copy,
             params: params,
             databases: {},
             storages: {},
@@ -559,6 +600,7 @@
                 return getWithCache(sourceRef.toSource(), 'editTime', sourceRef, option)
             },
             getValidKey: getValidKey,
+            getFileTableFromList: getFileTableFromList,
             getUniqeId: getUniqeId,
             databaseURL: dbFirebase.databaseURL
         };

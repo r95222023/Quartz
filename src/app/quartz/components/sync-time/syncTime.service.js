@@ -30,7 +30,7 @@
             var def = $q.defer();
             // Set up our time object, synced by the HTTP DATE header
             // Fetch the page over JS to get just the headers
-            console.log("syncing time");
+            // console.log("syncing time");
             var r = new XMLHttpRequest();
             var start = (new Date).getTime(),
                 systemtime;

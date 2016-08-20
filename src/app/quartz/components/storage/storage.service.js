@@ -66,14 +66,25 @@
             return storage.ref(path);
         }
 
+        function getId(path){
+            var siteName = $firebase.databases.selectedSite.siteName;
+            if(path.search('@selectedSite')!==-1){
+                return 'FBS:'+siteName+'/'+path.replace('@selectedSite','');
+            } else if(path.search('sites/detail')!==-1){
+                var pathArr=  path.split('/');
+                pathArr.splice(0,3);
+                return 'FBS:'+siteName+'/'+pathArr.join('/')
+            }
+        }
+
         var storagePromises = {},
             storageReload = {};
 
         function getWithCache(path, opt) {
 
             var def = $q.defer(),
-                _path = (new FbObj(path)).path,
-                id = 'FBS:' + _path;
+                id = getId(path);
+
             if (storagePromises[id] && !storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
             storagePromises[id] = def.promise;
             storageReload[id] = false;
@@ -92,7 +103,6 @@
                         def.reject('checksum does not match.')
                     }
                 });
-
             function resolve(res) {
                 $timeout(function () {
                     def.resolve(res);
@@ -117,6 +127,7 @@
 
             setTimeout(function () {
                 if (dereg) dereg();
+                console.log('timeout')
             }, 10000);
             promise.catch(function (error) {
                 if (error.code === 'storage/object-not-found') {
@@ -282,12 +293,13 @@
 
         window._getFBS = function (data) {
             window._FBUsg.useBandwidth(data);
-            var _data = lzString.decompress(data);
-            $rootScope.$broadcast('FBS:' + _data.path, _data.value);
+            var _data = lzString.decompress(data),
+                id = getId(_data.path);
+            $rootScope.$broadcast(id, _data.value);
             syncTime.onReady().then(function (getTime) {
                 if (localStorage) {
                     _data.cachedTime = getTime();
-                    localStorage.setItem('FBS:' + _data.path, lzString.compress(_data));
+                    localStorage.setItem(id, lzString.compress(_data));
                 }
             })
         };

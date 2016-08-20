@@ -76,6 +76,11 @@
             .state('previewFrame', {
                 url: '/preview/:siteName/:pageName/',
                 templateUrl: 'app/parts/design/custom-page.tmpl.html',
+                resolve:{
+                    onSiteReady:['sitesService', function(sitesService){
+                        return sitesService.onReady();
+                    }]
+                },
                 controller: 'PreviewFrameController',
                 controllerAs: 'customPage'
             })

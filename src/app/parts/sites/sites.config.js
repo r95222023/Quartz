@@ -62,7 +62,7 @@
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.siteSetting-external-lib', {
+            .state('quartz.admin-default.siteSetting-advance', {
                 url: '/:siteName/?id&params&params2&devMode',
                 resolve: {
                     getSyncTime: ['syncTime', function (syncTime) {
@@ -77,7 +77,7 @@
                         footer: false
                     }
                 },
-                templateUrl: 'app/parts/sites/settings/external-lib.tmpl.html',
+                templateUrl: 'app/parts/sites/settings/advance.tmpl.html',
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             })
@@ -102,11 +102,6 @@
                         // sideMenuSize: 'hidden',
                         //toolbarShrink: true,
                         footer: false
-                    }
-                },
-                resolve: {
-                    site: function () {
-                        return {}
                     }
                 },
                 url: '/admin/templateMgr',

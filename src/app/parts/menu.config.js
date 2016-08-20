@@ -59,9 +59,9 @@
                     state: 'quartz.admin-default.admins'
                 },
                 {
-                    name: 'MENU.SETTINGS.EXTERNALLIB',
+                    name: 'MENU.SETTINGS.ADVANCE',
                     type: 'link',
-                    state: 'quartz.admin-default.siteSetting-external-lib'
+                    state: 'quartz.admin-default.siteSetting-advance'
                 },
                 {
                     name: 'MENU.SETTINGS.PAYMENT',

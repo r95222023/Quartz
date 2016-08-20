@@ -10,7 +10,7 @@
         .controller('TemplateCtrl', TemplateCtrl);
 
     /* @ngInject */
-    function TemplateCtrl($stateParams, $firebase,$mdDialog, $timeout, site, indexService) {
+    function TemplateCtrl($stateParams, $firebase,$mdDialog, $timeout, indexService,sitesService) {
         var vm = this;
         vm.actions = [['applyTemplate', 'SITES.APPLYTEMPLATE'], ['info', 'GENERAL.INFO']];
         if ($stateParams.superAdmin) vm.actions = vm.actions.concat([['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']]);
@@ -20,6 +20,17 @@
                 vm.templatesArray = snap.val();
             }, 0);
         });
+
+        vm.paginator = $firebase.paginator('templates/list');
+        //initiate
+        vm.paginator.onReorder('siteName');
+
+        vm.onPaginate = function (page, size) { //to prevent this being overwritten
+            vm.paginator.get(page, size)
+        };
+        vm.onReorder = function (orderBy) {
+            vm.paginator.onReorder(orderBy);
+        };
 
         vm.search = function (queryString, cate, subCate, tag) {
             var _cate = cate || null,
@@ -86,18 +97,19 @@
         // };
         //
         vm.applyTemplate = function (templateName, siteName) {
-            var _siteName = siteName||site.siteName,
+            var _siteName = siteName||sitesService.siteName,
                 confirm = $mdDialog.confirm()
                     .title('Apply '+templateName+' to '+_siteName+'?')
-                    .textContent('All content in '+_siteName+' will be replaced by the template?')
+                    .textContent('All content in '+_siteName+' will be overwritten by the template?')
                     .ariaLabel('Would you like to apply this '+templateName+' to '+_siteName+'?')
                     .ok('Confirm')
                     .cancel('Cancel');
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('templates/detail/' + templateName).once('value', function (snap) {
-                    var val = snap.val();
-                    if(val) $firebase.ref('sites/detail/' + _siteName).set(val);
-                })
+                sitesService.moveSite(templateName, _siteName);
+                // $firebase.ref('templates/detail/' + templateName).once('value', function (snap) {
+                //     var val = snap.val();
+                //     if(val) $firebase.ref('sites/detail/' + _siteName).set(val);
+                // })
             });
         };
 
@@ -237,15 +249,15 @@
                     .cancel('Cancel'),
                 siteName = site.siteName;
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('sites/list/' + siteName).once('value', function (listSnap) {
-                    var val = listSnap.val();
+                $firebase.ref('sites/list/' + siteName).once('value', function (siteSnap) {
+                    var val = siteSnap.val();
                     $firebase.ref('templates/list/' + siteName).update(val);
                     indexService.update('template', siteName, val, 'main');
                 });
-                $firebase.ref('sites/detail/' + siteName).once('value', function (detailSnap) {
-                    var val = detailSnap.val();
-                    $firebase.ref('templates/detail/' + siteName).update(val);
-                });
+                // $firebase.ref('sites/detail/' + siteName).once('value', function (detailSnap) {
+                //     var val = detailSnap.val();
+                //     $firebase.ref('templates/detail/' + siteName).update(val);
+                // });
             });
         }
 
@@ -293,7 +305,7 @@
         vm.updateSiteConfig = function () {
             var listData = {};
 
-            $firebase.updateCacheable(basicPath, vm.preload);
+            // $firebase.updateCacheable(basicPath, vm.preload);
             $firebaseStorage.update(basicPath, vm.preload);
 
 
@@ -320,13 +332,13 @@
 
 
         vm.updateAllpay = function () {
-            $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
+            // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
             $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
             $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
         };
 
         vm.updateStripe = function () {
-            $firebase.update('config/payment/stripe@selectedSite', vm.stripe);
+            // $firebase.update('config/payment/stripe@selectedSite', vm.stripe);
             $firebaseStorage.update('config/payment/stripe/public@selectedSite', vm.stripe.public);
             $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
         }

@@ -519,6 +519,17 @@
             xhr.send();
         }
 
+        function iterateFileTree(table, onNode, path) {
+            var _path = path||'';
+            if (table['_content']) {
+                angular.forEach(table['_content'], function (val,key) {
+                    if(key!=='__created') iterateFileTree(table[key]||val, onNode, _path+'/'+val.name);
+                })
+            } else {
+                onNode(table, _path)
+            }
+        }
+
         return {
             debounce: debounce,
             md5: MD5,
@@ -531,7 +542,8 @@
             toDataUrl:toDataUrl,
             getFirebaseArrayData: getFirebaseArrayData,
             removeItemFromArray: removeItemFromArray,
-            rectifyUpdateData: rectifyUpdateData
+            rectifyUpdateData: rectifyUpdateData,
+            iterateFileTree:iterateFileTree
         };
     }
 })();

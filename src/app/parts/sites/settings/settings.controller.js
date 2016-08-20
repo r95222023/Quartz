@@ -6,7 +6,7 @@
         .controller('SiteSettingCtrl', SiteSettingCtrl);
 
     /* @ngInject */
-    function SiteSettingCtrl($firebase, $firebaseStorage, $mdToast, $stateParams) {
+    function SiteSettingCtrl(sitesService, $firebase, $firebaseStorage, $mdToast, $stateParams, snippets) {
         //basic
         var vm = this,
             preloadPath = 'config/preload@selectedSite',
@@ -31,7 +31,7 @@
         vm.updateSiteConfig = function () {
             var listData = {};
 
-            $firebase.updateCacheable(preloadPath, vm.preload);
+            // $firebase.updateCacheable(preloadPath, vm.preload);
             $firebaseStorage.update(preloadPath, vm.preload);
 
 
@@ -54,7 +54,7 @@
 
 
         vm.updateAllpay = function () {
-            $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
+            // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
             $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
             $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
         };
@@ -74,13 +74,16 @@
             vm.sources.splice(index, 1);
         };
 
-
+        //import site template
+        vm.importSiteTemplate = function (from) {
+            sitesService.moveSite(from)
+        };
         //
         vm.update = function () {
             if (vm.sources.length === 0) return;
             var data = angular.extend({}, vm.preload);
             data.sources = vm.sources;
-            $firebase.updateCacheable(preloadPath, data);
+            // $firebase.updateCacheable(preloadPath, data);
             $firebaseStorage.update(preloadPath, data);
             $mdToast.show(
                 $mdToast.simple()

@@ -54,11 +54,11 @@
                 vm.tempItem = {};
             }
         };
-        
+
         vm.saveCate = function () {
             if(vm.categories) {
                 var path = 'products/config/categories@selectedSite';
-                $firebase.updateCacheable(path, vm.categories);
+                // $firebase.updateCacheable(path, vm.categories);
                 $firebaseStorage.update(path, vm.categories);
             }
         };

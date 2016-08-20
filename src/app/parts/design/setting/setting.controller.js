@@ -24,7 +24,7 @@
             if(vm.sources.length===0) return;
             var data = angular.extend({},vm.preload);
             data.sources= vm.sources;
-            $firebase.updateCacheable(path,data);
+            // $firebase.updateCacheable(path,data);
             $firebaseStorage.update(path, data);
             $mdToast.show(
                 $mdToast.simple()
