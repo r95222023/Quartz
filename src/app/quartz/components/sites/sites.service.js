@@ -81,15 +81,17 @@
 
 
     /* @ngInject */
-    function run($q, $window, $lazyLoad, config, FBURL, $rootScope, $state, $firebase, qtMenu, sitesService, $firebaseStorage, $auth) {
+    function run($q, $window, $lazyLoad, config, FBURL, $rootScope,$transitions, $state, $firebase, qtMenu, sitesService, $firebaseStorage, $auth) {
 
         //// set current site automatically
-        function redirect(state, params) {
-            var clear = $rootScope.$on('$stateChangeSuccess', function () {
-                $state.go(state, params);
-                clear();
-            });
-        }
+        // function redirect(state, params) {
+        //     $state.go(state, params);
+        //     //
+        //     // var clear = $rootScope.$on('$stateChangeSuccess', function () {
+        //     //     $state.go(state, params);
+        //     //     clear();
+        //     // });
+        // }
 
 
         function setSite(siteName, toState, reset) {
@@ -153,12 +155,14 @@
         }
 
         if (!config.standAlone) {
-            $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-
+            $transitions.onBefore( { to: '**' }, function(trans, $injector) {
+                var toState = trans.to(),
+                    fromState = trans.from(),
+                    toParams = trans.params('to');
                 if (toParams.siteName) {
                     setSite(toParams.siteName, toState);
                 } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
-                    redirect(toState, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}));
+                    $state.go(toState.name, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}));
                 }
                 /*else if (toParams.siteName === '' && !$firebase.databases.selectedSite&&$auth.currentUser) {
                  redirect('quartz.admin-default.mysites');
@@ -185,6 +189,38 @@
                     qtMenu.addGroup("siteSelected", {siteName: siteName});
                 }
             });
+            // $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
+            //     console.log(toParams.siteName);
+            //     if (toParams.siteName) {
+            //         setSite(toParams.siteName, toState);
+            //     } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
+            //         redirect(toState, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}));
+            //     }
+            //     /*else if (toParams.siteName === '' && !$firebase.databases.selectedSite&&$auth.currentUser) {
+            //      redirect('quartz.admin-default.mysites');
+            //      }*/
+            //
+            //
+            //     //from dashboard to selected page
+            //     if (isDashboard(fromState) && isCustomPage(toState)) {
+            //         setSite(toParams.siteName, toState, true);
+            //     }
+            //     //from selected page to dashboard
+            //     else if (isCustomPage(fromState) && isDashboard(toState)) {
+            //         console.log('reloading');
+            //
+            //         $window.location.reload();
+            //     }
+            //
+            //     sitesService.pageName = toParams.pageName;
+            //
+            //     if ($firebase.databases.selectedSite) {
+            //         var siteName = $firebase.databases.selectedSite.siteName;
+            //
+            //         qtMenu.removeGroup("siteSelected");
+            //         qtMenu.addGroup("siteSelected", {siteName: siteName});
+            //     }
+            // });
         } else {
             qtMenu.addGroup("siteSelected");
         }

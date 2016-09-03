@@ -27,7 +27,7 @@
     }
 
     /* @ngInject */
-    function qtMenuItemController($scope, $mdSidenav, $state, $filter, qtBreadcrumbsService, $timeout) {
+    function qtMenuItemController($scope, $mdSidenav, $state,$transitions, $filter, qtBreadcrumbsService, $timeout) {
         var qtMenuItem = this;
         // load a template for this directive based on the type ( link | dropdown )
         qtMenuItem.item.template = 'app/quartz/components/menu/menu-item-' + qtMenuItem.item.type + '.tmpl.html';
@@ -61,8 +61,8 @@
                 // on init check if this is current menu
                 checkItemActive($state.current.name, $state.params);
 
-                $scope.$on('$stateChangeSuccess', function(event, toState, toParams) {
-                    checkItemActive(toState.name, toParams);
+                $transitions.onSuccess({ to: '**' }, function(trans) {
+                    checkItemActive(trans.to().name, trans.params('to'));
                 });
                 break;
         }

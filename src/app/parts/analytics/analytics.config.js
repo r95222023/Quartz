@@ -14,6 +14,9 @@
                 footer: false
             },
             url: '/admin/:siteName/analytics',
+            params: {
+                siteName: ''
+            },
             templateUrl: 'app/parts/analytics/analytics.tmpl.html',
             // set the controller to load for this page
             controller: 'AnalyticsController',

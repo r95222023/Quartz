@@ -6,7 +6,7 @@
         .controller('SignupController', SignupController);
 
     /* @ngInject */
-    function SignupController($previousState, $mdToast, $filter, qtSettings, $auth, indexService) {
+    function SignupController($state, $mdToast, $filter, qtSettings, $auth, indexService) {
         var vm = this;
         vm.qtSettings = qtSettings;
         ////////////////
@@ -70,7 +70,7 @@
                     .highlightAction(true)
                     .hideDelay(0)
             ).then(function () {
-                $previousState.go();
+                $state.go('customPage');
             });
         }
 

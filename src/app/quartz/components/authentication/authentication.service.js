@@ -185,7 +185,7 @@
     }
 
     /*@ngInject*/
-    function run($rootScope, promiseService, $auth, $firebase) {
+    function run($rootScope, $auth, $firebase) {
         function assignUser(user) {
             $firebase.databases.currentUser = {
                 url: $firebase.databaseURL + '#users/detail/' + user.uid
@@ -196,7 +196,6 @@
             $rootScope.user = user;
             // console.log(user, user===$auth.currentUser);
             $rootScope.loggedIn = !!user;
-            promiseService.reset('userData');
 
             if (user) {
                 angular.extend($firebase.params, {
@@ -212,13 +211,10 @@
                     userData.info.name = user.displayName||providerData[0].displayName||firstPartOfEmail(user.email);
                     userData.info.photoURL = user.photoURL||providerData[0].photoURL;
                     angular.extend($rootScope.user,userData);
-
-                    promiseService.resolve('userData', userData);
                 });
 
             } else {
                 console.log('no user', user);
-                promiseService.resolve('userData', null);
                 $firebase.params["$uid"] = "";
             }
         });

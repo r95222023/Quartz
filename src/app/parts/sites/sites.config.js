@@ -56,14 +56,20 @@
                         footer: false
                     }
                 },
-                url: '/admin/:siteName/configure',
+                url: '/admin/:siteName/setting/basic',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/parts/sites/configure.tmpl.html',
                 // set the controller to load for this page
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.siteSetting-advance', {
-                url: '/:siteName/?id&params&params2&devMode',
+                url: '/admin/:siteName/setting/advance',
+                params: {
+                    siteName: ''
+                },
                 resolve: {
                     getSyncTime: ['syncTime', function (syncTime) {
                         return syncTime.onReady();
@@ -91,6 +97,9 @@
                     }
                 },
                 url: '/admin/:siteName/payment',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/parts/sites/payment.tmpl.html',
                 // set the controller to load for this page
                 controller: 'SiteSettingCtrl',

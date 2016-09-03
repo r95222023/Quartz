@@ -40,8 +40,9 @@
                 layout[name] = value;
             }
 
-            function updateLayoutFromState(event, toState) {
+            function updateLayoutFromState(trans) {
                 // reset classes
+                var toState=trans.to();
                 for(var option in layoutDefaults) {
                     layout[option] = layoutDefaults[option];
                 }
@@ -58,10 +59,10 @@
     }
 
     /* @ngInject */
-    function layoutRunner($rootScope, qtLayout) {
+    function layoutRunner($transitions, $rootScope, qtLayout) {
         // check for $stateChangeStart and update the layouts if we have data.layout set
         // if nothing set reset to defaults for every state
-        var destroyOn = $rootScope.$on('$stateChangeStart', qtLayout.updateLayoutFromState);
+        var destroyOn = $transitions.onBefore({ to: '**' }, qtLayout.updateLayoutFromState);
         $rootScope.$on('$destroy', removeWatch);
 
         /////////////

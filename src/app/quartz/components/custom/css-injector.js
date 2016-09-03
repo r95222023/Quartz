@@ -4,8 +4,15 @@
         .factory("injectCSS", CssInjector);
 
     /* @ngInject */
-    function CssInjector($q, $rootScope) {
+    function CssInjector($q, $rootScope,$transitions) {
         var injectCSS = {};
+
+        function regRemover(id){
+            var dereg = $transitions.onStart({ to: '**' }, function(trans) {
+                injectCSS.remove(id);
+                dereg();
+            });
+        }
 
         var createLink = function (id, url) {
             var link = document.createElement('link');
@@ -48,11 +55,12 @@
             }
             checkLoaded(url, deferred, tries);
             if(isRemovable){
-                var listener = $rootScope.$on('$stateChangeStart',
-                    function () {
-                        injectCSS.remove(id);
-                        listener();
-                    });
+                regRemover();
+                // var listener = $rootScope.$on('$stateChangeStart',
+                //     function () {
+                //         injectCSS.remove(id);
+                //         listener();
+                //     });
             }
 
             return deferred.promise;
@@ -76,11 +84,12 @@
                 injectCSS.setDirectly(id,value);
             }
             if(isRemovable){
-                var listener = $rootScope.$on('$stateChangeStart',
-                    function (event, toState, toParams, fromState, fromParams, options) {
-                        injectCSS.remove(id);
-                        listener();
-                    });
+                regRemover();
+                // var listener = $rootScope.$on('$stateChangeStart',
+                //     function (event, toState, toParams, fromState, fromParams, options) {
+                //         injectCSS.remove(id);
+                //         listener();
+                //     });
             }
         };
 

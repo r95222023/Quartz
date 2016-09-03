@@ -13,6 +13,7 @@
             siteListRef = $firebase.ref('sites/list'),
             pageListRef = $firebase.ref('pages/list@selectedSite'),
             siteName = $stateParams.siteName;
+        console.log(siteName);
         $firebaseStorage.getWithCache(preloadPath).then(function (preload) {
             vm.preload = preload || {};
             vm.sources = vm.preload.sources || [];

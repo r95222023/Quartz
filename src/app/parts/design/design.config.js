@@ -11,12 +11,18 @@
         $stateProvider
             .state('quartz.admin-default.pageManager', {
                 url: '/admin/:siteName/pageManager',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/parts/design/page-manager.tmpl.html',
                 controller: 'PageManagerController',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.widgetManager', {
                 url: '/admin/:siteName/widgetManager',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/parts/design/widget-manager.tmpl.html',
                 controller: 'WidgetManagerController',
                 controllerAs: 'vm'
@@ -30,9 +36,15 @@
                         });
                         return def.promise;
                     }],
-                    pageData:['$firebaseStorage', '$stateParams', function($firebaseStorage, $stateParams){
+                    pageData: ['$firebaseStorage', '$stateParams', function ($firebaseStorage, $stateParams) {
                         return $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite');
                     }]
+                },
+                params: {
+                    id: '',
+                    pageName: '',
+                    params: '',
+                    siteName: ''
                 },
                 url: '/admin/:siteName/pageEditor/?id&pageName&params',
                 templateUrl: 'app/parts/design/page-editor.tmpl.html',
@@ -40,10 +52,15 @@
                 controllerAs: 'vm'
             })
             .state('widgetEditor', {
-                resolve:{
-                    widgetData:['$lazyLoad', '$stateParams', function($lazyLoad, $stateParams){
-                        return $lazyLoad.load('widget',$stateParams.widgetName);
+                resolve: {
+                    widgetData: ['$lazyLoad', '$stateParams', function ($lazyLoad, $stateParams) {
+                        return $lazyLoad.load('widget', $stateParams.widgetName);
                     }]
+                },
+                params: {
+                    id: '',
+                    widgetName: '',
+                    siteName: ''
                 },
                 url: '/admin/:siteName/widgetEditor/?id&widgetName',
                 templateUrl: 'app/parts/design/widget-editor.tmpl.html',
@@ -52,6 +69,18 @@
             })
             .state('customPage', {
                 url: '/:siteName/:pageName/?id&params&params2&cate&subCate&queryString&tag&devMode',
+                params: {
+                    siteName: '',
+                    id: '',
+                    pageName: '',
+                    params: '',
+                    params2: '',
+                    cate: '',
+                    subCate: '',
+                    queryString: '',
+                    tag: '',
+                    devMode: ''
+                },
                 resolve: {
                     getSyncTime: ['syncTime', function (syncTime) {
                         return syncTime.onReady();
@@ -59,10 +88,10 @@
                     authData: ['$auth', function ($auth) {
                         return $auth.waitForAuth();
                     }],
-                    pageData:['$q','sitesService', '$lazyLoad', '$stateParams', function($q, sitesService, $lazyLoad, $stateParams){
-                        var def=$q.defer();
-                        sitesService.onReady().then(function(){
-                            $lazyLoad.load('page', $stateParams.pageName).then(function(pageData){
+                    pageData: ['$q', 'sitesService', '$lazyLoad', '$stateParams', function ($q, sitesService, $lazyLoad, $stateParams) {
+                        var def = $q.defer();
+                        sitesService.onReady().then(function () {
+                            $lazyLoad.load('page', $stateParams.pageName).then(function (pageData) {
                                 def.resolve(pageData);
                             });
                         });
@@ -74,10 +103,15 @@
                 controllerAs: 'customPage'
             })
             .state('previewFrame', {
-                url: '/preview/:siteName/:pageName/',
+                url: '/preview/:siteName/:pageName/?params',
+                params: {
+                    siteName: '',
+                    pageName: '',
+                    params: ''
+                },
                 templateUrl: 'app/parts/design/custom-page.tmpl.html',
-                resolve:{
-                    onSiteReady:['sitesService', function(sitesService){
+                resolve: {
+                    onSiteReady: ['sitesService', function (sitesService) {
                         return sitesService.onReady();
                     }]
                 },

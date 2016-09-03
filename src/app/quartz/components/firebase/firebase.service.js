@@ -30,12 +30,12 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter, $usage) {
-            return new Firebase(dbFbApp, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter, $usage)
+        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
+            return new Firebase(dbFbApp, params, $stateParams, lzString, syncTime, config, $q, $timeout, $filter, $usage,$transitions)
         }
     }
 
-    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $rootScope, $q, $timeout, $filter, $usage) {
+    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -445,13 +445,18 @@
             this.maxCachedPage = 0;
 
             var self = this,
-                clear = $rootScope.$on('$stateChangeStart', function () {
+                dereg = $transitions.onBefore({to:'**'}, function(trans){
                     if (angular.isFunction(self.listenerCallback)) {
                         self.ref.off('value', self.listenerCallback);
                     }
+                    dereg();
                 });
-            clear();
-
+            // var clear = $rootScope.$on('$stateChangeStart', function () {
+            //     if (angular.isFunction(self.listenerCallback)) {
+            //         self.ref.off('value', self.listenerCallback);
+            //     }
+            //     clear();
+            // });
 
         }
 
@@ -554,7 +559,7 @@
 
         function getValidKey(key) {
             //TODO
-            var res = key, replace = [['.', '^%0'], ['#', '^%1'], ['$', '^%2'], ['[', '^%3'], [']', '^%4']];
+            var res = key, replace = [[/\./g, '^%0'], [/#/g, '^%1'], [/\$/g, '^%2'], [/\[/g, '^%3'], [/\]/g, '^%4']];
             angular.forEach(replace, function (val) {
                 res = res.replace(val[0], val[1]);
             });

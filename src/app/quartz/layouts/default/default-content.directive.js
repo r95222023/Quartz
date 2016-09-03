@@ -6,7 +6,7 @@
         .directive('qtDefaultContent', qtDefaultContent);
 
     /* @ngInject */
-    function qtDefaultContent ($rootScope, $compile, $templateRequest) {
+    function qtDefaultContent ($transitions, $compile, $templateRequest) {
         // Usage:
         //
         // Creates:
@@ -20,7 +20,7 @@
 
         function link($scope, $element) {
             // scroll page to the top when content is loaded (stops pages keeping scroll position even when they have changed url)
-            $scope.$on('$stateChangeStart', scrollToTop);
+            $transitions.onBefore({ to: '**' }, scrollToTop);
 
             // when content view has loaded add footer if needed and send mdContentLoaded event
             $scope.$on('$viewContentLoaded', injectFooterUpdateContent);

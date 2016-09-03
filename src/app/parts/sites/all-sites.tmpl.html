@@ -1,6 +1,6 @@
 <div layout="column">
     <div layout="row" layout-xs="column" layout-wrap>
-        <md-table-container flex>
+        <md-table-container flex="100">
             <table md-table md-progress="vm.paginator.promise">
                 <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
                 <tr md-row>
@@ -38,9 +38,9 @@
                 </tbody>
             </table>
         </md-table-container>
-
-        <md-table-pagination flex="100" md-limit="vm.paginator.size" md-page="vm.paginator.page"
-                             ng-if="vm.paginator.size<vm.paginator.result.total"
+        <md-table-pagination flex="100" ng-show="vm.paginator.size<vm.paginator.result.total"
+                             md-limit="vm.paginator.size" md-page="vm.paginator.page"
+                             md-limit-options="[10, 25, 50, 100]"
                              md-total="{{vm.paginator.result.total}}"
                              md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
     </div>

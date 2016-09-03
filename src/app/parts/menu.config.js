@@ -131,30 +131,11 @@
         });
 
         qtMenuProvider.addMenuToGroup("siteSelected", {
-            name: 'MENU.DATANAME',
-            icon: 'fa fa-database',
-            type: 'dropdown',
+            name: 'MENU.FILES',
+            icon: 'fa fa-folder-open',
+            type: 'link',
             priority: 1.2,
-            children: [
-                {
-                    name: 'MENU.DATA.LISTS',
-                    state: 'quartz.admin-default.lists',
-                    params: {},
-                    type: 'link'
-                },
-                {
-                    name: 'MENU.DATA.FILES',
-                    state: 'quartz.admin-default-no-scroll.fileManager',
-                    params: {},
-                    type: 'link'
-                },
-                {
-                    name: 'MENU.DATA.I18N',
-                    state: 'quartz.admin-default.i18n',
-                    params: {},
-                    type: 'link'
-                }
-            ]
+            state: 'quartz.admin-default-no-scroll.fileManager'
         });
 
         qtMenuProvider.addMenuToGroup("siteSelected", {
@@ -180,37 +161,5 @@
             type: 'link',
             state: 'quartz.admin-default.siteusers'
         });
-
-        qtMenuProvider.addMenuToGroup("siteSelected",{
-            name: 'MENU.TEMP',
-            icon: 'fa fa-star',
-            type: 'dropdown',
-            priority: 1.2,
-            children: [{
-                name: 'MENU.ARTICLES.LIST',
-                state: 'quartz.admin-default.articleList',
-                params: {cate: 'all',subCate:'all',queryString:''},
-                type: 'link'
-            },{
-                name: 'MENU.PRODUCTS.LIST',
-                state: 'quartz.admin-default.productList',
-                params: {cate: 'all',subCate:'all',queryString:''},
-                type: 'link'
-            }, {
-                name: 'MENU.PRODUCTS.SHOPPINGCART',
-                state: 'quartz.admin-default.shoppingCart',
-                type: 'link'
-            }, {
-                name: 'MENU.YOURORDERS',
-                state: 'quartz.admin-default.yourOrders',
-                type: 'link'
-            },{
-                name: 'MENU.TEST',
-                state: 'quartz.admin-default.test',
-                type: 'link'
-            }]
-        });
-
-
     }
 })();

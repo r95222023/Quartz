@@ -5,8 +5,12 @@
         .module('app.plugins.articleproduct', [])
         .service('articleProduct', ArticleProduct);
     /* @ngInject */
-    function ArticleProduct($rootScope, lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
+    function ArticleProduct($transitions,$rootScope, lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
         var self = this;
+
+        $rootScope.$on('site:change', function(){
+            self.reset=true;
+        });
 
         function getParams(stateParams) {
             var _params = JSON.parse((stateParams || {}).params || $stateParams.params || '{"product":{}, "article":{}}');
@@ -52,12 +56,12 @@
             //
             temp[id] = temp[id] || {};
 
-            if (temp[id].load === 'loaded') {
+            if (temp[id].load === 'loaded'&&self.reset!==true) {
                 return temp[id].paginator;
             } else if (temp[id].load === 'loading') {
                 return;
             }
-
+            self.reset=false;
             temp[id].load = 'loading';
             ////
 
@@ -103,22 +107,32 @@
         function getCate(type, isCrumbs) {
             var _type = type || 'product',
                 cateRefPath = _type + 's/config/categories@selectedSite';
-            if (self.cate[_type].load === 'loaded') {
+            if (self.cate[_type].load === 'loaded'&&self.reset!==true) {
                 return isCrumbs ? self.cate[_type].crumbs : self.cate[_type].categories
             } else if (self.cate[_type].load === 'loading') {
                 return
             }
+            self.reset=false;
+
             self.cate[_type].load = 'loading';
             $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
                 self.cate[_type].categories = val || [];
                 self.cate[_type].load = 'loaded';
-                function refreshCrumbs(event, toState, toParams) {
-                    if (toParams.params) getCateCrumbs(_type, getParams(_type, toParams)[_type]);
-                }
 
-                refreshCrumbs(false, false, $stateParams);
-                $rootScope.$on('$stateChangeSuccess', refreshCrumbs);
+                refreshCrumbs(_type, $stateParams);
+
+                // $rootScope.$on('$stateChangeSuccess', refreshCrumbs);
             });
+
+        }
+
+        $transitions.onSuccess({ to: '**' }, function(trans){
+            refreshCrumbs('article', trans.params('to'));
+            refreshCrumbs('product', trans.params('to'));
+        });
+
+        function refreshCrumbs(type, toParams) {
+            if (toParams.params) getCateCrumbs(type, getParams(type, toParams)[type]);
         }
 
         function getCateCrumbs(type, apParams) {
@@ -231,7 +245,7 @@
                 vm.paginator.onReorder(sort);
             };
 
-            vm.actions = [['view', 'GENERAL.VIEW'], ['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
+            vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
             vm.action = function (action, id, event) {
                 switch (action) {
                     case 'view':
