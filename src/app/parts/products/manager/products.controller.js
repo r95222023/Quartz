@@ -6,9 +6,9 @@
         .controller('ProductManagerController', ProductManagerController);
 
     /* @ngInject */
-    function ProductManagerController(articleProduct, lzString, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia) {
+    function ProductManagerController(articleProduct, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia) {
         var vm = this;
-        
+
         vm.filters = [
             ['Product Id', 'itemId'],
             ['Name', 'itemName'],
@@ -22,7 +22,7 @@
         //initiate
         vm.paginator.onReorder($stateParams.orderBy || 'itemId');
 
-        
+
         // vm.paginator = $firebase.paginator('products/list@selectedSite', $stateParams);
         // //initiate
         // vm.paginator.onReorder($stateParams.orderBy || 'itemId');

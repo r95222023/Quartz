@@ -315,7 +315,7 @@
     }
 
     /* @ngInject */
-    function PaymentSettingController($firebase, $firebaseStorage, lzString, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
+    function PaymentSettingController($firebase, $firebaseStorage, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
         var vm = this;
 
         function getPaymentConfig(provider) {

@@ -6,7 +6,7 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($injector, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, lzString, snippets, $timeout) {
+    function SiteDesign($injector, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type, data) {
 
             var listRefUrl = type + 's/list@selectedSite',
@@ -364,7 +364,7 @@
                         $firebase.update(type + 's@selectedSite', ['list/' + id, 'detail/' + vm[typeName]], {
                             "name": vm[typeName],
                             "author": $firebase.params["$uid"] || null,
-                            "compressed@1": lzString.compress(data),
+                            "compressed@1": _core.encoding.compress(data),
                             "editTime@0": firebase.database.ServerValue.TIMESTAMP
                         });
 
@@ -417,7 +417,7 @@
                             break;
                         case 'setWidget':
                             if (!vm.widget[cid + index]) return;
-                            var widget = lzString.decompress(vm.widget[cid + index]);
+                            var widget = _core.encoding.decompress(vm.widget[cid + index]);
                             widget.cid = $scope.containers[cid][index].cid;
                             $scope.containers[cid][index] = widget;
                             break;

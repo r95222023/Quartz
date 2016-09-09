@@ -101,7 +101,7 @@
             return result;
         }
 
-        function calcLayout(layouts){
+        function buildLayout(layouts){
             var res='';
             angular.forEach(layouts, function (layout, breakpoint) {
                 var _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
@@ -154,7 +154,7 @@
                 res += 'id="' + item.id + '" '
             }
             if (item.layout) {
-                res+=calcLayout(item.layout);
+                res+=buildLayout(item.layout);
             }
 
 
@@ -223,7 +223,7 @@
     }
 
     /* @ngInject */
-    function CustomData($q, $firebase, $firebaseStorage, lzString) {
+    function CustomData($q, $firebase, $firebaseStorage) {
 
         function get(name) {
             var def = $q.defer();

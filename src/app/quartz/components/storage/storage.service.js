@@ -20,13 +20,13 @@
                 storage: app.database()
             }
         };
-        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage, $http) {
-            return new Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage, $http)
+        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, snippets, syncTime, $timeout, $usage, $http) {
+            return new Storage(storageFbApp, $q, $rootScope, $firebase, snippets, syncTime, $timeout, $usage, $http)
         }
     }
 
     /* @ngInject */
-    function Storage(storageFbApp, $q, $rootScope, $firebase, lzString, snippets, syncTime, $timeout, $usage, $http) {
+    function Storage(storageFbApp, $q, $rootScope, $firebase, snippets, syncTime, $timeout, $usage, $http) {
         var storage = storageFbApp.storage;
         var $firebaseStorage = {
             get: get,
@@ -154,7 +154,7 @@
 
                 if (localStorage && localStorage.getItem(cachePath)) {
                     var cached = localStorage.getItem(cachePath),
-                        cachedVal = lzString.decompress({compressed: cached});
+                        cachedVal = _core.encoding.decompress({compressed: cached});
                     if (updated < cachedVal.cachedTime) {
                         resolve(cachedVal.value);
                         console.log('from cache');
@@ -229,7 +229,7 @@
                     _value = {
                         path: _path,
                         updated: getTime()/*,value: value*/,
-                        compressed: lzString.compress({value: value})
+                        compressed: _core.encoding.compress({value: value})
                     },
                     _valStr = JSON.stringify(_value),
                     dataString;
@@ -293,13 +293,13 @@
 
         window._getFBS = function (data) {
             window._FBUsg.useBandwidth(data);
-            var _data = lzString.decompress(data),
+            var _data = _core.encoding.decompress(data),
                 id = getId(_data.path);
             $rootScope.$broadcast(id, _data.value);
             syncTime.onReady().then(function (getTime) {
                 if (localStorage) {
                     _data.cachedTime = getTime();
-                    localStorage.setItem(id, lzString.compress(_data));
+                    localStorage.setItem(id, _core.encoding.compress(_data));
                 }
             })
         };

@@ -5,7 +5,7 @@
         .module('app.plugins.articleproduct', [])
         .service('articleProduct', ArticleProduct);
     /* @ngInject */
-    function ArticleProduct($transitions,$rootScope, lzString, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
+    function ArticleProduct($transitions,$rootScope, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
         var self = this;
 
         $rootScope.$on('site:change', function(){
@@ -338,7 +338,7 @@
 
                 var listData = angular.extend({}, vm[type], {description: null, custom: null}),
                     detailData = {
-                        compressed: lzString.compress(vm[type]),
+                        compressed: _core.encoding.compress(vm[type]),
                         editTime: firebase.database.ServerValue.TIMESTAMP
                     };
                 $firebase.update(type + "s@selectedSite", ['list/' + id, 'detail/' + id], {

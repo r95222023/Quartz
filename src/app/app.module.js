@@ -60,6 +60,7 @@
                     // where to redirect users if they need to authenticate
                     loginRedirectState:'authentication.login'
                 },snap.val()));
+            var fbUtil=new _core.FirebaseUtil();
 
             angular.bootstrap(document, ['app']);
         });

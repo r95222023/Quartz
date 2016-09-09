@@ -1,5 +1,14 @@
-var _syncTime = (function () {
+(function () {
     'use strict';
+    window._core = window._core||{};
+    window._core.syncTime = syncTime();
+    if (typeof define === 'function' && define.amd) {
+        define(function () {
+            return syncTime();
+        });
+    } else if (typeof module !== 'undefined' && module != null) {
+        module.exports = syncTime();
+    }
 
     function syncTime() {
         var offset;
@@ -31,8 +40,6 @@ var _syncTime = (function () {
             r.send(null);
         })
     }
-
-    return syncTime();
 })();
 
 

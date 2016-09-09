@@ -20,6 +20,7 @@
         "angular-translate-storage-local": "~2.7.2",
         "angular-ui-router": "~1.0.0",
         "animate.css-scss": "https://github.com/geoffgraham/animate.scss.git#master",
+        "core.js":"~2.4.1",
         "countUp.js": "1.5.0",
         "font-awesome": "~4.3.0",
         "jquery": "~2.1.3",

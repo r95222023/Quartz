@@ -30,12 +30,12 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function ($stateParams, lzString, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
-            return new Firebase(dbFbApp, params, $stateParams, lzString, syncTime, config, $q, $timeout, $filter, $usage,$transitions)
+        this.$get = /* @ngInject */ function ($stateParams, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
+            return new Firebase(dbFbApp, params, $stateParams, syncTime, config, $q, $timeout, $filter, $usage,$transitions)
         }
     }
 
-    function Firebase(dbFirebase, params, $stateParams, lzString, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
+    function Firebase(dbFirebase, params, $stateParams, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -232,7 +232,7 @@
 
         function updateCacheable(refUrl, data) {
             return update(refUrl, {
-                compressed: lzString.compress(data),
+                compressed: _core.encoding.compress(data),
                 editTime: firebase.database.ServerValue.TIMESTAMP
             })
         }
@@ -314,7 +314,7 @@
                         var val = angular.isNumber(snap) ? snap : (snap.val() || {}),
                             editTime = _option.isValue === false ? val.editTime : val;
 
-                        var cachedVal = lzString.decompress({compressed: cached});
+                        var cachedVal = _core.encoding.decompress({compressed: cached});
 
                         if (editTime && editTime < cachedVal.cachedTime) {
                             def.resolve(cachedVal);
@@ -340,7 +340,7 @@
             function fetch() {
                 sourceRef.once(_option.sourceType || 'value', function (snap) {
                     $usage.useBandwidth(snap.val());
-                    var val = lzString.decompress(snap.val());
+                    var val = _core.encoding.decompress(snap.val());
                     if (!val) {
                         def.resolve(null);
                         return
@@ -349,7 +349,7 @@
                     syncTime.onReady().then(function (getTime) {
                         if (localStorage) {
                             val.cachedTime = getTime();
-                            localStorage.setItem(cachePath, lzString.compress(val));
+                            localStorage.setItem(cachePath, _core.encoding.compress(val));
                         }
                         def.resolve(val);
                     });
