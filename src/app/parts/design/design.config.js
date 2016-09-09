@@ -82,9 +82,7 @@
                     devMode: ''
                 },
                 resolve: {
-                    getSyncTime: ['syncTime', function (syncTime) {
-                        return syncTime.onReady();
-                    }],
+                    getSyncTime: _core.syncTime,
                     authData: ['$auth', function ($auth) {
                         return $auth.waitForAuth();
                     }],

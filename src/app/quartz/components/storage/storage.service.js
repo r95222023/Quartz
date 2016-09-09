@@ -20,13 +20,13 @@
                 storage: app.database()
             }
         };
-        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, snippets, syncTime, $timeout, $usage, $http) {
-            return new Storage(storageFbApp, $q, $rootScope, $firebase, snippets, syncTime, $timeout, $usage, $http)
+        this.$get = /* @ngInject */ function ($q, $rootScope, $firebase, snippets, $timeout, $usage, $http) {
+            return new Storage(storageFbApp, $q, $rootScope, $firebase, snippets, $timeout, $usage, $http)
         }
     }
 
     /* @ngInject */
-    function Storage(storageFbApp, $q, $rootScope, $firebase, snippets, syncTime, $timeout, $usage, $http) {
+    function Storage(storageFbApp, $q, $rootScope, $firebase, snippets, $timeout, $usage, $http) {
         var storage = storageFbApp.storage;
         var $firebaseStorage = {
             get: get,
@@ -223,7 +223,7 @@
                 id = 'FBS:' + _path,
                 _onState = angular.isFunction(onState) ? onState : angular.noop,
                 def = $q.defer();
-            syncTime.onReady().then(function (getTime) {
+            _core.syncTime().then(function (getTime) {
                 var storageRef = storage.ref(),
                     isCompress = true,
                     _value = {
@@ -296,7 +296,7 @@
             var _data = _core.encoding.decompress(data),
                 id = getId(_data.path);
             $rootScope.$broadcast(id, _data.value);
-            syncTime.onReady().then(function (getTime) {
+            _core.syncTime().then(function (getTime) {
                 if (localStorage) {
                     _data.cachedTime = getTime();
                     localStorage.setItem(id, _core.encoding.compress(_data));

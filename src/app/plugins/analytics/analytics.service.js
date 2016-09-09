@@ -7,7 +7,7 @@
 
     ////
     /* @ngInject */
-    function AnalysisService($filter, $q, $firebase, syncTime, snippets) {
+    function AnalysisService($filter, $q, $firebase, snippets) {
         var to2dig = snippets.to2dig;
 
         function getKey(time) {
@@ -159,7 +159,7 @@
 
         function getDataInDays(rootRefUrl, days, opt){
             var def = $q.defer();
-            syncTime.onReady().then(function(getTime){
+            _core.syncTime().then(function(getTime){
                 var nowTime=getTime();
                 getAnalysis(rootRefUrl, nowTime-days*24*60*60*1000, nowTime, opt).then(def.resolve);
             });
@@ -167,7 +167,7 @@
         }
 
         function record(refUrl, itemName, eventArr){
-            syncTime.onReady().then(function(getTime){
+            _core.syncTime().then(function(getTime){
                 var key = getKey(getTime()),
                     _itemName=itemName? '/'+itemName:'';
                 $firebase.ref(refUrl+'/'+ key +_itemName+'@selectedSite').transaction(function (val) {

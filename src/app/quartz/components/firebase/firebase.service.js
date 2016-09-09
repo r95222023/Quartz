@@ -30,12 +30,12 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function ($stateParams, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
-            return new Firebase(dbFbApp, params, $stateParams, syncTime, config, $q, $timeout, $filter, $usage,$transitions)
+        this.$get = /* @ngInject */ function ($stateParams, config, $q, $timeout, $filter, $usage,$transitions) {
+            return new Firebase(dbFbApp, params, $stateParams, config, $q, $timeout, $filter, $usage,$transitions)
         }
     }
 
-    function Firebase(dbFirebase, params, $stateParams, syncTime, config, $q, $timeout, $filter, $usage,$transitions) {
+    function Firebase(dbFirebase, params, $stateParams, config, $q, $timeout, $filter, $usage,$transitions) {
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -346,7 +346,7 @@
                         return
                     }
                     if (_option.pre) _option.pre(snap, val);
-                    syncTime.onReady().then(function (getTime) {
+                    _core.syncTime().then(function (getTime) {
                         if (localStorage) {
                             val.cachedTime = getTime();
                             localStorage.setItem(cachePath, _core.encoding.compress(val));

@@ -6,13 +6,13 @@
         .controller('TestPageController', TestPageController);
 
     /* @ngInject */
-    function TestPageController($firebase, snippets, syncTime, analysisService, qtNotificationsService, $state, $mdDialog, config) {
+    function TestPageController($firebase, snippets, analysisService, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this,
             to2dig = snippets.to2dig;
 
         vm.newOrder = function (daybefore) {
 
-            syncTime.onReady().then(function (getTime) {
+            _core.syncTime().then(function (getTime) {
                 var _date = new Date(getTime() - daybefore * 24 * 60 * 60 * 1000),
                     year = to2dig(_date.getFullYear() - 2000),
                     month = to2dig(_date.getMonth() + 1),
@@ -37,7 +37,7 @@
 
         vm.productSimulation = function (daybefore) {
 
-            syncTime.onReady().then(function (getTime) {
+            _core.syncTime().then(function (getTime) {
                 var _date = new Date(getTime() - daybefore * 24 * 60 * 60 * 1000),
                     year = to2dig(_date.getFullYear() - 2000),
                     month = to2dig(_date.getMonth() + 1),
@@ -79,7 +79,7 @@
 
         analysisService.getDataInDays('analysis','orders/analysis@selectedSite', 5).then(function (analysis) {
             console.log(analysis.getChartData());
-            
+
         });
 
         analysisService.getDataInDays('topN','products/analysis@selectedSite', 5).then(function (analysis) {

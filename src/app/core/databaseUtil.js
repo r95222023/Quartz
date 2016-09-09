@@ -64,7 +64,7 @@
                 return
             }
             if (_option.pre) _option.pre(snap, val);
-            _core.syncTime.then(function (getTime) {
+            _core.syncTime().then(function (getTime) {
                 if (localStorage) {
                     val.cachedTime = getTime();
                     localStorage.setItem(cachePath, _core.encoding.compress(val));

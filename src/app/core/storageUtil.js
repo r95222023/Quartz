@@ -117,7 +117,7 @@
 
         var element = document.getElementById(id);
         element.outerHTML = "";
-        _core.syncTime.then(function (getTime) {
+        _core.syncTime().then(function (getTime) {
             if (localStorage) {
                 _data.cachedTime = getTime();
                 localStorage.setItem(id, _core.encoding.compress(_data));

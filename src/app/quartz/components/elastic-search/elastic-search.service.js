@@ -18,12 +18,12 @@
         this.setCacheRefUrl = function (value) {
             defaultCacheRefUrl = value;
         };
-        this.$get = /* @ngInject */function (syncTime, $firebase, $firebaseStorage, $q, $timeout, snippets) {
-            return new ElasticSearch(syncTime, $firebase, $firebaseStorage, $q, $timeout, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
+        this.$get = /* @ngInject */function ($firebase, $firebaseStorage, $q, $timeout, snippets) {
+            return new ElasticSearch($firebase, $firebaseStorage, $q, $timeout, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl);
         }
     }
 
-    function ElasticSearch(syncTime, $firebase, $firebaseStorage, $q, $timeout, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
+    function ElasticSearch($firebase, $firebaseStorage, $q, $timeout, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
 
         this.query = function (index, type, option) {
             var def = $q.defer(),

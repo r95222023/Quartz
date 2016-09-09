@@ -22,20 +22,20 @@
                 controller: 'ProductListController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.shoppingCart', {
-                url: '/:siteName/shoppingcart',
-                params: {
-                    siteName: ''
-                },
-                templateUrl: 'app/parts/products/shopping-cart/shopping-cart.tmpl.html',
-                controller: 'ShoppingCartController',
-                controllerAs: 'vm',
-                resolve: {
-                    getServerTime: ['syncTime', function (syncTime) {
-                        return syncTime.onReady()
-                    }]
-                }
-            })
+            // .state('quartz.admin-default.shoppingCart', {
+            //     url: '/:siteName/shoppingcart',
+            //     params: {
+            //         siteName: ''
+            //     },
+            //     templateUrl: 'app/parts/products/shopping-cart/shopping-cart.tmpl.html',
+            //     controller: 'ShoppingCartController',
+            //     controllerAs: 'vm',
+            //     resolve: {
+            //         getSyncTime: function () {
+            //             return _core.syncTime();
+            //         }
+            //     }
+            // })
             .state('quartz.admin-default.allpay-checkout', {
                 url: '/:siteName/checkout',
                 params: {
@@ -58,9 +58,7 @@
                 controller: 'ProductManagerController',
                 controllerAs: 'vm',
                 resolve: {
-                    getServerTime: ['syncTime', function (syncTime) {
-                        return syncTime.onReady()
-                    }]
+                    getServerTime: _core.syncTime
                 }
             })
             .state('quartz.admin-default.categoryManager', {
@@ -76,9 +74,7 @@
                 controller: 'CateManagerController',
                 controllerAs: 'vm',
                 resolve: {
-                    getServerTime: ['syncTime', function (syncTime) {
-                        return syncTime.onReady()
-                    }]
+                    getServerTime: _core.syncTime
                 }
             })
             .state('quartz.admin-default.orderHistory', {

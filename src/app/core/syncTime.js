@@ -1,19 +1,17 @@
 (function () {
     'use strict';
-    window._core = window._core||{};
-    window._core.syncTime = syncTime();
+    window._core = window._core || {};
+    window._core.syncTime = syncTime;
     if (typeof define === 'function' && define.amd) {
         define(function () {
-            return syncTime();
+            return syncTime;
         });
     } else if (typeof module !== 'undefined' && module != null) {
-        module.exports = syncTime();
+        module.exports = syncTime;
     }
 
-    function syncTime() {
-        var offset;
-
-        return new Promise(function (resolve, reject) {
+    var offset,
+        promise = new Promise(function (resolve, reject) {
             var r = new XMLHttpRequest();
             var start = (new Date).getTime(),
                 systemtime;
@@ -38,7 +36,10 @@
                 });
             };
             r.send(null);
-        })
+        });
+
+    function syncTime() {
+        return promise
     }
 })();
 

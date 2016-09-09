@@ -6,7 +6,7 @@
                 return items.slice().reverse();
             }
         })
-        .filter('relativeTime', /*@ngInject*/ function ($translate, $timeout, syncTime) {
+        .filter('relativeTime', /*@ngInject*/ function ($translate, $timeout) {
             function calculateDelta(now, date) {
                 return Math.round(Math.abs(now - date) / 1000);
             }
@@ -85,7 +85,7 @@
                         isWaiting[input] = true;
                         var date = new Date(input);
 
-                        syncTime.onReady().then(function (getTime) {
+                        _core.syncTime().then(function (getTime) {
                             var res = relativeTime(date, (new Date(getTime()))),
                                 refresh = function (trans) {
                                     $timeout(function () {
