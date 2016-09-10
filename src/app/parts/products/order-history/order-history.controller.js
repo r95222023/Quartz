@@ -40,7 +40,7 @@
                 data['detail/'+orderId + '/status'] = status;
                 data['list/'+orderId + '/status'] = status;
             });
-            $firebase.ref('orders@selectedSite').update(data, function () {
+            $firebase.update(['orders?type=list','orders?type=detail'],{'status':status}).then(function(){
                 //
             });
 

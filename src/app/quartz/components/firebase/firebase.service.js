@@ -190,36 +190,11 @@
             return def.promise
         }
 
-        function update(refUrl, pathArr, data) {
-            var _data = {},
-                ref;
-            if (angular.isString(refUrl)) {
-                ref = queryRef(refUrl);
-            } else {
-                ref = refUrl;
-            }
-            if (data === undefined) {
-                return ref.update(pathArr);
-            }
-            angular.forEach(pathArr, function (path, pathIndex) {
-                _data[path] = {};
-                angular.forEach(data, function (subdata, key) {
-                    var whereDataGoes = key.split('@')[1] || "",
-                        subDataKey = key.split('@')[0];
-                    if (whereDataGoes === "" || whereDataGoes === "all" || whereDataGoes.indexOf(pathIndex) !== -1 || whereDataGoes.indexOf(path) !== -1) {
-                        if (subDataKey) {
-                            _data[path][subDataKey] = subdata;
-                        } else {
-                            _data[path] = subdata;
-                        }
-                    }
-                })
-            });
-            return ref.update(_data);
-        }
-
-        function _set(refUrl, value, onComplete, refUrlParams) {
-            _update(refUrl, value, onComplete, true, refUrlParams);
+        function update(paths, data, option) {
+            var siteName=$firebase.databases.selectedSite? $firebase.databases.selectedSite.siteName:'',
+                _option = Object.assign({siteName:siteName},option),
+                _paths = Array.isArray(paths)? paths:[paths];
+            return _core.fbUtil.database.update(_paths, data, _option);
         }
 
         function copy(srcPath, destPath, removeSrc, opt) {

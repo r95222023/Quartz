@@ -19,13 +19,13 @@
                 siteName: _newSiteName,
                 createdTime: firebase.database.ServerValue.TIMESTAMP
             }).then(function () {
-                $firebase.update('sites', ['detail/' + _newSiteName, 'list/' + _newSiteName], {
+                $firebase.update(['site?type=detail', 'site?type=list'], {
                     //"toDetail@0": "test",
                     //"toList@1": "test",
                     "author@1": uid,
                     "siteName@1": _newSiteName,
                     "createdTime": firebase.database.ServerValue.TIMESTAMP
-                });
+                },{siteName:_newSiteName});
                 indexService.add("record", "created", {siteName: _newSiteName}, _newSiteName);
             });
         }
@@ -64,12 +64,12 @@
         }
 
         function removeSite(siteName, uid) {
-            $firebase.ref('users/detail/' + uid + '/sites').orderByChild('siteName').equalTo(siteName).once('child_added', function (snap) {
+            $firebase.queryRef('my-sites?uid='+uid).orderByChild('siteName').equalTo(siteName).once('child_added', function (snap) {
                 snap.ref.set(null);
             });
-            $firebase.update('sites', ['detail/' + siteName, 'list/' + siteName], {
+            $firebase.update(['site?type=detail', 'site?type=list'], {
                 "@all": null
-            });
+            },{siteName:siteName});
             indexService.remove(false, false, siteName);
         }
 

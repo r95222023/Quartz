@@ -31,14 +31,14 @@
                     $state.go('pageEditor', {id: id, pageName: name});
                     break;
                 case 'setPrivate':
-                    $firebase.update(pageRefUrl, ['list/' + id + '/private', 'detail/' + id + '/private'], {
+                    $firebase.update(['page-property?type=list', 'page-property?type=detail'], {
                         "@all": true
-                    });
+                    }, {property:'private',id:id});
                     break;
                 case 'setPublic':
-                    $firebase.update(pageRefUrl, ['list/' + id + '/private', 'detail/' + id + '/private'], {
+                    $firebase.update(['page-property?type=list', 'page-property?type=detail'], {
                         "@all": null
-                    });
+                    }, {property:'private',id:id});
                     break;
                 case 'delete':
                     var confirm = $mdDialog.confirm()
@@ -48,9 +48,9 @@
                         .cancel('Cancel');
 
                     $mdDialog.show(confirm).then(function () {
-                        $firebase.update(pageRefUrl, ['list/' + id, 'detail/' + id], {
+                        $firebase.update(['page?type=list', 'page?type=detail'], {
                             "@all": null
-                        });
+                        },{id:id});
                         $firebaseStorage.remove('pages/detail/' + name + '@selectedSite');
                     });
 
@@ -89,9 +89,9 @@
                         .cancel('Cancel');
 
                     $mdDialog.show(confirm).then(function () {
-                        $firebase.update(widgetRefUrl, ['list/' + id, 'detail/' + id], {
+                        $firebase.update(['widget?type=list', 'widget?type=detail'], {
                             "@all": null
-                        });
+                        },{id:id});
                     });
 
                     break;

@@ -111,27 +111,28 @@
         });
     };
 
-    DatabaseUtil.prototype.update = function(paths, data, option){
+    DatabaseUtil.prototype.update = function(paths, data, params){
         var self=this,
             _data = {};
         paths.forEach(function (path, pathIndex){
-            var _path = self.fbUtil.parseRefUrl(path, option);
+            var _path = self.fbUtil.parseRefUrl(path, {params:params||{}});
             _data[_path]={};
-            data.forEach(function(subdata,key){
-                var subDataArr = key.split('@'),
+            for(var key in data){
+                var subData = data[key],
+                    subDataArr = key.split('@'),
                     whereDataGoes = subDataArr[1] || '',
                     subDataKey = subDataArr[0];
                 if (whereDataGoes === '' || whereDataGoes === 'all' || whereDataGoes.indexOf(pathIndex) !== -1 || whereDataGoes.indexOf(path) !== -1) { //Issue: when array's length is larger than 10, this will go wrong, since 10 have both 1 an 0;
                     if (subDataKey) {
-                        _data[_path][subDataKey] = subdata;
+                        _data[_path][subDataKey] = subData;
                     } else {
-                        _data[_path] = subdata;
+                        _data[_path] = subData;
                     }
                 }
-            });
+            }
         });
 
-        this.queryRef().update(_data);
+        return this.queryRef().update(_data);
     };
 
     function getResponse(refs) {

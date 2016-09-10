@@ -34,7 +34,7 @@
 
             Object.assign(siteListData, vm.siteListData||{});
             siteListData.title=vm.preload.title||null;
-            $firebase.update('sites/list/' + siteName, siteListData);
+            $firebase.update('site?type=list', siteListData);
         };
 
         //payment
@@ -58,7 +58,7 @@
         };
 
         vm.updateStripe = function () {
-            $firebase.update('config/payment/stripe@selectedSite', vm.stripe);
+            $firebase.update(['site-config-payment?provider=stripe&privacy='], vm.stripe);
             $firebaseStorage.update('config/payment/stripe/public@selectedSite', vm.stripe.public);
             $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
         };

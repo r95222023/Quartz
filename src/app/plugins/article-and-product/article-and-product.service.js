@@ -341,10 +341,10 @@
                         compressed: _core.encoding.compress(vm[type]),
                         editTime: firebase.database.ServerValue.TIMESTAMP
                     };
-                $firebase.update(type + "s@selectedSite", ['list/' + id, 'detail/' + id], {
+                $firebase.update([type+'?type=list', type+'?type=detail'], {
                     '@0': listData,
                     '@1': detailData
-                }).then(function () {
+                },{id:id}).then(function () {
                     indexService.update(type, id, vm[type]);
                     vm.hide(function () {
                         $mdToast.show(
@@ -371,9 +371,9 @@
                     .ok('Remove');
 
                 $mdDialog.show(confirm).then(function () {
-                    $firebase.update(type + "s@selectedSite", ['list/' + id, 'detail/' + id], {
+                    $firebase.update([type+'?type=list', type+'?type=detail'], {
                         "@all": null
-                    }).then(function () {
+                    }, {id:id}).then(function () {
                         indexService.remove(type + 's/detail/' + id + '@selectedSite', id);
                         $firebaseStorage.remove(type + 's/detail/' + id + '@selectedSite');
                         $mdToast.show(

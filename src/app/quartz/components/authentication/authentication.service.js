@@ -104,7 +104,7 @@
                             siteName = opt.regSite===true? $stateParams.siteName:opt.regSite;
                         data["users/detail/" + uid + "/sitesVisited/" + siteName+'/createdTime'] = firebase.database.ServerValue.TIMESTAMP;
                         data["sites/detail/" + siteName + "/users/list/" + uid] = basicData;
-                        $firebase.update('', data).then(function () {
+                        $firebase.queryRef().update(data).then(function () {
                             def.resolve();
                         })
                     } else {
@@ -113,7 +113,7 @@
                 };
 
             if (opt.registered !== true) {
-                $firebase.update('users', userPaths, basicData).then(regSite);
+                $firebase.update(['user?type=list','user?type=detail'], basicData,{id:uid}).then(regSite);
             } else {
                 regSite();
             }
@@ -174,9 +174,9 @@
 
         Auth.removeUserData = function (authData, extraCallBack) {
             var uid = authData.uid;
-            $firebase.update('users', ['list/' + uid, 'detail/' + uid], {
+            $firebase.update(['user?type=list', 'user/type=detail'], {
                 "@all": null
-            }).then(function () {
+            },{id:uid}).then(function () {
                 if (extraCallBack) extraCallBack(authData);
             });
         };

@@ -193,7 +193,7 @@
     }
 
     /* @ngInject */
-    function AllSitesController($firebase, authData, $state, config, FBURL, qtNotificationsService, $mdDialog, indexService) {
+    function AllSitesController($firebase, authData, $state, sitesService, FBURL, qtNotificationsService, $mdDialog, indexService) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
@@ -268,12 +268,14 @@
                 .ok('Confirm')
                 .cancel('Cancel');
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('users/detail/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
-                    snap.ref.set(null);
-                });
-                $firebase.update('sites', ['detail/' + site.siteName, 'list/' + site.siteName], {
-                    "@all": null
-                });
+                sitesService.removeSite(site.siteName, site.author);
+
+                // $firebase.ref('users/detail/' + site.author + '/sites').orderByChild('siteName').equalTo(site.siteName).once('child_added', function (snap) {
+                //     snap.ref.set(null);
+                // });
+                // $firebase.update(['site?type=list', 'site?type=detail'], {
+                //     "@all": null
+                // },{siteName:site.siteName});
             });
 
         };
@@ -309,7 +311,7 @@
 
 
             listData['thumbnail/'] = vm.thumbnail||null;
-            $firebase.update('sites/list/' + siteName, listData);
+            $firebase.update('site?type=list', listData);
         };
     }
 })();

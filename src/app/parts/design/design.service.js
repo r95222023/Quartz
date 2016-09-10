@@ -360,7 +360,7 @@
                         }
                         if(vm.canvas) data.canvas=vm.canvas;
                         if(angular.isArray(vm.sources)) data.sources = vm.sources;
-                        $firebase.update(type + 's@selectedSite', ['list/' + id, 'detail/' + vm[typeName]], {
+                        $firebase.update([type+'?type=list&id=' + id, type+'?type=detail&id=' + vm[typeName]], {
                             "name": vm[typeName],
                             "author": $firebase.params["$uid"] || null,
                             "compressed@1": _core.encoding.compress(data),

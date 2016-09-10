@@ -17,7 +17,7 @@
         vm.menuWidth = 4;
 
         vm.getProductsByTag = function (tagName, limit) {
-            $firebase.ref('products/list@selectedSite')
+            $firebase.queryRef('products?type=list')
                 .orderByChild('tags/' + tagName).equalTo(1).limitToFirst(limit || 5)
                 .once('value', function (snap) {
                     vm[tagName] = snap.val();
