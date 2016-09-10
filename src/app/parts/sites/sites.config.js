@@ -60,7 +60,7 @@
                 params: {
                     siteName: ''
                 },
-                templateUrl: 'app/parts/sites/configure.tmpl.html',
+                templateUrl: 'app/parts/sites/settings/basic.tmpl.html',
                 // set the controller to load for this page
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
@@ -98,7 +98,7 @@
                 params: {
                     siteName: ''
                 },
-                templateUrl: 'app/parts/sites/payment.tmpl.html',
+                templateUrl: 'app/parts/sites/settings/payment.tmpl.html',
                 // set the controller to load for this page
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'

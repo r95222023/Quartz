@@ -6,7 +6,6 @@
         .controller('MySitesController', MySitesController)
         .controller('AllSitesController', AllSitesController)
         .controller('SiteConfigureController', SiteConfigureController)
-        .controller('PaymentSettingController', PaymentSettingController)
         .controller('TemplateCtrl', TemplateCtrl);
 
     /* @ngInject */
@@ -313,35 +312,4 @@
             $firebase.update('sites/list/' + siteName, listData);
         };
     }
-
-    /* @ngInject */
-    function PaymentSettingController($firebase, $firebaseStorage, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
-        var vm = this;
-
-        function getPaymentConfig(provider) {
-            angular.forEach(['public', 'private'], function (pubOrPri) {
-                $firebaseStorage.getWithCache('config/payment/' + provider + '/' + pubOrPri + '@selectedSite').then(function (val) {
-                    vm[provider] = vm[provider] || {};
-                    vm[provider][pubOrPri] = val || {};
-                });
-            });
-        }
-
-        getPaymentConfig('allpay');
-        getPaymentConfig('stripe');
-
-
-        vm.updateAllpay = function () {
-            // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
-            $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
-            $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
-        };
-
-        vm.updateStripe = function () {
-            // $firebase.update('config/payment/stripe@selectedSite', vm.stripe);
-            $firebaseStorage.update('config/payment/stripe/public@selectedSite', vm.stripe.public);
-            $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
-        }
-    }
-
 })();

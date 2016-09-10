@@ -29,13 +29,6 @@
             })
             .state('pageEditor', {
                 resolve: {
-                    customWidgets: ['$q', '$firebase', function ($q, $firebase) {
-                        var def = $q.defer();
-                        $firebase.ref('widgets/detail@selectedSite').once('value', function (snap) {
-                            def.resolve(snap.val())
-                        });
-                        return def.promise;
-                    }],
                     pageData: ['$firebaseStorage', '$stateParams', function ($firebaseStorage, $stateParams) {
                         return $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite');
                     }]
@@ -72,7 +65,7 @@
                 params: {
                     siteName: '',
                     id: '',
-                    pageName: '',
+                    pageName: 'index',
                     params: '',
                     params2: '',
                     cate: '',

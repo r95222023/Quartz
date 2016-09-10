@@ -737,7 +737,7 @@
 
         for (var i = 0; i < keys.length; i++) {
             var key = keys[i];
-            if (typeof obj[key] === 'object') {
+            if (typeof obj[key] === 'object'&&obj[key]!==null) {
                 sortedObj[key] = sortObjectByPropery(obj[key]);
             } else {
                 sortedObj[key] = obj[key];

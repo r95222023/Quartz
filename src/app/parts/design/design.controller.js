@@ -110,7 +110,7 @@
     }
 
     /* @ngInject */
-    function PageEditorController(pageData, $mdDialog, customService, customWidgets, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
+    function PageEditorController(pageData, $mdDialog, customService, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
         var vm = this, frame,frameData = angular.copy(pageData);
         window.initPreviewFrame = function () {
             if(vm.fullPagePreview){
@@ -187,7 +187,6 @@
 
         var widgetSource = customService.items,
             containerSource = customService.containers;
-        vm.customWidgets = customWidgets;
 
         var dragula = new Dragula(containerSource, containerSource, widgetSource, {
             scope: $scope,

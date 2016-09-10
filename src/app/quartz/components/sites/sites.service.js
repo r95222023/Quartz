@@ -7,7 +7,7 @@
         .run(run);
 
     /* @ngInject */
-    function SitesService($firebase, $firebaseStorage, snippets, $q, indexService) {
+    function SitesService($rootScope, $firebase, $firebaseStorage, snippets, $q, indexService) {
         function rectifySiteName(siteName) {
             return siteName.trim().replace(".", "_")
         }
@@ -73,6 +73,14 @@
             indexService.remove(false, false, siteName);
         }
 
+        var title='TBD';
+        $rootScope.dynamicTitle=function(){
+            return title;
+        };
+        this.setTitle = function(newTitle){
+            title = newTitle
+        };
+
         this.siteName = 'default';
         this.addSite=addSite;
         this.moveSite=moveSite;
@@ -99,6 +107,7 @@
 
                 console.log("Initializing " + siteName);
                 $rootScope.$broadcast('site:change', siteName);
+                sitesService.setTitle(siteName);
                 $firebase.databases.selectedSite = {
                     siteName: siteName,
                     url: FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
@@ -130,13 +139,20 @@
         function getPreload(def) {
             $firebaseStorage.getWithCache('config/preload@selectedSite').then(function (res) {
                 var _res = res || {};
-                $rootScope.logo = _res.logo;
-                $rootScope.brand = _res.brand;
                 $lazyLoad.loadSite(_res).then(function () {
-
-                    $rootScope.logo = _res.logo;
-                    $rootScope.brand = _res.brand;
                     sitesService.config = _res;
+                    if(_res.title) sitesService.setTitle(_res.title);
+                    if(_res.favicon) {
+                        var src = _res.favicon;
+                        if(_res.favicon.search('://')!==-1){
+                            _core.siteUtil.changeFavicon(src);
+                        } else {
+                            $firebaseStorage.ref('files/'+src+'@selectedSite',{isJs:false}).getDownloadURL().then(function(url){
+                                _core.siteUtil.changeFavicon(url);
+                            })
+                        }
+                    }
+
                     delete sitesService.preLoading;
 
                     $rootScope.sitesService = sitesService;

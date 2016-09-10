@@ -33,7 +33,6 @@
                 cacheRefUrl = option.cache === true ? defaultCacheRefUrl + '/' + index + type : option.cache,
                 storageRefPath = cacheRefUrl + '/' + cacheId,
                 responseUrl = option.responseUrl || defaultResponseRefUrl;
-
             if (angular.isString(option.cache) || option.cache === true) {
                 var searchCacheRef = $firebase.ref(cacheRefUrl).child(cacheId);
 

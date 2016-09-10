@@ -125,10 +125,10 @@
                 "use_dis_max": true
             };
         }
-        return new Paginating(this, index, type, this.buildQuery(mustArr,mustNotArr, query));
+        return new Pagination(this, index, type, this.buildQuery(mustArr,mustNotArr, query));
     };
 
-    function Paginating(esClient, index, type, query) {
+    function Pagination(esClient, index, type, query) {
         query.size = query.size || 20;
         query.from = 0;
         this.esClient = esClient;
@@ -138,7 +138,7 @@
         this.cache = {};
     }
 
-    Paginating.prototype.get = function (page, limit, orderBy) {
+    Pagination.prototype.get = function (page, limit, orderBy) {
         var self = this,
             _limit = limit || this.query.size,
             id = 'p' + page + 'l' + _limit + 'o' + (orderBy || '');
@@ -160,7 +160,7 @@
         return this.cache[id];
     };
 
-    Paginating.prototype.onReorder = function (orderBy) {
+    Pagination.prototype.onReorder = function (orderBy) {
         this.query.body.sort = getQuerySort(orderBy);
         this.get(1, this.query.size, orderBy);
     };

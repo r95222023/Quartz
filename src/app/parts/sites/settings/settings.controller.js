@@ -9,10 +9,10 @@
     function SiteSettingCtrl(sitesService, $firebase, $firebaseStorage, $mdToast, $stateParams, snippets) {
         //basic
         var vm = this,
+            siteName = $stateParams.siteName,
             preloadPath = 'config/preload@selectedSite',
             siteListRef = $firebase.ref('sites/list'),
-            pageListRef = $firebase.ref('pages/list@selectedSite'),
-            siteName = $stateParams.siteName;
+            pageListRef = $firebase.ref('pages/list@selectedSite');
         console.log(siteName);
         $firebaseStorage.getWithCache(preloadPath).then(function (preload) {
             vm.preload = preload || {};
@@ -20,24 +20,21 @@
         });
 
         siteListRef.child(siteName).once('value', function (snap) {
-            var val = snap.val();
-            vm.thumbnail = val.thumbnail;
-            vm.description = val.description;
-            vm.type = val.type;
+            vm.siteListData = snap.val();
         });
 
-        pageListRef.once('value', function (snap) {
-            vm.pages = snap.val();
-        });
-        vm.updateSiteConfig = function () {
-            var listData = {};
+        // pageListRef.once('value', function (snap) {
+        //     vm.pages = snap.val();
+        // });
+        vm.updateBasicInfo = function () {
+            var siteListData = {};
 
             // $firebase.updateCacheable(preloadPath, vm.preload);
             $firebaseStorage.update(preloadPath, vm.preload);
 
-
-            listData['thumbnail/'] = vm.thumbnail || null;
-            $firebase.update('sites/list/' + siteName, listData);
+            Object.assign(siteListData, vm.siteListData||{});
+            siteListData.title=vm.preload.title||null;
+            $firebase.update('sites/list/' + siteName, siteListData);
         };
 
         //payment

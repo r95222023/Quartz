@@ -30,12 +30,12 @@
             params = value;
         };
 
-        this.$get = /* @ngInject */ function ($stateParams, config, $q, $timeout, $filter, $usage,$transitions) {
-            return new Firebase(dbFbApp, params, $stateParams, config, $q, $timeout, $filter, $usage,$transitions)
+        this.$get = /* @ngInject */ function ($stateParams, config, $q, $timeout, $filter, $usage, $transitions) {
+            return new Firebase(dbFbApp, params, $stateParams, config, $q, $timeout, $filter, $usage, $transitions)
         }
     }
 
-    function Firebase(dbFirebase, params, $stateParams, config, $q, $timeout, $filter, $usage,$transitions) {
+    function Firebase(dbFirebase, params, $stateParams, config, $q, $timeout, $filter, $usage, $transitions) {
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -100,6 +100,18 @@
 
         function getUrl(refUrl, params) {
             return replaceParamsInString(refUrl, angular.extend({}, firebase.params, params));
+        }
+
+        function _queryRef(path, option) {
+            var params = {},
+                _option = option || {};
+            if ($firebase.databases.selectedSite) params.siteName = $firebase.databases.selectedSite.siteName;
+            if (_option.params) {
+                Object.assign(_option.params, params);
+            } else {
+                Object.assign(_option, params);
+            }
+            return _core.fbUtil.database.queryRef(path, _option);
         }
 
         function queryRef(refUrl, options) {
@@ -210,17 +222,17 @@
             _update(refUrl, value, onComplete, true, refUrlParams);
         }
 
-        function copy (srcPath, destPath,removeSrc, opt){
-            var def=$q.defer(),
-                _opt=opt||{},
+        function copy(srcPath, destPath, removeSrc, opt) {
+            var def = $q.defer(),
+                _opt = opt || {},
                 srcRef = queryRef(srcPath, _opt.src);
-            srcRef.once('value').then(function(snap){
-                var resolve=function(){
+            srcRef.once('value').then(function (snap) {
+                var resolve = function () {
                     def.resolve(snap.val())
                 };
-                queryRef(destPath, _opt.dest)[_opt.set===true? 'set':'update'](snap.val())
-                    .then(function(){
-                        if(removeSrc){
+                queryRef(destPath, _opt.dest)[_opt.set === true ? 'set' : 'update'](snap.val())
+                    .then(function () {
+                        if (removeSrc) {
                             srcRef.set(null).then(resolve)
                         } else {
                             resolve();
@@ -445,7 +457,7 @@
             this.maxCachedPage = 0;
 
             var self = this,
-                dereg = $transitions.onBefore({to:'**'}, function(trans){
+                dereg = $transitions.onBefore({to: '**'}, function (trans) {
                     if (angular.isFunction(self.listenerCallback)) {
                         self.ref.off('value', self.listenerCallback);
                     }
@@ -591,10 +603,11 @@
             update: update,
             updateCacheable: updateCacheable,
             batchUpdate: batchUpdate,
-            copy:copy,
+            copy: copy,
             params: params,
             databases: {},
             storages: {},
+            queryRef:_queryRef,
             ref: queryRef,
             paginator: paginator,
             request: request,

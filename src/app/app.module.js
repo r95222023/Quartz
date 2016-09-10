@@ -55,12 +55,12 @@
                     shipping: 0,
                     taxRate: 0,
                     serverFb: 'quartz', /*https://quartz.firebaseio.com*/
-                    home:'quartz.admin-default.home',
-                    defaultUrl:'/home',
+                    home:'quartz.admin-default.mysites',
+                    defaultUrl:'/admin/mysites',
                     // where to redirect users if they need to authenticate
                     loginRedirectState:'authentication.login'
                 },snap.val()));
-            var fbUtil=new _core.FirebaseUtil();
+            _core.fbUtil=new _core.FirebaseUtil();
 
             angular.bootstrap(document, ['app']);
         });
