@@ -9,8 +9,7 @@
     function SiteDesign($injector, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type, data) {
 
-            var listRefUrl = type + 's/list@selectedSite',
-                typeName = type + 'Name',
+            var typeName = type + 'Name',
                 typeRef = type + 'Ref';
 
             if ($stateParams[type + 'Name']) {
@@ -25,9 +24,9 @@
                 },0);
 
 
-                vm[typeRef] = $firebase.ref(listRefUrl).child($stateParams.id);
+                vm[typeRef] = $firebase.queryRef('pages?type=list').child($stateParams.id);
             } else {
-                vm[typeRef] = $firebase.ref(listRefUrl).push();
+                vm[typeRef] = $firebase.queryRef('pages?type=list').push();
             }
 
             vm.originalName = $state.params[typeName] || '';
@@ -377,7 +376,6 @@
                             );
                         });
                     };
-
                 if (vm.originalName && vm.originalName !== vm[typeName]) {
                     vm.pageRef.parent.orderByChild('name').equalTo(vm.pageName).limitToFirst(1).once('value', function (snap) {
                         snap.forEach(function (child) {

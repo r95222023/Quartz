@@ -14,7 +14,7 @@
         vm.actions = [['applyTemplate', 'SITES.APPLYTEMPLATE'], ['info', 'GENERAL.INFO']];
         if ($stateParams.superAdmin) vm.actions = vm.actions.concat([['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']]);
 
-        $firebase.ref('templates/list').on('value', function (snap) {
+        $firebase.queryRef('templates?type=list&test=test').on('value', function (snap) {
             $timeout(function () {
                 vm.templatesArray = snap.val();
             }, 0);

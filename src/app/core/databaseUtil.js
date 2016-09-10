@@ -16,7 +16,7 @@
         } else if (refUrl.search('://') !== -1) {
             ref = database.refFromURL(this.fbUtil.parseRefUrl(refUrl));
         } else {
-            ref = database.ref(this.fbUtil.parseRefUrl(refUrl, opt.params || {}));
+            ref = database.ref(this.fbUtil.parseRefUrl(refUrl, opt));
         }
         if (opt.orderBy) {
             var orderBy = 'orderBy' + opt.orderBy.split(':')[0];
@@ -109,6 +109,29 @@
                     reject(err);
                 });
         });
+    };
+
+    DatabaseUtil.prototype.update = function(paths, data, option){
+        var self=this,
+            _data = {};
+        paths.forEach(function (path, pathIndex){
+            var _path = self.fbUtil.parseRefUrl(path, option);
+            _data[_path]={};
+            data.forEach(function(subdata,key){
+                var subDataArr = key.split('@'),
+                    whereDataGoes = subDataArr[1] || '',
+                    subDataKey = subDataArr[0];
+                if (whereDataGoes === '' || whereDataGoes === 'all' || whereDataGoes.indexOf(pathIndex) !== -1 || whereDataGoes.indexOf(path) !== -1) { //Issue: when array's length is larger than 10, this will go wrong, since 10 have both 1 an 0;
+                    if (subDataKey) {
+                        _data[_path][subDataKey] = subdata;
+                    } else {
+                        _data[_path] = subdata;
+                    }
+                }
+            });
+        });
+
+        this.queryRef().update(_data);
     };
 
     function getResponse(refs) {

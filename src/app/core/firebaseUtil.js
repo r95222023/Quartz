@@ -16,13 +16,16 @@
         paths = {
             'servers': 'servers',
             'queue': 'queue',
+            'queue-tasks': 'queue/tasks',
             'query-request': 'query/request',
             'query-response': 'query/response',
             'query-specs': 'query/specs',
             'query-cache': 'query/cache',
             'sites': 'sites/:type',
+            'templates':'templates/:type',
             'site': site,
-            'users-site': site + '/users/:type/:userId/',
+            'users-site': site + '/users/:type/:userId',
+            'pages':site+'/pages/:type/:id',
             'product': site + '/products/:type/:productId',
             'article': site + '/articles/:type/:articleId',
             'order-payment': site + '/orders/:type/:orderId/payment',
@@ -53,15 +56,23 @@
         this.auth = firebase.auth(this.app);
     }
 
-    FirebaseUtil.prototype.parseRefUrl = function (refUrl, params) {
-        var res = refUrl;
-        if (this.paths[refUrl]) {
-            res = paths[refUrl];
-            if (typeof params === 'object') {
-                var _params = params.params || params;
-                for (var key in _params) {
-                    res = res.replace(':' + key, _params[key + '']);
-                }
+    FirebaseUtil.prototype.parseRefUrl = function (refUrl, option) {
+        var res = refUrl,
+            opt= typeof option==='object'? option.params ||option:{},
+            params = Object.assign({}, opt),
+            refUrlAndParams=refUrl.split('?'),
+            stringParams = (refUrlAndParams[1]||'').split('&');
+        if(stringParams[0]!==''){
+            stringParams.forEach(function(val){
+                var hash = val.split('=');
+                params[hash[0]]=hash[1];
+            })
+        }
+        if (this.paths[refUrlAndParams[0]]) {
+            res = this.paths[refUrlAndParams[0]];
+
+            for (var key in params) {
+                res = res.replace(':' + key, params[key + '']);
             }
         }
         return res

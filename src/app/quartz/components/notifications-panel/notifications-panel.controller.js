@@ -6,7 +6,7 @@
         .controller('NotificationsPanelController', NotificationsPanelController);
 
     /* @ngInject */
-    function NotificationsPanelController($scope, qtSettings, qtNotificationsService, $firebase, $http, $mdSidenav, $state, API_CONFIG) {
+    function NotificationsPanelController($scope, qtSettings, qtNotificationsService, $firebase, $http, $mdSidenav, $state) {
         var vm = this;
         // sets the current active tab
         vm.close = close;
@@ -14,22 +14,22 @@
         vm.currentTab = 0;
         vm.notificationGroups = {
             "Twitter": [{
-                title: 'Mention from oxygenna',
+                title: 'Mention from quartz',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
             }, {
-                title: 'Oxygenna',
+                title: 'quartz',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
             }, {
-                title: 'Oxygenna',
+                title: 'quartz',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
             }, {
-                title: 'Followed by Oxygenna',
+                title: 'Followed by quartz',
                 icon: 'fa fa-twitter',
                 iconColor: '#55acee',
                 date: moment().startOf('hour')
@@ -130,15 +130,6 @@
         $scope.$watch(qtNotificationsService.getNotification, function () {
             vm.notificationGroups = qtNotificationsService.getNotification();
         });
-
-        // fetch some dummy emails from the API
-        //$http({
-        //    method: 'GET',
-        //    url: API_CONFIG.url + 'email/inbox'
-        //}).success(function(data) {
-        //    vm.emails = data.slice(1,20);
-        //});
-
 
         function openMail() {
             $state.go('private.admin.toolbar.inbox');
