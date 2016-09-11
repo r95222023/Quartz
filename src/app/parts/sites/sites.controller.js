@@ -8,15 +8,16 @@
         .controller('TemplateCtrl', TemplateCtrl);
 
     /* @ngInject */
-    function TemplateCtrl($stateParams, $firebase,$mdDialog, indexService,sitesService) {
+    function TemplateCtrl($stateParams, $firebase, $mdDialog, indexService, sitesService) {
         var vm = this;
         vm.actions = [['applyTemplate', 'SITES.APPLYTEMPLATE'], ['info', 'GENERAL.INFO']];
         if ($stateParams.superAdmin) vm.actions = vm.actions.concat([['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']]);
 
 
+        //TODO: 改成使用elasticsearch版本
         vm.pagination = $firebase.pagination('templates?type=list');
         //initiate
-        vm.pagination.get(1,10,'siteName');
+        vm.pagination.get(1, 10, 'siteName');
 
 
         vm.onPaginate = function (page, size) { //to prevent this being overwritten
@@ -64,8 +65,8 @@
             } else {
                 query.body.query.query_string = query_string;
             }
-            vm.paginator = $elasticSearch.paginator('main', 'templates', query);
-            vm.paginator.onReorder('siteName');
+            vm.paginator = $elasticSearch.pagination('main', 'templates', query);
+            vm.paginator.get(1, 10, 'siteName');
         };
 
         vm.deleteTemplate = function (site) {
@@ -77,7 +78,7 @@
                     .cancel('Cancel'),
                 siteName = site.siteName;
             $mdDialog.show(confirm).then(function () {
-                $firebase.update(['template?type=list','template?type=detail'], {'@all':null}, {id:siteName});
+                $firebase.update(['template?type=list', 'template?type=detail'], {'@all': null}, {id: siteName});
                 indexService.remove('template', siteName, 'main')
             });
         };
@@ -89,11 +90,11 @@
         // };
         //
         vm.applyTemplate = function (templateName, siteName) {
-            var _siteName = siteName||sitesService.siteName,
+            var _siteName = siteName || sitesService.siteName,
                 confirm = $mdDialog.confirm()
-                    .title('Apply '+templateName+' to '+_siteName+'?')
-                    .textContent('All content in '+_siteName+' will be overwritten by the template?')
-                    .ariaLabel('Would you like to apply this '+templateName+' to '+_siteName+'?')
+                    .title('Apply ' + templateName + ' to ' + _siteName + '?')
+                    .textContent('All content in ' + _siteName + ' will be overwritten by the template?')
+                    .ariaLabel('Would you like to apply this ' + templateName + ' to ' + _siteName + '?')
                     .ok('Confirm')
                     .cancel('Cancel');
             $mdDialog.show(confirm).then(function () {
@@ -105,7 +106,7 @@
             });
         };
 
-        vm.closeDialog = function(){
+        vm.closeDialog = function () {
             $mdDialog.cancel();
         };
 
@@ -130,26 +131,26 @@
         vm.newSiteName = '';
 
 
-        $firebase.queryRef('my-sites?uid='+authData.uid).on('value', function (snap) {
+        $firebase.queryRef('my-sites?uid=' + authData.uid).on('value', function (snap) {
             $timeout(function () {
                 vm.sitesArray = snap.val();
             }, 0);
         });
 
-        vm.showTemplate=function ($event) {
+        vm.showTemplate = function ($event) {
             var parentEl = angular.element(document.body);
             $mdDialog.show({
                 parent: parentEl,
                 // contentElement: '#template-list',
-                templateUrl:'app/parts/sites/template-dialog.html',
+                templateUrl: 'app/parts/sites/template-dialog.html',
                 targetEvent: $event,
-                fullscreen:true,
-                locals:{
-                    site:vm.selectedSite
+                fullscreen: true,
+                locals: {
+                    site: vm.selectedSite
                 },
-                controller:'TemplateCtrl',
-                clickOutsideToClose:true,
-                controllerAs:'vm'
+                controller: 'TemplateCtrl',
+                clickOutsideToClose: true,
+                controllerAs: 'vm'
             });
         };
 
@@ -159,9 +160,9 @@
                     sitesService.addSite(vm.newSiteName, authData.uid);
                 } else {
                     alert('This name has been used!');
-                    $timeout(function(){
+                    $timeout(function () {
                         vm.newSiteName = "";
-                    },0);
+                    }, 0);
                 }
             });
         };

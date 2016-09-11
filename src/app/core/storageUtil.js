@@ -18,7 +18,7 @@
     StorageUtil.prototype = {
         getWithCache: getWithCache,
         update: update,
-        ref:ref
+        ref: ref
     };
 
     function getRandomDownloadUrl(url) {
@@ -30,8 +30,8 @@
     }
 
     function ref(path, opt) {
-        var _opt=opt||{};
-        return firebase.storage(this.app).ref(this.fbUtil.parseRefUrl(path, _opt)+ (_opt.isJs === false ? '' : '.js'));
+        var _opt = opt || {};
+        return firebase.storage(this.app).ref(this.fbUtil.parseRefUrl(path, _opt, true));
     }
 
     function getId(path) {
@@ -41,7 +41,7 @@
     function update(targetRef, value, onState, option) {
         var self = this;
         return new Promise(function (resolve, reject) {
-            var _targetRef = (typeof targetRef === 'string') ? firebase.storage(self.app).ref(self.fbUtil.parseRefUrl(targetRef, option)) : targetRef,
+            var _targetRef = (typeof targetRef === 'string') ? firebase.storage(self.app).ref(self.fbUtil.parseRefUrl(targetRef, option, true)) : targetRef,
                 _path = _targetRef.fullPath,
                 id = getId(_path),
                 _onState = (typeof onState === 'function') ? onState : function () {
@@ -77,9 +77,8 @@
     _core._storageResolves = {};
 
     function getWithCache(srcRef, option) {
-        var _srcRef = (typeof srcRef === 'string') ? firebase.storage(this.app).ref(this.fbUtil.parseRefUrl(srcRef, option) + '.js') : srcRef,
+        var _srcRef = (typeof srcRef === 'string') ? firebase.storage(this.app).ref(this.fbUtil.parseRefUrl(srcRef, option, true)) : srcRef,
             id = getId(_srcRef.fullPath);
-        console.log(_srcRef.toString());
         if (storagePromises[id] && !storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
         storagePromises[id] = new Promise(function (resolve, reject) {
             _core._storageResolves[id] = resolve;

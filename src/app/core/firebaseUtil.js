@@ -81,7 +81,7 @@
         this.auth = firebase.auth(this.app);
     }
 
-    FirebaseUtil.prototype.parseRefUrl = function (refUrl, option) {
+    FirebaseUtil.prototype.parseRefUrl = function (refUrl, option, isFile) {
         var res = refUrl,
             opt= typeof option==='object'? option.params ||option:{},
             params = Object.assign({}, opt),
@@ -100,6 +100,9 @@
                 res = res.replace(':' + key, params[key + '']);
             }
         }
+        var fileExtension = res.split('.').length ===1;
+
+        res=isFile&&fileExtension? (res+'.js'):res;
         return res
     };
 

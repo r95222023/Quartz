@@ -5,11 +5,11 @@
         .module('app.plugins.articleproduct', [])
         .service('articleProduct', ArticleProduct);
     /* @ngInject */
-    function ArticleProduct($transitions,$rootScope, $mdToast, $mdDialog, $elasticSearch, $firebase, $firebaseStorage, indexService, snippets, $stateParams, $state, $mdMedia, config) {
+    function ArticleProduct($transitions, $rootScope, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, $timeout, $stateParams, $state, $mdMedia) {
         var self = this;
 
-        $rootScope.$on('site:change', function(){
-            self.reset=true;
+        $rootScope.$on('site:change', function () {
+            self.reset = true;
         });
 
         function getParams(stateParams) {
@@ -17,77 +17,112 @@
             return {product: _params.product || {}, article: _params.article || {}};
         }
 
-        function getQueryData(mustArr, mustNotArr, query) {
-            var queryData = {
-                cache: true,
-                reuse: 200,
-                body: {
-                    query: {
-                        "filtered": {
-                            "filter": {
-                                "bool": {}
-                            }
-                        }
-                    }
-                }
-            };
+        // function getQueryData(mustArr, mustNotArr, query) {
+        //     var queryData = {
+        //         cache: true,
+        //         reuse: 200,
+        //         body: {
+        //             query: {
+        //                 "filtered": {
+        //                     "filter": {
+        //                         "bool": {}
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     };
+        //
+        //     if (mustArr) queryData.body.query.filtered.filter.bool.must = mustArr;
+        //     if (mustNotArr) queryData.body.query.filtered.filter.bool['must_not'] = mustNotArr;
+        //     if (query) queryData.body.query.filtered.query = query;
+        //     return queryData;
+        // }
 
-            if (mustArr) queryData.body.query.filtered.filter.bool.must = mustArr;
-            if (mustNotArr) queryData.body.query.filtered.filter.bool['must_not'] = mustNotArr;
-            if (query) queryData.body.query.filtered.query = query;
-            return queryData;
-        }
+        // var temp = {};
+        //
+        // function queryList(params) {
+        //
+        //     var type = (params || {}).type || 'product',
+        //         _params = angular.extend({}, getParams()[type], params),
+        //         sort = _params.sort || (type === 'product' ? 'itemId' : 'id'),
+        //         cate = angular.isNumber(_params.cate) ? _params.cate : null,
+        //         subCate = angular.isNumber(_params.subCate) ? _params.subCate : null,
+        //         tag = _params.tag || null,
+        //         queryString = _params.queryString || '',
+        //         query,
+        //         mustArr = [],
+        //         mustNotArr = [{"term": {"show": false}}],
+        //         id = 't' + type + 'c' + cate + 's' + subCate + 'q' + queryString + 't' + tag + 's' + sort;
+        //
+        //     //
+        //     temp[id] = temp[id] || {};
+        //
+        //     if (temp[id].load === 'loaded' && self.reset !== true) {
+        //         return temp[id].paginator;
+        //     } else if (temp[id].load === 'loading') {
+        //         return;
+        //     }
+        //     self.reset = false;
+        //     temp[id].load = 'loading';
+        //     ////
+        //
+        //     if (angular.isString(tag)) {
+        //         var tagTerm = {};
+        //         tagTerm['tags_dot_' + tag] = 1;
+        //         mustArr.push({"term": tagTerm});
+        //     }
+        //     if (parseInt(cate) % 1 === 0) {
+        //         mustArr.push({"term": {"category": cate}});
+        //         if (parseInt(subCate) % 1 === 0) mustArr.push({"term": {"subcategory": subCate}});
+        //     }
+        //
+        //     if (angular.isString(queryString) && queryString.trim() !== '') {
+        //         query = {
+        //             "fields": type === 'article' ? ["title", "description"] : ["itemName", "description"],
+        //             "query": queryString,
+        //             "use_dis_max": true
+        //         };
+        //     }
+        //     temp[id].paginator = $elasticSearch.paginator($stateParams.siteName || 'main', type, getQueryData(mustArr, mustNotArr, query));
+        //     temp[id].paginator.size = _params.size || 5;
+        //     temp[id].paginator.onReorder(sort);
+        //     temp[id].paginator.promise.then(function () {
+        //         temp[id].load = 'loaded';
+        //     });
+        // }
 
-        var temp = {};
-
+        var queryListCache = {};
         function queryList(params) {
             var type = (params || {}).type || 'product',
-                _params = angular.extend({}, getParams()[type], params),
+                _params = Object.assign({}, getParams()[type], (params || {})),
                 sort = _params.sort || (type === 'product' ? 'itemId' : 'id'),
-                cate = angular.isNumber(_params.cate) ? _params.cate : null,
-                subCate = angular.isNumber(_params.subCate) ? _params.subCate : null,
-                tag = _params.tag || null,
-                queryString = _params.queryString || '',
-                query,
-                mustArr = [],
-                mustNotArr = [{"term": {"show": false}}],
-                id = 't' + type + 'c' + cate + 's' + subCate + 'q' + queryString + 't' + tag + 's' + sort;
+                id = 't' + type + 'c' + _params.cate + 's' + _params.subCate + 'q' + _params.queryString + 't' + _params.tag + 's' + sort;
+            queryListCache[id] = queryListCache[id] || {};
 
-            //
-            temp[id] = temp[id] || {};
+            _params.type = type;
+            _params.index = $stateParams.siteName;
 
-            if (temp[id].load === 'loaded'&&self.reset!==true) {
-                return temp[id].paginator;
-            } else if (temp[id].load === 'loading') {
+            if (queryListCache[id].load === 'loaded' && self.reset !== true) {
+                return queryListCache[id];
+            } else if (queryListCache[id].load === 'loading') {
                 return;
             }
-            self.reset=false;
-            temp[id].load = 'loading';
-            ////
-
-            if (angular.isString(tag)) {
-                var tagTerm = {};
-                tagTerm['tags_dot_' + tag] = 1;
-                mustArr.push({"term": tagTerm});
-            }
-            if (parseInt(cate) % 1 === 0) {
-                mustArr.push({"term": {"category": cate}});
-                if (parseInt(subCate) % 1 === 0) mustArr.push({"term": {"subcategory": subCate}});
-            }
-
-            if (angular.isString(queryString) && queryString.trim() !== '') {
-                query = {
-                    "fields": type === 'article' ? ["title", "description"] : ["itemName", "description"],
-                    "query": queryString,
-                    "use_dis_max": true
-                };
-            }
-            temp[id].paginator = $elasticSearch.paginator($stateParams.siteName || 'main', type, getQueryData(mustArr, mustNotArr, query));
-            temp[id].paginator.size = _params.size || 5;
-            temp[id].paginator.onReorder(sort);
-            temp[id].paginator.promise.then(function () {
-                temp[id].load = 'loaded';
-            })
+            self.reset = false;
+            queryListCache[id].pagination = _core.fbUtil.elasticsearch.queryList(_params);
+            queryListCache[id].get = function (page, size, sort) {
+                queryListCache[id].load = 'loading';
+                var getPromise = queryListCache[id].pagination.get(page, size, sort);
+                getPromise.then(function (res) {
+                    queryListCache[id].load = 'loaded';
+                    queryListCache[id].size = size;
+                    queryListCache[id].page = page;
+                    queryListCache[id].result = {hits: res.hits, total: res.total};
+                    $timeout(angular.noop,0)
+                });
+                return getPromise;
+            };
+            //init
+            queryListCache[id].get( _params.page || 1, _params.size || 5, sort);
         }
 
         this.queryList = queryList;
@@ -107,12 +142,12 @@
         function getCate(type, isCrumbs) {
             var _type = type || 'product',
                 cateRefPath = _type + '-categories';
-            if (self.cate[_type].load === 'loaded'&&self.reset!==true) {
+            if (self.cate[_type].load === 'loaded' && self.reset !== true) {
                 return isCrumbs ? self.cate[_type].crumbs : self.cate[_type].categories
             } else if (self.cate[_type].load === 'loading') {
                 return
             }
-            self.reset=false;
+            self.reset = false;
 
             self.cate[_type].load = 'loading';
             $firebaseStorage.getWithCache(cateRefPath).then(function (val) {
@@ -126,15 +161,15 @@
 
         }
 
-        $transitions.onSuccess({ to: '**' }, function(trans){
+        $transitions.onSuccess({to: '**'}, function (trans) {
             refreshCrumbs('article', trans.params('to'));
             refreshCrumbs('product', trans.params('to'));
         });
-
         function refreshCrumbs(type, toParams) {
             if (toParams.params) getCateCrumbs(type, getParams(type, toParams)[type]);
         }
 
+        this.getCate = getCate;
         function getCateCrumbs(type, apParams) {
             var res = [],
                 toParams = {},
@@ -162,9 +197,6 @@
             }
             self.cate[type].crumbs = res;
         }
-
-
-        this.getCate = getCate;
         this.getCateCrumbs = function (type) {
             return getCate(type, true);
         };
@@ -341,10 +373,10 @@
                         compressed: _core.encoding.compress(vm[type]),
                         editTime: firebase.database.ServerValue.TIMESTAMP
                     };
-                $firebase.update([type+'?type=list', type+'?type=detail'], {
+                $firebase.update([type + '?type=list', type + '?type=detail'], {
                     '@0': listData,
                     '@1': detailData
-                },{id:id}).then(function () {
+                }, {id: id}).then(function () {
                     indexService.update(type, id, vm[type]);
                     vm.hide(function () {
                         $mdToast.show(
@@ -371,11 +403,11 @@
                     .ok('Remove');
 
                 $mdDialog.show(confirm).then(function () {
-                    $firebase.update([type+'?type=list', type+'?type=detail'], {
+                    $firebase.update([type + '?type=list', type + '?type=detail'], {
                         "@all": null
-                    }, {id:id}).then(function () {
-                        indexService.remove(type + 's/detail/' + id + '@selectedSite', id);
-                        $firebaseStorage.remove(type + 's/detail/' + id + '@selectedSite');
+                    }, {id: id}).then(function () {
+                        indexService.remove(type, id, $firebase.databases.selectedSite.siteName);
+                        $firebaseStorage.remove(type + '?type=detail&id=' + id);
                         $mdToast.show(
                             $mdToast.simple()
                                 .textContent('Deleted!')
@@ -392,7 +424,7 @@
             vm.showEditor = function (ev, id) {
                 resetData();
                 if (id) {
-                    $firebaseStorage.getWithCache(type+'?type=detail&id=' + id).then(function (val) {
+                    $firebaseStorage.getWithCache(type + '?type=detail&id=' + id).then(function (val) {
                         vm[type] = val;
                         if (angular.isObject(val.options)) {
                             angular.forEach(val.options, function (item, name) {

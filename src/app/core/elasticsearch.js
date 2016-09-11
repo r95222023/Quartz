@@ -16,10 +16,10 @@
         this.fbUtil = fbUtil;
     }
 
-    ElasticSearch.prototype.query = function (siteName, type, option) {
+    ElasticSearch.prototype.query = function (index, type, option) {  //usually use siteName as index.
         var self = this,
             request = function (refUrl, responseUrl, searchData, resolve, reject) {
-                this.fbUtil.database.request({
+                self.fbUtil.database.request({
                     paths:[refUrl],
                     data: searchData
                 },[responseUrl])
@@ -30,12 +30,13 @@
             };
 
         return new Promise(function (resolve, reject) {
-            var searchData = Object.assign({}, {indexType: siteName + ':' + type}, option),
+            var searchData = Object.assign({}, {indexType: index + ':' + type}, option),
                 cacheId = _core.encoding.md5(searchData),
                 paths = self.fbUtil.paths,
                 refUrl = paths['query-request'] + '/' + cacheId,
-                cacheRefUrl = paths['query-cache'] + '/' + siteName + type,
+                cacheRefUrl = paths['query-cache'] + '/' + index + type,
                 storageRefPath = cacheRefUrl + '/' + cacheId;
+            console.log(storageRefPath)
             // var getWithCache = function (type, onNoData) {
             //     return function(){
             //         self.fbUtil[type].getWithCache(storageRefPath).then(function (res) {
@@ -59,7 +60,7 @@
                         if (!databaseRes) {
                             request(refUrl, storageRefPath, searchData, resolve, reject);
                         } else {
-                            resolve(res.result || res);
+                            resolve(databaseRes.result || databaseRes);
                         }
                     });
                 } else {
@@ -90,9 +91,13 @@
         return queryData;
     };
 
+    ElasticSearch.prototype.pagination = function(index, type, query){
+        return new Pagination(this,index, type, query);
+    };
+
     ElasticSearch.prototype.queryList = function(params){
         var type = params.type,
-            index= params.siteName,
+            index= params.index,
             cate = isNaN(params.cate) ? params.cate : null,
             subCate = isNaN(params.subCate) ? params.subCate : null,
             tag = params.tag || null,
@@ -132,19 +137,20 @@
         this.cache = {};
     }
 
-    Pagination.prototype.get = function (page, limit, orderBy) {
+    Pagination.prototype.get = function (page, size, orderBy) {
         var self = this,
-            _limit = limit || this.query.size,
-            id = 'p' + page + 'l' + _limit + 'o' + (orderBy || '');
-        if (orderBy) this.query.body.sort = getQuerySort(orderBy);
+            query=Object.assign({},this.query),
+            id = 'p' + page + 'l' + size + 'o' + (orderBy || '');
 
+        query.size= size;
+        if (orderBy) query.body.sort = getQuerySort(orderBy);
 
         if (!this.cache[id]) {
             this.cache[id] = new Promise(function (resolve, reject) {
                 page = page || 1;
                 self.currentPage = page;
-                self.query.from = parseInt(page - 1) * parseInt(_limit);
-                self.esClient.query(self.index, self.type, self.query).then(function (res) {
+                self.query.from = parseInt(page - 1) * parseInt(size);
+                self.esClient.query(self.index, self.type, query).then(function (res) {
                     resolve(res)
                 }).catch(function (err) {
                     reject(err);

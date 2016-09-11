@@ -10,7 +10,7 @@
         var vm = this;
         vm.orderData={};
 
-        analysisService.getDataInDays('orders/analysis@selectedSite', 5).then(function (analysis) {
+        analysisService.getDataInDays('orders?type=analysis', 5).then(function (analysis) {
             console.log(analysis.getChartData());
             var orderData=analysis.getChartData();
             vm.orderData={
@@ -19,10 +19,10 @@
                 series:['count', 'count1']
             };
         });
-        analysisService.getDataInDays('products/analysis@selectedSite', 5).then(function (analysis) {
+        analysisService.getDataInDays('products?type=analysis', 5).then(function (analysis) {
             console.log(analysis.getRankedArr('count1'));
             console.log(analysis.getRankedArr('count2'));
-            
+
             vm.topProducts1=analysis.getRankedArr('count1');
             vm.topProducts2=analysis.getRankedArr('count2');
 

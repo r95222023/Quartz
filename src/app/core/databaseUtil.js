@@ -177,13 +177,6 @@
         this.result = {total: 0};
         this.cache = {};
         this.maxCachedPage = 0;
-        // var clear = $rootScope.$on('$stateChangeStart', function () {
-        //     if (angular.isFunction(self.listenerCallback)) {
-        //         self.ref.off('value', self.listenerCallback);
-        //     }
-        //     clear();
-        // });
-
     }
 
     Pagination.prototype.get = function (page, size, orderBy) {
@@ -207,10 +200,6 @@
             _orderBy = isDesc ? isDesc : orderBy,
             limitToType = isDesc ? 'limitToLast' : 'limitToFirst';
 
-        if (typeof this.listenerCallback === 'function') {
-            this.listRef.off('value', this.listenerCallback);
-        }
-
         var _ref;
         if (orderBy) {
             _ref = this.listRef.orderByChild(_orderBy.replace('.', '/'));
@@ -232,6 +221,10 @@
             if (isFinite(endAt) && typeof endAt !== 'boolean') endAt = Number(endAt);
             _ref = startAt !== undefined ? _ref.startAt(startAt) : _ref;
             _ref = endAt !== undefined ? _ref.endAt(endAt) : _ref;
+        }
+
+        if (typeof this.listenerCallback === 'function') {
+            this.listRef.off('value', this.listenerCallback);
         }
 
         this.listenerCallback = _ref[limitToType](limitTo).on('value', onValue, reject);

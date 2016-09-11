@@ -23,7 +23,7 @@
                     }
                 }
             },
-            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], ['ProductListController'], ['ShoppingCartController'], ['AllpayCheckoutCtrl']],
+            ctrls = [[''], ['DefaultToolbarController'], ['ArticleDetailController'], ['ArticleListController'], ['ProductDetailController'], /*['ProductListController'], */['ShoppingCartController'], ['AllpayCheckoutCtrl']],
             emptyTags = {
                 area: 1,
                 base: 1,

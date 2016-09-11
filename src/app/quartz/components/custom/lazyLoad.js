@@ -21,7 +21,7 @@
                     injectCSS.set('style' + pageName+index, cssUrl, true);
                 } else {
                     var _index = angular.copy(index);
-                    $firebaseStorage.ref('file-path?path=' + cssUrl, {isJs: false}).getDownloadURL()
+                    $firebaseStorage.ref('file-path?path=' + cssUrl).getDownloadURL()
                         .then(function (url) {
                             injectCSS.set('style' + pageName+_index, url, true);
                         });

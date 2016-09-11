@@ -9,33 +9,6 @@
     function productsConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
         $translatePartialLoaderProvider.addPart('app/parts/products');
         $stateProvider
-            .state('quartz.admin-default.productList', {
-                url: '/:siteName/prodcuts/list/?&cate&subCate&queryString&tag',
-                params: {
-                    siteName: '',
-                    cate: '',
-                    subCate: '',
-                    queryString: '',
-                    tag: ''
-                },
-                templateUrl: 'app/parts/products/list/list.tmpl.html',
-                controller: 'ProductListController',
-                controllerAs: 'vm'
-            })
-            // .state('quartz.admin-default.shoppingCart', {
-            //     url: '/:siteName/shoppingcart',
-            //     params: {
-            //         siteName: ''
-            //     },
-            //     templateUrl: 'app/parts/products/shopping-cart/shopping-cart.tmpl.html',
-            //     controller: 'ShoppingCartController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         getSyncTime: function () {
-            //             return _core.syncTime();
-            //         }
-            //     }
-            // })
             .state('quartz.admin-default.allpay-checkout', {
                 url: '/:siteName/checkout',
                 params: {
@@ -90,6 +63,34 @@
                 controller: 'OrderHistoryController',
                 controllerAs: 'vm'
             })
+            // .state('quartz.admin-default.productList', {
+            //     url: '/:siteName/prodcuts/list/?&cate&subCate&queryString&tag',
+            //     params: {
+            //         siteName: '',
+            //         cate: '',
+            //         subCate: '',
+            //         queryString: '',
+            //         tag: ''
+            //     },
+            //     templateUrl: 'app/parts/products/list/list.tmpl.html',
+            //     controller: 'ProductListController',
+            //     controllerAs: 'vm'
+            // })
+            // .state('quartz.admin-default.shoppingCart', {
+            //     url: '/:siteName/shoppingcart',
+            //     params: {
+            //         siteName: ''
+            //     },
+            //     templateUrl: 'app/parts/products/shopping-cart/shopping-cart.tmpl.html',
+            //     controller: 'ShoppingCartController',
+            //     controllerAs: 'vm',
+            //     resolve: {
+            //         getSyncTime: function () {
+            //             return _core.syncTime();
+            //         }
+            //     }
+            // })
+
             .stateAuthenticated('quartz.admin-default.yourOrders', {
                 url: '/:siteName/yourOrders/?orderBy&startAt&endAt&equalTo',
                 params: {

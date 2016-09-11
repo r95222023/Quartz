@@ -60,7 +60,7 @@
                 snippets.iterateFileTree(typeContent.files.val(), onNode, 'files');
                 copyPromises.push($firebase.copy('files?siteName='+from, 'files?siteName='+_to));
                 //config
-                copyPromises.push($firebaseStorage.copy(fromRootPath + 'config/preload.js', toRootPath + 'config/preload.js'));
+                copyPromises.push($firebaseStorage.copy(fromRootPath + 'config/preload', toRootPath + 'config/preload'));
                 $q.all(copyPromises).then(def.resolve);
             });
             return def.promise;

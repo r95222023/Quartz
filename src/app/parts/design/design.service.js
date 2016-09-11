@@ -384,7 +384,7 @@
                         });
                         upload();
                     });
-                    $firebaseStorage.remove(type + 's/detail/' + vm.originalName + '@selectedSite');
+                    $firebaseStorage.remove(type + '?type=detail&id=' + vm.originalName);
                     vm.originalName = angular.copy(vm.pageName);
                 } else {
                     upload();

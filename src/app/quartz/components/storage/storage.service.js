@@ -64,7 +64,7 @@
         }
 
         function getSingleDownloadUrl(url) {
-            if (angular.isArray(url)) {
+            if (Array.isArray(url)) {
                 return url[Math.floor(Math.random() * (url.length))];
             } else {
                 return url;
@@ -73,8 +73,8 @@
 
         function copy(srcPath, destPath, removeSrc, onMeta, onState) {
             var def = $q.defer(),
-                _onState = angular.isFunction(onState) ? onState : angular.noop,
-                _onMeta = angular.isFunction(onMeta) ? onMeta : angular.noop,
+                _onState = typeof onState === 'function' ? onState : function () {},
+                _onMeta = typeof onMeta === 'function' ? onMeta : function () {},
                 srcRef = ref(srcPath, {isJs: false}),
                 destRef = ref(destPath, {isJs: false});
 
@@ -127,9 +127,9 @@
         var temp = {};
 
         function clearTemp() {
-            angular.forEach(temp, function (val, key) {
-                delete temp[key].load;
-            })
+            for (var key in temp) {
+                delete temp[key].load
+            }
         }
 
         function get(path, process) {
@@ -143,7 +143,7 @@
             temp[path].load = 'loading';
             getWithCache(path).then(function (val) {
                 temp[path] = {
-                    val: angular.isFunction(process) ? process(val) : val,
+                    val: typeof process === 'function' ? process(val) : val,
                     load: 'loaded'
                 };
             });

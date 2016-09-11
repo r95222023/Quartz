@@ -11,13 +11,9 @@
         .controller('CustomPageController', CustomPageController)
         .controller('PreviewFrameController', PreviewFrameController);
 
-    var pageRefUrl = 'pages@selectedSite',
-        pageListRefUrl = 'pages/list@selectedSite',
-        widgetRefUrl = 'widgets@selectedSite',
-        widgetListRefUrl = 'widgets/list@selectedSite';
 
     /* @ngInject */
-    function PageManagerController($firebase, $firebaseStorage, qtNotificationsService, $state, $stateParams, $mdDialog, config) {
+    function PageManagerController($firebase, $firebaseStorage, qtNotificationsService, $state, $stateParams, $mdDialog, $timeout) {
         var vm = this;
 
         //Todo: 改名 刪除
@@ -51,13 +47,13 @@
                         $firebase.update(['page?type=list', 'page?type=detail'], {
                             "@all": null
                         },{id:id});
-                        $firebaseStorage.remove('pages/detail/' + name + '@selectedSite');
+                        $firebaseStorage.remove('page?type=detail&id=' + name);
                     });
 
                     break;
             }
         };
-        vm.paginator = $firebase.pagination('pages?type=list');
+        vm.paginator = $firebase.pagination('pages?type=list',{}, function(){$timeout(function(){},0)});
         //initiate
         vm.paginator.size = 25;
         vm.paginator.onReorder('name');

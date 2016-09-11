@@ -6,7 +6,7 @@
         .factory('orderService', OrderService);
 
     /* @ngInject */
-    function OrderService($rootScope, $q, $firebase, $firebaseStorage, ngCart, $allpay, $stripe, sitesService) {
+    function OrderService($rootScope, $q, $firebaseStorage, ngCart, $allpay, $stripe, sitesService) {
         var paymentService = {allpay: $allpay, stripe: $stripe};
 
         function buildOrder(provider, opt) {
