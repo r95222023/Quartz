@@ -65,11 +65,11 @@
             var user = Auth.currentUser,
                 def = $q.defer(),
                 opt = {},
-                userPath = 'users/detail/' + user.uid;
+                userPath = 'user-path?userId='+user.uid;
             if (!user) def.reject('AUTH_NEEDED');
 
             function checkIfCreated() {
-                $firebase.ref(userPath + '/createdTime').once('value', function (snap) {
+                $firebase.queryRef(userPath + '&path=createdTime').once('value', function (snap) {
                     opt.registered = snap.val() !== null;
                     def.resolve(opt);
                 }, function (err) {
@@ -81,7 +81,7 @@
 
             if ($stateParams.siteName) {
                 var siteName = $stateParams.siteName;
-                $firebase.ref(userPath + '/sitesVisited/' + siteName+'/createdTime').once('value', function (regSnap) {
+                $firebase.queryRef(userPath + '&path=sitesVisited/' + siteName+'/createdTime').once('value', function (regSnap) {
                     if (regSnap.val() === null && !config.standalone) opt.regSite = siteName;
                     checkIfCreated();
                 })
@@ -204,7 +204,7 @@
 
                 assignUser(user);
 
-                $firebase.ref('users/detail/' + user.uid + '/info').once('value', function (snap) {
+                $firebase.queryRef('user-path?userId='+user.uid+'&path=info').once('value', function (snap) {
                     var userData = {},
                         providerData = user.providerData;
                     userData.info = snap.val()||{};

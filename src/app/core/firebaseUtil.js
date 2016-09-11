@@ -25,6 +25,7 @@
             'templates':'templates/:type',
             'template':'templates/:type/:id',
             'my-sites':'users/detail/:uid/sites',
+            'user-path':'users/detail/:userId/:path',
             'sites': 'sites/:type',
             'site': 'sites/:type/:siteName',
             'site-path':site+'/:path',
