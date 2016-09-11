@@ -156,7 +156,7 @@
                         };
                         $scope.closeDialog = function () {
                             // remove data
-                            $firebase.ref('queue/tasks/' + data['_id'] + '@serverFb').child('status').set('canceled');
+                            $firebase.queryRef('queue-task?id=' + data['_id']).child('status').set('canceled');
                             $mdDialog.hide();
                         }
                     }

@@ -1,5 +1,14 @@
 (function () {
     'use strict';
+    window._core = window._core || {};
+    window._core.DatabaseUtil = DatabaseUtil;
+    if (typeof define === 'function' && define.amd) {
+        define(function () {
+            return DatabaseUtil;
+        });
+    } else if (typeof module !== 'undefined' && module != null) {
+        module.exports = DatabaseUtil
+    }
 
     function DatabaseUtil(fbUtil) {
         //constructor
@@ -100,7 +109,7 @@
             self.queryRef().update(request)
                 .then(function () {
                     var resRefs = [];
-                    response.forEach(function(val, index){
+                    response.forEach(function (val, index) {
                         resRefs[index] = self.queryRef(val)
                     });
                     getResponse(resRefs).then(resolve);
@@ -111,13 +120,14 @@
         });
     };
 
-    DatabaseUtil.prototype.update = function(paths, data, params){
-        var self=this,
+
+    DatabaseUtil.prototype.update = function (paths, data, params) {
+        var self = this,
             _data = {};
-        paths.forEach(function (path, pathIndex){
-            var _path = self.fbUtil.parseRefUrl(path, {params:params||{}});
-            _data[_path]={};
-            for(var key in data){
+        paths.forEach(function (path, pathIndex) {
+            var _path = self.fbUtil.parseRefUrl(path, {params: params || {}});
+            _data[_path] = {};
+            for (var key in data) {
                 var subData = data[key],
                     subDataArr = key.split('@'),
                     whereDataGoes = subDataArr[1] || '',
@@ -154,19 +164,119 @@
             });
         }
 
-        refs.forEach(function(val, index){
-            promises[index]=promise(refs[index]);
+        refs.forEach(function (val, index) {
+            promises[index] = promise(refs[index]);
         });
         return Promise.all(promises);
     }
 
-    window._core = window._core||{};
-    window._core.DatabaseUtil = DatabaseUtil;
-    if (typeof define === 'function' && define.amd) {
-        define(function () {
-            return DatabaseUtil;
-        });
-    } else if (typeof module !== 'undefined' && module != null) {
-        module.exports = DatabaseUtil
+    DatabaseUtil.prototype.Pagination = Pagination;
+
+    function Pagination(listRef, query, onData) {
+        var _query = query || {};
+        _query.size = _query.size || 20;
+        this.listRef = listRef;
+        this.query = _query;
+        this.cache = {};
+        this.onData = onData;
+        this.result = {total: 0};
+        this.cache = {};
+        this.maxCachedPage = 0;
+        // var clear = $rootScope.$on('$stateChangeStart', function () {
+        //     if (angular.isFunction(self.listenerCallback)) {
+        //         self.ref.off('value', self.listenerCallback);
+        //     }
+        //     clear();
+        // });
+
+    }
+
+    Pagination.prototype.get = function (page, size, orderBy) {
+        var self = this,
+            preload = this.query.preload || 2,
+            id = getPaginationId(page, size, orderBy);
+        if (self.cache && self.cache[id] && parseInt(page) + preload < self.maxCachedPage) {
+            return Promise.resolve(self.cache[id]);
+        } else {
+            self.maxCachedPage = parseInt(page) + 2 * preload;
+            return new Promise(function (resolve, reject) {
+                self.listener(self.maxCachedPage, page, size, orderBy, resolve, reject);
+            });
+        }
+    };
+
+    Pagination.prototype.listener = function (maxCachedPage, page, size, orderBy, resolve, reject) {
+        var self = this,
+            limitTo = maxCachedPage * parseInt(size),
+            isDesc = orderBy.split('-')[1],
+            _orderBy = isDesc ? isDesc : orderBy,
+            limitToType = isDesc ? 'limitToLast' : 'limitToFirst';
+
+        if (typeof this.listenerCallback === 'function') {
+            this.listRef.off('value', this.listenerCallback);
+        }
+
+        var _ref;
+        if (orderBy) {
+            _ref = this.listRef.orderByChild(_orderBy.replace('.', '/'));
+        } else {
+            _ref = this.listRef.orderByKey();
+        }
+
+        var equalTo = this.query.equalTo===''? undefined:this.query.equalTo,
+            startAt = this.query.startAt===''? undefined:this.query.startAt,
+            endAt = this.query.endAt===''? undefined:this.query.endAt;
+
+
+
+        if (equalTo !== undefined) {
+            if (isFinite(equalTo) && typeof equalTo !== 'boolean') equalTo = Number(equalTo);
+            _ref = _ref.equalTo(equalTo);
+
+        } else {
+            if (isFinite(startAt) && typeof startAt !== 'boolean') startAt = Number(startAt);
+            if (isFinite(endAt) && typeof endAt !== 'boolean') endAt = Number(endAt);
+            _ref = startAt !== undefined ? _ref.startAt(startAt) : _ref;
+            _ref = endAt !== undefined ? _ref.endAt(endAt) : _ref;
+        }
+
+        this.listenerCallback = _ref[limitToType](limitTo).on('value', onValue, reject);
+        function onValue(snap) {
+            var _page = 1,
+                items = 0,
+                arr = [];
+            snap.forEach(function (childSnap) {
+                arr.push(Object.assign({_key: childSnap.key}, childSnap.val()));
+            });
+            var sortedArr = arr;
+            if (self.query.filter) {
+                sortedArr = self.query.filter(arr, Object.assign({
+                    page: page,
+                    size: size,
+                    orderBy: orderBy
+                }, self.query));
+            }
+
+            sortedArr.forEach(function (value) {
+                items++;
+                if (items > _page * parseInt(size)) {
+                    _page++;
+                }
+                var id = getPaginationId(_page, size, orderBy);
+                self.cache[id] = self.cache[id] || [];
+                self.cache[id].push(value);
+            });
+
+            var hits = self.cache[getPaginationId(page, size, orderBy)];
+            self.result.total = sortedArr.length;
+            self.result.hits = self.result.total === 0 ? [] : hits;
+
+            resolve(hits);
+            if (self.onData) self.onData({total:sortedArr.length,hits:hits});
+        }
+    };
+
+    function getPaginationId(page, size, orderBy) {
+        return 's' + size + 'p' + page + 'o' + orderBy;
     }
 })();

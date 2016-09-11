@@ -521,7 +521,7 @@
 
         function iterateFileTree(table, onNode, path) {
             var _path = path||'';
-            if (table['_content']) {
+            if (table&&table['_content']) {
                 angular.forEach(table['_content'], function (val,key) {
                     if(key!=='__created') iterateFileTree(table[key]||val, onNode, _path+'/'+val.name);
                 })

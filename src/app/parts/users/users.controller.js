@@ -10,29 +10,34 @@
     /* @ngInject */
     function AllUsersController($firebase, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
-        usersCtrl("users/list", vm, $firebase);
+        vm.paginator = $firebase.pagination('users?type=list');
+        vm.paginator.onReorder('name');
+
+        usersCtrl(vm);
     }
 
     /* @ngInject */
     function SiteUsersController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
-        vm.paginator = $firebase.paginator("sites/detail/"+$stateParams.siteName+"/users/list");
+        vm.paginator = $firebase.pagination("site-users?type=list");
+        vm.paginator.onReorder('name');
 
-        usersCtrl("sites/detail/"+$stateParams.siteName+"/users/list", vm, $firebase);
+        usersCtrl(vm);
     }
 
     /* @ngInject */
     function AdminsController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
-        usersCtrl("sites/detail/"+$stateParams.siteName+"/users/list", vm, $firebase, {orderBy:'access.read', equalTo:true});
+        vm.paginator = $firebase.pagination("site-users?type=list",{equalTo:true});
+        vm.paginator.onReorder('access.read');
+        usersCtrl(vm);
 
         vm.actions =[
             ['allowWrite', 'USERS.ALLOWWRITE']
         ];
     }
 
-    function usersCtrl(userListRefUrl, vm, $firebase, option) {
-        option=option||{};
+    function usersCtrl(vm) {
         vm.filters = [
             ['User Id', ''],
             ['Name', 'info.name']
@@ -45,14 +50,13 @@
         vm.action=function(action,uid){
           switch(action){
               case 'setAsAdmin':
-                  $firebase.ref('users/list/'+uid+'/access/read@selectedSite').set(true);
+                  alert('todo');
+                  // $firebase.ref('users/list/'+uid+'/access/read@selectedSite').set(true);
                   break;
           }
         };
 
 
-        vm.paginator = $firebase.paginator(userListRefUrl);
-        vm.paginator.onReorder(option||'info.name');
         vm.onPaginate = function (page, size) { //to prevent this being overwritten
             vm.paginator.get(page, size)
         };

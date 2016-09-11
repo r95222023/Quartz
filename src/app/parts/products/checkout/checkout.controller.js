@@ -76,7 +76,7 @@
         vm.submit = function () {
             // $firebase.ref('queue/tasks/' + vm.order['_id'] + '@serverFb').update(vm.order);
 
-            $firebase.ref('queue/tasks/' + vm.order['_id'] + '@serverFb').update(angular.extend({"_state":'allpay_reg_temp_order',"siteName":sitesService.siteName},vm.order));
+            $firebase.queryRef('queue-task?id=' + vm.order['_id']).update(angular.extend({"_state":'allpay_reg_temp_order',"siteName":sitesService.siteName},vm.order));
             var e = document.getElementsByName('allpay-checkout');
             e[0].submit();
             //clear cart

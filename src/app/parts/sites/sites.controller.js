@@ -5,30 +5,25 @@
         .module('app.parts.sites')
         .controller('MySitesController', MySitesController)
         .controller('AllSitesController', AllSitesController)
-        .controller('SiteConfigureController', SiteConfigureController)
         .controller('TemplateCtrl', TemplateCtrl);
 
     /* @ngInject */
-    function TemplateCtrl($stateParams, $firebase,$mdDialog, $timeout, indexService,sitesService) {
+    function TemplateCtrl($stateParams, $firebase,$mdDialog, indexService,sitesService) {
         var vm = this;
         vm.actions = [['applyTemplate', 'SITES.APPLYTEMPLATE'], ['info', 'GENERAL.INFO']];
         if ($stateParams.superAdmin) vm.actions = vm.actions.concat([['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']]);
 
-        $firebase.queryRef('templates?type=list&test=test').on('value', function (snap) {
-            $timeout(function () {
-                vm.templatesArray = snap.val();
-            }, 0);
-        });
 
-        vm.paginator = $firebase.paginator('templates/list');
+        vm.pagination = $firebase.pagination('templates?type=list');
         //initiate
-        vm.paginator.onReorder('siteName');
+        vm.pagination.get(1,10,'siteName');
+
 
         vm.onPaginate = function (page, size) { //to prevent this being overwritten
-            vm.paginator.get(page, size)
+            vm.pagination.get(page, size)
         };
         vm.onReorder = function (orderBy) {
-            vm.paginator.onReorder(orderBy);
+            vm.pagination.onReorder(orderBy);
         };
 
         vm.search = function (queryString, cate, subCate, tag) {
@@ -82,9 +77,7 @@
                     .cancel('Cancel'),
                 siteName = site.siteName;
             $mdDialog.show(confirm).then(function () {
-                angular.forEach(['list', 'detail'], function (type) {
-                    $firebase.ref('templates/' + type + '/' + siteName).remove()
-                });
+                $firebase.update(['template?type=list','template?type=detail'], {'@all':null}, {id:siteName});
                 indexService.remove('template', siteName, 'main')
             });
         };
@@ -137,7 +130,7 @@
         vm.newSiteName = '';
 
 
-        $firebase.ref('users/detail/' + authData.uid + '/sites').on('value', function (snap) {
+        $firebase.queryRef('my-sites?uid='+authData.uid).on('value', function (snap) {
             $timeout(function () {
                 vm.sitesArray = snap.val();
             }, 0);
@@ -161,12 +154,14 @@
         };
 
         vm.addSite = function () {
-            $firebase.ref('sites/list/' + vm.newSiteName + '/createdTime').once('value', function (snap) {
+            $firebase.queryRef('site?type=list&siteName=' + vm.newSiteName).child('createdTime').once('value', function (snap) {
                 if (snap.val() === null) {
                     sitesService.addSite(vm.newSiteName, authData.uid);
                 } else {
                     alert('This name has been used!');
-                    vm.newSiteName = "";
+                    $timeout(function(){
+                        vm.newSiteName = "";
+                    },0);
                 }
             });
         };
@@ -228,7 +223,7 @@
                     break;
             }
         };
-        vm.paginator = $firebase.paginator('sites/list');
+        vm.paginator = $firebase.pagination('sites?type=list');
         //initiate
         vm.paginator.onReorder('name');
 
@@ -248,15 +243,16 @@
                     .cancel('Cancel'),
                 siteName = site.siteName;
             $mdDialog.show(confirm).then(function () {
-                $firebase.ref('sites/list/' + siteName).once('value', function (siteSnap) {
+                // $firebase.ref('sites/list/' + siteName).once('value', function (siteSnap) {
+                //     var val = siteSnap.val();
+                //     $firebase.ref('templates/list/' + siteName).update(val);
+                //     indexService.update('template', siteName, val, 'main');
+                // });
+                $firebase.queryRef('site?type=list&siteName=' + siteName).once('value', function (siteSnap) {
                     var val = siteSnap.val();
-                    $firebase.ref('templates/list/' + siteName).update(val);
+                    $firebase.update('template?type=list&id=' + siteName, val);
                     indexService.update('template', siteName, val, 'main');
                 });
-                // $firebase.ref('sites/detail/' + siteName).once('value', function (detailSnap) {
-                //     var val = detailSnap.val();
-                //     $firebase.ref('templates/detail/' + siteName).update(val);
-                // });
             });
         }
 
@@ -280,38 +276,5 @@
 
         };
 
-    }
-
-    /* @ngInject */
-    function SiteConfigureController($firebase, $firebaseStorage, $timeout, $state, $stateParams, config, FBURL, qtNotificationsService, $mdDialog) {
-        var vm = this,
-            basicPath = 'config/preload@selectedSite',
-            siteListRef = $firebase.ref('sites/list'),
-            pageListRef = $firebase.ref('pages/list@selectedSite'),
-            siteName = $stateParams.siteName;
-        $firebaseStorage.getWithCache(basicPath).then(function (val) {
-            vm.preload = val || {};
-        });
-
-        siteListRef.child(siteName).once('value', function (snap) {
-            var val = snap.val();
-            vm.thumbnail = val.thumbnail;
-            vm.description = val.description;
-            vm.type = val.type;
-        });
-
-        pageListRef.once('value', function (snap) {
-            vm.pages = snap.val();
-        });
-        vm.updateSiteConfig = function () {
-            var listData = {};
-
-            // $firebase.updateCacheable(basicPath, vm.preload);
-            $firebaseStorage.update(basicPath, vm.preload);
-
-
-            listData['thumbnail/'] = vm.thumbnail||null;
-            $firebase.update('site?type=list', listData);
-        };
     }
 })();

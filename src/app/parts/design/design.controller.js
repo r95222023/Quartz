@@ -57,7 +57,7 @@
                     break;
             }
         };
-        vm.paginator = $firebase.paginator(pageListRefUrl);
+        vm.paginator = $firebase.pagination('pages?type=list');
         //initiate
         vm.paginator.size = 25;
         vm.paginator.onReorder('name');
@@ -97,7 +97,7 @@
                     break;
             }
         };
-        vm.paginator = $firebase.paginator(widgetListRefUrl);
+        vm.paginator = $firebase.pagination('widgets?type=list');
         //initiate
         vm.paginator.onReorder('name');
 

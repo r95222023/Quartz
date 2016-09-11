@@ -23,7 +23,8 @@
         };
 
 
-        vm.paginator = $firebase.paginator('orders/list@selectedSite', $stateParams);
+        vm.paginator = $firebase.pagination('orders?type=list', $stateParams);
+        console.log($stateParams)
         //initiate
         vm.paginator.onReorder($stateParams.orderBy||'id');
 

@@ -19,6 +19,9 @@
             })
             .state('quartz.admin-default.siteusers', {
                 url: '/admin/:siteName/users',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/parts/users/all-users.tmpl.html',
                 // set the controller to load for this page
                 controller: 'SiteUsersController',
@@ -26,6 +29,9 @@
             })
             .state('quartz.admin-default.admins', {
                 url: '/admin/:siteName/admins',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/parts/users/admins.tmpl.html',
                 // set the controller to load for this page
                 controller: 'AdminsController',

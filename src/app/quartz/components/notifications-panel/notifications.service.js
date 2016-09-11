@@ -18,7 +18,7 @@
             if (ref && callback) {
                 ref.off('value', callback)
             }
-            ref = $firebase.ref('users/detail/' + user.uid + '/notifications');
+            ref = $firebase.queryRef('notifications?uid='+user.uid);
             callback = function (snap) {
                 notifications = snap.val();
             };

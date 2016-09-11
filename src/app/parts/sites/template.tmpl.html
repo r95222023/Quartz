@@ -1,7 +1,7 @@
 <div class="padded-content-page" layout="column">
     <md-content layout="row" layout-xs="column" layout-wrap layout-padding>
         <div flex-gt-xs="33" flex-gt-sm="25" flex-gt-md="20"
-             ng-repeat="site in vm.templatesArray">
+             ng-repeat="(id, site) in vm.pagination.result.hits">
             <md-card>
                 <!--<img class="md-card-image" ng-src="{{product._source.image}}">-->
                 <md-card-title>
@@ -26,6 +26,11 @@
                 </md-card-content>
             </md-card>
         </div>
+        <md-table-pagination flex="100"
+                             md-limit="vm.pagination.size" md-page="vm.pagination.page"
+                             md-limit-options="[10, 25, 50, 100]"
+                             md-total="{{vm.pagination.result.total}}"
+                             md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
     </md-content>
 </div>

@@ -233,7 +233,7 @@
             };
 
 
-            vm.paginator = $firebase.paginator(_type + 's/list@selectedSite', $stateParams);
+            vm.paginator = $firebase.pagination(_type + 's?type=list', $stateParams);
             //initiate
             vm.paginator.size = 25;
             vm.paginator.onReorder($stateParams.orderBy || 'itemId');

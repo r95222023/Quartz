@@ -10,16 +10,14 @@
         //basic
         var vm = this,
             siteName = $stateParams.siteName,
-            preloadPath = 'config/preload@selectedSite',
-            siteListRef = $firebase.ref('sites/list'),
-            pageListRef = $firebase.ref('pages/list@selectedSite');
+            preloadPath = 'config/preload@selectedSite';
         console.log(siteName);
         $firebaseStorage.getWithCache(preloadPath).then(function (preload) {
             vm.preload = preload || {};
             vm.sources = vm.preload.sources || [];
         });
 
-        siteListRef.child(siteName).once('value', function (snap) {
+        $firebase.queryRef('site?type=list&siteName='+siteName).once('value', function (snap) {
             vm.siteListData = snap.val();
         });
 

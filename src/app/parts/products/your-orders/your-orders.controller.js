@@ -22,7 +22,7 @@
         };
 
 
-        vm.paginator = $firebase.paginator('users/detail/'+authData.uid+'/orders/list@selectedSite', $stateParams);
+        vm.paginator = $firebase.pagination('user-orders?type=list&userId='+authData.uid, $stateParams);
         //initiate
         vm.paginator.onReorder($stateParams.orderBy||'id');
 

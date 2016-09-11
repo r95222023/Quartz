@@ -15,7 +15,7 @@
 
         function addSite(newSiteName, uid) {
             var _newSiteName = rectifySiteName(newSiteName);
-            $firebase.ref('users/detail/' + uid + '/sites').push({
+            $firebase.queryRef('my-sites?uid='+uid).push({
                 siteName: _newSiteName,
                 createdTime: firebase.database.ServerValue.TIMESTAMP
             }).then(function () {
@@ -35,27 +35,30 @@
                 self=this,
                 fromRootPath = 'sites/detail/' + from + '/',
                 toRootPath = 'sites/detail/' + (to||self.siteName) + '/',
+                _to=to||self.siteName,
                 typeArr = ['products', 'articles', 'pages', 'widgets'],
                 fileNameOpt = {products: 'itemId', articles: 'id'},
                 typePromises = {};
             angular.forEach(typeArr, function (type) {
-                typePromises[type] = $firebase.getFileTableFromList(fromRootPath + type + '/list', {fileName: fileNameOpt[type] || 'name'})
+                typePromises[type] = $firebase.getFileTableFromList(type + '?type=list&siteName='+from, {fileName: fileNameOpt[type] || 'name'})
             });
-            typePromises.files = $firebase.ref(fromRootPath + 'files').once('value');
+            typePromises.files = $firebase.queryRef('files?siteName='+from).once('value');
+
             $q.all(typePromises).then(function (typeContent) {
                 var copyPromises = [],
                     onNode = function (table, path) {
                         copyPromises.push($firebaseStorage.copy(fromRootPath + path, toRootPath + path))
                     };
                 //articles, products, widgets, pages
+                console.log(typeContent);
                 angular.forEach(typeArr, function (type) {
                     snippets.iterateFileTree({'_content': typeContent[type]}, onNode, type + '/detail');
-                    copyPromises.push($firebase.copy(fromRootPath + type + '/list', toRootPath + type + '/list'));
-                    copyPromises.push($firebase.copy(fromRootPath + type + '/config', toRootPath + type + '/config'));
+                    copyPromises.push($firebase.copy(type + '?type=list&siteName='+from, type + '?type=list&siteName='+_to));
+                    copyPromises.push($firebase.copy(type + '?type=config&siteName='+from, type + '?type=config&siteName='+_to));
                 });
                 //files
                 snippets.iterateFileTree(typeContent.files.val(), onNode, 'files');
-                copyPromises.push($firebase.copy(fromRootPath + 'files', toRootPath + 'files'));
+                copyPromises.push($firebase.copy('files?siteName='+from, 'files?siteName='+_to));
                 //config
                 copyPromises.push($firebaseStorage.copy(fromRootPath + 'config/preload.js', toRootPath + 'config/preload.js'));
                 $q.all(copyPromises).then(def.resolve);

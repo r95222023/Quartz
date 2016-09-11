@@ -37,6 +37,89 @@
 
     function Firebase(dbFirebase, params, $stateParams, config, $q, $timeout, $filter, $usage, $transitions) {
 
+        function _queryRef(path, option) {
+            var params = {},
+                _option = option || {};
+            if ($firebase.databases.selectedSite) params.siteName = $firebase.databases.selectedSite.siteName;
+            if (_option.params) {
+                _option.params = Object.assign(params, _option.params);
+            } else {
+                _option = Object.assign(params, _option);
+            }
+            return _core.fbUtil.database.queryRef(path, _option);
+        }
+
+        function update(paths, data, option) {
+            var siteName = $firebase.databases.selectedSite ? $firebase.databases.selectedSite.siteName : '',
+                _option = Object.assign({siteName: siteName}, option),
+                _paths = Array.isArray(paths) ? paths : [paths];
+            return _core.fbUtil.database.update(_paths, data, _option);
+        }
+
+        function updateCacheable(path, data) {
+            return update(path, {
+                compressed: _core.encoding.compress(data),
+                editTime: firebase.database.ServerValue.TIMESTAMP
+            })
+        }
+
+        function copy(srcPath, destPath, removeSrc, opt) {
+            return new Promise(function (resolve, reject) {
+                var _opt = opt || {},
+                    srcRef = _queryRef(srcPath, _opt.src);
+                srcRef.once('value').then(function (snap) {
+                    _queryRef(destPath, _opt.dest)[_opt.set === true ? 'set' : 'update'](snap.val())
+                        .then(function () {
+                            if (removeSrc) {
+                                srcRef.set(null).then(resolve)
+                            } else {
+                                resolve();
+                            }
+                        });
+                }).catch(reject);
+            })
+        }
+
+        function getFileTableFromList(refUrl, opt) {
+            return new Promise(function (resolve, reject) {
+                var _opt = opt || {},
+                    res = {},
+                    ref = _queryRef(refUrl, Object.assign(_opt, {params: _opt.params || {}}));
+                ref.once('value', function (snap) {
+                    snap.forEach(function (childSnap) {
+                        var val = childSnap.val(),
+                            key = childSnap.key;
+                        res[key] = {
+                            name: (_opt.fileName ? val[_opt.fileName] : key) + (_opt.fileExtension || '.js'),
+                            date: val.editTime,
+                            type: 'file'
+                        }
+                    });
+                    resolve(res);
+                }).catch(reject);
+            });
+        }
+
+        function pagination(refUrl, query) {
+            var _query=query||{},
+                listRef = _queryRef(refUrl),
+                pagination = new _core.fbUtil.database.Pagination(listRef, Object.assign({filter:function(arr, option){
+                    return $filter('orderBy')(arr, option.orderBy)
+                }},_query), onData);
+            pagination.size = 10;
+            pagination.page = 1;
+            console.log(listRef.toString())
+            pagination.onReorder = function (orderBy) {
+                pagination.get(pagination.page, pagination.size, orderBy);
+            };
+            function onData(res){
+                $timeout(function(){
+                    pagination.result.hits = res.hits||[];
+                },0)
+            }
+            return pagination;
+        }
+
         function replaceParamsInString(string, params) {
             for (var param in params) {
                 if (params.hasOwnProperty(param)) string = string.replace(eval("/\\" + param + "/g"), params[param]);
@@ -102,17 +185,6 @@
             return replaceParamsInString(refUrl, angular.extend({}, firebase.params, params));
         }
 
-        function _queryRef(path, option) {
-            var params = {},
-                _option = option || {};
-            if ($firebase.databases.selectedSite) params.siteName = $firebase.databases.selectedSite.siteName;
-            if (_option.params) {
-                Object.assign(_option.params, params);
-            } else {
-                Object.assign(_option, params);
-            }
-            return _core.fbUtil.database.queryRef(path, _option);
-        }
 
         function queryRef(refUrl, options) {
             var fbObj = new FbObj(getUrl(refUrl), options),
@@ -146,9 +218,9 @@
             return ref;
         }
 
-        function isRefUrlValid(refUrl) {
-            return (typeof refUrl === 'string') && (refUrl.split('/').indexOf('') === -1)
-        }
+        // function isRefUrlValid(refUrl) {
+        //     return (typeof refUrl === 'string') && (refUrl.split('/').indexOf('') === -1)
+        // }
 
         function _update(refUrl, value, onComplete, removePrev, refUrlParams) {
             var def = $q.defer(),
@@ -190,39 +262,8 @@
             return def.promise
         }
 
-        function update(paths, data, option) {
-            var siteName=$firebase.databases.selectedSite? $firebase.databases.selectedSite.siteName:'',
-                _option = Object.assign({siteName:siteName},option),
-                _paths = Array.isArray(paths)? paths:[paths];
-            return _core.fbUtil.database.update(_paths, data, _option);
-        }
 
-        function copy(srcPath, destPath, removeSrc, opt) {
-            var def = $q.defer(),
-                _opt = opt || {},
-                srcRef = queryRef(srcPath, _opt.src);
-            srcRef.once('value').then(function (snap) {
-                var resolve = function () {
-                    def.resolve(snap.val())
-                };
-                queryRef(destPath, _opt.dest)[_opt.set === true ? 'set' : 'update'](snap.val())
-                    .then(function () {
-                        if (removeSrc) {
-                            srcRef.set(null).then(resolve)
-                        } else {
-                            resolve();
-                        }
-                    });
-            });
-            return def.promise;
-        }
 
-        function updateCacheable(refUrl, data) {
-            return update(refUrl, {
-                compressed: _core.encoding.compress(data),
-                editTime: firebase.database.ServerValue.TIMESTAMP
-            })
-        }
 
 //TODO: Transaction
 
@@ -285,9 +326,7 @@
             return def.promise
         }
 
-        function getUniqeId() {
-            return queryRef('temp').push().key;
-        }
+
 
         function getWithCache(cachePath, editTimeRef, sourceRef, option) {
             var def = $q.defer(),
@@ -417,184 +456,174 @@
             return $q.all(promises);
         }
 
-        function Paginator(refUrl, option) {
-            this.ref = queryRef(refUrl);
-            this.option = option || {};
-            this.size = 10;
-            this.page = 1;
-            this.result = {total: 100};
-            this.orderBy = this.option.orderBy || '';
-            this.startAt = this.option.startAt || '';
-            this.equalTo = this.option.equalTo || '';
-            this.endAt = this.option.endAt || '';
-            this.cache = {};
-            this.limitTo = 'limitToFirst';
-            this.maxCachedPage = 0;
+        // function getUniqeId() {
+        //     return queryRef('temp').push().key;
+        // }
 
-            var self = this,
-                dereg = $transitions.onBefore({to: '**'}, function (trans) {
-                    if (angular.isFunction(self.listenerCallback)) {
-                        self.ref.off('value', self.listenerCallback);
-                    }
-                    dereg();
-                });
-            // var clear = $rootScope.$on('$stateChangeStart', function () {
-            //     if (angular.isFunction(self.listenerCallback)) {
-            //         self.ref.off('value', self.listenerCallback);
-            //     }
-            //     clear();
-            // });
+        // function Paginator(refUrl, option) {
+        //     this.ref = queryRef(refUrl);
+        //     this.option = option || {};
+        //     this.size = 10;
+        //     this.page = 1;
+        //     this.result = {total: 100};
+        //     this.orderBy = this.option.orderBy || '';
+        //     this.startAt = this.option.startAt || '';
+        //     this.equalTo = this.option.equalTo || '';
+        //     this.endAt = this.option.endAt || '';
+        //     this.cache = {};
+        //     this.limitTo = 'limitToFirst';
+        //     this.maxCachedPage = 0;
+        //
+        //     var self = this,
+        //         dereg = $transitions.onBefore({to: '**'}, function (trans) {
+        //             if (angular.isFunction(self.listenerCallback)) {
+        //                 self.ref.off('value', self.listenerCallback);
+        //             }
+        //             dereg();
+        //         });
+        //     // var clear = $rootScope.$on('$stateChangeStart', function () {
+        //     //     if (angular.isFunction(self.listenerCallback)) {
+        //     //         self.ref.off('value', self.listenerCallback);
+        //     //     }
+        //     //     clear();
+        //     // });
+        //
+        // }
+        //
+        // Paginator.prototype = {
+        //     listener: function (maxCachedPage) {
+        //         var self = this,
+        //             limitTo = maxCachedPage * parseInt(self.size),
+        //             def = $q.defer(),
+        //             isDesc = this.orderBy.split('-')[1],
+        //             orderBy = isDesc ? isDesc : this.orderBy;
+        //
+        //         this.limitTo = isDesc ? 'limitToLast' : 'limitToFirst';
+        //         self.promise = def.promise;
+        //
+        //
+        //         if (angular.isFunction(this.listenerCallback)) {
+        //             this.ref.off('value', this.listenerCallback);
+        //         }
+        //
+        //         var _ref;
+        //         if (this.orderBy) {
+        //             _ref = this.ref.orderByChild(orderBy.replace('.', '/'));
+        //         } else {
+        //             _ref = this.ref.orderByKey();
+        //         }
+        //
+        //         if (this.equalTo) {
+        //             if (isFinite(this.equalTo) && this.equalTo !== true && this.equalTo !== false) this.equalTo = Number(this.equalTo);
+        //             _ref = _ref.equalTo(this.equalTo);
+        //         } else {
+        //             if (isFinite(this.startAt)) this.startAt = Number(this.startAt);
+        //             if (isFinite(this.endAt)) this.endAt = Number(this.endAt);
+        //             _ref = this.startAt ? _ref.startAt(this.startAt) : _ref;
+        //             _ref = this.endAt ? _ref.endAt(this.endAt) : _ref;
+        //         }
+        //         this.listenerCallback = _ref[this.limitTo](limitTo).on('value', onValue);
+        //
+        //
+        //         function onValue(snap) {
+        //             self.cache = {};
+        //             var page = 1,
+        //                 items = 0,
+        //                 arr = [];
+        //
+        //             snap.forEach(function (childSnap) {
+        //                 arr.push(angular.extend({_key: childSnap.key}, childSnap.val()));
+        //             });
+        //             var sortedArr = $filter('orderBy')(arr, self.orderBy);
+        //
+        //             angular.forEach(sortedArr, function (value) {
+        //                 items++;
+        //                 if (items > page * parseInt(self.size)) {
+        //                     page++;
+        //                 }
+        //                 var id = 's' + self.size + 'p' + page + 'o' + self.orderBy;
+        //                 self.cache[id] = self.cache[id] || [];
+        //                 self.cache[id].push(value);
+        //             });
+        //             self.assignPage();
+        //             self.result.total = sortedArr.length;
+        //             if (self.result.total === 0) self.result.hits = [];
+        //             def.resolve();
+        //         }
+        //     },
+        //     assignPage: function () {
+        //         var id = 's' + this.size + 'p' + this.page + 'o' + this.orderBy;
+        //         if (this.cache[id]) {
+        //             this.result.hits = this.cache[id];
+        //         }
+        //     },
+        //     get: function (page, size) {
+        //         this.page = page;
+        //         this.size = size;
+        //         var self = this,
+        //             preload = this.option.preload || 5,
+        //             id = 's' + self.size + 'p' + page + 'o' + self.orderBy;
+        //         if (self.cache && self.cache[id] && parseInt(page) + preload < self.maxCachedPage) {
+        //             self.assignPage();
+        //         } else {
+        //             self.maxCachedPage = parseInt(page) + 2 * preload;
+        //             self.listener(this.maxCachedPage);
+        //         }
+        //
+        //     },
+        //     //ex: onReorder('uid')
+        //     //or  onReorder({orderBy:'uid',startAt:'0000001'})
+        //     onReorder: function (value) {
+        //         if (angular.isString(value)) {
+        //             this.orderBy = value
+        //         } else if (angular.isObject(value)) {
+        //             angular.extend(this, value);
+        //         }
+        //         this.get(1, this.size);
+        //     }
+        // };
+        //
+        // function paginator(ref, option) {
+        //     return new Paginator(ref, option)
+        // }
 
-        }
-
-        Paginator.prototype = {
-            listener: function (maxCachedPage) {
-                var self = this,
-                    limitTo = maxCachedPage * parseInt(self.size),
-                    def = $q.defer(),
-                    isDesc = this.orderBy.split('-')[1],
-                    orderBy = isDesc ? isDesc : this.orderBy;
-
-                this.limitTo = isDesc ? 'limitToLast' : 'limitToFirst';
-                self.promise = def.promise;
 
 
-                if (angular.isFunction(this.listenerCallback)) {
-                    this.ref.off('value', this.listenerCallback);
-                }
+        // function getValidKey(key) {
+        //     //TODO
+        //     var res = key, replace = [[/\./g, '^%0'], [/#/g, '^%1'], [/\$/g, '^%2'], [/\[/g, '^%3'], [/\]/g, '^%4']];
+        //     angular.forEach(replace, function (val) {
+        //         res = res.replace(val[0], val[1]);
+        //     });
+        //     // ".", "#", "$", "/", "[", or "]"
+        //     return res;
+        // }
 
-                var _ref;
-                if (this.orderBy) {
-                    _ref = this.ref.orderByChild(orderBy.replace('.', '/'));
-                } else {
-                    _ref = this.ref.orderByKey();
-                }
-
-                if (this.equalTo) {
-                    if (isFinite(this.equalTo) && this.equalTo !== true && this.equalTo !== false) this.equalTo = Number(this.equalTo);
-                    _ref = _ref.equalTo(this.equalTo);
-                } else {
-                    if (isFinite(this.startAt)) this.startAt = Number(this.startAt);
-                    if (isFinite(this.endAt)) this.endAt = Number(this.endAt);
-                    _ref = this.startAt ? _ref.startAt(this.startAt) : _ref;
-                    _ref = this.endAt ? _ref.endAt(this.endAt) : _ref;
-                }
-                this.listenerCallback = _ref[this.limitTo](limitTo).on('value', onValue);
-
-
-                function onValue(snap) {
-                    self.cache = {};
-                    var page = 1,
-                        items = 0,
-                        arr = [];
-
-                    snap.forEach(function (childSnap) {
-                        arr.push(angular.extend({_key: childSnap.key}, childSnap.val()));
-                    });
-                    var sortedArr = $filter('orderBy')(arr, self.orderBy);
-
-                    angular.forEach(sortedArr, function (value) {
-                        items++;
-                        if (items > page * parseInt(self.size)) {
-                            page++;
-                        }
-                        var id = 's' + self.size + 'p' + page + 'o' + self.orderBy;
-                        self.cache[id] = self.cache[id] || [];
-                        self.cache[id].push(value);
-                    });
-                    self.assignPage();
-                    self.result.total = sortedArr.length;
-                    if (self.result.total === 0) self.result.hits = [];
-                    def.resolve();
-                }
-            },
-            assignPage: function () {
-                var id = 's' + this.size + 'p' + this.page + 'o' + this.orderBy;
-                if (this.cache[id]) {
-                    this.result.hits = this.cache[id];
-                }
-            },
-            get: function (page, size) {
-                this.page = page;
-                this.size = size;
-                var self = this,
-                    preload = this.option.preload || 5,
-                    id = 's' + self.size + 'p' + page + 'o' + self.orderBy;
-                if (self.cache && self.cache[id] && parseInt(page) + preload < self.maxCachedPage) {
-                    self.assignPage();
-                } else {
-                    self.maxCachedPage = parseInt(page) + 2 * preload;
-                    self.listener(this.maxCachedPage);
-                }
-
-            },
-            //ex: onReorder('uid')
-            //or  onReorder({orderBy:'uid',startAt:'0000001'})
-            onReorder: function (value) {
-                if (angular.isString(value)) {
-                    this.orderBy = value
-                } else if (angular.isObject(value)) {
-                    angular.extend(this, value);
-                }
-                this.get(1, this.size);
-            }
-        };
-
-        function paginator(ref, option) {
-            return new Paginator(ref, option)
-        }
-
-        function getValidKey(key) {
-            //TODO
-            var res = key, replace = [[/\./g, '^%0'], [/#/g, '^%1'], [/\$/g, '^%2'], [/\[/g, '^%3'], [/\]/g, '^%4']];
-            angular.forEach(replace, function (val) {
-                res = res.replace(val[0], val[1]);
-            });
-            // ".", "#", "$", "/", "[", or "]"
-            return res;
-        }
-
-        function getFileTableFromList(refUrl, opt) {
-            var _opt = opt || {},
-                def = $q.defer(),
-                res = {},
-                ref = queryRef(refUrl, _opt);
-            ref.once('value', function (snap) {
-                snap.forEach(function (childSnap) {
-                    var val = childSnap.val(),
-                        key = childSnap.key;
-                    res[key] = {
-                        name: (_opt.fileName ? val[_opt.fileName] : key) + (_opt.fileExtension || '.js'),
-                        date: val.editTime,
-                        type: 'file'
-                    }
-                });
-                def.resolve(res);
-            });
-            return def.promise;
-        }
 
         var $firebase = {
+            queryRef: _queryRef,
             update: update,
+            copy: copy,
+            getFileTableFromList: getFileTableFromList,
+            pagination: pagination,
+
             updateCacheable: updateCacheable,
             batchUpdate: batchUpdate,
-            copy: copy,
-            params: params,
-            databases: {},
-            storages: {},
-            queryRef:_queryRef,
             ref: queryRef,
-            paginator: paginator,
             request: request,
-            isRefUrlValid: isRefUrlValid,
             cache: getWithCache,
             getWithCache: function (sourcePath, option) {
                 var sourceRef = queryRef(sourcePath);
                 return getWithCache(sourceRef.toSource(), 'editTime', sourceRef, option)
             },
-            getValidKey: getValidKey,
-            getFileTableFromList: getFileTableFromList,
-            getUniqeId: getUniqeId,
+            // getUniqeId: getUniqeId,
+            // isRefUrlValid: isRefUrlValid,
+            // paginator: paginator,
+            // getValidKey: getValidKey,
+
+            params: params,
+            databases: {},
+            storages: {},
             databaseURL: dbFirebase.databaseURL
         };
 

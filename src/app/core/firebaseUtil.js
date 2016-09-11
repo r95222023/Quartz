@@ -17,15 +17,21 @@
             'servers': 'servers',
             'queue': 'queue',
             'queue-tasks': 'queue/tasks',
+            'queue-task': 'queue/tasks/:id',
             'query-request': 'query/request',
             'query-response': 'query/response',
             'query-specs': 'query/specs',
             'query-cache': 'query/cache',
             'sites': 'sites/:type',
             'site': 'sites/:type/:siteName',
+            'site-path':site+'/:path',
             'site-config-payment': 'sites/detail/:siteName/config/payment/:provider/:privacy',
             'templates':'templates/:type',
+            'template':'templates/:type/:id',
+            'files':site+'/files',
             'users-site': site + '/users/:type/:userId',
+            'site-users': site + '/users/:type',
+            'site-user': site + '/users/:type/:userId',
             'my-sites':'users/detail/:uid/sites',
             'pages':site+'/pages/:type',
             'page':site+'/pages/:type/:id',
@@ -39,7 +45,10 @@
             'orders': site + '/orders/:type',
             'order-payment': site + '/orders/:type/:orderId/payment',
             'user-order-payment': user + '/orders/:type/:orderId/payment',
-            'order-payment-allpay': site + '/orders/detail/:orderId/payment/allpay'
+            'user-orders': user + '/orders/:type',
+            'order-payment-allpay': site + '/orders/detail/:orderId/payment/allpay',
+            'orders-analysis': site + '/orders/analysis/:dateId',
+            'notifications':'users/detail/:uid/notifications'
         };
 
 

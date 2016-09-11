@@ -37,7 +37,7 @@
             if (angular.isString(id)) obj.id = id;
             if (body) obj.body = body;
 
-            return $firebase.ref("queue/tasks@serverFb").push(obj);
+            return $firebase.queryRef("queue/tasks").push(obj);
         }
 
         return {
