@@ -4,7 +4,6 @@
     angular
         .module('quartz.components')
         .factory('customService', CustomService)
-        .factory('customData', CustomData)
         .factory('customParams', CustomParams);
 
     /* @ngInject */
@@ -219,23 +218,6 @@
             isTagConfigurable: isTagConfigurable,
             containers: containers,
             items: items
-        }
-    }
-
-    /* @ngInject */
-    function CustomData($q, $firebase, $firebaseStorage) {
-
-        function get(name) {
-            var def = $q.defer();
-
-            $firebaseStorage.getWithCache('config/data/lists@selectedSite').then(function (val) {
-                def.resolve(val[name]);
-            });
-            return def.promise;
-        }
-
-        return {
-            get: get
         }
     }
 

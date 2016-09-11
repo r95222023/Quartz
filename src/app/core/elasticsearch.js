@@ -19,20 +19,14 @@
     ElasticSearch.prototype.query = function (siteName, type, option) {
         var self = this,
             request = function (refUrl, responseUrl, searchData, resolve, reject) {
-                var req = {
-                    request: [{
-                        refUrl: refUrl,
-                        value: searchData
-                    }],
-                    response: [responseUrl]
-                };
-                this.fbUtil.database.request(req)
+                this.fbUtil.database.request({
+                    paths:[refUrl],
+                    data: searchData
+                },[responseUrl])
                     .then(function (res) {
                         var _res = _core.encoding.decompress(res[0]).result;
                         resolve(_res);
-                    }, function (err) {
-                        reject(err);
-                    });
+                    }, reject);
             };
 
         return new Promise(function (resolve, reject) {

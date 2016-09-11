@@ -106,7 +106,7 @@
         };
         function getCate(type, isCrumbs) {
             var _type = type || 'product',
-                cateRefPath = _type + 's/config/categories@selectedSite';
+                cateRefPath = _type + '-categories';
             if (self.cate[_type].load === 'loaded'&&self.reset!==true) {
                 return isCrumbs ? self.cate[_type].crumbs : self.cate[_type].categories
             } else if (self.cate[_type].load === 'loading') {
@@ -171,15 +171,15 @@
 
         this.getProduct = function (id) {
             var _id = id || getParams().product.id;
-            return $firebaseStorage.get('products/detail/' + _id);
+            return $firebaseStorage.get('product?type=detail&id=' + _id);
         };
         this.getArticle = function (id) {
             var _id = id || getParams().article.id;
-            return $firebaseStorage.get('articles/detail/' + _id);
+            return $firebaseStorage.get('article?type=detail&id=' + _id);
         };
         this.cateCtr = function (vm, type) {
             var _type = type || 'product',
-                cateRefPath = _type + 's/config/categories@selectedSite';
+                cateRefPath = _type + '-categories';
 
             vm.categories = self.cate[_type].categories;
             vm.tags = self.cate[_type].tags;
@@ -357,7 +357,7 @@
                     });
                 });
                 $firebaseStorage.clearTemp();
-                $firebaseStorage.update(type + 's/detail/' + id + '@selectedSite', vm[type]);
+                $firebaseStorage.update(type + '?type=detail&id=' + id, vm[type]);
             };
 
             vm.delete = function (ev, id) {
@@ -392,7 +392,7 @@
             vm.showEditor = function (ev, id) {
                 resetData();
                 if (id) {
-                    $firebaseStorage.getWithCache(type+'s/detail/' + id + '@selectedSite').then(function (val) {
+                    $firebaseStorage.getWithCache(type+'?type=detail&id=' + id).then(function (val) {
                         vm[type] = val;
                         if (angular.isObject(val.options)) {
                             angular.forEach(val.options, function (item, name) {

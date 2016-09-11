@@ -15,7 +15,7 @@
             } else {
                 currentUsage+=encodeURI(JSON.stringify(size)).split(/%..|./).length-1;
             }
-            console.log('usage:',size, currentUsage);
+            console.log('usage:', currentUsage);
         };
 
     }

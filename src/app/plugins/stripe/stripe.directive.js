@@ -8,7 +8,7 @@
     ////
 
     /* @ngInject */
-    function stripeCheckout(stripeCheckout, $mdMedia, $firebase, $sce, $timeout, ngCart, sitesService) {
+    function stripeCheckout(stripeCheckout, $firebase, ngCart, sitesService) {
         return {
             restrict: 'E',
             scope: {
@@ -31,7 +31,7 @@
 
                     var data = scope.buildData();
 
-                    if(angular.isFunction(data.then)){
+                    if (angular.isFunction(data.then)) {
                         data.then(function (_data) {
                             onData(_data);
                         });
@@ -49,20 +49,18 @@
                                 data.payment.stripe = token;
                                 data.payment.type = 'stripe';
                                 data['_state'] = 'order_validate';
+                                var id = firebase.database().ref().push().key;
+
                                 $firebase.request({
-                                    request: [{
-                                        refUrl: 'queue/tasks/$qid@serverFb',
-                                        value: data
-                                    }],
-                                    response: {
-                                        "_id": 'queue/tasks/$qid/_id'
-                                    }
-                                }).then(function (res) {
-                                    console.log(res);
-                                    ngCart.empty();
-                                }, function (error) {
-                                    console.log(error);
-                                });
+                                    paths: ['queue-task?id=' + id],
+                                    data: data
+                                }, ['queue-task?id='+id+'/_id'])
+                                    .then(function (res) {
+                                        console.log(res);
+                                        ngCart.empty();
+                                    }, function (error) {
+                                        console.log(error);
+                                    });
                             };
                         }
                         stripeCheckout(paymentInfo)

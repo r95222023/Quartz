@@ -28,7 +28,7 @@
             //     vm.categories = snippets.getFirebaseArrayData(snap.val().categories);
             //     vm.tags = snippets.getFirebaseArrayData(snap.val().tags || []).toString();
             // });
-            $firebaseStorage.getWithCache('products/config/categories@selectedSite').then(function (val) {
+            $firebaseStorage.getWithCache('product-categories').then(function (val) {
                 console.log(val);
                 vm.categories = val;
             });
@@ -57,9 +57,8 @@
 
         vm.saveCate = function () {
             if(vm.categories) {
-                var path = 'products/config/categories@selectedSite';
                 // $firebase.updateCacheable(path, vm.categories);
-                $firebaseStorage.update(path, vm.categories);
+                $firebaseStorage.update('product-categories', vm.categories);
             }
         };
     }

@@ -106,7 +106,7 @@
     DatabaseUtil.prototype.request = function (request, response) {
         var self = this;
         return new Promise(function (resolve, reject) {
-            self.queryRef().update(request)
+            self.update(request.paths, request.data, request.params)
                 .then(function () {
                     var resRefs = [];
                     response.forEach(function (val, index) {
@@ -120,6 +120,26 @@
         });
     };
 
+    function getResponse(refs) {
+        var promises = [];
+
+        function promise(ref) {
+            return new Promise(function (resolve, reject) {
+                var onSuccess = function (snap) {
+                    if (snap.val() !== null) {
+                        resolve(snap.val());
+                        ref.off();
+                    }
+                };
+                ref.on('value', onSuccess, reject);
+            });
+        }
+
+        refs.forEach(function (val, index) {
+            promises[index] = promise(refs[index]);
+        });
+        return Promise.all(promises);
+    }
 
     DatabaseUtil.prototype.update = function (paths, data, params) {
         var self = this,
@@ -144,31 +164,6 @@
 
         return this.queryRef().update(_data);
     };
-
-    function getResponse(refs) {
-        var promises = [];
-
-        function promise(ref) {
-            return new Promise(function (resolve, reject) {
-                var onSuccess = function (snap) {
-                    if (snap.val() !== null) {
-                        resolve(snap.val());
-                        // resolve(snap.val());
-                        ref.off();
-                    }
-                };
-                var onError = function (err) {
-                    reject(err)
-                };
-                ref.on('value', onSuccess, onError);
-            });
-        }
-
-        refs.forEach(function (val, index) {
-            promises[index] = promise(refs[index]);
-        });
-        return Promise.all(promises);
-    }
 
     DatabaseUtil.prototype.Pagination = Pagination;
 
@@ -223,10 +218,9 @@
             _ref = this.listRef.orderByKey();
         }
 
-        var equalTo = this.query.equalTo===''? undefined:this.query.equalTo,
-            startAt = this.query.startAt===''? undefined:this.query.startAt,
-            endAt = this.query.endAt===''? undefined:this.query.endAt;
-
+        var equalTo = this.query.equalTo === '' ? undefined : this.query.equalTo,
+            startAt = this.query.startAt === '' ? undefined : this.query.startAt,
+            endAt = this.query.endAt === '' ? undefined : this.query.endAt;
 
 
         if (equalTo !== undefined) {
@@ -272,7 +266,7 @@
             self.result.hits = self.result.total === 0 ? [] : hits;
 
             resolve(hits);
-            if (self.onData) self.onData({total:sortedArr.length,hits:hits});
+            if (self.onData) self.onData({total: sortedArr.length, hits: hits});
         }
     };
 

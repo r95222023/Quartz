@@ -367,7 +367,7 @@
                             "editTime@0": firebase.database.ServerValue.TIMESTAMP
                         });
 
-                        $firebaseStorage.update(type + 's/detail/' + vm[typeName] + '@selectedSite', data).then(function () {
+                        $firebaseStorage.update(type + '?type=detail&id=' + vm[typeName], data).then(function () {
                             console.log('saved')
                             $mdToast.show(
                                 $mdToast.simple()

@@ -7,7 +7,7 @@
 
     /* @ngInject */
     function SiteSettingCtrl($firebase, $firebaseStorage,$mdToast) {
-        var vm= this,path='config/preload@selectedSite';
+        var vm= this,path='site-config-preload';
         vm.addSource = function (input) {
             var _input = (input || '').replace(/\s+/g, '');
             if(input) vm.sources.push(_input);
@@ -16,7 +16,6 @@
             vm.sources.splice(index, 1);
         };
         $firebaseStorage.getWithCache(path).then(function(preload){
-            console.log(preload)
             vm.preload = preload||{};
             vm.sources = vm.preload.sources||[];
         });

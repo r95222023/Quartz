@@ -21,7 +21,7 @@
                     injectCSS.set('style' + pageName+index, cssUrl, true);
                 } else {
                     var _index = angular.copy(index);
-                    $firebaseStorage.ref('files/' + cssUrl + '@selectedSite', {isJs: false}).getDownloadURL()
+                    $firebaseStorage.ref('file-path?path=' + cssUrl, {isJs: false}).getDownloadURL()
                         .then(function (url) {
                             injectCSS.set('style' + pageName+_index, url, true);
                         });
@@ -31,7 +31,7 @@
             var promises = {};
             angular.forEach(jsArr, function (jsUrl, index) {
                 if (jsUrl.search('://') === -1) {
-                    promises[index + ''] = $firebaseStorage.ref('files/' + jsUrl + '@selectedSite', {isJs: false}).getDownloadURL();
+                    promises[index + ''] = $firebaseStorage.ref('file-path?path=' + jsUrl, {isJs: false}).getDownloadURL();
                 }
             });
             $q.all(promises).then(function (res) {
@@ -73,7 +73,7 @@
             if(angular.isObject(type)){
                 loadData(type, def, pageId);
             } else {
-                $firebaseStorage.getWithCache(type + 's/detail/' + _name + '@selectedSite').then(function (val) {
+                $firebaseStorage.getWithCache(type + '?type=detail&id=' + _name).then(function (val) {
                     loadData(val, def, pageId);
                 });
             }

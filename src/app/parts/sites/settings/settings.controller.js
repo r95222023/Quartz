@@ -10,7 +10,7 @@
         //basic
         var vm = this,
             siteName = $stateParams.siteName,
-            preloadPath = 'config/preload@selectedSite';
+            preloadPath = 'site-config-preload';
         console.log(siteName);
         $firebaseStorage.getWithCache(preloadPath).then(function (preload) {
             vm.preload = preload || {};
@@ -37,10 +37,10 @@
 
         //payment
         function getPaymentConfig(provider) {
-            angular.forEach(['public', 'private'], function (pubOrPri) {
-                $firebaseStorage.getWithCache('config/payment/' + provider + '/' + pubOrPri + '@selectedSite').then(function (val) {
+            angular.forEach(['public', 'private'], function (privacy) {
+                $firebaseStorage.getWithCache('site-config-payment?provider=' + provider + '&privacy=' + privacy).then(function (val) {
                     vm[provider] = vm[provider] || {};
-                    vm[provider][pubOrPri] = val || {};
+                    vm[provider][privacy] = val || {};
                 });
             });
         }
@@ -51,14 +51,14 @@
 
         vm.updateAllpay = function () {
             // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
-            $firebaseStorage.update('config/payment/allpay/public@selectedSite', vm.allpay.public);
-            $firebaseStorage.update('config/payment/allpay/private@selectedSite', vm.allpay.private);
+            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=public', vm.allpay.public);
+            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=private', vm.allpay.private);
         };
 
         vm.updateStripe = function () {
             $firebase.update(['site-config-payment?provider=stripe&privacy='], vm.stripe);
-            $firebaseStorage.update('config/payment/stripe/public@selectedSite', vm.stripe.public);
-            $firebaseStorage.update('config/payment/stripe/private@selectedSite', vm.stripe.private);
+            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=public', vm.stripe.public);
+            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=private', vm.stripe.private);
         };
 
         //external lib

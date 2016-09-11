@@ -30,7 +30,7 @@
             .state('pageEditor', {
                 resolve: {
                     pageData: ['$firebaseStorage', '$stateParams', function ($firebaseStorage, $stateParams) {
-                        return $firebaseStorage.getWithCache('pages/detail/' + $stateParams.pageName + '@selectedSite');
+                        return $firebaseStorage.getWithCache('page?type=detail&id=' + $stateParams.pageName);
                     }]
                 },
                 params: {

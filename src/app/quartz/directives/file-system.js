@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    
+
     angular.module('quartz.directives')
         .directive('fsSrc', fsSrc)
         .directive('fsHref', fsHref);
@@ -18,7 +18,7 @@
                 attrs.$set('src', attrs['fsSrc']);
                 return;
             }
-            $firebaseStorage.ref('files/'+attrs['fsSrc']+'@selectedSite', {isJs:false}).getMetadata()
+            $firebaseStorage.ref('file-path?path='+attrs['fsSrc'], {isJs:false}).getMetadata()
                 .then(function(meta){
                     attrs.$set('src', meta.downloadURLs);
                     $usage.useBandwidth(meta.size);
@@ -38,7 +38,7 @@
                 attrs.$set('href', attrs['fsHref']);
                 return;
             }
-            $firebaseStorage.ref('files/'+attrs['fsHref']+'@selectedSite', {isJs:false}).getMetadata()
+            $firebaseStorage.ref('file-path?path='+attrs['fsHref'], {isJs:false}).getMetadata()
                 .then(function(meta){
                     $element.on('click',function(){
                         $usage.useBandwidth(meta.size);

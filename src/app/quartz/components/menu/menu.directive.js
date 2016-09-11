@@ -38,19 +38,19 @@
     }
 
     /* @ngInject */
-    function qtMenuController($scope, qtMenu, customData, $timeout) {
+    function qtMenuController($scope, qtMenu, $timeout) {
         var qtMenuController = this;
         // get the menu and order it
         if ($scope.admin === '') {
             qtMenuController.menu = qtMenu.menu
         } else {
-            var name = $scope.listName || 'menu';
-            customData.get(name).then(function (val) {
-                if(!val) return;
-                $timeout(function () {
-                    qtMenuController.menu = val;
-                }, 0)
-            });
+            // var name = $scope.listName || 'menu';
+            // customData.get(name).then(function (val) {
+            //     if(!val) return;
+            //     $timeout(function () {
+            //         qtMenuController.menu = val;
+            //     }, 0)
+            // });
         }
     }
 })();

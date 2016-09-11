@@ -12,7 +12,7 @@
         function buildOrder(provider, opt) {
             var def = $q.defer();
             _core.syncTime().then(function(getSyncedTime){
-                $firebaseStorage.getWithCache('config/payment/' + provider + '/public@selectedSite').then(function (val) {
+                $firebaseStorage.getWithCache('site-config-payment?provider=' + provider + '&privacy=public').then(function (val) {
                     var _opt = (!val) ? angular.extend({}, {paymentParams: val}, opt || {}) : opt || {},
                         now = _opt.timeStamp || (new Date(getSyncedTime()));
                     _opt.id = _opt.id || (sitesService.siteName + now.getTime());

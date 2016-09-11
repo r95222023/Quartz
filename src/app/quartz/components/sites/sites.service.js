@@ -140,7 +140,7 @@
         }
 
         function getPreload(def) {
-            $firebaseStorage.getWithCache('config/preload@selectedSite').then(function (res) {
+            $firebaseStorage.getWithCache('site-config-preload').then(function (res) {
                 var _res = res || {};
                 $lazyLoad.loadSite(_res).then(function () {
                     sitesService.config = _res;
@@ -150,7 +150,7 @@
                         if(_res.favicon.search('://')!==-1){
                             _core.siteUtil.changeFavicon(src);
                         } else {
-                            $firebaseStorage.ref('files/'+src+'@selectedSite',{isJs:false}).getDownloadURL().then(function(url){
+                            $firebaseStorage.ref('file-path?path='+src,{isJs:false}).getDownloadURL().then(function(url){
                                 _core.siteUtil.changeFavicon(url);
                             })
                         }

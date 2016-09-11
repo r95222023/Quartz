@@ -24,7 +24,9 @@
     }
 
     function ElasticSearch($firebase, $firebaseStorage, $q, $timeout, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
-
+        this.queryList=function(params){
+            return _core.fbUtil.elasticsearch.queryList(params);
+        };
         this.query = function (index, type, option) {
             var def = $q.defer(),
                 refUrl = option.queryUrl || defaultQueryRefUrl,
@@ -73,7 +75,7 @@
                     }],
                     response: [responseUrl]
                 };
-                $firebase.request(req)
+                $firebase._request(req)
                     .then(function (res) {
                         var _res = _core.encoding.decompress(res[0]).result;
                         //$firebaseStorage.update(storageRefPath, _res);

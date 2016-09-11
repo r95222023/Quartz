@@ -12,7 +12,7 @@
         return {
             restrict: 'E',
             scope: {
-                buildData:'=',
+                buildData: '=',
                 direct: '@'
             },
             transclude: true,
@@ -25,9 +25,9 @@
             },
             link: function (scope, element, attrs) {
                 scope.getCheckMacValue = getCheckMacValue;
-                scope.showDialog = function($event){
+                scope.showDialog = function ($event) {
                     var data = scope.buildData();
-                    if(angular.isFunction(data.then)){
+                    if (angular.isFunction(data.then)) {
                         data.then(function (_data) {
                             scope.data = _data;
                             showDialog($event);
@@ -37,7 +37,6 @@
                         showDialog($event);
                     }
                 };
-
 
 
                 var allpayFormAction = attrs.stage !== '' ? 'https://payment.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut';
@@ -57,25 +56,25 @@
                 // }
 
                 function getCheckMacValue() {
-                    var def = $q.defer();
-                    $firebase.request({
-                        request: [{
-                            refUrl: 'queue/tasks/$qid@serverFb',
-                            value: buildRequest(scope.data)
-                        }],
-                        response: {
-                            "checkMacValue": 'queue/tasks/$qid/payment/allpay/CheckMacValue'
-                        }
-                    }).then(function (res) {
-                        scope.data.payment.allpay['CheckMacValue'] = res.checkMacValue;
-                        scope.data['_id'] = res.params['$qid'];
+                    var def = $q.defer(),
+                        id = firebase.database().ref().push().key;
 
-                        console.log('order mac: ' + res.checkMacValue);
-                        def.resolve(scope.data);
-                    }, function (error) {
-                        def.reject(error);
-                        console.log(error);
-                    });
+                    $firebase.request(
+                        {
+                            paths: ['queue-task?id=' + id],
+                            data: buildRequest(vm.order)
+                        },
+                        ['queue-task?id=' + id + '/payment/allpay/CheckMacValue'])
+                        .then(function (res) {
+                            scope.data.payment.allpay['CheckMacValue'] = res[0];
+                            scope.data['_id'] = id;
+
+                            console.log('order mac: ' + res[0]);
+                            def.resolve(scope.data);
+                        }, function (error) {
+                            def.reject(error);
+                            console.log(error);
+                        });
                     return def.promise
                 }
 
@@ -137,11 +136,11 @@
                         $scope.data = data;
                         $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
 
-                        var requested=false;
-                        $scope.onFormReady = function (){
-                            if(!requested){
-                                requested=true;
-                                getCheckMacValue(data).then(function(_data){
+                        var requested = false;
+                        $scope.onFormReady = function () {
+                            if (!requested) {
+                                requested = true;
+                                getCheckMacValue(data).then(function (_data) {
                                     $scope.data = _data;
                                 })
                             }

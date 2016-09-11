@@ -20,9 +20,9 @@
             return parseInt(key).toString(36);
         }
 
-        function getData(rootRefUrl, startAt, endAt, opt) {
+        function getData(path, startAt, endAt, opt) {
             var def = $q.defer(),
-                ref = $firebase.ref(rootRefUrl).orderByKey();
+                ref = $firebase.queryRef(path).orderByKey();
 
             function resolve(snap) {
                 def.resolve(snap.val());
@@ -103,9 +103,9 @@
         }
 
 
-        function getAnalysis(rootRefUrl, start, end, opt) {
+        function getAnalysis(path, start, end, opt) {
             var def = $q.defer();
-            getData(rootRefUrl, start, end, opt).then(function (rawData) {
+            getData(path, start, end, opt).then(function (rawData) {
                 def.resolve({
                     getChartData:function (opt) {
                         return toChartJS(rawData, opt)
@@ -157,20 +157,20 @@
         // }
 
 
-        function getDataInDays(rootRefUrl, days, opt){
+        function getDataInDays(path, days, opt){
             var def = $q.defer();
             _core.syncTime().then(function(getTime){
                 var nowTime=getTime();
-                getAnalysis(rootRefUrl, nowTime-days*24*60*60*1000, nowTime, opt).then(def.resolve);
+                getAnalysis(path, nowTime-days*24*60*60*1000, nowTime, opt).then(def.resolve);
             });
             return def.promise;
         }
 
-        function record(refUrl, itemName, eventArr){
+        function record(path, itemName, eventArr){
             _core.syncTime().then(function(getTime){
                 var key = getKey(getTime()),
                     _itemName=itemName? '/'+itemName:'';
-                $firebase.ref(refUrl+'/'+ key +_itemName+'@selectedSite').transaction(function (val) {
+                $firebase.queryRef('site-path?path='+path+'/'+ key +_itemName).transaction(function (val) {
                     var _val = val||{};
 
                     angular.forEach(eventArr, function(eventName){

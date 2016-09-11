@@ -37,7 +37,7 @@
 
     function Firebase(dbFirebase, params, $stateParams, config, $q, $timeout, $filter, $usage, $transitions) {
 
-        function _queryRef(path, option) {
+        function queryRef(path, option) {
             var params = {},
                 _option = option || {};
             if ($firebase.databases.selectedSite) params.siteName = $firebase.databases.selectedSite.siteName;
@@ -66,9 +66,9 @@
         function copy(srcPath, destPath, removeSrc, opt) {
             return new Promise(function (resolve, reject) {
                 var _opt = opt || {},
-                    srcRef = _queryRef(srcPath, _opt.src);
+                    srcRef = queryRef(srcPath, _opt.src);
                 srcRef.once('value').then(function (snap) {
-                    _queryRef(destPath, _opt.dest)[_opt.set === true ? 'set' : 'update'](snap.val())
+                    queryRef(destPath, _opt.dest)[_opt.set === true ? 'set' : 'update'](snap.val())
                         .then(function () {
                             if (removeSrc) {
                                 srcRef.set(null).then(resolve)
@@ -84,7 +84,7 @@
             return new Promise(function (resolve, reject) {
                 var _opt = opt || {},
                     res = {},
-                    ref = _queryRef(refUrl, Object.assign(_opt, {params: _opt.params || {}}));
+                    ref = queryRef(refUrl, Object.assign(_opt, {params: _opt.params || {}}));
                 ref.once('value', function (snap) {
                     snap.forEach(function (childSnap) {
                         var val = childSnap.val(),
@@ -102,7 +102,7 @@
 
         function pagination(refUrl, query) {
             var _query=query||{},
-                listRef = _queryRef(refUrl),
+                listRef = queryRef(refUrl),
                 pagination = new _core.fbUtil.database.Pagination(listRef, Object.assign({filter:function(arr, option){
                     return $filter('orderBy')(arr, option.orderBy)
                 }},_query), onData);
@@ -119,6 +119,25 @@
             }
             return pagination;
         }
+
+        function request(request, response){
+            return _core.fbUtil.database.request(request,response);
+        }
+
+        function getValidKey(key) {
+            //TODO
+            var res = key, replace = [[/\./g, '^%0'], [/#/g, '^%1'], [/\$/g, '^%2'], [/\[/g, '^%3'], [/\]/g, '^%4']];
+            angular.forEach(replace, function (val) {
+                res = res.replace(val[0], val[1]);
+            });
+            // ".", "#", "$", "/", "[", or "]"
+            return res;
+        }
+
+        function _getWithCache(path, option){
+            return _core.fbUtil.database.getWithCache(path, option);
+        }
+
 
         function replaceParamsInString(string, params) {
             for (var param in params) {
@@ -186,7 +205,7 @@
         }
 
 
-        function queryRef(refUrl, options) {
+        function _queryRef(refUrl, options) {
             var fbObj = new FbObj(getUrl(refUrl), options),
                 opt = options || {},
                 ref = fbObj.ref();
@@ -265,7 +284,6 @@
 
 
 
-//TODO: Transaction
 
         function batchUpdate(values, isConsecutive) {
             var def = $q.defer(),
@@ -400,7 +418,7 @@
         //}).then(function(res){
         //    res==={res1:...., $res2:....}
         // })
-        function request(opt) {
+        function _request(opt) {
             var res = {}, def = $q.defer();
             if (typeof opt !== 'object') return;
 
@@ -589,37 +607,28 @@
 
 
 
-        // function getValidKey(key) {
-        //     //TODO
-        //     var res = key, replace = [[/\./g, '^%0'], [/#/g, '^%1'], [/\$/g, '^%2'], [/\[/g, '^%3'], [/\]/g, '^%4']];
-        //     angular.forEach(replace, function (val) {
-        //         res = res.replace(val[0], val[1]);
-        //     });
-        //     // ".", "#", "$", "/", "[", or "]"
-        //     return res;
-        // }
+
 
 
         var $firebase = {
-            queryRef: _queryRef,
+            queryRef: queryRef,
             update: update,
             copy: copy,
             getFileTableFromList: getFileTableFromList,
             pagination: pagination,
-
+            request:request,
             updateCacheable: updateCacheable,
+            getValidKey: getValidKey,
+            getWithCache: _getWithCache,
+
+
             batchUpdate: batchUpdate,
-            ref: queryRef,
-            request: request,
+            ref: _queryRef,
+            _request: _request,
             cache: getWithCache,
-            getWithCache: function (sourcePath, option) {
-                var sourceRef = queryRef(sourcePath);
-                return getWithCache(sourceRef.toSource(), 'editTime', sourceRef, option)
-            },
             // getUniqeId: getUniqeId,
             // isRefUrlValid: isRefUrlValid,
             // paginator: paginator,
-            // getValidKey: getValidKey,
 
             params: params,
             databases: {},

@@ -10,7 +10,7 @@
         console.log(userData);
 
         var vm = this,
-            siteUserRefUrl = 'users/detail/' + userData.uid + '@selectedSite',
+            siteUserRefUrl = 'user?userId=' + userData.uid,
             originalEmail = userData.email;
         vm.settingsGroups = qtSettings.custom;
 

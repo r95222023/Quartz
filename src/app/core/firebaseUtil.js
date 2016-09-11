@@ -22,25 +22,31 @@
             'query-response': 'query/response',
             'query-specs': 'query/specs',
             'query-cache': 'query/cache',
+            'templates':'templates/:type',
+            'template':'templates/:type/:id',
+            'my-sites':'users/detail/:uid/sites',
             'sites': 'sites/:type',
             'site': 'sites/:type/:siteName',
             'site-path':site+'/:path',
-            'site-config-payment': 'sites/detail/:siteName/config/payment/:provider/:privacy',
-            'templates':'templates/:type',
-            'template':'templates/:type/:id',
+            'site-config-preload': site+'/config/preload',
+            'site-config-payment': site+'/config/payment/:provider/:privacy',
             'files':site+'/files',
+            'file-path':site+'/files/:path',
+            'file-root-path':site+'/files:path',
+            'user': user,
             'users-site': site + '/users/:type/:userId',
             'site-users': site + '/users/:type',
             'site-user': site + '/users/:type/:userId',
-            'my-sites':'users/detail/:uid/sites',
             'pages':site+'/pages/:type',
             'page':site+'/pages/:type/:id',
             'page-property':site+'/pages/:type/:id/:property',
             'widgets':site+'/widgets/:type',
             'widget':site+'/widgets/:type/:id',
             'products': site + '/products/:type',
+            'product-categories': site + '/products/config/categories',
             'product': site + '/products/:type/:id',
             'articles': site + '/articles/:type',
+            'article-categories': site + '/articles/config/categories',
             'article': site + '/articles/:type/:id',
             'orders': site + '/orders/:type',
             'order-payment': site + '/orders/:type/:orderId/payment',
@@ -69,6 +75,7 @@
 
         this.database = new window._core.DatabaseUtil(this);
         this.storage = new window._core.StorageUtil(this);
+        this.elasticsearch = new window._core.ElasticSearch(this);
 
 
         this.auth = firebase.auth(this.app);
