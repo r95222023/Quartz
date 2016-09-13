@@ -6,7 +6,7 @@
         .config(productsConfig);
 
     /* @ngInject */
-    function productsConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
+    function productsConfig($translatePartialLoaderProvider, $stateProvider) {
         $translatePartialLoaderProvider.addPart('app/parts/products');
         $stateProvider
             .state('quartz.admin-default.allpay-checkout', {

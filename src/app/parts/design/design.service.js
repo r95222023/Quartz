@@ -6,7 +6,7 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($injector, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
+    function SiteDesign($auth, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type, data) {
 
             var typeName = type + 'Name',
@@ -186,7 +186,9 @@
 
                     reader.onload = function () {
                         if (ext === 'html') {
-                            importData({id:file.name.split('.html')[0],content: formatParsedHtml($.parseHTML(getBody(reader.result)), 1)}, cid, index);
+                            var res = _core.util.loader.getExternalSourceFromHtml(reader.result);
+                            vm.sources=res.sources;
+                            importData({id:file.name.split('.html')[0],content: formatParsedHtml($.parseHTML(getBody(res.html)), 1)}, cid, index);
                         } else if (ext === 'json') {
                             importData(reader.result, cid, index);
                         }
@@ -223,7 +225,7 @@
 
             function getBody(rawHtml) {
                 var body = /<body.*?>([\s\S]*)<\/body>/.exec(rawHtml.replace(/(\r\n|\n|\r)/gm, "")) || [];
-                return body[1] || rawHtml;
+                return body[1]!==undefined? body[1]:rawHtml;
             }
 
             function factorAttr(attrArr) {
@@ -240,6 +242,7 @@
 
             function formatParsedHtml(dom, level) {
                 var res = [];
+                if(dom===null) return;
                 for (var i = 0; i < dom.length; i++) {
                     var rawChild = dom[i],
                         child = {},
@@ -362,7 +365,7 @@
                         if(angular.isArray(vm.sources)) data.sources = vm.sources;
                         $firebase.update([type+'?type=list&id=' + id, type+'?type=detail&id=' + vm[typeName]], {
                             "name": vm[typeName],
-                            "author": $firebase.params["$uid"] || null,
+                            "author": $auth.currentUser.uid || null,
                             "compressed@1": _core.encoding.compress(data),
                             "editTime@0": firebase.database.ServerValue.TIMESTAMP
                         });

@@ -7,24 +7,35 @@
 
     /* @ngInject */
     function FirebaseDatabase($timeout, $filter) {
+        var $firebase = {
+            queryRef: queryRef,
+            update: update,
+            copy: copy,
+            getFileTableFromList: getFileTableFromList,
+            pagination: pagination,
+            request:request,
+            updateCacheable: updateCacheable,
+            getValidKey: getValidKey,
+            getWithCache: getWithCache
+        };
 
         function queryRef(path, option) {
             var params = {},
                 _option = option || {};
-            if ($firebase.databases.selectedSite) params.siteName = $firebase.databases.selectedSite.siteName;
+            if (_core.util.siteName) params.siteName = _core.util.siteName;
             if (_option.params) {
                 _option.params = Object.assign(params, _option.params);
             } else {
                 _option = Object.assign(params, _option);
             }
-            return _core.fbUtil.database.queryRef(path, _option);
+            return _core.util.database.queryRef(path, _option);
         }
 
         function update(paths, data, option) {
-            var siteName = $firebase.databases.selectedSite ? $firebase.databases.selectedSite.siteName : '',
+            var siteName = _core.util.siteName ? _core.util.siteName : '',
                 _option = Object.assign({siteName: siteName}, option),
                 _paths = Array.isArray(paths) ? paths : [paths];
-            return _core.fbUtil.database.update(_paths, data, _option);
+            return _core.util.database.update(_paths, data, _option);
         }
 
         function updateCacheable(path, data) {
@@ -74,12 +85,11 @@
         function pagination(refUrl, query) {
             var _query=query||{},
                 listRef = queryRef(refUrl),
-                pagination = new _core.fbUtil.database.Pagination(listRef, Object.assign({filter:function(arr, option){
+                pagination = new _core.util.database.Pagination(listRef, Object.assign({filter:function(arr, option){
                     return $filter('orderBy')(arr, option.orderBy)
                 }},_query), onData);
             pagination.size = 10;
             pagination.page = 1;
-            console.log(listRef.toString())
             pagination.onReorder = function (orderBy) {
                 pagination.get(pagination.page, pagination.size, orderBy);
             };
@@ -92,7 +102,7 @@
         }
 
         function request(request, response){
-            return _core.fbUtil.database.request(request,response);
+            return _core.util.database.request(request,response);
         }
 
         function getValidKey(key) {
@@ -105,28 +115,9 @@
             return res;
         }
 
-        function _getWithCache(path, option){
-            return _core.fbUtil.database.getWithCache(path, option);
+        function getWithCache(path, option){
+            return _core.util.database.getWithCache(path, option);
         }
-
-
-
-
-
-        var $firebase = {
-            queryRef: queryRef,
-            update: update,
-            copy: copy,
-            getFileTableFromList: getFileTableFromList,
-            pagination: pagination,
-            request:request,
-            updateCacheable: updateCacheable,
-            getValidKey: getValidKey,
-            getWithCache: _getWithCache,
-            params: {},
-            databases: {},
-            storages: {}
-        };
 
         return $firebase;
     }

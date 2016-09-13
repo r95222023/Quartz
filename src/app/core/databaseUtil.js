@@ -10,10 +10,10 @@
         module.exports = DatabaseUtil
     }
 
-    function DatabaseUtil(fbUtil) {
+    function DatabaseUtil(util) {
         //constructor
-        this.fbUtil = fbUtil;
-        this.database = firebase.database(fbUtil.app);
+        this.util = util;
+        this.database = firebase.database(util.app);
     }
 
     DatabaseUtil.prototype.queryRef = function (refUrl, options) {
@@ -23,9 +23,9 @@
         if (!refUrl) {
             return database.ref().root;
         } else if (refUrl.search('://') !== -1) {
-            ref = database.refFromURL(this.fbUtil.parseRefUrl(refUrl));
+            ref = database.refFromURL(this.util.parseRefUrl(refUrl));
         } else {
-            ref = database.ref(this.fbUtil.parseRefUrl(refUrl, opt));
+            ref = database.ref(this.util.parseRefUrl(refUrl, opt));
         }
         if (opt.orderBy) {
             var orderBy = 'orderBy' + opt.orderBy.split(':')[0];
@@ -145,7 +145,7 @@
         var self = this,
             _data = {};
         paths.forEach(function (path, pathIndex) {
-            var _path = self.fbUtil.parseRefUrl(path, {params: params || {}});
+            var _path = self.util.parseRefUrl(path, {params: params || {}});
             _data[_path] = {};
             for (var key in data) {
                 var subData = data[key],

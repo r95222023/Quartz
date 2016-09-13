@@ -6,13 +6,13 @@
         .factory('$elasticSearch', ElasticSearch);
 
     /* @ngInject */
-    function ElasticSearch($firebase, $firebaseStorage, $q, $timeout, snippets, defaultQueryRefUrl, defaultResponseRefUrl, defaultCacheRefUrl) {
+    function ElasticSearch($timeout) {
         this.queryList=function(params){
-            return _core.fbUtil.elasticsearch.queryList(params);
+            return _core.util.elasticsearch.queryList(params);
         };
 
         this.pagination = function(index, type, query){
-            var patination = _core.fbUtil.elasticsearch.pagination(index, type, query);
+            var patination = _core.util.elasticsearch.pagination(index, type, query);
 
             pagination.get = function(page, size, orderBy){
                 var getPromise=patination.get(page, size, orderBy);

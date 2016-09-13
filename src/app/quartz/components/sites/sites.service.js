@@ -92,32 +92,16 @@
 
 
     /* @ngInject */
-    function run($q, $window, $lazyLoad, config, FBURL, $rootScope,$transitions, $state, $firebase, qtMenu, sitesService, $firebaseStorage, $auth) {
-
-        //// set current site automatically
-        // function redirect(state, params) {
-        //     $state.go(state, params);
-        //     //
-        //     // var clear = $rootScope.$on('$stateChangeSuccess', function () {
-        //     //     $state.go(state, params);
-        //     //     clear();
-        //     // });
-        // }
-
+    function run($q, $window, $lazyLoad, config, $rootScope,$transitions, $state, qtMenu, sitesService, $firebaseStorage) {
 
         function setSite(siteName, toState, reset) {
+            _core.util.setSiteName(siteName);
             if (sitesService.siteName !== siteName || reset) {
 
                 console.log("Initializing " + siteName);
                 $rootScope.$broadcast('site:change', siteName);
                 sitesService.setTitle(siteName);
-                $firebase.databases.selectedSite = {
-                    siteName: siteName,
-                    url: FBURL.split("//")[1].split(".fi")[0] + '#sites/detail/' + siteName
-                };
-                $firebase.storages.selectedSite = {
-                    path: 'sites/detail/' + siteName
-                };
+
                 sitesService.siteName = siteName;
                 sitesService.config = {};
                 sitesService.preLoading = true;
@@ -180,8 +164,8 @@
                     toParams = trans.params('to');
                 if (toParams.siteName) {
                     setSite(toParams.siteName, toState);
-                } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
-                    $state.go(toState.name, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}));
+                } else if (toParams.siteName === '' && _core.util.siteName) {
+                    $state.go(toState.name, Object.assign(toParams, {siteName: _core.util.siteName}));
                 }
                 /*else if (toParams.siteName === '' && !$firebase.databases.selectedSite&&$auth.currentUser) {
                  redirect('quartz.admin-default.mysites');
@@ -201,45 +185,13 @@
 
                 sitesService.pageName = toParams.pageName;
 
-                if ($firebase.databases.selectedSite) {
-                    var siteName = $firebase.databases.selectedSite.siteName;
+                if (_core.util.siteName) {
+                    var siteName = _core.util.siteName;
 
                     qtMenu.removeGroup("siteSelected");
                     qtMenu.addGroup("siteSelected", {siteName: siteName});
                 }
             });
-            // $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
-            //     console.log(toParams.siteName);
-            //     if (toParams.siteName) {
-            //         setSite(toParams.siteName, toState);
-            //     } else if (toParams.siteName === '' && $firebase.databases.selectedSite) {
-            //         redirect(toState, angular.extend(toParams, {siteName: $firebase.databases.selectedSite.siteName}));
-            //     }
-            //     /*else if (toParams.siteName === '' && !$firebase.databases.selectedSite&&$auth.currentUser) {
-            //      redirect('quartz.admin-default.mysites');
-            //      }*/
-            //
-            //
-            //     //from dashboard to selected page
-            //     if (isDashboard(fromState) && isCustomPage(toState)) {
-            //         setSite(toParams.siteName, toState, true);
-            //     }
-            //     //from selected page to dashboard
-            //     else if (isCustomPage(fromState) && isDashboard(toState)) {
-            //         console.log('reloading');
-            //
-            //         $window.location.reload();
-            //     }
-            //
-            //     sitesService.pageName = toParams.pageName;
-            //
-            //     if ($firebase.databases.selectedSite) {
-            //         var siteName = $firebase.databases.selectedSite.siteName;
-            //
-            //         qtMenu.removeGroup("siteSelected");
-            //         qtMenu.addGroup("siteSelected", {siteName: siteName});
-            //     }
-            // });
         } else {
             qtMenu.addGroup("siteSelected");
         }

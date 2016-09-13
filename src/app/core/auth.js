@@ -9,10 +9,10 @@
         module.exports = Auth
     }
 
-    function Auth(fbUtil) {
-        this.fbUtil = fbUtil;
-        this.database = firebase.database(fbUtil.app);
-        this.auth = firebase.auth(fbUtil.app);
+    function Auth(util) {
+        this.util = util;
+        this.database = firebase.database(util.app);
+        this.auth = firebase.auth(util.app);
         this.currentUser = this.auth.currentUser;
 
         // var Auth = authFirebase.auth,
@@ -81,8 +81,8 @@
 
         return new Promise(function (resolve, reject) {
             if (!user) reject('AUTH_NEEDED');
-            this.fbUtil.getSiteName().then(function (siteName) {
-                self.fbUtil.database.queryRef('users-site', {
+            this.util.getSiteName().then(function (siteName) {
+                self.util.database.queryRef('users-site', {
                     siteName: siteName,
                     type: 'detail',
                     userId: user.uid
@@ -120,7 +120,7 @@
 
         return new Promise(function (resolve, reject) {
 
-            self.fbUtil.getSiteName().then(function (siteName) {
+            self.util.getSiteName().then(function (siteName) {
                 var params = {
                         siteName: siteName,
                         userId: user.uid
@@ -128,7 +128,7 @@
                     data = {};
                 ['users-site','users-root'].forEach(function(path){
                     ['list','detail'].forEach(function(type){
-                        data[self.fbUtil.parseRefUrl(path, Object.assign({type: type}, params))] = basicData;
+                        data[self.util.parseRefUrl(path, Object.assign({type: type}, params))] = basicData;
                     })
                 });
                 self.database.ref().update(data).then(resolve).catch(reject);

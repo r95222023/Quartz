@@ -1,3 +1,4 @@
+window._core = window._core || {};
 if (!Array.isArray) {
     Array.isArray = function(arg) {
         return Object.prototype.toString.call(arg) === '[object Array]';
@@ -24,3 +25,9 @@ if (typeof Object.assign != 'function') {
         return target;
     };
 }
+
+function isNumeric(obj){
+    return !Array.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
+}
+
+window._core.isNumeric=isNumeric;

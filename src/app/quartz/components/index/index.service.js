@@ -23,7 +23,7 @@
         }
 
         function toQueue(task, index, type, id, body) {
-            if (!index && !$firebase.databases.selectedSite) {
+            if (!index && !_core.util.siteName) {
                 console.log("Please select a site or enter an index");
                 return;
             }
@@ -31,7 +31,7 @@
             var obj = {
                 "_state":"index"
             };
-            obj.index = angular.isString(index) ? index : $firebase.databases.selectedSite.siteName;
+            obj.index = typeof index==='string' ? index : _core.util.siteName;
             if (angular.isString(task)) obj.task = task;
             if (angular.isString(type)) obj.type = type;
             if (angular.isString(id)) obj.id = id;

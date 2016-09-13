@@ -79,14 +79,14 @@
                     authData: ['$auth', function ($auth) {
                         return $auth.waitForAuth();
                     }],
-                    pageData: ['$q', 'sitesService', '$lazyLoad', '$stateParams', function ($q, sitesService, $lazyLoad, $stateParams) {
-                        var def = $q.defer();
-                        sitesService.onReady().then(function () {
-                            $lazyLoad.load('page', $stateParams.pageName).then(function (pageData) {
-                                def.resolve(pageData);
-                            });
+                    pageData: ['sitesService', '$lazyLoad', '$stateParams', function (sitesService, $lazyLoad, $stateParams) {
+                        return new Promise(function(resolve,reject){
+                            sitesService.onReady().then(function () {
+                                $lazyLoad.load('page', $stateParams.pageName).then(function (pageData) {
+                                    resolve(pageData);
+                                });
+                            }).catch(reject);
                         });
-                        return def.promise;
                     }]
                 },
                 templateUrl: 'app/parts/design/custom-page.tmpl.html',

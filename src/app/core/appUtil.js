@@ -1,13 +1,13 @@
 (function (firebase) {
     'use strict';
     window._core = window._core||{};
-    window._core.FirebaseUtil = FirebaseUtil;
+    window._core.AppUtil = AppUtil;
     if (typeof define === 'function' && define.amd) {
         define(function () {
-            return FirebaseUtil;
+            return AppUtil;
         });
     } else if (typeof module !== 'undefined' && module != null) {
-        module.exports = FirebaseUtil
+        module.exports = AppUtil
     }
 
     //parse siteName -> get preload data of that site
@@ -67,7 +67,7 @@
         appName: 'quartz'
     };
 
-    function FirebaseUtil(fbconfig) {
+    function AppUtil(fbconfig) {
         var _fbconfig = fbconfig || fbconfigDefault,
             appName = _fbconfig.appName || _fbconfig.databaseURL;
         //constructor
@@ -78,11 +78,15 @@
         this.storage = new window._core.StorageUtil(this);
         this.elasticsearch = new window._core.ElasticSearch(this);
 
+        this.usage = new window._core.Usage(this);
+        this.usage.init();
 
-        this.auth = firebase.auth(this.app);
+        this.auth = new window._core.Auth(this);
+
+        this.loader = new window._core.Loader(this);
     }
 
-    FirebaseUtil.prototype.parseRefUrl = function (refUrl, option, isFile) {
+    AppUtil.prototype.parseRefUrl = function (refUrl, option, isFile) {
         var res = refUrl,
             opt= typeof option==='object'? option.params ||option:{},
             params = Object.assign({}, opt),
@@ -107,22 +111,30 @@
         return res
     };
 
-    FirebaseUtil.prototype.getSiteName = function () {
+    AppUtil.prototype.getSiteName = function () {
         var self = this;
-        return new Promise(function (resolve, reject) {
-            var url = location.href,
-                domain = url.split('://')[1].split('/')[0];
+        if(this.siteName){
+            return Promise.resolve(this.siteName);
+        } else {
+            return new Promise(function (resolve, reject) {
+                var url = location.href,
+                    domain = url.split('://')[1].split('/')[0];
 
-            self.database.queryRef('sites', {params: {type: 'list'}, orderBy: 'Child: domain', equalTo: domain, limitToFirst:1})
-                .once('child_added', function(snap){
-                    var val = snap.val();
-                    if(!!val&&val.siteName) {
-                        resolve(val.siteName);
-                    } else {
-                        resolve(url.split('#!/')[1].split('/')[0]);
-                    }
-                })
-        })
+                self.database.queryRef('sites', {params: {type: 'list'}, orderBy: 'Child: domain', equalTo: domain, limitToFirst:1})
+                    .once('child_added', function(snap){
+                        var val = snap.val();
+                        if(!!val&&val.siteName) {
+                            resolve(val.siteName);
+                        } else {
+                            resolve(url.split('#!/')[1].split('/')[0]);
+                        }
+                    })
+            })
+        }
+    };
+
+    AppUtil.prototype.setSiteName = function (siteName) {
+        this.siteName=siteName;
     };
 
     function formalizeKey(key) {

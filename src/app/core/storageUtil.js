@@ -10,38 +10,15 @@
         module.exports = StorageUtil
     }
 
-    function StorageUtil(fbUtil) {
+    function StorageUtil(util) {
         //constructor
-        this.fbUtil = fbUtil;
+        this.util = util;
     }
 
-    StorageUtil.prototype = {
-        getWithCache: getWithCache,
-        update: update,
-        ref: ref
-    };
-
-    function getRandomDownloadUrl(url) {
-        if (Array.isArray(url)) {
-            return url[Math.floor(Math.random() * (url.length))];
-        } else {
-            return url;
-        }
-    }
-
-    function ref(path, opt) {
-        var _opt = opt || {};
-        return firebase.storage(this.app).ref(this.fbUtil.parseRefUrl(path, _opt, true));
-    }
-
-    function getId(path) {
-        return 'FBS:' + (path.split('.js')[1] === '') ? (path.split('.js')[0]) : path;
-    }
-
-    function update(targetRef, value, onState, option) {
+    StorageUtil.prototype.update = function (targetRef, value, onState, option) {
         var self = this;
         return new Promise(function (resolve, reject) {
-            var _targetRef = (typeof targetRef === 'string') ? firebase.storage(self.app).ref(self.fbUtil.parseRefUrl(targetRef, option, true)) : targetRef,
+            var _targetRef = (typeof targetRef === 'string') ? firebase.storage(self.util.app).ref(self.util.parseRefUrl(targetRef, option, true)) : targetRef,
                 _path = _targetRef.fullPath,
                 id = getId(_path),
                 _onState = (typeof onState === 'function') ? onState : function () {
@@ -70,14 +47,10 @@
             storageReload[id] = true;
             return _targetRef.put(data).on('state_changed', _onState, reject, resolve);
         });
-    }
+    };
 
-    var storagePromises = {},
-        storageReload = {};
-    _core._storageResolves = {};
-
-    function getWithCache(srcRef, option) {
-        var _srcRef = (typeof srcRef === 'string') ? firebase.storage(this.app).ref(this.fbUtil.parseRefUrl(srcRef, option, true)) : srcRef,
+    StorageUtil.prototype.getWithCache = function (srcRef, option) {
+        var _srcRef = (typeof srcRef === 'string') ? firebase.storage(this.util.app).ref(this.util.parseRefUrl(srcRef, option, true)) : srcRef,
             id = getId(_srcRef.fullPath);
         if (storagePromises[id] && !storageReload[id]) return storagePromises[id]; //prevent getting the data twice i a short period;
         storagePromises[id] = new Promise(function (resolve, reject) {
@@ -107,7 +80,30 @@
         });
         storageReload[id] = false;
         return storagePromises[id]
+    };
+    StorageUtil.prototype.ref = function (path, opt) {
+        var _opt = opt || {};
+        return firebase.storage(this.util.app).ref(this.util.parseRefUrl(path, _opt, true));
+    };
+
+    function getRandomDownloadUrl(url) {
+        if (Array.isArray(url)) {
+            return url[Math.floor(Math.random() * (url.length))];
+        } else {
+            return url;
+        }
     }
+
+    function getId(path) {
+        return 'FBS:' + (path.split('.js')[1] === '') ? (path.split('.js')[0]) : path;
+    }
+
+
+
+    var storagePromises = {},
+        storageReload = {};
+    _core._storageResolves = {};
+
 
     function loadJsFromUrl(url, id) {
         var script = document.createElement('script');
@@ -118,7 +114,7 @@
     }
 
     function getFBS(data, callback) {
-        window._FBUsg.useBandwidth(data);
+        window._core.usage.useBandwidth(data, 'storage');
         var _data = _core.encoding.decompress(data),
             id = getId(_data.path);
         _core._storageResolves[id](_data.value);

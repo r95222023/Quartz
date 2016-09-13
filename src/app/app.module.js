@@ -11,19 +11,10 @@
             'app.parts'
         ]);
 
+    _core.util=new _core.AppUtil();
+    var mainRef = firebase.database(_core.util.app).ref();
 
     angular.element(document).ready(function() {
-        var fbconfig = {
-                apiKey: "AIzaSyAfxA30u_wPOkVCn727MJXZ4eFhg4raKdI",
-                authDomain: "quartz.firebaseapp.com",
-                databaseURL: "https://quartz.firebaseio.com",
-                storageBucket: "project-3415547818359859659.appspot.com"
-            },
-            mainApp = firebase.initializeApp(fbconfig),
-            mainDatabase = firebase.database(),
-            mainRef = mainDatabase.ref();
-
-
         // your Firebase data URL goes here, no trailing slash
         console.log(window.location);
         angular.forEach(window.config,function(config){
@@ -45,8 +36,7 @@
                     key: 'pt'
                 }])
 
-                .constant('FBURL', mainRef.toString())
-                .constant('config', angular.extend({
+                .constant('config', Object.assign({
                     debug: true,
                     shipping: 0,
                     taxRate: 0,
@@ -56,7 +46,6 @@
                     // where to redirect users if they need to authenticate
                     loginRedirectState:'authentication.login'
                 },snap.val()));
-            _core.fbUtil=new _core.FirebaseUtil();
 
             angular.bootstrap(document, ['app']);
         });

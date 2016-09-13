@@ -16,6 +16,11 @@
             })
             .state('authentication.login', {
                 url: '/:siteName/login/?pageName&stateName',
+                params: {
+                    siteName: '',
+                    pageName: '',
+                    stateName: ''
+                },
                 templateUrl: 'app/quartz/components/authentication/login/login.tmpl.html',
                 controller: 'LoginController',
                 controllerAs: 'vm'
@@ -40,6 +45,9 @@
             })
             .stateAuthenticated('quartz.admin-default.profile', {
                 url: '/:siteName/profile',
+                params: {
+                    siteName: ''
+                },
                 templateUrl: 'app/quartz/components/authentication/profile/profile.tmpl.html',
                 controller: 'ProfileController',
                 controllerAs: 'vm',

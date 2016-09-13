@@ -11,15 +11,15 @@
         module.exports = ElasticSearch
     }
 
-    function ElasticSearch(fbUtil) {
+    function ElasticSearch(util) {
         //constructor
-        this.fbUtil = fbUtil;
+        this.util = util;
     }
 
     ElasticSearch.prototype.query = function (index, type, option) {  //usually use siteName as index.
         var self = this,
             request = function (refUrl, responseUrl, searchData, resolve, reject) {
-                self.fbUtil.database.request({
+                self.util.database.request({
                     paths:[refUrl],
                     data: searchData
                 },[responseUrl])
@@ -32,14 +32,13 @@
         return new Promise(function (resolve, reject) {
             var searchData = Object.assign({}, {indexType: index + ':' + type}, option),
                 cacheId = _core.encoding.md5(searchData),
-                paths = self.fbUtil.paths,
+                paths = self.util.paths,
                 refUrl = paths['query-request'] + '/' + cacheId,
                 cacheRefUrl = paths['query-cache'] + '/' + index + type,
                 storageRefPath = cacheRefUrl + '/' + cacheId;
-            console.log(storageRefPath)
             // var getWithCache = function (type, onNoData) {
             //     return function(){
-            //         self.fbUtil[type].getWithCache(storageRefPath).then(function (res) {
+            //         self.util[type].getWithCache(storageRefPath).then(function (res) {
             //             if (!res) {
             //                 if(onNoData){
             //                     onNoData()
@@ -54,9 +53,9 @@
             // };
             // getWithCache('storage', getWithCache('database'))();
 
-            self.fbUtil.storage.getWithCache(storageRefPath).then(function (res) {
+            self.util.storage.getWithCache(storageRefPath).then(function (res) {
                 if (!res) {
-                    self.fbUtil.database.getWithCache(storageRefPath).then(function (databaseRes) {
+                    self.util.database.getWithCache(storageRefPath).then(function (databaseRes) {
                         if (!databaseRes) {
                             request(refUrl, storageRefPath, searchData, resolve, reject);
                         } else {

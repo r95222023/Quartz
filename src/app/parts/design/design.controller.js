@@ -107,7 +107,7 @@
 
     /* @ngInject */
     function PageEditorController(pageData, $mdDialog, customService, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
-        var vm = this, frame,frameData = angular.copy(pageData);
+        var vm = this, frame,frameData = angular.copy(pageData)||{};
         window.initPreviewFrame = function () {
             if(vm.fullPagePreview){
                 frame = window.frames['preview-full-frame']

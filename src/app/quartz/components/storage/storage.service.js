@@ -6,7 +6,7 @@
         .factory('$firebaseStorage', FirebaseStorage);
 
     /* @ngInject */
-    function FirebaseStorage($q, $firebase, $timeout) {
+    function FirebaseStorage($timeout) {
         var $firebaseStorage = {
             get: get,
             getWithCache: getWithCache,
@@ -22,7 +22,7 @@
         function buildOpt(option) {
             var params = {},
                 _option = option || {};
-            if ($firebase.databases.selectedSite) params.siteName = $firebase.databases.selectedSite.siteName;
+            if (_core.util.siteName) params.siteName = _core.util.siteName;
             if (_option.params) {
                 _option.params = Object.assign(params, _option.params);
             } else {
@@ -32,15 +32,15 @@
         }
 
         function getWithCache(path, option) {
-            return _core.fbUtil.storage.getWithCache(path, buildOpt(option));
+            return _core.util.storage.getWithCache(path, buildOpt(option));
         }
 
         function update(path, value, onState, option) {
-            return _core.fbUtil.storage.update(path, value, onState, buildOpt(option))
+            return _core.util.storage.update(path, value, onState, buildOpt(option))
         }
 
         function ref(refPath, opt) {
-            return _core.fbUtil.storage.ref(refPath, buildOpt(opt));
+            return _core.util.storage.ref(refPath, buildOpt(opt));
         }
 
         function getSingleDownloadUrl(url) {
@@ -52,39 +52,39 @@
         }
 
         function copy(srcPath, destPath, removeSrc, onMeta, onState) {
-            var def = $q.defer(),
-                _onState = typeof onState === 'function' ? onState : function () {},
-                _onMeta = typeof onMeta === 'function' ? onMeta : function () {},
-                srcRef = ref(srcPath, {isJs: false}),
-                destRef = ref(destPath, {isJs: false});
+            return new Promise(function(resolve,reject){
+                var _onState = typeof onState === 'function' ? onState : function () {},
+                    _onMeta = typeof onMeta === 'function' ? onMeta : function () {},
+                    srcRef = ref(srcPath, {isJs: false}),
+                    destRef = ref(destPath, {isJs: false});
 
-            srcRef.getMetadata().then(function (meta) {
-                var url = getSingleDownloadUrl(meta.downloadURLs);
+                srcRef.getMetadata().then(function (meta) {
+                    var url = getSingleDownloadUrl(meta.downloadURLs);
 
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
 
-                xhr.responseType = 'arraybuffer';
-                _onMeta(meta);
+                    xhr.responseType = 'arraybuffer';
+                    _onMeta(meta);
 
-                xhr.onload = function () {
-                    if (this.status == 200) {
-                        var bin = new window.Blob([xhr.response], {type: meta.contentType});
-                        destRef.put(bin).on('state_changed', _onState, def.reject, function () {
-                            if (removeSrc) {
-                                srcRef.delete();
-                            }
-                            def.resolve();
-                        });
-                        def.resolve();
-                    }
-                };
-                xhr.addEventListener('error', function () {
-                    def.reject('GET error:' + xhr.status);
+                    xhr.onload = function () {
+                        if (this.status == 200) {
+                            var bin = new window.Blob([xhr.response], {type: meta.contentType});
+                            destRef.put(bin).on('state_changed', _onState, reject, function () {
+                                if (removeSrc) {
+                                    srcRef.delete();
+                                }
+                                resolve();
+                            });
+                            resolve();
+                        }
+                    };
+                    xhr.addEventListener('error', function () {
+                        reject('GET error:' + xhr.status);
+                    });
+                    xhr.send();
                 });
-                xhr.send();
             });
-            return def.promise;
         }
 
         function remove(path, opt) {
@@ -117,7 +117,6 @@
         }
 
         window._getFBS = function (data) {
-            window._FBUsg.useBandwidth(data);
             window._getGetFBS()(data, function (val) {
                 $timeout(angular.noop, 0);
             });

@@ -108,7 +108,7 @@
                 return;
             }
             self.reset = false;
-            queryListCache[id].pagination = _core.fbUtil.elasticsearch.queryList(_params);
+            queryListCache[id].pagination = _core.util.elasticsearch.queryList(_params);
             queryListCache[id].get = function (page, size, sort) {
                 queryListCache[id].load = 'loading';
                 var getPromise = queryListCache[id].pagination.get(page, size, sort);
@@ -406,7 +406,7 @@
                     $firebase.update([type + '?type=list', type + '?type=detail'], {
                         "@all": null
                     }, {id: id}).then(function () {
-                        indexService.remove(type, id, $firebase.databases.selectedSite.siteName);
+                        indexService.remove(type, id, _core.util.siteName);
                         $firebaseStorage.remove(type + '?type=detail&id=' + id);
                         $mdToast.show(
                             $mdToast.simple()

@@ -55,11 +55,7 @@
         }
 
         // Service
-        this.$get = /* @ngInject */ function ($rootScope, $firebase, config, FBURL) {
-
-            $firebase.databases.serverFb = {
-                url: settings.serverFb
-            };
+        this.$get = /* @ngInject */ function () {
 
             return {
                 languages: settings.languages,

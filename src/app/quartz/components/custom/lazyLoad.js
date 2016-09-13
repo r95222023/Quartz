@@ -46,21 +46,22 @@
         }
 
         function loadData(val, def, pageId) {
-            var sources = val.sources;
-            injectCSS.setDirectly('style' + pageId, val.css, true);
+            var _val=val||{},
+                sources = _val.sources;
+            injectCSS.setDirectly('style' + pageId, _val.css, true);
 
             if (sources) {
                 getLazyLoadArgs(sources, pageId).then(function (args) {
                     if (args.files.length) {
                         $ocLazyLoad.load(args).then(function () {
-                            def.resolve(val);
+                            def.resolve(_val);
                         })
                     } else {
-                        def.resolve(val);
+                        def.resolve(_val);
                     }
                 });
             } else {
-                def.resolve(val);
+                def.resolve(_val);
             }
         }
 

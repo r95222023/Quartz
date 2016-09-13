@@ -124,9 +124,9 @@
     }
 
     /* @ngInject */
-    function MySitesController($firebase, $timeout, authData, $state, sitesService, config, FBURL, qtNotificationsService, $mdDialog) {
+    function MySitesController($firebase, $timeout, authData, $state, sitesService, qtNotificationsService, $mdDialog) {
         var vm = this;
-        if (!authData) $state.go('authentication.login');
+        if (!authData){return $state.go('authentication.login')}
 
         vm.newSiteName = '';
 
@@ -189,7 +189,7 @@
     }
 
     /* @ngInject */
-    function AllSitesController($firebase, authData, $state, sitesService, FBURL, qtNotificationsService, $mdDialog, indexService) {
+    function AllSitesController($firebase, authData, $state, sitesService, qtNotificationsService, $mdDialog, indexService) {
         var vm = this;
         if (!authData) $state.go('authentication.login');
 
