@@ -37,7 +37,7 @@
             _html=html+'';
 
         res.scriptRegEx=/<script[^>]*>[\s\S]*?<\/script>/gm;
-        res.cssRegEx= new RegExp('<link[^>]*>', 'gm');
+        res.cssRegEx= new RegExp('<link[^>]*.css[^>]*>', 'gm');
         res.scriptAttrs = ['src', 'async', 'defer', 'type','innerHtml'];
         res.cssAttrs = ['type', 'href', 'rel', 'media'];
         res.sources=[];
@@ -64,10 +64,11 @@
             (html.match(res[type+'RegEx'])||[]).forEach(function(matchStr,index){
                 res[type][index]={};
                 res[type+'Attrs'].forEach(function (attr) {
-                    res[type][index][attr]=(matchStr.match(getAttrRegEx(attr))||[])[1];
+                    res[type][index][attr==='href'? 'src':attr]=(matchStr.match(getAttrRegEx(attr))||[])[1];
                 });
-                var source=res[type][index].src||res[type][index].href;
-                if(source) res.sources.push(source);
+                if(type==='script'){res[type][index].defer=true;}
+                // var source=res[type][index].src||res[type][index].href;
+                res.sources.push(res[type][index]);
                 _html=_html.replace(matchStr,'');
             })
         });

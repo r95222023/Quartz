@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.parts.data')
+        .module('app.parts.files');
     //     .controller('CustomListController', CustomListController)
     //     .controller('I18nController', I18nController);
     //

@@ -14,19 +14,29 @@
                 <md-tab label="{{'DESIGN.EXTERNAL'|translate}}">
                     <md-content class="md-padding">
                         <p>Add External Packages</p><br>
-                        <div layout="row" layout-wrap>
-                            <md-input-container flex="100" ng-repeat="(srcIndex, src) in vm.sources track by srcIndex">
+                        <div layout="row" layout-wrap ng-repeat="(srcIndex, src) in vm.sources track by srcIndex">
+                            <md-input-container flex >
                                 <label></label>
-                                <input type='text' ng-model="vm.sources[srcIndex]" ng-change="sourceChange">
+                                <input type='text' ng-model="vm.sources[srcIndex].src" ng-change="sourceChange">
                                 <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
                                          ng-click="removeSource(srcIndex)"></md-icon>
                             </md-input-container>
+                            <md-input-container>
+                                <md-checkbox ng-model="vm.sources[srcIndex].defer" aria-label="script defer" ng-disabled="vm.sources[srcIndex].src.split('.css')[1]===''">
+                                    Defer
+                                </md-checkbox>
+                            </md-input-container>
+
+
+                        </div>
+                        <div layout="row" layout-wrap>
                             <md-input-container flex="100">
                                 <label>Add External Packages</label>
                                 <input type='text' ng-model="newSource">
                                 <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="addSource(newSource);newSource=''"></md-icon>
                             </md-input-container>
                         </div>
+
 
                     </md-content>
                 </md-tab>

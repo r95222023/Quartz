@@ -4,49 +4,55 @@
         .factory("$lazyLoad", LazyLoad);
 
     /* @ngInject */
-    function LazyLoad($q, $ocLazyLoad, $firebaseStorage, injectCSS) {
-        function getLazyLoadArgs(sources, pageName) {
-            var def = $q.defer(), _sourcesArr = sources || [], jsArr = [], cssArr = [];
+    function LazyLoad($ocLazyLoad, $firebaseStorage, injectCSS) {
+        function getDownloadUrls(srcArr, onUrl){
+            var promises = [];
 
-            angular.forEach(_sourcesArr, function (val) {
-                if (val.split('.css')[1] === '') {
-                    cssArr.push(val);
-                } else if (val.split('.js')[1] === '') {
-                    jsArr.push(val);
-                }
-            });
-
-            angular.forEach(cssArr, function (cssUrl,index) {
-                if (cssUrl.search('://') !== -1) {
-                    injectCSS.set('style' + pageName+index, cssUrl, true);
+            srcArr.forEach(function (src, index) {
+                if (src.search('://') === -1) {
+                    promises[index] = $firebaseStorage.ref('file-path?path=' + src).getDownloadURL();
                 } else {
-                    var _index = angular.copy(index);
-                    $firebaseStorage.ref('file-path?path=' + cssUrl).getDownloadURL()
-                        .then(function (url) {
-                            injectCSS.set('style' + pageName+_index, url, true);
-                        });
+                    promises[index] = Promise.resolve(src);
+                }
+                if(typeof onUrl==='function'){
+                    promises[index].then(function(){
+                        onUrl(src,index);
+                    })
                 }
             });
-
-            var promises = {};
-            angular.forEach(jsArr, function (jsUrl, index) {
-                if (jsUrl.search('://') === -1) {
-                    promises[index + ''] = $firebaseStorage.ref('file-path?path=' + jsUrl, {isJs: false}).getDownloadURL();
-                }
-            });
-            $q.all(promises).then(function (res) {
-
-                angular.forEach(res, function (url, _index) {
-                    jsArr[_index] = url;
-                });
-
-                def.resolve({serie: true, files: jsArr});
-            });
-            return def.promise;
+            return Promise.all(promises);
         }
 
-        function loadData(val, def, pageId) {
-            var _val=val||{},
+        function getLazyLoadArgs(sources, pageName) {
+            var _sourcesArr = sources || [], jsArr = [], cssArr = [];
+
+            _sourcesArr.forEach(function (val) {
+                if (typeof val === 'string') {
+                    if (val.split('.css')[1] === '') {
+                        cssArr.push(val);
+                    } else if (val.split('.js')[1] === '') {
+                        jsArr.push(val);
+                    }
+                } else if (typeof val === 'object') {
+                    val.src = val.src||val.href||'';
+                    if (val.src.split('css')[1] === '') cssArr.push(val.href);
+                    if (val.src.split('js')[1] === ''&&!val.defer) jsArr.push(val.src);
+                }
+            });
+
+            getDownloadUrls(cssArr, function(cssUrl, index){
+                injectCSS.set('style' + pageName + index, cssUrl, true);
+            });
+
+            return new Promise(function (resolve, reject) {
+                getDownloadUrls(jsArr).then(function(res){
+                    resolve({serie: true, files: res});
+                }).catch(reject);
+            })
+        }
+
+        function loadData(val, resolve, pageId) {
+            var _val = val || {},
                 sources = _val.sources;
             injectCSS.setDirectly('style' + pageId, _val.css, true);
 
@@ -54,57 +60,55 @@
                 getLazyLoadArgs(sources, pageId).then(function (args) {
                     if (args.files.length) {
                         $ocLazyLoad.load(args).then(function () {
-                            def.resolve(_val);
+                            resolve(_val);
                         })
                     } else {
-                        def.resolve(_val);
+                        resolve(_val);
                     }
                 });
             } else {
-                def.resolve(_val);
+                resolve(_val);
             }
         }
 
         function load(type, name) {
+            return new Promise(function (resolve, reject) {
+                var _name = name,
+                    pageId = _name.replace(/\s+/g, '');
 
-            var _name = name,
-                pageId = _name.replace(/\s+/g, ''),
-                def = $q.defer();
-
-            if(angular.isObject(type)){
-                loadData(type, def, pageId);
-            } else {
-                $firebaseStorage.getWithCache(type + '?type=detail&id=' + _name).then(function (val) {
-                    loadData(val, def, pageId);
-                });
-            }
-
-            return def.promise;
+                if (angular.isObject(type)) {
+                    loadData(type, resolve, pageId);
+                } else {
+                    $firebaseStorage.getWithCache(type + '?type=detail&id=' + _name).then(function (val) {
+                        loadData(val, resolve, pageId);
+                    });
+                }
+            })
         }
 
-        function loadSite(data){
-            var def = $q.defer();
+        function loadSite(data) {
+            return new Promise(function(resolve,reject){
+                if (data.sources) {
+                    getLazyLoadArgs(data.sources, 'selectedSite').then(function (args) {
+                        if (args.files.length) {
+                            $ocLazyLoad.load(args).then(function () {
+                                resolve();
+                            })
+                        } else {
+                            resolve();
 
-            if (data.sources) {
-                getLazyLoadArgs(data.sources, 'selectedSite').then(function (args) {
-                    if (args.files.length) {
-                        $ocLazyLoad.load(args).then(function () {
-                            def.resolve();
-                        })
-                    } else {
-                        def.resolve();
-
-                    }
-                });
-            } else {
-                def.resolve();
-            }
-            return def.promise;
+                        }
+                    });
+                } else {
+                    resolve();
+                }
+            })
         }
 
         return {
+            getDownloadUrls:getDownloadUrls,
             load: load,
-            loadSite:loadSite
+            loadSite: loadSite
         }
     }
 })();

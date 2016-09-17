@@ -173,7 +173,7 @@
                 $mdDialog.cancel();
             };
             $scope.addSource = function (input) {
-                vm.sources.push((input || '').replace(/\s+/g, ''));
+                vm.sources.push({src:(input || '').replace(/\s+/g, '')});
             };
             $scope.removeSource = function (index) {
                 vm.sources.splice(index, 1);
@@ -286,6 +286,7 @@
                 customPage.pageData = val;
                 customPage.html = customService.compileAll(val.content);
                 customPage.js = val.js;
+                customPage.sources = val.sources;
             }, 0);
         }
     }
@@ -317,6 +318,7 @@
                 customPage.pageData = val;
                 customPage.html = customService.compileAll(val.content);
                 customPage.js = val.js;
+                customPage.sources = val.sources;
             }, 0);
         }
     }

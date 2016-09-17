@@ -6,7 +6,7 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($auth, $firebase, $stateParams, $firebaseStorage, $rootScope, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
+    function SiteDesign($auth, $firebase, $stateParams, $firebaseStorage, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type, data) {
 
             var typeName = type + 'Name',
@@ -16,12 +16,12 @@
                 customService.convert(data.content, $scope['containers'], 3);
                 vm.css = data.css || '';
                 vm.canvas = data.canvas || {};
-                vm.js= data.js;
+                vm.js = data.js;
 
                 vm[typeName] = $state.params[typeName];
-                $timeout(function(){
+                $timeout(function () {
                     customService.convert(data.content, $scope['containers'], 3);
-                },0);
+                }, 0);
 
 
                 vm[typeRef] = $firebase.queryRef('pages?type=list').child($stateParams.id);
@@ -122,11 +122,11 @@
             }
 
 
-            vm.containerClass={};
+            vm.containerClass = {};
             vm.getContainerClass = function (container) {
                 var itemLayout = container.layout || {},
                     inner = '',
-                    outer='',
+                    outer = '',
                     flex = '',
                     display = '';
                 angular.forEach(['all', 'xs', 'gt-xs', 'sm', 'gt-sm', 'md', 'gt-md', 'lg', 'gt-lg', 'xl'], function (breakpoint) {
@@ -163,8 +163,8 @@
                                 _property = value ? _property + ' ' : '';
                                 _value = ''; //ex layout-fill:true will get layout-fill
 
-                                if(key==='layout-padding'||key==='layout-margin'){
-                                    outer+=_property + _value;
+                                if (key === 'layout-padding' || key === 'layout-margin') {
+                                    outer += _property + _value;
                                     return;
                                 }
                                 break;
@@ -172,7 +172,10 @@
                         inner += _property + _value;
                     })
                 });
-                return {inner: inner + (container.type === 'text'||container.type==='part' ? ' nodrop' : ''), outer: outer+ flex + display}
+                return {
+                    inner: inner + (container.type === 'text' || container.type === 'part' ? ' nodrop' : ''),
+                    outer: outer + flex + display
+                }
             };
 
             vm.import = function ($files, cid, index) {
@@ -186,9 +189,23 @@
 
                     reader.onload = function () {
                         if (ext === 'html') {
-                            var res = _core.util.loader.getExternalSourceFromHtml(reader.result);
-                            vm.sources=res.sources;
-                            importData({id:file.name.split('.html')[0],content: formatParsedHtml($.parseHTML(getBody(res.html)), 1)}, cid, index);
+                            var res = _core.util.loader.getExternalSourceFromHtml(reader.result),//all script, link tags are removed
+                                body = getBody(res.html),
+                                replace = function (val) {
+                                    if (val.search(':') === -1 && val.search('#') === -1) {
+                                        body = body.replace(val, 'fs-' + val);
+                                    }
+                                };
+
+                            (getLocalFilesSrc(body) || []).forEach(replace);
+                            (getLocalFilesHref(body) || []).forEach(replace);
+
+                            vm.sources = res.sources;
+
+                            importData({
+                                id: file.name.split('.html')[0],
+                                content: formatParsedHtml($.parseHTML(body), 1)
+                            }, cid, index);
                         } else if (ext === 'json') {
                             importData(reader.result, cid, index);
                         }
@@ -197,16 +214,27 @@
                 }
             };
 
+            function getLocalFilesSrc(html) {
+                var localFilesSrcRegEx = /src[\s\S]*?=[\s\S]*?['"](?:[^']|[^"])*?['"][\s\S]*?/gm;
+                return html.match(localFilesSrcRegEx);
+            }
+
+            function getLocalFilesHref(html) {
+                var localFilesHrefRegEx = /href[\s\S]*?=[\s\S]*?['"](?:[^']|[^"])*?['"][\s\S]*?/gm;
+                return html.match(localFilesHrefRegEx);
+            }
+
+
             function importData(data, cid, index) {
-                var isFromHTML=!angular.isString(data),
-                    result = isFromHTML ? data:JSON.parse(data);
+                var isFromHTML = !angular.isString(data),
+                    result = isFromHTML ? data : JSON.parse(data);
                 $timeout(function () {
-                    if(cid!==undefined&&index!==undefined){
+                    if (cid !== undefined && index !== undefined) {
                         vm.selectedContainerId = cid;
                         vm.selectedItemIndex = index;
                         result.content = customService.compile(result.content);
-                        vm.item = angular.extend({}, result, result.canvas||{}, {type: 'part', cid:vm.item.cid});
-                        $scope.containers[vm.item.cid]=[];
+                        vm.item = angular.extend({}, result, result.canvas || {}, {type: 'part', cid: vm.item.cid});
+                        $scope.containers[vm.item.cid] = [];
                         vm.updateItem();
                     } else {
                         var styleSheets = {},
@@ -215,17 +243,16 @@
 
                         customService.convert(content.concat(result.content || []), $scope['containers'], 3);
                         vm.css = css + ' ' + (result.css || '');
-                        if(!vm.canvas) vm.canvas = result.canvas||{};
+                        if (!vm.canvas) vm.canvas = result.canvas || {};
                         vm.compile();
                     }
                 }, 0)
             }
 
 
-
             function getBody(rawHtml) {
                 var body = /<body.*?>([\s\S]*)<\/body>/.exec(rawHtml.replace(/(\r\n|\n|\r)/gm, "")) || [];
-                return body[1]!==undefined? body[1]:rawHtml;
+                return body[1] !== undefined ? body[1] : rawHtml;
             }
 
             function factorAttr(attrArr) {
@@ -242,7 +269,7 @@
 
             function formatParsedHtml(dom, level) {
                 var res = [];
-                if(dom===null) return;
+                if (dom === null) return;
                 for (var i = 0; i < dom.length; i++) {
                     var rawChild = dom[i],
                         child = {},
@@ -324,11 +351,12 @@
                 });
                 return partsCss;
             }
-            vm.buildCss=buildCss;
+
+            vm.buildCss = buildCss;
 
             vm.compile = function () {
-                if (!vm.previewPanel&&!vm.fullPagePreview) return;
-                if(vm.refreshPreview){
+                if (!vm.previewPanel && !vm.fullPagePreview) return;
+                if (vm.refreshPreview) {
                     vm.refreshPreview();
                 } else {
                     var styleSheets = {};
@@ -344,8 +372,6 @@
             vm.compile();
 
 
-
-
             vm.update = function () {
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
@@ -358,12 +384,12 @@
                             "css": css || '',
                             "content": content
                         };
-                        if(vm.js&&vm.js.trim()){
+                        if (vm.js && vm.js.trim()) {
                             data.js = vm.js.trim();
                         }
-                        if(vm.canvas) data.canvas=vm.canvas;
-                        if(angular.isArray(vm.sources)) data.sources = vm.sources;
-                        $firebase.update([type+'?type=list&id=' + id, type+'?type=detail&id=' + vm[typeName]], {
+                        if (vm.canvas) data.canvas = vm.canvas;
+                        if (angular.isArray(vm.sources)) data.sources = vm.sources;
+                        $firebase.update([type + '?type=list&id=' + id, type + '?type=detail&id=' + vm[typeName]], {
                             "name": vm[typeName],
                             "author": $auth.currentUser.uid || null,
                             "compressed@1": _core.encoding.compress(data),
@@ -429,7 +455,12 @@
                     var styleSheets = {},
                         content = customService.convertBack($scope.containers, 'root', styleSheets),
                         css = vm.css || '' + buildCss(styleSheets) || '',
-                        data=angular.extend({},{canvas:vm.canvas||{},id:vm[typeName], content:content,css:css});
+                        data = angular.extend({}, {
+                            canvas: vm.canvas || {},
+                            id: vm[typeName],
+                            content: content,
+                            css: css
+                        });
                     snippets.saveData(data, vm[typeName] + '.json')
                 };
 

@@ -184,6 +184,7 @@
             preload = this.query.preload || 2,
             id = getPaginationId(page, size, orderBy);
         if (self.cache && self.cache[id] && parseInt(page) + preload < self.maxCachedPage) {
+            self.result.hits =  self.cache[id];
             return Promise.resolve(self.cache[id]);
         } else {
             self.maxCachedPage = parseInt(page) + 2 * preload;

@@ -25,13 +25,27 @@
         document.head.appendChild(link);
     };
     siteUtil.changeTitle = function (newTitle) {
-        var title = document.createElement('title'),
-            oldTitle = document.getElementById('dynamic-title');
-        title.id = 'dynamic-favicon';
-        title.innerHTML = newTitle;
-        if (oldTitle) {
-            document.head.removeChild(oldTitle);
-        }
-        document.head.appendChild(title);
+        document.title = newTitle;
+
+        // var title = document.createElement('title'),
+        //     oldTitle = document.getElementById('dynamic-title');
+        // title.id = 'dynamic-favicon';
+        // title.innerHTML = newTitle;
+        // if (oldTitle) {
+        //     document.head.removeChild(oldTitle);
+        // }
+        // document.head.appendChild(title);
+    };
+    siteUtil.changeTitle = function (newTitle) {
+        document.title = newTitle;
+
+        // var title = document.createElement('title'),
+        //     oldTitle = document.getElementById('dynamic-title');
+        // title.id = 'dynamic-favicon';
+        // title.innerHTML = newTitle;
+        // if (oldTitle) {
+        //     document.head.removeChild(oldTitle);
+        // }
+        // document.head.appendChild(title);
     }
 })();

@@ -7,7 +7,7 @@
         .factory('customParams', CustomParams);
 
     /* @ngInject */
-    function CustomService($q, $http, $templateCache,injectCSS) {
+    function CustomService() {
         var increment5 = [null, 0, 5, 10, 15, 20, 25, 30, 33, 35, 40, 45, 50, 55, 60, 65, 66, 70, 75, 80, 85, 90, 95, 100],
             flex = ['flex'].concat(increment5),
             layoutOptions = {

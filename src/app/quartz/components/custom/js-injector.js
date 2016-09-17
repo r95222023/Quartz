@@ -4,7 +4,7 @@
         .factory("injectJS", JsInjector);
 
     /* @ngInject */
-    function JsInjector($q, $firebase) {
+    function JsInjector($q) {
         var injectJS = {},
             injected = {};
         var createScript = function (id,value) {

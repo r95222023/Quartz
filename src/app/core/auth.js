@@ -82,7 +82,7 @@
         return new Promise(function (resolve, reject) {
             if (!user) reject('AUTH_NEEDED');
             this.util.getSiteName().then(function (siteName) {
-                self.util.database.queryRef('users-site', {
+                self.util.database.queryRef('site-user', {
                     siteName: siteName,
                     type: 'detail',
                     userId: user.uid
@@ -126,9 +126,10 @@
                         userId: user.uid
                     },
                     data = {};
-                ['users-site','users-root'].forEach(function(path){
+                ['site-user','root-user'].forEach(function(path){
                     ['list','detail'].forEach(function(type){
-                        data[self.util.parseRefUrl(path, Object.assign({type: type}, params))] = basicData;
+                        var path=self.util.parseRefUrl(path, Object.assign({type: type}, params));
+                        data[path] = basicData;
                     })
                 });
                 self.database.ref().update(data).then(resolve).catch(reject);

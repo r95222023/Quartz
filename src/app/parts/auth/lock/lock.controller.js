@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('quartz.components')
+        .module('app.parts.auth')
         .controller('LockController', LockController);
 
     /* @ngInject */

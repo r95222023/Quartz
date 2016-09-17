@@ -7,7 +7,7 @@
         .run(run);
 
     /*@ngInject*/
-    function Auth($q, $firebase) {
+    function Auth($firebase) {
         var Auth = firebase.auth(_core.util.app);
 
         var readyPromise = new Promise(function(resolve,reject){

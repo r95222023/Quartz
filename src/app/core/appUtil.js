@@ -1,6 +1,6 @@
 (function (firebase) {
     'use strict';
-    window._core = window._core||{};
+    window._core = window._core || {};
     window._core.AppUtil = AppUtil;
     if (typeof define === 'function' && define.amd) {
         define(function () {
@@ -13,7 +13,17 @@
     //parse siteName -> get preload data of that site
     var site = 'sites/detail/:siteName',
         user = site + '/users/detail/:userId',
+        analysisMonth = 'analysis/months/:month',
+        analysisWeek = 'analysis/weeks/:week',
+        analysisDate = 'analysis/dates/:date',
+
+
         paths = {
+            'order-analysis': site+'/orders/analysis/:path',
+            'order-analysis-month': site+'/orders/'+analysisMonth,
+            'order-analysis-week': site+'/orders/'+analysisWeek,
+            'order-analysis-date': site+'/orders/'+analysisDate,
+
             'servers': 'servers',
             'queue': 'queue',
             'queue-tasks': 'queue/tasks',
@@ -22,27 +32,28 @@
             'query-response': 'query/response',
             'query-specs': 'query/specs',
             'query-cache': 'query/cache',
-            'templates':'templates/:type',
-            'template':'templates/:type/:id',
-            'my-sites':'users/detail/:uid/sites',
-            'user-path':'users/detail/:userId/:path',
+            'templates': 'templates/:type',
+            'template': 'templates/:type/:id',
+            'my-sites': 'users/detail/:uid/sites',
+            'user-path': 'users/detail/:userId/:path',
             'sites': 'sites/:type',
             'site': 'sites/:type/:siteName',
-            'site-path':site+'/:path',
-            'site-config-preload': site+'/config/preload',
-            'site-config-payment': site+'/config/payment/:provider/:privacy',
-            'files':site+'/files',
-            'file-path':site+'/files/:path',
-            'file-root-path':site+'/files:path',
+            'site-path': site + '/:path',
+            'site-config-preload': site + '/config/preload',
+            'site-config-payment': site + '/config/payment/:provider/:privacy',
+            'files': site + '/files',
+            'file-path': site + '/files/:path',
+            'file-root-path': site + '/files:path',
             'user': user,
             'users-site': site + '/users/:type/:userId',
             'site-users': site + '/users/:type',
             'site-user': site + '/users/:type/:userId',
-            'pages':site+'/pages/:type',
-            'page':site+'/pages/:type/:id',
-            'page-property':site+'/pages/:type/:id/:property',
-            'widgets':site+'/widgets/:type',
-            'widget':site+'/widgets/:type/:id',
+            'root-user': 'users/:type:/:userId/sites/:siteName',
+            'pages': site + '/pages/:type',
+            'page': site + '/pages/:type/:id',
+            'page-property': site + '/pages/:type/:id/:property',
+            'widgets': site + '/widgets/:type',
+            'widget': site + '/widgets/:type/:id',
             'products': site + '/products/:type',
             'product-categories': site + '/products/config/categories',
             'product': site + '/products/:type/:id',
@@ -55,7 +66,7 @@
             'user-orders': user + '/orders/:type',
             'order-payment-allpay': site + '/orders/detail/:orderId/payment/allpay',
             'orders-analysis': site + '/orders/analysis/:dateId',
-            'notifications':'users/detail/:uid/notifications'
+            'notifications': 'users/detail/:uid/notifications'
         };
 
 
@@ -88,14 +99,14 @@
 
     AppUtil.prototype.parseRefUrl = function (refUrl, option, isFile) {
         var res = refUrl,
-            opt= typeof option==='object'? option.params ||option:{},
+            opt = typeof option === 'object' ? option.params || option : {},
             params = Object.assign({}, opt),
-            refUrlAndParams=refUrl.split('?'),
-            stringParams = (refUrlAndParams[1]||'').split('&');
-        if(stringParams[0]!==''){
-            stringParams.forEach(function(val){
+            refUrlAndParams = refUrl.split('?'),
+            stringParams = (refUrlAndParams[1] || '').split('&');
+        if (stringParams[0] !== '') {
+            stringParams.forEach(function (val) {
                 var hash = val.split('=');
-                params[hash[0]]=hash[1];
+                params[hash[0]] = hash[1];
             })
         }
         if (this.paths[refUrlAndParams[0]]) {
@@ -105,25 +116,30 @@
                 res = res.replace(':' + key, params[key + '']);
             }
         }
-        var fileExtension = res.split('.').length ===1;
+        var fileExtension = res.split('.').length === 1;
 
-        res=isFile&&fileExtension? (res+'.js'):res;
+        res = isFile && fileExtension ? (res + '.js') : res;
         return res
     };
 
     AppUtil.prototype.getSiteName = function () {
         var self = this;
-        if(this.siteName){
+        if (this.siteName) {
             return Promise.resolve(this.siteName);
         } else {
             return new Promise(function (resolve, reject) {
                 var url = location.href,
                     domain = url.split('://')[1].split('/')[0];
 
-                self.database.queryRef('sites', {params: {type: 'list'}, orderBy: 'Child: domain', equalTo: domain, limitToFirst:1})
-                    .once('child_added', function(snap){
+                self.database.queryRef('sites', {
+                    params: {type: 'list'},
+                    orderBy: 'Child: domain',
+                    equalTo: domain,
+                    limitToFirst: 1
+                })
+                    .once('child_added', function (snap) {
                         var val = snap.val();
-                        if(!!val&&val.siteName) {
+                        if (!!val && val.siteName) {
                             resolve(val.siteName);
                         } else {
                             resolve(url.split('#!/')[1].split('/')[0]);
@@ -134,7 +150,7 @@
     };
 
     AppUtil.prototype.setSiteName = function (siteName) {
-        this.siteName=siteName;
+        this.siteName = siteName;
     };
 
     function formalizeKey(key) {
@@ -145,7 +161,6 @@
         // ".", "#", "$", "/", "[", or "]"
         return res;
     }
-
 
 
 })(firebase);

@@ -2,6 +2,5 @@
     'use strict';
 
     angular
-        .module('app.parts.files', [
-        ]);
+        .module('app.parts.auth',[]);
 })();

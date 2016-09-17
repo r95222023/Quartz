@@ -59,32 +59,30 @@
             var res = '';
 
             for(var breakpoint in layouts){
-                var layout = layouts[breakpoint],
-                    _breakpoint = breakpoint === 'all' ? '' : '-' + breakpoint;
+                var layout = layouts[breakpoint];
                 for(var key in layout){
                     var value = layout[key];
                     if (value === null) return;
                     var _value = '-' + value + ' ',
-                        _property = key + _breakpoint;
+                        fullname = key + (breakpoint === 'all')? '' : '-' + breakpoint;
                     switch (key) {
                         case 'flex':
                             if (value === 'flex') _value = ' ';
                             break;
                         case 'flex-offset':
-                            break;
                         case 'flex-order':
-                            break;
                         case 'layout':
-                            break;
                         case 'layout-align':
-                            _value = '-' + value.x + '-' + value.y + ' ';
+                            var x = (value.x? '-'+value.x: '');
+                            var y = (value.y? '-'+value.y: '');
+                            _value = x+y+' ';
                             break;
                         default:
-                            _property = value ? _property + ' ' : '';
+                            fullname = value ? fullname + ' ' : '';
                             _value = ''; //ex layout-fill:true will become layout-fill
                             break;
                     }
-                    res += _property + _value;
+                    res += fullname + _value;
                 }
             }
             return res;

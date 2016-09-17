@@ -6,7 +6,7 @@
         .config(menuConfig);
 
     /* @ngInject */
-    function menuConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
+    function menuConfig($translatePartialLoaderProvider, qtMenuProvider) {
         $translatePartialLoaderProvider.addPart('app/parts');
 
         qtMenuProvider.addMenu({
@@ -18,7 +18,7 @@
         });
 
 
-        qtMenuProvider.addMenu({
+        if(location.href.search('localhost:')!==-1) qtMenuProvider.addMenu({
             name: 'MENU.SUPERADMIN',
             icon: 'fa fa-star',
             type: 'dropdown',

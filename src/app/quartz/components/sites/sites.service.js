@@ -77,11 +77,8 @@
         }
 
         var title='TBD';
-        $rootScope.dynamicTitle=function(){
-            return title;
-        };
         this.setTitle = function(newTitle){
-            title = newTitle
+            document.title = newTitle
         };
 
         this.siteName = 'default';
@@ -128,7 +125,7 @@
                 var _res = res || {};
                 $lazyLoad.loadSite(_res).then(function () {
                     sitesService.config = _res;
-                    if(_res.title) sitesService.setTitle(_res.title);
+                    if(_res.title) _core.siteUtil.changeTitle(_res.title);
                     if(_res.favicon) {
                         var src = _res.favicon;
                         if(_res.favicon.search('://')!==-1){
