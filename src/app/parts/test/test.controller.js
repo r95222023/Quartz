@@ -6,10 +6,21 @@
         .controller('TestPageController', TestPageController);
 
     /* @ngInject */
-    function TestPageController($firebase, snippets, analysisService, qtNotificationsService, $state, $mdDialog, config) {
+    function TestPageController($firebase, $firebaseStorage, snippets,$timeout, analysisService, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this,
             to2dig = snippets.to2dig;
-
+        vm.uploadFiles = function(files, errFiles) {
+            vm.files = files;
+            angular.forEach(files, function(file) {
+                $firebaseStorage.fixCSSFile(file).then(function(blob){
+                    $timeout(function(){
+                        vm.url = URL.createObjectURL(blob);
+                    },0)
+                }).catch(function(error){
+                    console.log(error)
+                })
+            });
+        };
         // vm.newOrder = function (daybefore) {
         //
         //     _core.syncTime().then(function (getTime) {

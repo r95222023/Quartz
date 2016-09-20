@@ -23,8 +23,11 @@
                 if (deferedJsLoaded) return;
                 var defered = [];
                 angular.forEach(scope.sources, function (val) {
-                    if (val.src && val.src.split('js')[1] === '' && val.defer) defered.push(val.src);
+                    var split = val.src.split('js');
+
+                    if (val.src && split[split.length-1]==='' && val.defer) defered.push(val.src);
                 });
+
                 $lazyLoad.getDownloadUrls(defered).then(function (res) {
                     $ocLazyLoad.load({serie: true, files: res})
                 });

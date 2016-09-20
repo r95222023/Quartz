@@ -7,6 +7,7 @@
             'app.parts.auth',
             'app.parts.products',
             'app.parts.articles',
+            'app.parts.pages',
             'app.parts.design',
             'app.parts.sites',
             'app.parts.users',

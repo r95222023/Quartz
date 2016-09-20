@@ -40,9 +40,10 @@
                     debug: true,
                     shipping: 0,
                     taxRate: 0,
-                    serverFb: 'quartz', /*https://quartz.firebaseio.com*/
-                    home:'quartz.admin-default.mysites',
+                    reviewerUrl:'https://quartzplayer-5f44e.firebaseapp.com',
+                    playerUrl:'https://quartzplayer-5f44e.firebaseapp.com',
                     defaultUrl:'/admin/mysites',
+                    home:'quartz.admin-default.mysites',
                     // where to redirect users if they need to authenticate
                     loginRedirectState:'authentication.login'
                 },snap.val()));

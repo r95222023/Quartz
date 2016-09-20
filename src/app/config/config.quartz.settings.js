@@ -15,7 +15,6 @@ window.config.quartzSetting=function() {
         qtSettingsProvider.setLogo('assets/images/logo.png');
         // set current version of app (shown in footer)
         qtSettingsProvider.setVersion('0.11.0');
-        qtSettingsProvider.setServerFb(config.serverFb);
 
         // set default custom settings
         qtSettingsProvider.setCustom({

@@ -16,6 +16,7 @@
             ref: ref,
             getSingleDownloadUrl: getSingleDownloadUrl,
             clearTemp: clearTemp,
+            fixCSSFile:fixCSSFile,
             storages: {}
         };
 
@@ -113,6 +114,55 @@
                     val: typeof process === 'function' ? process(val) : val,
                     load: 'loaded'
                 };
+            });
+        }
+
+        function fixCSS(css){
+            var _css=css+'',
+                urlRegEx = /url\(['"][\s\S]*?['"]\)/gm,
+                matches=_css.match(urlRegEx)||[],
+                promises=[];
+            matches.forEach(function(match, index){
+                var url=match.match(/url\(['"]?([\s\S]*?)["']?\)/m)[1];
+                url = url.replace('../','');
+
+                if (match.search('://') === -1) {
+                    promises[index] = $firebaseStorage.ref('file-path?path=' + url).getDownloadURL();
+                } else {
+                    promises[index] = Promise.resolve(url);
+                }
+            });
+            return new Promise(function(resolve,reject){
+                if(matches.length){
+                    Promise.all(promises).then(function(realUrls){
+                        realUrls.forEach(function(url, index){
+                            _css=_css.replace(matches[index], "url('"+realUrls[index]+"')");
+                        });
+                        resolve(_css);
+                    }).catch(reject);
+                } else {
+                    resolve(css);
+                }
+            })
+        }
+
+        function fixCSSFile(file){
+            var myReader = new FileReader();
+            return new Promise(function(resolve, reject){
+                myReader.addEventListener("loadend", function(e){
+                    fixCSS(e.srcElement.result).then(function(fixedCSS){
+                        if(fixedCSS===e.srcElement.result){
+                            resolve(file);
+                        } else {
+                            var fixedCSSFile = new Blob([fixedCSS], {type : "text/css"});
+                            resolve(fixedCSSFile)
+                        }
+                    }).catch(function(error){
+                        console.log(error);
+                        resolve(file);
+                    });
+                });
+                myReader.readAsText(file);
             });
         }
 

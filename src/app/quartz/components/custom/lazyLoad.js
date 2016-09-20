@@ -7,7 +7,6 @@
     function LazyLoad($ocLazyLoad, $firebaseStorage, injectCSS) {
         function getDownloadUrls(srcArr, onUrl){
             var promises = [];
-
             srcArr.forEach(function (src, index) {
                 if (src.search('://') === -1) {
                     promises[index] = $firebaseStorage.ref('file-path?path=' + src).getDownloadURL();
@@ -15,7 +14,7 @@
                     promises[index] = Promise.resolve(src);
                 }
                 if(typeof onUrl==='function'){
-                    promises[index].then(function(){
+                    promises[index].then(function(src){
                         onUrl(src,index);
                     })
                 }
@@ -23,20 +22,37 @@
             return Promise.all(promises);
         }
 
+        function isCSS(source){
+            if(typeof source==='string'){
+                return source.match(/\.css$/)!==null;
+            } else if(typeof source==='object'){
+                var url=source.src||source.href;
+                return source.rel==='stylesheet'||url.match(/\.css$/)!==null;
+            }
+        }
+
+        function isJS(source){
+            if(typeof source==='string'){
+                return source.match(/\.js/)!==null;
+            } else if(typeof source==='object'){
+                var url=source.src||source.href;
+                return source.type==='text/javascript'||url.match(/\.js$/)!==null;
+            }
+        }
+
         function getLazyLoadArgs(sources, pageName) {
             var _sourcesArr = sources || [], jsArr = [], cssArr = [];
-
             _sourcesArr.forEach(function (val) {
                 if (typeof val === 'string') {
-                    if (val.split('.css')[1] === '') {
+                    if (isCSS(val)) {
                         cssArr.push(val);
-                    } else if (val.split('.js')[1] === '') {
+                    } else if (isJS(val)) {
                         jsArr.push(val);
                     }
                 } else if (typeof val === 'object') {
                     val.src = val.src||val.href||'';
-                    if (val.src.split('css')[1] === '') cssArr.push(val.href);
-                    if (val.src.split('js')[1] === ''&&!val.defer) jsArr.push(val.src);
+                    if (isCSS(val)) cssArr.push(val.src);
+                    if (isJS(val)&&!val.defer) jsArr.push(val.src);
                 }
             });
 
@@ -46,6 +62,7 @@
 
             return new Promise(function (resolve, reject) {
                 getDownloadUrls(jsArr).then(function(res){
+
                     resolve({serie: true, files: res});
                 }).catch(reject);
             })
