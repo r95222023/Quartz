@@ -8,6 +8,7 @@ window.config.route=function () {
     /* @ngInject */
     function routeConfig($stateProvider, $urlRouterProvider, config, $locationProvider) {
         // Setup the apps routes
+        // $locationProvider.html5Mode(true);
         $locationProvider.hashPrefix('!');
 
         // 404 & 500 pages

@@ -12,7 +12,9 @@
     <!--<script src="assets/core/core-js/shim.js"></script>-->
     <!--<script src="assets/core/systemjs/system.js"></script>-->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
 
     <!-- build:css({.tmp/serve,src}) styles/vendor.css -->
@@ -57,6 +59,9 @@
 </script>
 
 <!-- build:js(src) scripts/vendor.js -->
+<!-- inject:core -->
+<!-- core js files will be automatically insert here -->
+<!-- endinject -->
 <!-- bower:js -->
 <!-- endbower -->
 
@@ -66,9 +71,6 @@
 <!-- endbuild -->
 
 <!-- build:js({.tmp/serve,.tmp/partials,src}) scripts/app.js -->
-<!-- inject:core -->
-<!-- core js files will be automatically insert here -->
-<!-- endinject -->
 <!-- inject:js -->
 <!-- js files will be automatically insert here -->
 <!-- endinject -->

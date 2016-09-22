@@ -4,7 +4,7 @@
         .module('app', [
             'quartz',
             'ngAnimate', 'ngCookies', 'ngSanitize', 'ngMessages', 'ngMaterial',
-            'ui.router', 'pascalprecht.translate', 'LocalStorageModule', 'angularMoment', 'textAngular', 'md.data.table', angularDragula(angular),'ngFileUpload',
+            'ui.router', 'pascalprecht.translate', 'angularMoment', 'textAngular', 'md.data.table', angularDragula(angular),'ngFileUpload',
             //'seed-module',
             // uncomment above to activate the example seed module
             // 'app.examples',

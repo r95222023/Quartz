@@ -95,6 +95,12 @@ gulp.task('translations', function () {
         .pipe($.size());
 });
 
+gulp.task('preview', function () {
+    return gulp.src(paths.src + '/preview/**/*.*')
+        .pipe(gulp.dest(paths.dist + '/preview'))
+        .pipe($.size());
+});
+
 gulp.task('data', function () {
     return gulp.src(paths.src + '/**/data/*.json')
         .pipe(gulp.dest(paths.dist + '/'))
@@ -116,4 +122,4 @@ gulp.task('clean', function (done) {
     $.del([paths.dist + '/', paths.tmp + '/'], done);
 });
 
-gulp.task('buildapp', ['html', 'images', 'modules', 'core', 'fonts', 'translations', 'misc', 'data', 'examplejs']);
+gulp.task('buildapp', ['html','preview', 'images', 'modules', 'core', 'fonts', 'translations', 'misc', 'data', 'examplejs']);

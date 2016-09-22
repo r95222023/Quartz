@@ -8,7 +8,7 @@
         function getDownloadUrls(srcArr, onUrl){
             var promises = [];
             srcArr.forEach(function (src, index) {
-                if (src.search('://') === -1) {
+                if (src.search('//') === -1) {
                     promises[index] = $firebaseStorage.ref('file-path?path=' + src).getDownloadURL();
                 } else {
                     promises[index] = Promise.resolve(src);

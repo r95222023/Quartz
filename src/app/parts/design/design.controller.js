@@ -143,7 +143,7 @@
             }
         };
 
-        vm.previewUrl ='#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
+        vm.previewUrl ='/preview/#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
 
         vm.previewPanel = false;

@@ -7,7 +7,7 @@
                     <label></label>
                     <input type='text' ng-model="vm.sources[srcIndex]">
                     <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="vm.removeSource(srcIndex)"></md-icon>
+                             ng-click="vm.removeItem('sources',srcIndex)"></md-icon>
                 </md-input-container>
                 <md-input-container flex="100">
                     <label>External Lib</label>
@@ -39,6 +39,40 @@
                 </md-card>
             </div>
 
+        </md-content>
+    </md-tab>
+    <md-tab label="{{'DESIGN.FRAMEWORK'|translate}}">
+        <md-content class="md-padding">
+        </md-content>
+    </md-tab>
+    <md-tab label="{{'DESIGN.META'|translate}}">
+        <md-content class="md-padding">
+            <p>Config Meta</p><br>
+            <div layout="row" layout-wrap>
+                <span flex="100" ng-repeat="(index, meta) in vm.meta track by index">
+                    <code>&lt;meta {{meta[0]}}="{{meta[1]}}"{{meta[2]? ' content="'+meta[2]+'"':''}}&gt;</code>
+                </span>
+                <md-input-container style="width:100px">
+                    <label>Attribute</label>
+                    <input type='text' ng-model="newMetaAttr">
+                </md-input-container>
+                <md-input-container style="width:100px">
+                    <label>Value</label>
+                    <input type='text' ng-model="newMetaAttrVal">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Content</label>
+                    <input type='text' ng-model="newMetaContent">
+                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="vm.addMeta([newMetaAttr,newMetaAttrVal,newMetaContent]);newMetaAttr='';newMetaAttrVal='';newMetaContent=''"></md-icon>
+                </md-input-container>
+            </div>
+            <md-button ng-click="vm.update()">Update</md-button>
+
+        </md-content>
+    </md-tab>
+    <md-tab label="{{'DESIGN.BODY'|translate}}">
+        <md-content class="md-padding">
+            <textarea ng-model="vm.preload.body" cols="100" rows="30" placeholder="{{vm.default[vm.framwork].body}}"></textarea>
         </md-content>
     </md-tab>
 </md-tabs>

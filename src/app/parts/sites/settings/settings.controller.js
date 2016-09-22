@@ -11,10 +11,17 @@
         var vm = this,
             siteName = $stateParams.siteName,
             preloadPath = 'site-config-preload';
+        vm.default={
+            ngMaterial:{
+                body:'<div class="full-height" ui-view></div>'
+            }
+        };
         console.log(siteName);
         $firebaseStorage.getWithCache(preloadPath).then(function (preload) {
             vm.preload = preload || {};
             vm.sources = vm.preload.sources || [];
+            vm.meta = vm.preload.meta||[];
+            vm.framwork = vm.preload.framwork||'ngMaterial';
         });
 
         $firebase.queryRef('site?type=list&siteName='+siteName).once('value', function (snap) {
@@ -61,13 +68,20 @@
             $firebaseStorage.update('site-config-payment?provider=stripe&privacy=private', vm.stripe.private);
         };
 
+        vm.removeItem = function (type,index) {
+            vm[type].splice(index, 1);
+        };
         //external lib
         vm.addSource = function (input) {
             var _input = (input || '').replace(/\s+/g, '');
             if (input) vm.sources.push(_input);
         };
-        vm.removeSource = function (index) {
-            vm.sources.splice(index, 1);
+
+
+        //meta
+        vm.addMeta = function (input) {
+            var _input = input||[];
+            if (input) vm.meta.push(_input);
         };
 
         //import site template
@@ -77,10 +91,12 @@
         //
         vm.update = function () {
             if (vm.sources.length === 0) return;
-            var data = angular.extend({}, vm.preload);
-            data.sources = vm.sources;
+            var preload = angular.extend({}, vm.preload);
+            preload.sources = vm.sources;
+            preload.meta = vm.meta;
+            preload.framework= vm.framwork;
             // $firebase.updateCacheable(preloadPath, data);
-            $firebaseStorage.update(preloadPath, data);
+            $firebaseStorage.update(preloadPath, preload);
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Saved!')
