@@ -16,7 +16,7 @@
             ref: ref,
             getSingleDownloadUrl: getSingleDownloadUrl,
             clearTemp: clearTemp,
-            fixCSSFile:fixCSSFile,
+            fixCSSFile: fixCSSFile,
             storages: {}
         };
 
@@ -33,7 +33,9 @@
         }
 
         function getWithCache(path, option) {
-            return _core.util.storage.getWithCache(path, buildOpt(option));
+            var promise = _core.util.storage.getWithCache(path, buildOpt(option));
+            promise.then(function(){$timeout(angular.noop)});
+            return promise;
         }
 
         function update(path, value, onState, option) {
@@ -53,9 +55,11 @@
         }
 
         function copy(srcPath, destPath, removeSrc, onMeta, onState) {
-            return new Promise(function(resolve,reject){
-                var _onState = typeof onState === 'function' ? onState : function () {},
-                    _onMeta = typeof onMeta === 'function' ? onMeta : function () {},
+            return new Promise(function (resolve, reject) {
+                var _onState = typeof onState === 'function' ? onState : function () {
+                    },
+                    _onMeta = typeof onMeta === 'function' ? onMeta : function () {
+                    },
                     srcRef = ref(srcPath, {isJs: false}),
                     destRef = ref(destPath, {isJs: false});
 
@@ -117,26 +121,51 @@
             });
         }
 
-        function fixCSS(css){
-            var _css=css+'',
-                urlRegEx = /url\(['"][\s\S]*?['"]\)/gm,
-                matches=_css.match(urlRegEx)||[],
-                promises=[];
-            matches.forEach(function(match, index){
-                var url=match.match(/url\(['"]?([\s\S]*?)["']?\)/m)[1];
-                url = url.replace('../','');
-
+        function fixCSS(css, cssPath) {
+            var _css = css + '',
+                urlRegEx = /url\(['"]?[\s\S]*?['"]?\)/gm,
+                matches = _css.match(urlRegEx) || [],
+                promises = [];
+            console.log(matches);
+            matches.forEach(function (match, index) {
+                var url = match.match(/url\(['"]?([\s\S]*?)["']?\)/m)[1];
+                // url=url.replace('font/', '//'+location.host+'/');
                 if (match.search('//') === -1) {
-                    promises[index] = $firebaseStorage.ref('file-path?path=' + url).getDownloadURL();
+                    var cssPathArr = cssPath.split('/');
+                    cssPathArr.pop(); //ex: /aaa/bbb/ccc.css-> ['','aaa','bbb']
+                    if (cssPathArr[0] === '') cssPathArr.shift(); // ['','aaa','bbb']
+                    var urlArr = url.split('../');
+                    var base, relPath = '';
+                    for (var i = 0; i < urlArr.length; i++) {
+                        if (!urlArr[i]) {
+                            cssPathArr.pop();
+                        } else {
+                            relPath += '/' + urlArr[i];
+                        }
+                    }
+                    base = cssPathArr.join('/');
+                    var absolutePath = base ? base + relPath : relPath.substring(1);
+
+                    // promises[index] = $firebaseStorage.ref('file-path?path=' + url).getDownloadURL();
+                    promises[index] = new Promise(function (resolve, reject) {
+                        var pathMatch = absolutePath.match(/(.*?)([?]?[#].*)/m); // ex: ../fonts/abc.eot?#iefix -> fonts/abc.eot
+                        var path = pathMatch === null ? absolutePath : pathMatch[1];
+                        $firebaseStorage.ref('file-path?path=' + path).getDownloadURL().then(function (realUrl) {
+                            resolve(realUrl);
+                        }).catch(function () {
+                            resolve(url);
+                        });
+                    });
                 } else {
                     promises[index] = Promise.resolve(url);
                 }
             });
-            return new Promise(function(resolve,reject){
-                if(matches.length){
-                    Promise.all(promises).then(function(realUrls){
-                        realUrls.forEach(function(url, index){
-                            _css=_css.replace(matches[index], "url('"+realUrls[index]+"')");
+            return new Promise(function (resolve, reject) {
+                if (matches.length) {
+                    Promise.all(promises).then(function (realUrls) {
+
+                        realUrls.forEach(function (url, index) {
+                            _css = _css.replace(matches[index], 'url("' + realUrls[index].replace('"',"'") + '")');
                         });
                         resolve(_css);
                     }).catch(reject);
@@ -146,18 +175,18 @@
             })
         }
 
-        function fixCSSFile(file){
+        function fixCSSFile(file, cssPath) {
             var myReader = new FileReader();
-            return new Promise(function(resolve, reject){
-                myReader.addEventListener("loadend", function(e){
-                    fixCSS(e.srcElement.result).then(function(fixedCSS){
-                        if(fixedCSS===e.srcElement.result){
+            return new Promise(function (resolve, reject) {
+                myReader.addEventListener("loadend", function (e) {
+                    fixCSS(e.srcElement.result, cssPath).then(function (fixedCSS) {
+                        if (fixedCSS === e.srcElement.result) {
                             resolve(file);
                         } else {
-                            var fixedCSSFile = new Blob([fixedCSS], {type : "text/css"});
+                            var fixedCSSFile = new Blob([fixedCSS], {type: "text/css"});
                             resolve(fixedCSSFile)
                         }
-                    }).catch(function(error){
+                    }).catch(function (error) {
                         console.log(error);
                         resolve(file);
                     });

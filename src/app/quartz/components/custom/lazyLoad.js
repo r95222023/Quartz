@@ -13,11 +13,6 @@
                 } else {
                     promises[index] = Promise.resolve(src);
                 }
-                if(typeof onUrl==='function'){
-                    promises[index].then(function(src){
-                        onUrl(src,index);
-                    })
-                }
             });
             return Promise.all(promises);
         }
@@ -56,8 +51,10 @@
                 }
             });
 
-            getDownloadUrls(cssArr, function(cssUrl, index){
-                injectCSS.set('style' + pageName + index, cssUrl, true);
+            getDownloadUrls(cssArr).then(function(cssUrlArr){
+                cssUrlArr.forEach(function(url,index){
+                    injectCSS.set('style' + pageName + index, url, true);
+                });
             });
 
             return new Promise(function (resolve, reject) {

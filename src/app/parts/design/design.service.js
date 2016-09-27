@@ -201,10 +201,13 @@
                             (getLocalFilesHref(body) || []).forEach(replace);
 
                             vm.sources = res.sources;
-
+                            var dom = $.parseHTML(body);
+                            res.script.forEach(function(script){
+                                if(script.innerHTML) dom.push({nodeName:'script', innerHTML:script.innerHTML})
+                            });
                             importData({
                                 id: file.name.split('.html')[0],
-                                content: formatParsedHtml($.parseHTML(body), 1)
+                                content: formatParsedHtml(dom, 1)
                             }, cid, index);
                         } else if (ext === 'json') {
                             importData(reader.result, cid, index);
@@ -266,8 +269,8 @@
                 return res;
             }
 
-
             function formatParsedHtml(dom, level) {
+
                 var res = [];
                 if (dom === null) return;
                 for (var i = 0; i < dom.length; i++) {
@@ -281,7 +284,7 @@
                         case '#text':
                             child.type = 'text';
                             child.content = rawChild.textContent || rawChild.data || '';
-                            res.push(child);
+                            if(!child.content.match(/^\s*$/)) res.push(child);
                             break;
                         case '#comment':
                             break;
@@ -301,6 +304,8 @@
                                 } else {
                                     child.content = rawChild.innerHTML;
                                 }
+                            } else if(rawChild.innerHTML) {
+                                child.content = rawChild.innerHTML;
                             }
                             res.push(child);
                             break
