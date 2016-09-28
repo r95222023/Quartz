@@ -1,0 +1,9 @@
+<section class="editor-pane">
+    <span class="titlebar" layout="row"><span>JS</span><span flex></span><!--<md-icon md-font-icon="fa fa-times" aria-label="hide html"></md-icon>--></span>
+    <md-content style="height:100%;width:100%;">
+        <textarea type="text" class="borderless" style="height: 96%;width:100%;"
+                  ng-change="vm.debouncedUpdateItem()"
+                  ng-model="vm.js"
+                  ng-model-options="{debounce: { 'default': 2000, 'blur': 0 } }"></textarea>
+    </md-content>
+</section>

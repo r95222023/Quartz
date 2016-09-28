@@ -30,6 +30,30 @@
             }
 
             vm.originalName = $state.params[typeName] || '';
+            vm.initEditorLayout= snippets.debounce(initEditorLayout, 300);
+            function initEditorLayout() {
+                setTimeout(function () {
+                    $(window).trigger('resize');
+                }, 300);
+                $('#editor-container').layout({
+                    east__size: .40,
+                    east__initClosed: true,
+                    center__childOptions: {
+                        center__childOptions: {
+                            west__size: 130,
+                            east__size: 280,
+                            east__resizable: false,
+                            west__resizable: false
+                        },
+                        south__size: .50,
+                        south__initClosed: true,
+                        south__childOptions: {
+                            west__size: .33,
+                            east__size: .33
+                        }
+                    }
+                });
+            }
 
 
             vm.compileContent = customService.compileTag;
@@ -202,8 +226,8 @@
 
                             vm.sources = res.sources;
                             var dom = $.parseHTML(body);
-                            res.script.forEach(function(script){
-                                if(script.innerHTML) dom.push({nodeName:'script', innerHTML:script.innerHTML})
+                            res.script.forEach(function (script) {
+                                if (script.innerHTML) dom.push({nodeName: 'script', innerHTML: script.innerHTML})
                             });
                             importData({
                                 id: file.name.split('.html')[0],
@@ -284,7 +308,7 @@
                         case '#text':
                             child.type = 'text';
                             child.content = rawChild.textContent || rawChild.data || '';
-                            if(!child.content.match(/^\s*$/)) res.push(child);
+                            if (!child.content.match(/^\s*$/)) res.push(child);
                             break;
                         case '#comment':
                             break;
@@ -304,7 +328,7 @@
                                 } else {
                                     child.content = rawChild.innerHTML;
                                 }
-                            } else if(rawChild.innerHTML) {
+                            } else if (rawChild.innerHTML) {
                                 child.content = rawChild.innerHTML;
                             }
                             res.push(child);

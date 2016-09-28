@@ -31,6 +31,19 @@
                 resolve: {
                     pageData: ['$firebaseStorage', '$stateParams', function ($firebaseStorage, $stateParams) {
                         return $firebaseStorage.getWithCache('page?type=detail&id=' + $stateParams.pageName);
+                    }],
+                    uiLayout:['$ocLazyLoad', function($ocLazyLoad){
+                        $ocLazyLoad.load([
+                            'assets/modules/ui-layout/jquery-ui.min-core-draggable.css',
+                            'assets/modules/ui-layout/layout-default.css'
+                        ]);
+                        return $ocLazyLoad.load({
+                            serie:true,
+                            files:[
+                                'assets/modules/ui-layout/jquery-ui.min-core-draggable.js',
+                                'assets/modules/ui-layout/jquery.layout.min.js'
+                            ]
+                        })
                     }]
                 },
                 params: {
@@ -48,6 +61,19 @@
                 resolve: {
                     widgetData: ['$lazyLoad', '$stateParams', function ($lazyLoad, $stateParams) {
                         return $lazyLoad.load('widget', $stateParams.widgetName);
+                    }],
+                    uiLayout:['$ocLazyLoad', function($ocLazyLoad){
+                        $ocLazyLoad.load([
+                            'assets/modules/ui-layout/jquery-ui.min-core-draggable.css',
+                            'assets/modules/ui-layout/layout-default.css'
+                        ]);
+                        return $ocLazyLoad.load({
+                            serie:true,
+                            files:[
+                                'assets/modules/ui-layout/jquery-ui.min-core-draggable.js',
+                                'assets/modules/ui-layout/jquery.layout.min.js'
+                            ]
+                        })
                     }]
                 },
                 params: {

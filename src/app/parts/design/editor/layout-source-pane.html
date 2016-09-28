@@ -1,0 +1,45 @@
+<md-content style="width: 100%;height:100%;background:#EEEEEE">
+    <div layout="column" layout-xs="column"
+         layout-align="start center"
+         layout-margin style="overflow: auto">
+        <div>
+            Container
+        </div>
+        <div dragula='"drag-container-root"'
+             dragula-model='containerSource'>
+            <div style="background-color:#F9CC9D;"
+                 class="md-whiteframe-2dp root-handle rootContainerSource dSource"
+                 layout-padding
+                 layout-margin
+                 ng-repeat="container in containerSource track by container.cid">
+                {{container.type|uppercase}}
+            </div>
+        </div>
+        <div>
+            Subcontainer
+        </div>
+        <div dragula='"drag-container-lv1"'
+             dragula-model='subContainerSource'>
+            <div style="background-color:#FDDD9B;"
+                 class="md-whiteframe-2dp lv1-handle subContainerSource dSource"
+                 layout-padding
+                 layout-margin
+                 ng-repeat="subcontainer in subContainerSource track by subcontainer.cid">
+                {{subcontainer.type|uppercase}}
+            </div>
+        </div>
+        <div>
+            Elements
+        </div>
+        <div dragula='"drag-container-lv2"'
+             dragula-model='subSubContainerSource'>
+            <div style="background-color:#C2CF8A;"
+                 class="md-whiteframe-2dp lv2-handle elementSource dSource"
+                 layout-padding
+                 layout-margin
+                 ng-repeat="element in subSubContainerSource track by element.cid">
+                {{element.type|uppercase}}
+            </div>
+        </div>
+    </div>
+</md-content>

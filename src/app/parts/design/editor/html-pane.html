@@ -1,0 +1,14 @@
+<section class="editor-pane">
+    <span class="titlebar" layout="row"><span>HTML</span><span flex></span><!--<md-icon md-font-icon="fa fa-times" aria-label="hide html"></md-icon>--></span>
+    <md-content style="height:100%;" ng-class="{dimmed:vm.dimHtml}">
+        <!--<div ng-hide="vm.item.type==='text'||vm.item.content.indexOf('&lt;!&ndash;include&ndash;&gt;')===-1" style="height:100%;width:100%;background-color:#DDDDDD;"></div>-->
+        <div ng-if="vm.item.type==='text'||vm.item.content.indexOf('<!--include-->')===-1" ng-init="vm.dimHtml=false"></div>
+        <div ng-if="vm.item.type&&vm.item.type!=='text'&&vm.item.content.indexOf('<!--include-->')!==-1" ng-init="vm.dimHtml=true"></div>
+        <code ng-if="vm.dimHtml">{{vm.compileContent(vm.item)}}</code>
+
+        <textarea  ng-if="!vm.dimHtml" type="text" class="borderless" style="height: 96%;width:100%;"
+                   ng-change="vm.debouncedUpdateItem()"
+                   ng-model="vm.item.content"
+                   ng-model-options="{debounce: { 'default': 500, 'blur': 0 } }"></textarea>
+    </md-content>
+</section>

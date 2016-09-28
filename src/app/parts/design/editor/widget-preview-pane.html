@@ -1,0 +1,19 @@
+<div style="min-width:400px;height:100%;margin-left:8px; overflow:hidden;">
+    <span layout="row">
+        <h3>PREVIEW</h3><span flex></span>
+        <md-menu>
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="Open preview menu"><md-icon md-font-icon="fa fa-search-plus"></md-icon>
+            </md-button>
+            <md-menu-content><md-menu-item ng-repeat="scale in [0.3,0.5,0.75,1,1.5]">
+                <md-button ng-click="vm.setPreviewScale(scale)">{{scale}}</md-button>
+            </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </span>
+
+    <md-content ng-init="vm.compile()" ng-if="vm.previewPanel" style="height:100%;width:100%;" >
+        <div ng-style="vm.previewPanelStyle">
+            <custom-item content="vm.html" scope="vm.scope" ng-init="vm.compile()"></custom-item>
+        </div>
+    </md-content>
+</div>
