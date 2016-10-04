@@ -6,7 +6,7 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($auth, $firebase, $stateParams, $firebaseStorage, $state, $mdToast, injectCSS, customService, snippets, $timeout) {
+    function SiteDesign($auth, $firebase, $stateParams, $firebaseStorage, $state, $mdToast, $ocLazyLoad, customService, snippets, $timeout) {
         function ctr(vm, $scope, dragula, type, data) {
 
             var typeName = type + 'Name',
@@ -35,8 +35,9 @@
                 setTimeout(function () {
                     $(window).trigger('resize');
                 }, 300);
-                $('#editor-container').layout({
+                var layout=$('#editor-container').layout({
                     east__size: .40,
+                    east__minSize: 400,
                     east__initClosed: true,
                     center__childOptions: {
                         center__childOptions: {
@@ -53,6 +54,14 @@
                         }
                     }
                 });
+                vm.togglePane= function(pane){
+                    var paneArr= pane.split('.');
+                    if(paneArr[1]){
+                        layout.children[paneArr[0]].layout1.toggle(paneArr[1]);
+                    } else {
+                        layout.toggle(pane);
+                    }
+                };
             }
 
 
@@ -361,6 +370,19 @@
                 vm.compile();
             };
 
+            vm.beautify = function(type){
+                $ocLazyLoad.load(['assets/modules/beautify/beautify-'+type+'.min.js']).then(function(){
+                    var content = type==='html'? vm.item.content:vm[type];
+                    var res= window[type+'_beautify'](content);
+                    if(type==='html'){
+                        vm.item.content=res;
+                    } else{
+                        vm[type]=res;
+                    }
+                    $timeout(angular.noop,0);
+                })
+            };
+
             vm.debouncedUpdateItem = snippets.debounce(vm.updateItem, 1000);
 
             // vm.injectCss = function () {
@@ -405,7 +427,6 @@
                 var styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.css || '' + buildCss(styleSheets) || '';
-                console.log(css)
 
                 var id = vm[typeRef].key,
                     upload = function () {
@@ -426,7 +447,6 @@
                         });
 
                         $firebaseStorage.update(type + '?type=detail&id=' + vm[typeName], data).then(function () {
-                            console.log('saved')
                             $mdToast.show(
                                 $mdToast.simple()
                                     .textContent('Saved!')

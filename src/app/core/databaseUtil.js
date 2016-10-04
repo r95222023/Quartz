@@ -183,7 +183,7 @@
         var self = this,
             preload = this.query.preload || 2,
             id = getPaginationId(page, size, orderBy);
-        if (self.cache[id] && parseInt(page) + preload < self.maxCachedPage) {
+        if (self.cache && self.cache[id] && parseInt(page) + preload < self.maxCachedPage) {
             self.result.hits =  self.cache[id];
             return Promise.resolve(self.cache[id]);
         } else {
@@ -197,7 +197,7 @@
     Pagination.prototype.listener = function (maxCachedPage, page, size, orderBy, resolve, reject) {
         var self = this,
             limitTo = maxCachedPage * parseInt(size),
-            isDesc = (orderBy||'').split('-')[1],
+            isDesc = orderBy.split('-')[1],
             _orderBy = isDesc ? isDesc : orderBy,
             limitToType = isDesc ? 'limitToLast' : 'limitToFirst';
 
@@ -244,7 +244,7 @@
                     orderBy: orderBy
                 }, self.query));
             }
-            self.cache={};
+
             sortedArr.forEach(function (value) {
                 items++;
                 if (items > _page * parseInt(size)) {

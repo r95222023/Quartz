@@ -33,8 +33,10 @@
                         injectCSS.set('filemanagercss', 'assets/modules/file-manager/angular-filemanager.min.css');
 
                         var clean =$transitions.onBefore( { to: '**' }, function(trans){
-                            injectCSS.remove('bootstrapcss');
-                            injectCSS.remove('filemanagercss');
+                            if(trans.$to().name!==trans.$from().name) {
+                                injectCSS.remove('bootstrapcss');
+                                injectCSS.remove('filemanagercss');
+                            }
                             clean();
                         });
                         return load;

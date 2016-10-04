@@ -16,7 +16,6 @@
                 </md-input-container>
                 <md-button ng-click="vm.update()">Update</md-button>
             </div>
-
         </md-content>
 
     </md-tab>
@@ -41,8 +40,14 @@
 
         </md-content>
     </md-tab>
-    <md-tab label="{{'DESIGN.FRAMEWORK'|translate}}">
+    <md-tab label="{{'DESIGN.PRESET'|translate}}">
         <md-content class="md-padding">
+            <md-input-container style="width:100px">
+                <label>Preset</label>
+                <input type='text' ng-model="vm.preload.preset">
+            </md-input-container>
+            <md-button ng-click="vm.update()">Update</md-button>
+
         </md-content>
     </md-tab>
     <md-tab label="{{'DESIGN.META'|translate}}">

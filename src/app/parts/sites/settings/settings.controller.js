@@ -21,7 +21,7 @@
             vm.preload = preload || {};
             vm.sources = vm.preload.sources || [];
             vm.meta = vm.preload.meta||[];
-            vm.framwork = vm.preload.framwork||'ngMaterial';
+            vm.preset = vm.preload.preset||'ng1';
         });
 
         $firebase.queryRef('site?type=list&siteName='+siteName).once('value', function (snap) {
@@ -36,7 +36,6 @@
 
             // $firebase.updateCacheable(preloadPath, vm.preload);
             $firebaseStorage.update(preloadPath, vm.preload);
-
             Object.assign(siteListData, vm.siteListData||{});
             siteListData.title=vm.preload.title||null;
             $firebase.update('site?type=list', siteListData);
@@ -73,8 +72,7 @@
         };
         //external lib
         vm.addSource = function (input) {
-            var _input = (input || '').replace(/\s+/g, '');
-            if (input) vm.sources.push(_input);
+            vm.sources.push({src:(input || '').replace(/\s+/g, '')});
         };
 
 
@@ -90,9 +88,8 @@
         };
         //
         vm.update = function () {
-            if (vm.sources.length === 0) return;
             var preload = angular.extend({}, vm.preload);
-            preload.sources = vm.sources;
+            if (vm.sources.length !== 0) preload.sources = vm.sources;
             preload.meta = vm.meta;
             preload.framework= vm.framwork;
             // $firebase.updateCacheable(preloadPath, data);

@@ -145,52 +145,29 @@
             });
         }
 
-        function isDashboard(state) {
-            var name = state.name;
-            return name !== '' && (name.search('.admin') !== -1 || name === 'pageEditor' || name === 'widgetEditor');
-        }
-
-        function isCustomPage(state) {
-            return state.name.search('customPage') !== -1;
-        }
-
-        if (!config.standAlone) {
-            $transitions.onBefore( { to: '**' }, function(trans, $injector) {
-                var toState = trans.to(),
-                    fromState = trans.from(),
-                    toParams = trans.params('to');
-                if (toParams.siteName) {
-                    setSite(toParams.siteName, toState);
-                } else if (toParams.siteName === '' && _core.util.siteName) {
-                    $state.go(toState.name, Object.assign(toParams, {siteName: _core.util.siteName}));
-                }
-                /*else if (toParams.siteName === '' && !$firebase.databases.selectedSite&&$auth.currentUser) {
-                 redirect('quartz.admin-default.mysites');
-                 }*/
 
 
-                //from dashboard to selected page
-                if (isDashboard(fromState) && isCustomPage(toState)) {
-                    setSite(toParams.siteName, toState, true);
-                }
-                //from selected page to dashboard
-                else if (isCustomPage(fromState) && isDashboard(toState)) {
-                    console.log('reloading');
+        $transitions.onBefore( { to: '**' }, function(trans, $injector) {
+            var toState = trans.to(),
+                fromState = trans.from(),
+                toParams = trans.params('to'),
+                abort;
+            if (toParams.siteName) {
+                setSite(toParams.siteName, toState);
+            } else if (toParams.siteName === '' && _core.util.siteName) {
+                $state.go(toState.name, Object.assign(toParams, {siteName: _core.util.siteName}));
+                abort=true;
+            }
 
-                    $window.location.reload();
-                }
+            sitesService.pageName = toParams.pageName;
 
-                sitesService.pageName = toParams.pageName;
+            if (_core.util.siteName) {
+                var siteName = _core.util.siteName;
 
-                if (_core.util.siteName) {
-                    var siteName = _core.util.siteName;
-
-                    qtMenu.removeGroup("siteSelected");
-                    qtMenu.addGroup("siteSelected", {siteName: siteName});
-                }
-            });
-        } else {
-            qtMenu.addGroup("siteSelected");
-        }
+                qtMenu.removeGroup("siteSelected");
+                qtMenu.addGroup("siteSelected", {siteName: siteName});
+            }
+            return !abort;
+        });
     }
 })();

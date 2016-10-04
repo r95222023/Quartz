@@ -154,7 +154,7 @@
         vm.showSettinsTab = function (ev) {
             $mdDialog.show({
                 controller: SettingsCtrl,
-                templateUrl: 'app/parts/design/editor-settings-dialog.html',
+                templateUrl: 'app/parts/design/setting/editor-settings-dialog.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose: true
