@@ -108,10 +108,6 @@
                     return def.promise
                 };
                 if (toState.name === 'customPage' || toState.name === 'previewFrame') {
-                    if (sitesService.config && sitesService.config.sources) {
-                        console.log('reloading');
-                        $window.location.reload();
-                    }
                     getPreload(def);
                 } else {
                     def.resolve(sitesService);
@@ -155,8 +151,11 @@
             if (toParams.siteName) {
                 setSite(toParams.siteName, toState);
             } else if (toParams.siteName === '' && _core.util.siteName) {
-                $state.go(toState.name, Object.assign(toParams, {siteName: _core.util.siteName}));
-                abort=true;
+                //go to different state on the same site
+                setTimeout(function(){ //wait until last transition is aborted then go to new state.
+                    $state.go(toState.name, Object.assign(toParams, {siteName: _core.util.siteName}));
+                },0)
+                abort=true;//return !abort===false to abort this transition
             }
 
             sitesService.pageName = toParams.pageName;
