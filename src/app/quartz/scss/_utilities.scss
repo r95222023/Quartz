@@ -14,9 +14,6 @@
 }
 
 // - Margin Classes
-.margin-normal {
-  margin: 16px;
-}
 $i : 0;
 @while $i <= 200 {
   .margin-#{$i} {

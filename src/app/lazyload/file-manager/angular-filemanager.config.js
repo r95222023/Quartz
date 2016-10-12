@@ -1,6 +1,6 @@
 angular.module('FileManagerApp').config(['fileManagerConfigProvider', '$translatePartialLoaderProvider', function (config,$translatePartialLoaderProvider) {
     var defaults = config.$get();
-    $translatePartialLoaderProvider.addPart('assets/modules/file-manager');
+    $translatePartialLoaderProvider.addPart('app/lazyload/file-manager');
 
     config.set({
         appName: 'angular-filemanager',

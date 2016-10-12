@@ -371,7 +371,7 @@
             };
 
             vm.beautify = function(type){
-                $ocLazyLoad.load(['assets/modules/beautify/beautify-'+type+'.min.js']).then(function(){
+                $ocLazyLoad.load(['app/lazyload/beautify/beautify-'+type+'.min.js']).then(function(){
                     var content = type==='html'? vm.item.content:vm[type];
                     var res= window[type+'_beautify'](content);
                     if(type==='html'){

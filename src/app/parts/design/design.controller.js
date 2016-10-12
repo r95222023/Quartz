@@ -18,7 +18,7 @@
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
-                    $window.location.href=config.playerUrl+'/#!/'+_core.util.siteName+'/'+name+'/?id='+id;
+                    $window.location.href=config.playerUrl+'/#!/'+_core.util.siteName+'/'+name+'/';
                     // $state.go('customPage', {id: id, pageName: name});
                     break;
                 case 'edit':

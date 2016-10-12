@@ -102,7 +102,7 @@
                         }
                     });
                 }
-            })
+            });
             return Promise.all(promises);
         }
 

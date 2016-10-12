@@ -34,14 +34,14 @@
                     }],
                     uiLayout:['$ocLazyLoad', function($ocLazyLoad){
                         $ocLazyLoad.load([
-                            'assets/modules/ui-layout/jquery-ui.min-core-draggable.css',
-                            'assets/modules/ui-layout/layout-default.css'
+                            'app/lazyload/ui-layout/jquery-ui.min-core-draggable.css',
+                            'app/lazyload/ui-layout/layout-default.css'
                         ]);
                         return $ocLazyLoad.load({
                             serie:true,
                             files:[
-                                'assets/modules/ui-layout/jquery-ui.min-core-draggable.js',
-                                'assets/modules/ui-layout/jquery.layout.min.js'
+                                'app/lazyload/ui-layout/jquery-ui.min-core-draggable.js',
+                                'app/lazyload/ui-layout/jquery.layout.min.js'
                             ]
                         })
                     }]
@@ -64,14 +64,14 @@
                     }],
                     uiLayout:['$ocLazyLoad', function($ocLazyLoad){
                         $ocLazyLoad.load([
-                            'assets/modules/ui-layout/jquery-ui.min-core-draggable.css',
-                            'assets/modules/ui-layout/layout-default.css'
+                            'app/lazyload/ui-layout/jquery-ui.min-core-draggable.css',
+                            'app/lazyload/ui-layout/layout-default.css'
                         ]);
                         return $ocLazyLoad.load({
                             serie:true,
                             files:[
-                                'assets/modules/ui-layout/jquery-ui.min-core-draggable.js',
-                                'assets/modules/ui-layout/jquery.layout.min.js'
+                                'app/lazyload/ui-layout/jquery-ui.min-core-draggable.js',
+                                'app/lazyload/ui-layout/jquery.layout.min.js'
                             ]
                         })
                     }]
@@ -85,7 +85,7 @@
                 templateUrl: 'app/parts/design/widget-editor.tmpl.html',
                 controller: 'WidgetEditorController',
                 controllerAs: 'vm'
-            })
+            });
             // .state('customPage', {
             //     url: '/:siteName/:pageName/?id&params&params2&cate&subCate&queryString&tag&devMode',
             //     params: {

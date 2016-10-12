@@ -24,13 +24,13 @@
                         var load = $ocLazyLoad.load({
                             serie:true,
                             files:[
-                                'assets/modules/bootstrap/dist/js/bootstrap.min.js',
-                                'assets/modules/file-manager/angular-filemanager.min.js',
-                                'assets/modules/file-manager/angular-filemanager.config.js'
+                                'app/lazyload/bootstrap/dist/js/bootstrap.min.js',
+                                'app/lazyload/file-manager/angular-filemanager.min.js',
+                                'app/lazyload/file-manager/angular-filemanager.config.js'
                             ]
                         });
-                        injectCSS.set('bootstrapcss', 'assets/modules/bootswatch/paper/bootstrap.min.css');
-                        injectCSS.set('filemanagercss', 'assets/modules/file-manager/angular-filemanager.min.css');
+                        injectCSS.set('bootstrapcss', 'app/lazyload/bootswatch/paper/bootstrap.min.css');
+                        injectCSS.set('filemanagercss', 'app/lazyload/file-manager/angular-filemanager.min.css');
 
                         var clean =$transitions.onBefore( { to: '**' }, function(trans){
                             if(trans.$to().name!==trans.$from().name) {
