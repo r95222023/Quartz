@@ -4,7 +4,7 @@
         .module('app', [
             'quartz',
             'ngAnimate', 'ngCookies', 'ngSanitize', 'ngMessages', 'ngMaterial',
-            'ui.router', 'pascalprecht.translate', 'angularMoment', 'textAngular', 'md.data.table', angularDragula(angular),'ngFileUpload',
+            'ui.router', 'pascalprecht.translate', 'angularMoment', 'md.data.table', angularDragula(angular),'ngFileUpload',
             'app.parts'
         ]);
 
