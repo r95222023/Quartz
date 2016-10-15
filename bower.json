@@ -19,6 +19,8 @@
         "angular-translate-storage-local": "~2.12.1",
         "angular-ui-router": "~1.0.0",
         "animate.css-scss": "https://github.com/geoffgraham/animate.scss.git#master",
+        "angulartics":"^1.2.1",
+        "angulartics-google-analytics":"~0.3.0",
         "countUp.js": "1.5.0",
         "oclazyload":"1.0.9",
         "ng-file-upload": "~12.0.4"

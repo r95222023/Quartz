@@ -3,20 +3,14 @@
 
     angular
         .module('app.parts.sites')
-        .controller('SiteSettingCtrl', SiteSettingCtrl);
-
+        .controller('SiteSettingCtrl', SiteSettingCtrl)
+        .controller('SiteSettingPaymentCtrl', SiteSettingPaymentCtrl);
     /* @ngInject */
     function SiteSettingCtrl(sitesService, $firebase, $firebaseStorage, $mdToast, $stateParams, snippets) {
         //basic
         var vm = this,
             siteName = $stateParams.siteName,
             preloadPath = 'site-config-preload';
-        vm.default = {
-            ngMaterial: {
-                body: '<div class="full-height" ui-view></div>'
-            }
-        };
-        console.log(siteName);
         $firebaseStorage.getWithCache(preloadPath).then(function (preload) {
             vm.preload = preload || {};
             vm.meta = vm.preload.meta || [];
@@ -30,41 +24,6 @@
         // pageListRef.once('value', function (snap) {
         //     vm.pages = snap.val();
         // });
-        vm.updateBasicInfo = function () {
-            var siteListData = {};
-
-            // $firebase.updateCacheable(preloadPath, vm.preload);
-            $firebaseStorage.update(preloadPath, vm.preload);
-            Object.assign(siteListData, vm.siteListData || {});
-            siteListData.title = vm.preload.title || null;
-            $firebase.update('site?type=list', siteListData);
-        };
-
-        //payment
-        function getPaymentConfig(provider) {
-            angular.forEach(['public', 'private'], function (privacy) {
-                $firebaseStorage.getWithCache('site-config-payment?provider=' + provider + '&privacy=' + privacy).then(function (val) {
-                    vm[provider] = vm[provider] || {};
-                    vm[provider][privacy] = val || {};
-                });
-            });
-        }
-
-        getPaymentConfig('allpay');
-        getPaymentConfig('stripe');
-
-
-        vm.updateAllpay = function () {
-            // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
-            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=public', vm.allpay.public);
-            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=private', vm.allpay.private);
-        };
-
-        vm.updateStripe = function () {
-            $firebase.update(['site-config-payment?provider=stripe&privacy='], vm.stripe);
-            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=public', vm.stripe.public);
-            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=private', vm.stripe.private);
-        };
 
         vm.removeSource = function (type, index) {
             vm.preload[type].splice(index, 1);
@@ -109,14 +68,50 @@
         vm.update = function () {
             attachDownloadUrls()
                 .then(function () {
+                    var siteListData = {};
+
+                    Object.assign(siteListData, vm.siteListData || {});
+                    siteListData.title = vm.preload.title || null;
+                    $firebase.update('site?type=list', siteListData);
                     // $firebase.updateCacheable(preloadPath, data);
-                    $firebaseStorage.update(preloadPath, vm.preload);
-                    $mdToast.show(
-                        $mdToast.simple()
-                            .textContent('Saved!')
-                            .hideDelay(3000)
-                    );
+                    $firebaseStorage.update(preloadPath, vm.preload).then(function () {
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .textContent('Saved!')
+                                .hideDelay(3000)
+                        );
+                    });
                 });
+        };
+    }
+
+    /* @ngInject */
+    function SiteSettingPaymentCtrl($firebase, $firebaseStorage) {
+        var payment = this;
+        //payment
+        function getPaymentConfig(provider) {
+            angular.forEach(['public', 'private'], function (privacy) {
+                $firebaseStorage.getWithCache('site-config-payment?provider=' + provider + '&privacy=' + privacy).then(function (val) {
+                    payment[provider] = payment[provider] || {};
+                    payment[provider][privacy] = val || {};
+                });
+            });
+        }
+
+        getPaymentConfig('allpay');
+        getPaymentConfig('stripe');
+
+
+        payment.updateAllpay = function (publicData, privatedata) {
+            // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
+            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=public', publicData);
+            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=private', privatedata);
+        };
+
+        payment.updateStripe = function (publicData, privatedata) {
+            // $firebase.update(['site-config-payment?provider=stripe&privacy='], vm.stripe);
+            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=public', publicData);
+            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=private', privatedata);
         };
     }
 })();

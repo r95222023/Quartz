@@ -1,0 +1,11 @@
+<md-tabs md-dynamic-height md-border-bottom md-selected="vm.selectedSettingsTab">
+    <md-tab label="{{'SITESETTING.ANALYTICS.GA'|translate}}">
+        <md-content class="md-padding">
+            <md-input-container style="width:100px">
+                <label>Track ID</label>
+                <input type='text' ng-model="vm.preload.analytics.ga.id">
+            </md-input-container>
+            <md-button ng-click="vm.update()">Update</md-button>
+        </md-content>
+    </md-tab>
+</md-tabs>

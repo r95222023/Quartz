@@ -48,27 +48,13 @@
                 controller: 'AllSitesController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.siteSetting-basic', {
+            .state('quartz.admin-default.site-setting', {
                 data: {
                     layout: {
                         // sideMenuSize: 'hidden',
                         //toolbarShrink: true,
                         footer: false
                     }
-                },
-                url: '/admin/:siteName/setting/basic',
-                params: {
-                    siteName: ''
-                },
-                templateUrl: 'app/parts/sites/settings/basic.tmpl.html',
-                // set the controller to load for this page
-                controller: 'SiteSettingCtrl',
-                controllerAs: 'vm'
-            })
-            .state('quartz.admin-default.siteSetting-advance', {
-                url: '/admin/:siteName/setting/advance',
-                params: {
-                    siteName: ''
                 },
                 resolve: {
                     getSyncTime: _core.syncTime,
@@ -76,32 +62,35 @@
                         return $auth.waitForAuth()
                     }]
                 },
-                data: {
-                    layout: {
-                        footer: false
-                    }
+                url: '/admin/:siteName/setting/',
+                params: {
+                    siteName: ''
                 },
+                templateUrl: 'app/parts/sites/settings/setting.html',
+                // set the controller to load for this page
+                controller: 'SiteSettingCtrl',
+                controllerAs: 'vm'
+            })
+            .state('quartz.admin-default.site-setting.basic', {
+                url: 'basic',
+                templateUrl: 'app/parts/sites/settings/basic.tmpl.html'
+            })
+            .state('quartz.admin-default.site-setting.analytics', {
+                url: 'analytics',
+                templateUrl: 'app/parts/sites/settings/analytics.html'
+            })
+            .state('quartz.admin-default.site-setting.advance', {
+                url: 'advance',
                 templateUrl: 'app/parts/sites/settings/advance.tmpl.html',
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'vm'
             })
-
-            .state('quartz.admin-default.siteSetting-payment', {
-                data: {
-                    layout: {
-                        // sideMenuSize: 'hidden',
-                        //toolbarShrink: true,
-                        footer: false
-                    }
-                },
-                url: '/admin/:siteName/payment',
-                params: {
-                    siteName: ''
-                },
+            .state('quartz.admin-default.site-setting.payment', {
+                url: 'payment',
                 templateUrl: 'app/parts/sites/settings/payment.tmpl.html',
                 // set the controller to load for this page
-                controller: 'SiteSettingCtrl',
-                controllerAs: 'vm'
+                controller: 'SiteSettingPaymentCtrl',
+                controllerAs: 'payment'
             })
             .state('quartz.admin-default.template', {
                 data: {

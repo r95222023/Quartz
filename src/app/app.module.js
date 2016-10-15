@@ -4,6 +4,7 @@
         .module('app', [
             'quartz',
             'ngAnimate', 'ngCookies', 'ngSanitize', 'ngMessages', 'ngMaterial',
+            'angulartics','angulartics.google.analytics',
             'ui.router', 'pascalprecht.translate', 'angularMoment', 'md.data.table', angularDragula(angular),'ngFileUpload',
             'app.parts'
         ]);
