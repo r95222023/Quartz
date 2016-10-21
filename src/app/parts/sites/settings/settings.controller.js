@@ -103,15 +103,16 @@
 
 
         payment.updateAllpay = function (publicData, privatedata) {
-            // $firebase.updateCacheable('config/payment/allpay@selectedSite', vm.allpay);
-            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=public', publicData);
-            $firebaseStorage.update('site-config-payment?provider=allpay&privacy=private', privatedata);
+            [['public',publicData],['private',privatedata]].forEach(function(privacy){
+                $firebase.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
+                $firebaseStorage.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
+            });
         };
-
         payment.updateStripe = function (publicData, privatedata) {
-            // $firebase.update(['site-config-payment?provider=stripe&privacy='], vm.stripe);
-            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=public', publicData);
-            $firebaseStorage.update('site-config-payment?provider=stripe&privacy=private', privatedata);
+            [['public',publicData],['private',privatedata]].forEach(function(privacy){
+                $firebase.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
+                $firebaseStorage.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
+            });
         };
     }
 })();

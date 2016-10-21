@@ -43,6 +43,14 @@
 
 //// dynamic menu group 由quartz.run控制
         qtMenuProvider.addMenuToGroup("siteSelected", {
+            name: 'MENU.OVERVIEW',
+            icon: 'fa fa-home',
+            type: 'link',
+            priority: 1.1,
+            state: 'quartz.admin-default.overview'
+        });
+
+        qtMenuProvider.addMenuToGroup("siteSelected", {
             name: 'MENU.SITESETTING',
             icon: 'fa fa-cog',
             type: 'dropdown',

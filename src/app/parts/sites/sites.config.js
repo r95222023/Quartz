@@ -69,7 +69,7 @@
                 templateUrl: 'app/parts/sites/settings/setting.html',
                 // set the controller to load for this page
                 controller: 'SiteSettingCtrl',
-                controllerAs: 'vm'
+                controllerAs: 'common'
             })
             .state('quartz.admin-default.site-setting.basic', {
                 url: 'basic',
@@ -82,7 +82,7 @@
             .state('quartz.admin-default.site-setting.advance', {
                 url: 'advance',
                 templateUrl: 'app/parts/sites/settings/advance.tmpl.html',
-                controller: 'SiteSettingCtrl',
+                controller: 'SiteSettingAdvanceCtrl',
                 controllerAs: 'vm'
             })
             .state('quartz.admin-default.site-setting.payment', {

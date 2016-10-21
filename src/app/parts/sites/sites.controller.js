@@ -186,6 +186,10 @@
 
         };
 
+        vm.go=function(site){
+            $state.go('quartz.admin-default.overview',{siteName:site.siteName})
+        }
+
     }
 
     /* @ngInject */

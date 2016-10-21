@@ -3,45 +3,45 @@
         <md-content class="md-padding">
             <div layout="row" layout-wrap>
                 <p>Add External Javascript files (Group 1)</p><br>
-                <md-input-container flex="100" ng-repeat="(srcIndex, src) in vm.preload.scripts_1 track by srcIndex">
+                <md-input-container flex="100" ng-repeat="(srcIndex, src) in common.preload.scripts_1 track by srcIndex">
                     <label></label>
-                    <input type='text' ng-model="vm.preload.scripts_1[srcIndex].src">
+                    <input type='text' ng-model="common.preload.scripts_1[srcIndex].src">
                     <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="vm.removeSource('scripts_1',srcIndex)"></md-icon>
+                             ng-click="common.removeSource('scripts_1',srcIndex)"></md-icon>
                 </md-input-container>
                 <md-input-container flex="100">
                     <label>New scripts 1</label>
                     <input type='text' ng-model="newScripts_1">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="vm.addSource('scripts_1', newScripts_1);newScripts_1=''"></md-icon>
+                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addSource('scripts_1', newScripts_1);newScripts_1=''"></md-icon>
                 </md-input-container>
 
                 <p>Add External Javascript files (Group 2)</p><br>
-                <md-input-container flex="100" ng-repeat="(srcIndex, src) in vm.preload.scripts_2 track by srcIndex">
+                <md-input-container flex="100" ng-repeat="(srcIndex, src) in common.preload.scripts_2 track by srcIndex">
                     <label></label>
-                    <input type='text' ng-model="vm.preload.scripts_2[srcIndex].src">
+                    <input type='text' ng-model="common.preload.scripts_2[srcIndex].src">
                     <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="vm.removeSource('scripts_2',srcIndex)"></md-icon>
+                             ng-click="common.removeSource('scripts_2',srcIndex)"></md-icon>
                 </md-input-container>
                 <md-input-container flex="100">
                     <label>New scripts 2</label>
                     <input type='text' ng-model="newScripts_2">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="vm.addSource('scripts_2', newScripts_2);newScripts_2=''"></md-icon>
+                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addSource('scripts_2', newScripts_2);newScripts_2=''"></md-icon>
                 </md-input-container>
 
                 <p>Add External CSS files</p><br>
-                <md-input-container flex="100" ng-repeat="(srcIndex, src) in vm.preload.styles_1 track by srcIndex">
+                <md-input-container flex="100" ng-repeat="(srcIndex, src) in common.preload.styles_1 track by srcIndex">
                     <label></label>
-                    <input type='text' ng-model="vm.preload.styles_1[srcIndex].src">
+                    <input type='text' ng-model="common.preload.styles_1[srcIndex].src">
                     <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="vm.removeSource('styles_1',srcIndex)"></md-icon>
+                             ng-click="common.removeSource('styles_1',srcIndex)"></md-icon>
                 </md-input-container>
                 <md-input-container flex="100">
                     <label>New styles</label>
                     <input type='text' ng-model="newStyles_1">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="vm.addSource('styles_1', newStyles_1);newStyles_1=''"></md-icon>
+                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addSource('styles_1', newStyles_1);newStyles_1=''"></md-icon>
                 </md-input-container>
             </div>
-            <md-button ng-click="vm.update()">UPDATE</md-button>
+            <md-button ng-click="common.update()">UPDATE</md-button>
         </md-content>
 
     </md-tab>
@@ -68,22 +68,30 @@
     </md-tab>
     <md-tab label="{{'DESIGN.PRESET'|translate}}">
         <md-content class="md-padding">
-            <md-input-container style="width:100px">
+            <md-input-container style="width:300px">
                 <label>Preset</label>
-                <input type='text' ng-model="vm.preload.preset">
+                <md-select ng-model="common.preload.preset.id">
+                    <md-option><em>None</em></md-option>
+                    <md-option ng-repeat="preset in vm.presets track by preset.name" ng-value="preset.id">
+                        {{preset.name}}
+                    </md-option>
+                </md-select>
             </md-input-container>
-            <md-button ng-click="vm.update()">Update</md-button>
-
+            <md-input-container ng-if="common.preload.preset.id==='ng1'||common.preload.preset.id==='ngMaterial'">
+                <label>Dependent Angular Modules</label>
+                <input type='text' ng-model="common.preload.preset.config.dependencies">
+            </md-input-container>
+            <md-button ng-click="common.update()">Update</md-button>
         </md-content>
     </md-tab>
     <md-tab label="{{'DESIGN.META'|translate}}">
         <md-content class="md-padding">
             <p>Config Meta</p><br>
             <div layout="row" layout-wrap>
-                <span flex="100" ng-repeat="(index, meta) in vm.preload.meta track by index">
+                <span flex="100" ng-repeat="(index, meta) in common.preload.meta track by index">
                     <code>&lt;meta {{meta[0]}}="{{meta[1]}}"{{meta[2]? ' content="'+meta[2]+'"':''}}&gt;</code>
                     <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="vm.removeSource('meta',index)"></md-icon>
+                             ng-click="common.removeSource('meta',index)"></md-icon>
                 </span>
                 <md-input-container style="width:100px">
                     <label>Attribute</label>
@@ -96,16 +104,16 @@
                 <md-input-container flex>
                     <label>Content</label>
                     <input type='text' ng-model="newMetaContent">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="vm.addMeta([newMetaAttr,newMetaAttrVal,newMetaContent]);newMetaAttr='';newMetaAttrVal='';newMetaContent=''"></md-icon>
+                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addMeta([newMetaAttr,newMetaAttrVal,newMetaContent]);newMetaAttr='';newMetaAttrVal='';newMetaContent=''"></md-icon>
                 </md-input-container>
             </div>
-            <md-button ng-click="vm.update()">Update</md-button>
+            <md-button ng-click="common.update()">Update</md-button>
 
         </md-content>
     </md-tab>
     <md-tab label="{{'DESIGN.BODY'|translate}}">
         <md-content class="md-padding">
-            <textarea ng-model="vm.preload.body" cols="100" rows="30" placeholder="{{vm.default[vm.framwork].body}}"></textarea>
+            <textarea ng-model="common.preload.body" cols="100" rows="30" placeholder="{{common.default[common.framwork].body}}"></textarea>
         </md-content>
     </md-tab>
 </md-tabs>

@@ -3,7 +3,7 @@
 
     angular
         .module('app.parts', [
-            //'app.parts.menu',
+            'app.parts.overview',
             'app.parts.auth',
             'app.parts.products',
             'app.parts.articles',
