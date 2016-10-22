@@ -1,52 +1,62 @@
-<md-tabs md-dynamic-height md-border-bottom md-selected="vm.selectedSettingsTab">
+<md-tabs class="md-primary" md-dynamic-height md-border-bottom md-selected="vm.selectedSettingsTab">
     <md-tab label="{{'DESIGN.EXTERNAL'|translate}}">
-        <md-content class="md-padding">
-            <div layout="row" layout-wrap>
-                <p>Add External Javascript files (Group 1)</p><br>
-                <md-input-container flex="100" ng-repeat="(srcIndex, src) in common.preload.scripts_1 track by srcIndex">
-                    <label></label>
-                    <input type='text' ng-model="common.preload.scripts_1[srcIndex].src">
-                    <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="common.removeSource('scripts_1',srcIndex)"></md-icon>
-                </md-input-container>
-                <md-input-container flex="100">
-                    <label>New scripts 1</label>
-                    <input type='text' ng-model="newScripts_1">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addSource('scripts_1', newScripts_1);newScripts_1=''"></md-icon>
-                </md-input-container>
+        <md-content class="transparent-bg-color" layout="row" layout-padding layout-align="center">
+            <md-card class="admin-card">
+                <md-card-content layout="row" layout-wrap>
+                    <p>External Javascript files (Group 1)</p><br>
+                    <md-input-container flex="100"
+                                        ng-repeat="(srcIndex, src) in common.preload.scripts_1 track by srcIndex">
+                        <label></label>
+                        <input type='text' ng-model="common.preload.scripts_1[srcIndex].src">
+                        <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
+                                 ng-click="common.removeSource('scripts_1',srcIndex)"></md-icon>
+                    </md-input-container>
+                    <md-input-container flex="100">
+                        <label>Add scripts 1</label>
+                        <input type='text' ng-model="newScripts_1">
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer"
+                                 ng-click="common.addSource('scripts_1', newScripts_1);newScripts_1=''"></md-icon>
+                    </md-input-container>
 
-                <p>Add External Javascript files (Group 2)</p><br>
-                <md-input-container flex="100" ng-repeat="(srcIndex, src) in common.preload.scripts_2 track by srcIndex">
-                    <label></label>
-                    <input type='text' ng-model="common.preload.scripts_2[srcIndex].src">
-                    <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="common.removeSource('scripts_2',srcIndex)"></md-icon>
-                </md-input-container>
-                <md-input-container flex="100">
-                    <label>New scripts 2</label>
-                    <input type='text' ng-model="newScripts_2">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addSource('scripts_2', newScripts_2);newScripts_2=''"></md-icon>
-                </md-input-container>
+                    <p>External Javascript files (Group 2)</p><br>
+                    <md-input-container flex="100"
+                                        ng-repeat="(srcIndex, src) in common.preload.scripts_2 track by srcIndex">
+                        <label></label>
+                        <input type='text' ng-model="common.preload.scripts_2[srcIndex].src">
+                        <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
+                                 ng-click="common.removeSource('scripts_2',srcIndex)"></md-icon>
+                    </md-input-container>
+                    <md-input-container flex="100">
+                        <label>Add scripts 2</label>
+                        <input type='text' ng-model="newScripts_2">
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer"
+                                 ng-click="common.addSource('scripts_2', newScripts_2);newScripts_2=''"></md-icon>
+                    </md-input-container>
 
-                <p>Add External CSS files</p><br>
-                <md-input-container flex="100" ng-repeat="(srcIndex, src) in common.preload.styles_1 track by srcIndex">
-                    <label></label>
-                    <input type='text' ng-model="common.preload.styles_1[srcIndex].src">
-                    <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="common.removeSource('styles_1',srcIndex)"></md-icon>
-                </md-input-container>
-                <md-input-container flex="100">
-                    <label>New styles</label>
-                    <input type='text' ng-model="newStyles_1">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addSource('styles_1', newStyles_1);newStyles_1=''"></md-icon>
-                </md-input-container>
-            </div>
-            <md-button ng-click="common.update()">UPDATE</md-button>
+                    <p>External CSS files</p><br>
+                    <md-input-container flex="100"
+                                        ng-repeat="(srcIndex, src) in common.preload.styles_1 track by srcIndex">
+                        <label></label>
+                        <input type='text' ng-model="common.preload.styles_1[srcIndex].src">
+                        <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
+                                 ng-click="common.removeSource('styles_1',srcIndex)"></md-icon>
+                    </md-input-container>
+                    <md-input-container flex="100">
+                        <label>Add styles</label>
+                        <input type='text' ng-model="newStyles_1">
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer"
+                                 ng-click="common.addSource('styles_1', newStyles_1);newStyles_1=''"></md-icon>
+                    </md-input-container>
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-raised md-primary" ng-click="common.update()">UPDATE</md-button>
+                </md-card-actions>
+            </md-card>
         </md-content>
 
     </md-tab>
     <md-tab label="{{'DESIGN.TEMPLATES'|translate}}">
-        <md-content layout="row" class="md-padding" ng-controller="TemplateCtrl as tmplCtrl">
+        <md-content layout="row" class="transparent-bg-color" ng-controller="TemplateCtrl as tmplCtrl">
             <div flex-gt-xs="33" flex-gt-sm="25" flex-gt-md="20"
                  ng-repeat="tmpl in tmplCtrl.pagination.result.hits">
                 <md-card>
@@ -67,53 +77,73 @@
         </md-content>
     </md-tab>
     <md-tab label="{{'DESIGN.PRESET'|translate}}">
-        <md-content class="md-padding">
-            <md-input-container style="width:300px">
-                <label>Preset</label>
-                <md-select ng-model="common.preload.preset.id">
-                    <md-option><em>None</em></md-option>
-                    <md-option ng-repeat="preset in vm.presets track by preset.name" ng-value="preset.id">
-                        {{preset.name}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container ng-if="common.preload.preset.id==='ng1'||common.preload.preset.id==='ngMaterial'">
-                <label>Dependent Angular Modules</label>
-                <input type='text' ng-model="common.preload.preset.config.dependencies">
-            </md-input-container>
-            <md-button ng-click="common.update()">Update</md-button>
+        <md-content class="transparent-bg-color" layout="row" layout-padding layout-align="center">
+            <md-card class="admin-card">
+                <md-card-content layout="row" layout-wrap>
+                    <md-input-container style="width:300px">
+                        <label>Preset</label>
+                        <md-select ng-model="common.preload.preset.id">
+                            <md-option><em>None</em></md-option>
+                            <md-option ng-repeat="preset in vm.presets track by preset.name" ng-value="preset.id">
+                                {{preset.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container
+                        ng-if="common.preload.preset.id==='ng1'||common.preload.preset.id==='ngMaterial'">
+                        <label>Dependent Angular Modules</label>
+                        <input type='text' ng-model="common.preload.preset.config.dependencies">
+                    </md-input-container>
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-raised md-primary" ng-click="common.update()">UPDATE</md-button>
+                </md-card-actions>
+            </md-card>
         </md-content>
     </md-tab>
     <md-tab label="{{'DESIGN.META'|translate}}">
-        <md-content class="md-padding">
-            <p>Config Meta</p><br>
-            <div layout="row" layout-wrap>
-                <span flex="100" ng-repeat="(index, meta) in common.preload.meta track by index">
-                    <code>&lt;meta {{meta[0]}}="{{meta[1]}}"{{meta[2]? ' content="'+meta[2]+'"':''}}&gt;</code>
-                    <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
-                             ng-click="common.removeSource('meta',index)"></md-icon>
-                </span>
-                <md-input-container style="width:100px">
-                    <label>Attribute</label>
-                    <input type='text' ng-model="newMetaAttr">
-                </md-input-container>
-                <md-input-container style="width:100px">
-                    <label>Value</label>
-                    <input type='text' ng-model="newMetaAttrVal">
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Content</label>
-                    <input type='text' ng-model="newMetaContent">
-                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer" ng-click="common.addMeta([newMetaAttr,newMetaAttrVal,newMetaContent]);newMetaAttr='';newMetaAttrVal='';newMetaContent=''"></md-icon>
-                </md-input-container>
-            </div>
-            <md-button ng-click="common.update()">Update</md-button>
-
+        <md-content class="transparent-bg-color" layout="row" layout-padding layout-align="center">
+            <md-card class="admin-card">
+                <md-card-content>
+                    <p>Config Meta</p><br>
+                    <div layout="row" layout-wrap>
+                        <span flex="100" ng-repeat="(index, meta) in common.preload.meta track by index">
+                            <code>&lt;meta {{meta[0]}}="{{meta[1]}}"{{meta[2]? ' content="'+meta[2]+'"':''}}&gt;</code>
+                            <md-icon md-font-icon="fa fa-times" style="cursor:pointer;" ng-click="common.removeSource('meta',index)"></md-icon>
+                        </span>
+                        <md-input-container style="width:100px">
+                            <label>Attribute</label>
+                            <input type='text' ng-model="newMetaAttr">
+                        </md-input-container>
+                        <md-input-container style="width:100px">
+                            <label>Value</label>
+                            <input type='text' ng-model="newMetaAttrVal">
+                        </md-input-container>
+                        <md-input-container flex>
+                            <label>Content</label>
+                            <input type='text' ng-model="newMetaContent">
+                            <md-icon md-font-icon="fa fa-plus" style="cursor:pointer"
+                                     ng-click="common.addMeta([newMetaAttr,newMetaAttrVal,newMetaContent]);newMetaAttr='';newMetaAttrVal='';newMetaContent=''"></md-icon>
+                        </md-input-container>
+                    </div>
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-raised md-primary" ng-click="common.update()">UPDATE</md-button>
+                </md-card-actions>
+            </md-card>
         </md-content>
     </md-tab>
     <md-tab label="{{'DESIGN.BODY'|translate}}">
-        <md-content class="md-padding">
-            <textarea ng-model="common.preload.body" cols="100" rows="30" placeholder="{{common.default[common.framwork].body}}"></textarea>
+        <md-content class="transparent-bg-color" layout="row" layout-align="center">
+            <md-card class="admin-card">
+                <md-card-content>
+                    <textarea ng-model="common.preload.body" cols="100" rows="30"
+                              placeholder="{{common.default[common.framwork].body}}"></textarea>
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-raised md-primary" ng-click="common.update()">UPDATE</md-button>
+                </md-card-actions>
+            </md-card>
         </md-content>
     </md-tab>
 </md-tabs>

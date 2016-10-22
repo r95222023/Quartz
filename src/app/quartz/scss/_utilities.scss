@@ -13,6 +13,10 @@
   box-sizing: border-box;
 }
 
+.transparent-bg-color {
+    background-color:transparent !important;
+}
+
 // - Margin Classes
 $i : 0;
 @while $i <= 200 {

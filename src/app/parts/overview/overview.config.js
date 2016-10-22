@@ -11,6 +11,12 @@
         $stateProvider
             .state('quartz.admin-default.overview', {
                 url: '/admin/:siteName/overview',
+                data: {
+                    layout: {
+                        //toolbarShrink: true,
+                        footer: false
+                    }
+                },
                 params: {
                     siteName: ''
                 },

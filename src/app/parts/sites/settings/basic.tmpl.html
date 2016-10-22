@@ -1,32 +1,43 @@
-<md-content layout-padding>
-    <form>
-        <fieldset>
-            <legend><h3>Basic Info</h3></legend>
-            <div layout="row" layout-wrap>
-                <md-input-container flex="50">
-                    <label>Title</label>
-                    <input type='text' ng-model="common.preload.title">
-                </md-input-container>
-                <md-input-container flex="50">
-                    <label>Favicon</label>
-                    <input type='text' ng-model="common.preload.favicon">
-                </md-input-container>
+<md-content layout="row" layout-padding layout-align="center" class="admin-card-container">
+    <md-card class="admin-card">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Basic</span>
+                <span class="md-subhead"></span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <form>
+                <fieldset>
+                    <div layout="row" layout-wrap>
+                        <md-input-container flex="50">
+                            <label>Title</label>
+                            <input type='text' ng-model="common.preload.title">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>Favicon</label>
+                            <input type='text' ng-model="common.preload.favicon">
+                        </md-input-container>
 
-                <md-input-container flex="50">
-                    <label>Description</label>
-                    <input type='text' ng-model="common.siteListData.description">
-                </md-input-container>
-                <md-input-container flex="50">
-                    <label>Type</label>
-                    <input type='text' ng-model="common.siteListData.type">
-                </md-input-container>
-                <md-input-container flex="50">
-                    <label>Thumbnail</label>
-                    <input type='text' ng-model="common.siteListData.thumbnail">
-                </md-input-container>
-            </div>
-        </fieldset>
-    </form>
-    <md-button ng-click="common.update()">Update</md-button>
+                        <md-input-container flex="50">
+                            <label>Description</label>
+                            <input type='text' ng-model="common.siteListData.description">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>Type</label>
+                            <input type='text' ng-model="common.siteListData.type">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>Thumbnail</label>
+                            <input type='text' ng-model="common.siteListData.thumbnail">
+                        </md-input-container>
+                    </div>
+                </fieldset>
+            </form>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+            <md-button class="md-raised md-primary" ng-click="common.update()">Update</md-button>
+        </md-card-actions>
+    </md-card>
 
 </md-content>

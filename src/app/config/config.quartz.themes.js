@@ -196,8 +196,15 @@ window.config.quartzThemes=function() {
 
         // BLUE SKY SKIN
         qtThemingProvider.theme('blue')
-            .primaryPalette('blue',{
+            .primaryPalette('light-blue',{
                 "default":'700'
+            })
+            .accentPalette('red')
+            .warnPalette('lime');
+
+        qtThemingProvider.theme('light-blue')
+            .primaryPalette('light-blue',{
+                "default":'600'
             })
             .accentPalette('red')
             .warnPalette('lime');
@@ -206,7 +213,7 @@ window.config.quartzThemes=function() {
             .sidebarTheme('blue')
             .toolbarTheme('white-cyan')
             .logoTheme('blue')
-            .contentTheme('indigo');
+            .contentTheme('light-blue');
 
         // KERMIT GREEN SKIN
         qtThemingProvider.theme('light-green')

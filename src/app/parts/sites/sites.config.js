@@ -13,6 +13,7 @@
             .state('quartz.admin-default.mysites', {
                 data: {
                     layout: {
+                        contentClass:'admin-card-container',
                         sideMenuSize: 'hidden',
                         //toolbarShrink: true,
                         footer: false
@@ -53,6 +54,7 @@
                     layout: {
                         // sideMenuSize: 'hidden',
                         //toolbarShrink: true,
+                        contentClass:'admin-card-container',
                         footer: false
                     }
                 },
