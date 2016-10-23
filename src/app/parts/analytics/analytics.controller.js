@@ -6,7 +6,7 @@
         .controller('AnalyticsController', AnalyticsController);
 
     /* @ngInject */
-    function AnalyticsController($firebase, analysisService, qtNotificationsService, $state, $mdDialog, config) {
+    function AnalyticsController($firebase,$scope, analysisService, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         vm.orderData={};
 
@@ -47,26 +47,50 @@
             }
         };
 
-        vm.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-        vm.series = ['Series A', 'Series B'];
-        vm.orderSeries=['Daily Orders'];
+        vm.options={
+            lineTension:0
+        };
 
+
+        vm.labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        vm.salesSeries = ['Sales'/*, 'Series B'*/];
+        vm.incomeSeries = ['Sales'/*, 'Series B'*/];
+
+        vm.orderSeries=['Daily Orders'];
+        vm.datasetOverride=[{lineTension: 0}];
         /////////
 
-        function randomData() {
-            vm.data = [];
-            for (var series = 0; series < vm.series.length; series++) {
+        function randomData(dataName, serieName, lableName, order) {
+            vm[dataName] = [];
+            for (var series = 0; series < vm[serieName].length; series++) {
                 var row = [];
-                for (var label = 0; label < vm.labels.length; label++) {
-                    row.push(Math.floor((Math.random() * 100) + 1));
+                for (var label = 0; label < vm[lableName].length; label++) {
+                    row.push(Math.floor((Math.random() * (order||100)) + 1));
                 }
-                vm.data.push(row);
+                vm[dataName].push(row);
             }
         }
 
         // init
 
-        randomData();
+        randomData('salesData','salesSeries','labels', 100);
+        randomData('incomeData','incomeSeries','labels', 10000);
+
+
+        vm.topSales=[
+            {itemId: 'P100001', name: 'Apple', count:43},
+            {itemId: 'P100003', name: 'Orange', count:31},
+            {itemId: 'P100002', name: 'Pearl', count:25},
+            {itemId: 'P100004', name: 'Guava', count:20},
+            {itemId: 'P100005', name: 'Banana', count:11}
+        ];
+        vm.topIncome=[
+            {itemId: 'P100003', name: 'Orange', count:5400},
+            {itemId: 'P100004', name: 'Guava', count:3850},
+            {itemId: 'P100002', name: 'Pearl', count:3230},
+            {itemId: 'P100001', name: 'Apple', count:3210},
+            {itemId: 'P100005', name: 'Banana', count:1880}
+        ];
         console.log(vm.data)
         console.log(vm.labels)
 

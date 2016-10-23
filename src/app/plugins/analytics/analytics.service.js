@@ -141,6 +141,7 @@
         }
 
         function getDateKey(periodType, date, month, year) {
+            var key;
             switch (periodType) {
                 case 'season':
                     key = year + '' + month;

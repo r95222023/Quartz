@@ -68,7 +68,7 @@
                 params: {
                     siteName: ''
                 },
-                templateUrl: 'app/parts/sites/settings/setting.html',
+                template: '<ui-view></ui-view>',
                 // set the controller to load for this page
                 controller: 'SiteSettingCtrl',
                 controllerAs: 'common'

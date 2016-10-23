@@ -113,12 +113,12 @@
             children: [
                 {
                     name: 'MENU.PANDC.PRODUCTS',
-                    state: 'quartz.admin-default.productManager',
+                    state: 'quartz.admin-default.products.manager',
                     type: 'link'
                 },
                 {
                     name: 'MENU.PANDC.CATEGORIES',
-                    state: 'quartz.admin-default.categoryManager',
+                    state: 'quartz.admin-default.products.category',
                     type: 'link'
                 }
             ]
@@ -132,12 +132,12 @@
             children: [
                 {
                     name: 'MENU.PANDC.ARTICLES',
-                    state: 'quartz.admin-default.articleManager',
+                    state: 'quartz.admin-default.articles.manager',
                     type: 'link'
                 },
                 {
                     name: 'MENU.PANDC.CATEGORIES',
-                    state: 'quartz.admin-default.articleCategoryManager',
+                    state: 'quartz.admin-default.articles.category',
                     type: 'link'
                 }
             ]

@@ -30,7 +30,7 @@
             // });
             $firebaseStorage.getWithCache('product-categories').then(function (val) {
                 console.log(val);
-                vm.categories = val;
+                vm.categories = val||[];
             });
 
         };vm.getCate();
@@ -56,7 +56,7 @@
         };
 
         vm.saveCate = function () {
-            if(vm.categories) {
+            if(vm.categories.length) {
                 // $firebase.updateCacheable(path, vm.categories);
                 $firebaseStorage.update('product-categories', vm.categories);
             }

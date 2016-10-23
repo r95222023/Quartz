@@ -10,36 +10,41 @@
 
         $translatePartialLoaderProvider.addPart('app/parts/articles');
         $stateProvider
-            .state('quartz.admin-default.articleList', {
-                url: '/:siteName/articles/list/?&cate&subCate&queryString&tag',
+            .state('quartz.admin-default.articles', {
+                url: '/admin/:siteName/articles/',
                 params: {
-                    siteName: '',
-                    cate: '',
-                    subCate: '',
-                    queryString: '',
-                    tag: ''
+                    siteName: ''
                 },
-                templateUrl: 'app/parts/articles/list/list.tmpl.html',
-                controller: 'ArticleListController',
-                controllerAs: 'vm'
+                data: {
+                    layout: {
+                        // sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        contentClass:'admin-card-container',
+                        footer: false
+                    }
+                },
+                template: '<ui-view></ui-view>',
+                // controller: 'ProductsController',
+                // controllerAs: 'common',
+                resolve: {
+                    getServerTime: _core.syncTime
+                }
             })
-            .state('quartz.admin-default.articleManager', {
-                url: '/admin/:siteName/articles/manager/?orderBy&startAt&endAt&equalTo',
+            .state('quartz.admin-default.articles.manager', {
+                url: 'manager/?orderBy&startAt&endAt&equalTo',
                 params: {
-                    siteName: '',
                     orderBy: '',
                     startAt: '',
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/articles/manager/articles.tmpl.html',
+                templateUrl: 'app/parts/articles/manager/manager.tmpl.html',
                 controller: 'ArticleManagerController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.articleCategoryManager', {
-                url: '/admin/:siteName/articles/manager/?orderBy&startAt&endAt&equalTo',
+            .state('quartz.admin-default.articles.category', {
+                url: 'category/?orderBy&startAt&endAt&equalTo',
                 params: {
-                    siteName: '',
                     orderBy: '',
                     startAt: '',
                     endAt: '',

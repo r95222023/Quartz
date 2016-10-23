@@ -1,0 +1,29 @@
+md-card.analytic-card{
+    //margin-top:48px;
+    padding:0;
+}
+md-tabs.score-card md-tabs-canvas{
+    height:100px;
+}
+md-tabs.score-card .md-tab{
+    color: rgba(0,0,0,0.54);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    min-width: 188px;
+    padding: 16px 24px;
+    text-align: initial;
+    text-transform: none;
+}
+md-tabs.score-card md-tab-content{
+    margin: 36px;
+}
+
+.analytic-date-selector{
+    color:rgba(0,0,0,0.54);
+}
+
+md-select.marginless{
+    line-height:24px;
+    margin:0;
+}

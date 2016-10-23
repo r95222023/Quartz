@@ -1,62 +1,87 @@
-<div layout="row" layout-wrap layout-padding>
+<div layout="row" layout-wrap layout-padding layout-align="center">
 
-    <md-card flex="50">
-        <md-card-title>
-            <md-card-title-text>
-                <span class="md-headline">Daily orders</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-            <div ng-if="vm.orderData">
-                <canvas class="chart-bar" chart-data="vm.orderData.results" chart-labels="vm.orderData.labels" chart-legend="true" chart-series="vm.orderData.series"></canvas>
-            </div>
+    <div flex="80" layout="column" layout-align="start end" class="analytic-date-selector">
+        <div layout="row" layout-align="end center">
+            <md-icon md-font-icon="fa fa-calendar"></md-icon>
+
+            <md-select ng-model="common.preload.preset.id" class="marginless">
+                <md-option>過去 24 小時</md-option>
+                <md-option>過去 1 周</md-option>
+            </md-select>
+        </div>
+        <div style="font-size:12px;">10月21日 至 2016年10月22日 (GMT-5)</div>
+    </div>
+    <md-card flex="80" class="analytic-card">
+        <!--<md-card-title>-->
+        <!--<md-card-title-text>-->
+        <!--<span class="md-headline">Daily orders</span>-->
+        <!--</md-card-title-text>-->
+        <!--</md-card-title>-->
+        <md-card-content style="padding:0">
+            <md-tabs md-dynamic-height md-no-ink-bar class="score-card">
+                <md-tab>
+                    <md-tab-label>
+                        {{'ANALYTICS.SALES'|translate}}
+                        <br>
+                        {{'ANALYTICS.TOTALSALES'|translate}}: 350
+                    </md-tab-label>
+                    <md-tab-body>
+                        <canvas class="chart-line" chart-data="vm.salesData" chart-labels="vm.labels"
+                                chart-legend="true" chart-series="vm.salesSeries"
+                                chart-dataset-override="vm.datasetOverride"></canvas>
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        {{'ANALYTICS.INCOME'|translate}}
+                        <br>
+                        {{'ANALYTICS.TOTALINCOME'|translate}}: 41850
+                    </md-tab-label>
+                    <md-tab-body>
+                        <canvas class="chart-line" chart-data="vm.incomeData" chart-labels="vm.labels"
+                                chart-legend="true" chart-series="vm.incomeSeries"
+                                chart-dataset-override="vm.datasetOverride"></canvas>
+                    </md-tab-body>
+                </md-tab>
+            </md-tabs>
+            <!--<div ng-if="vm.orderData">-->
+            <!--<canvas class="chart-bar" chart-data="vm.orderData.results" chart-labels="vm.orderData.labels" chart-legend="true" chart-series="vm.orderData.series"></canvas>-->
+            <!--</div>-->
         </md-card-content>
     </md-card>
-    <md-card flex="50">
-        <md-card-title>
-            <md-card-title-text>
-                <span class="md-headline">Daily orders</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content>
-            <div ng-if="vm.orderData">
-                <canvas class="chart-bar" chart-data="vm.data" chart-labels="vm.labels" chart-legend="true" chart-series="vm.series"></canvas>
-            </div>
-        </md-card-content>
-    </md-card>
 
-    <md-card>
+    <md-card flex="40">
         <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">Top Products in count1</span>
+                <span class="md-headline">Top Sales (Unit)</span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="product in vm.topProducts1">
+                <md-list-item class="md-2-line" ng-repeat="product in vm.topSales">
                     <!--<md-checkbox ng-model="item.done"></md-checkbox>-->
                     <div class="md-list-item-text">
-                        <h3>{{product.name}}</h3>
-                        <p>Count1:{{product.count1}}</p>
+                        <h3>{{$index}}: {{product.name}} (編號: {{product.itemId}})</h3>
+                        <p>Count: {{product.count}}</p>
                     </div>
                 </md-list-item>
             </md-list>
         </md-card-content>
     </md-card>
 
-    <md-card>
+    <md-card flex="40">
         <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">Top Products in count2</span>
+                <span class="md-headline">Top Sales (Income)</span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="product in vm.topProducts2">
+                <md-list-item class="md-2-line" ng-repeat="product in vm.topIncome">
                     <!--<md-checkbox ng-model="item.done"></md-checkbox>-->
                     <div class="md-list-item-text">
-                        <h3>{{product.name}}</h3>
-                        <p>Count2:{{product.count2}}</p>
+                        <h3>{{$index}}: {{product.name}} (編號:{{product.itemId}})</h3>
+                        <p>Subtotal: {{product.count}}</p>
                     </div>
                 </md-list-item>
             </md-list>
