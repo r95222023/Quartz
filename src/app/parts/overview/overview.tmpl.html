@@ -1,1 +1,23 @@
-OVERVIEW
+<div layout="row" layout-align="center" layout-wrap>
+    <md-card flex="100" style="height:364px;margin:0 0 48px 0;">
+        <md-card-content>
+
+        </md-card-content>
+    </md-card>
+    <div style="max-width:960px; padding-bottom:64px" layout="row" layout-wrap>
+        <md-card ng-repeat="card in vm.cards" style="height:296px;width:292px">
+            <img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">
+
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">{{card.title}}</span>
+                    <span class="md-subhead">{{card.desc}}</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content></md-card-content>
+            <md-card-actions layout="row" layout-align="end center">
+                <md-button>{{'GENERAL.START'|translate}}</md-button>
+            </md-card-actions>
+        </md-card>
+    </div>
+</div>

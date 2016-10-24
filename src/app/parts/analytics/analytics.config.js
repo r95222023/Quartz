@@ -7,6 +7,7 @@
 
     /* @ngInject */
     function moduleConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
+        $translatePartialLoaderProvider.addPart('app/parts/analytics');
         $stateProvider
             .state('quartz.admin-default.analytics', {
                 data: {

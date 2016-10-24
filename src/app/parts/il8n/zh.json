@@ -10,7 +10,9 @@
         "SETTINGS":{
             "BASIC":"基本",
             "ADMIN":"權限",
-            "PAYMENT":"金流設定"
+            "PAYMENT":"金流設定",
+            "ANALYTICS":"流量分析",
+            "ADVANCE":"進階"
         },
         "SITEDESIGN":"網站/應用設計",
         "DESIGN": {

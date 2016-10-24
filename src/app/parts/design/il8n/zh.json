@@ -2,7 +2,10 @@
     "DESIGN":{
         "PROP":"屬性",
         "LAYOUT":"排版",
-        "EXTERNAL":"外部資源"
+        "EXTERNAL":"外部資源",
+        "TEMPLATES":"範本",
+        "PRESET":"預置",
+        "META":"Meta 值"
     },
     "MENU": {
         "PAGES": {

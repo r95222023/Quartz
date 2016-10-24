@@ -55,6 +55,14 @@
             })
             .state('quartz.admin-default.orderHistory', {
                 url: '/admin/:siteName/order-history/?orderBy&startAt&endAt&equalTo',
+                data: {
+                    layout: {
+                        // sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        contentClass:'admin-card-container',
+                        footer: false
+                    }
+                },
                 params: {
                     siteName: '',
                     orderBy: '',

@@ -2,10 +2,12 @@
     "DESIGN":{
         "PROP":"Properties",
         "LAYOUT":"Layout",
-        "EXTERNAL":"External Library"
+        "EXTERNAL":"External Library",
+        "TEMPLATES":"Templates",
+        "PRESETS":"Presets",
+        "META":"Meta data"
     },
     "MENU": {
-
         "PAGES": {
             "MENUNAME": "Pages",
             "PAGEMANAGER":"Pages",

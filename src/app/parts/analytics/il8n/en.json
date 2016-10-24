@@ -1,0 +1,8 @@
+{
+    "ANALYTICS":{
+        "SALES":"Sales",
+        "INCOMES":"Incomes",
+        "TOTALSALES":"Total Sales",
+        "TOTALINCOMES":"Total Incomes"
+    }
+}

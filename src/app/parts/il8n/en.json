@@ -9,7 +9,9 @@
         "SETTINGS":{
             "BASIC":"Basics",
             "ADMIN":"Administrators",
-            "PAYMENT":"Payment"
+            "PAYMENT":"Payment",
+            "ANALYTICS":"Analytics",
+            "ADVANCE":"Advance"
         },
         "SITEDESIGN":"Site Design",
         "DESIGN": {

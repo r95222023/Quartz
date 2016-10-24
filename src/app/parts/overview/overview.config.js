@@ -13,7 +13,7 @@
                 url: '/admin/:siteName/overview',
                 data: {
                     layout: {
-                        //toolbarShrink: true,
+                        contentClass:'admin-card-container',
                         footer: false
                     }
                 },
