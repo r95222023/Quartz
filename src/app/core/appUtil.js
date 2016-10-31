@@ -60,6 +60,7 @@
             'article-categories': site + '/articles/config/categories',
             'article': site + '/articles/:type/:id',
             'orders': site + '/orders/:type',
+            'site-orders': site + '/orders/:type',
             'order-payment': site + '/orders/:type/:orderId/payment',
             'user-order-payment': user + '/orders/:type/:orderId/payment',
             'user-orders': user + '/orders/:type',

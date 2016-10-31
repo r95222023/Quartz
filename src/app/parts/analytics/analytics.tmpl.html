@@ -4,9 +4,8 @@
         <div layout="row" layout-align="end center">
             <md-icon md-font-icon="fa fa-calendar"></md-icon>
 
-            <md-select ng-model="common.preload.preset.id" class="marginless">
-                <md-option>過去 24 小時</md-option>
-                <md-option>過去 1 周</md-option>
+            <md-select ng-model="vm.selectedPeriod" class="marginless" ng-change="vm.onPeriodChange()">
+                <md-option ng-value="period" ng-repeat="period in vm.periods">{{period.name}}</md-option>
             </md-select>
         </div>
         <div style="font-size:12px;">10月21日 至 2016年10月22日 (GMT-5)</div>
