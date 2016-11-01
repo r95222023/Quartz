@@ -15,7 +15,7 @@
             ['Status', 'status'],
             ['Total amount', 'totalAmount']
         ];
-        vm.statuses = ['received', 'preparing', 'ready', 'delivered'];
+        vm.statuses = ['ORDERS.RECEIVED','ORDERS.PLACED', 'ORDERS.PREPARESHIP', 'ORDERS.ONTHEWAY', 'ORDERS.DELIVERED'];
         vm.orderSelected = [];
 
         vm.getFiltered= function () {

@@ -5,3 +5,13 @@ md-card.admin-card {
     margin-top:48px;
     max-width: 1036px;
 }
+
+md-card.table-card{
+    margin-top: 48px;
+    margin-bottom: 64px;
+    padding:0;
+    max-width:1036px;
+}
+.table-card md-card-content{
+    padding:0;
+}

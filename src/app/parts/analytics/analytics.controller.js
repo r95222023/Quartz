@@ -10,10 +10,6 @@
         var vm = this;
         vm.orderData = {};
 
-        var ordersIn7days = analyticsService.getOrderAnalytics(1, 7);
-        var ordersIn5weeks = analyticsService.getOrderAnalytics(7, 5);
-        var ordersIn6wmonthes = analyticsService.getOrderAnalytics(30, 6);
-
         vm.periods = [
             {id:'7d',name: 'ANALYTICS.LAST7DAYS', period: 1, repeat: 7},
             {id:'35d',name: 'ANALYTICS.LAST5WEEKS', period: 7, repeat: 5},

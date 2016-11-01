@@ -11,6 +11,12 @@
         $stateProvider
             .state('quartz.admin-default.pageManager', {
                 url: '/admin/:siteName/pageManager',
+                data: {
+                    layout: {
+                        contentClass:'admin-card-container',
+                        footer: false
+                    }
+                },
                 params: {
                     siteName: ''
                 },
@@ -20,6 +26,12 @@
             })
             .state('quartz.admin-default.widgetManager', {
                 url: '/admin/:siteName/widgetManager',
+                data: {
+                    layout: {
+                        contentClass:'admin-card-container',
+                        footer: false
+                    }
+                },
                 params: {
                     siteName: ''
                 },

@@ -19,6 +19,12 @@
             })
             .state('quartz.admin-default.siteusers', {
                 url: '/admin/:siteName/users',
+                data: {
+                    layout: {
+                        contentClass:'admin-card-container',
+                        footer: false
+                    }
+                },
                 params: {
                     siteName: ''
                 },

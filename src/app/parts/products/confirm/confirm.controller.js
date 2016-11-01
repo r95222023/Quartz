@@ -6,7 +6,7 @@
         .controller('OrderConfirmCtrl', OrderConfirmCtrl);
 
     /* @ngInject */
-    function OrderConfirmCtrl(orderService,sitesService, $scope, ngCart, $mdMedia, $firebase, $sce, $timeout, snippets, $mdDialog, customParams) {
+    function OrderConfirmCtrl(sitesService, $scope, ngCart, $mdMedia, $firebase, $sce, $timeout, snippets, $mdDialog, customParams) {
         var vm = this;
         console.log(customParams.get())
         vm.orderSummary=customParams.get().order;

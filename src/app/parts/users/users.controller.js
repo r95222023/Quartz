@@ -17,43 +17,65 @@
     }
 
     /* @ngInject */
-    function SiteUsersController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
+    function SiteUsersController($firebase, $mdMedia, $state, $mdDialog, config) {
         var vm = this;
         vm.paginator = $firebase.pagination("site-users?type=list");
         vm.paginator.onReorder('name');
 
         usersCtrl(vm);
+
+        vm.showDetail= function(ev, uid){
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
+
+            $mdDialog.show({
+                controller: DetailDialogCtrl,
+                controllerAs: 'detail',
+                templateUrl: 'app/parts/users/user-data-dialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: useFullScreen
+            })
+                .then(function (onComplete) {
+                    if (angular.isFunction(onComplete)) onComplete();
+                }, function (onCancel) {
+                    if (angular.isFunction(onCancel)) onCancel();
+                });
+
+            function DetailDialogCtrl(){
+                var detail=this;
+                detail.uid=uid;
+                detail.cancel = function () {
+                    $mdDialog.cancel();
+                };
+            }
+        }
     }
 
     /* @ngInject */
     function AdminsController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
-        vm.paginator = $firebase.pagination("site-users?type=list",{equalTo:true});
+        vm.paginator = $firebase.pagination("site-users?type=list", {equalTo: true});
         vm.paginator.onReorder('access.read');
         usersCtrl(vm);
 
-        vm.actions =[
+        vm.actions = [
             ['allowWrite', 'USERS.ALLOWWRITE']
         ];
     }
 
+
     function usersCtrl(vm) {
+        vm.userClasses=['super-admin','admin', 'vendor'];
+
         vm.filters = [
             ['User Id', ''],
             ['Name', 'info.name']
         ];
 
-        vm.actions =[
-            ['setAsAdmin', 'USERS.SETASADMIN']
-        ];
 
-        vm.action=function(action,uid){
-          switch(action){
-              case 'setAsAdmin':
-                  alert('todo');
-                  // $firebase.ref('users/list/'+uid+'/access/read@selectedSite').set(true);
-                  break;
-          }
+        vm.setAs = function (uid, className) {
+            //
         };
 
 
@@ -65,8 +87,10 @@
             vm.paginator.onReorder(orderBy);
         };
 
-        vm.getFiltered= function () {
-            vm.paginator.onReorder({orderBy:vm.orderBy, equalTo:vm.equalTo,startAt:vm.startAt,endAt:vm.endAt});
+        vm.getFiltered = function () {
+            vm.paginator.onReorder({orderBy: vm.orderBy, equalTo: vm.equalTo, startAt: vm.startAt, endAt: vm.endAt});
         };
+
+
     }
 })();

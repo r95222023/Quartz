@@ -6,7 +6,7 @@
         .controller('ShoppingCartController', ShoppingCartController);
 
     /* @ngInject */
-    function ShoppingCartController(ngCart, orderService) {
+    function ShoppingCartController(ngCart) {
         var vm = this;
         angular.extend(vm, ngCart);
         // $scope.cart = ngCart;
@@ -16,11 +16,11 @@
         // orderService.buildOrder('allpay');
         // orderService.buildOrder('stripe');
 
-        vm.buildStripeOrder = function () {
-            return orderService.buildOrder('stripe');
-        };
-        vm.buildAllpayOrder = function () {
-            return orderService.buildOrder('allpay');
-        };
+        // vm.buildStripeOrder = function () {
+        //     return orderService.buildOrder('stripe');
+        // };
+        // vm.buildAllpayOrder = function () {
+        //     return orderService.buildOrder('allpay');
+        // };
     }
 })();
