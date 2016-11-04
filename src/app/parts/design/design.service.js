@@ -69,7 +69,7 @@
             vm.isAttrsConfigurable = customService.isAttrsConfigurable;
             vm.isTagConfigurable = customService.isTagConfigurable;
             vm.layoutOptions = customService.layoutOptions;
-            vm.ctrls = customService.ctrls;
+            // vm.ctrls = customService.ctrls;
 
             vm.actions = [['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
             vm.media = 'all';

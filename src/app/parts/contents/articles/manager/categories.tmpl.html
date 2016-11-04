@@ -1,6 +1,5 @@
 <div layout="row" layout-align="center">
-    <md-button class="md-fab" aria-label="fab button"
-               style="position: fixed; bottom: 40px; right: 40px"
+    <md-button class="md-fab add-btn" aria-label="fab button"
                ng-click="vm.addCate();vm.cateEdit=true">
         <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
     </md-button>
@@ -71,4 +70,9 @@
         </md-card-content>
 
     </md-card>
+    <div class="margin-50" ng-if="!vm.categories.length">
+        {{'CONTENTS.NOCATEGORIES'}}
+        <br>
+        <md-button class="md-raised md-primary" ng-click="vm.addCate();vm.cateEdit=true">{{'CONTENTS.ARTICLES.ADD'|translate}}</md-button>
+    </div>
 </div>

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.parts.products')
+        .module('app.parts.overview')
         .config(productsConfig);
 
     /* @ngInject */

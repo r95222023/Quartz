@@ -1,0 +1,72 @@
+<div layout="row" layout-align="center">
+    <md-button class="md-fab add-btn" aria-label="fab button"
+               ng-disabled="vm.userClasses.length>5"
+               ng-click="vm.addClass()">
+        <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+    </md-button>
+    <md-card flex="80" class="admin-card" ng-if="vm.userClasses.length">
+        <md-card-actions layout="row" layout-align="end center">
+            <div flex></div>
+            <md-button ng-click="vm.save()"
+                       ng-show="vm.showSaveBtn()"
+                       class="md-raised md-primary"
+                       aria-label="save categories">
+                Save
+            </md-button>
+        </md-card-actions>
+        <md-card-content layout="row" layout-xs="column" layout-wrap layout-padding>
+            <div flex-gt-xs="33" flex-gt-sm="25"
+                 ng-repeat="class in vm.userClasses track by $index">
+                <md-card class="md-whiteframe-2dp">
+
+                    <md-card-title>
+                        <md-card-title-text>
+                            <input type="text" class="docs-title-input" ng-model="class.name" placeholder="{{'USERS.NEWCLASS'|translate}}">
+                        </md-card-title-text>
+                    </md-card-title>
+
+                    <md-card-content layout-align="center center">
+                        <md-checkbox ng-model="vm.userClasses[$index].fc" ng-click="vm.checkFC($index);vm.changed=true;">
+                            <span>Full Control</span>
+                        </md-checkbox>
+                        <md-checkbox ng-model="vm.userClasses[$index].pg" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
+                            <span>Pages</span>
+                        </md-checkbox>
+                        <md-checkbox ng-model="vm.userClasses[$index].wg" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
+                            <span>Widgets</span>
+                        </md-checkbox>
+                        <md-checkbox ng-model="vm.userClasses[$index].atc" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
+                            <span>Articles</span>
+                        </md-checkbox>
+                        <md-checkbox ng-model="vm.userClasses[$index].pd" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
+                            <span>Products</span>
+                        </md-checkbox>
+                        <md-checkbox ng-model="vm.userClasses[$index].fs" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
+                            <span>File System</span>
+                        </md-checkbox>
+                    </md-card-content>
+                    <md-card-actions layout="row" layout-align="start center">
+
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="vm.removeClass($index)"
+                                   aria-label="delete product">
+                            <md-icon md-font-icon="fa fa-trash-o"></md-icon>
+                        </md-button>
+                    </md-card-actions>
+
+                </md-card>
+            </div>
+        </md-card-content>
+    </md-card>
+    <div class="margin-50" ng-if="!vm.userClasses.length">
+        {{'USERS.NOCLASS'}}
+        <br>
+        <md-button class="md-raised md-primary" ng-click="vm.addClass()">{{'USERS.ADDCLASS'|translate}}</md-button>
+    </div>
+    <!--<md-button class="md-fab" aria-label="fab button"-->
+    <!--style="position: fixed; bottom: 40px; right: 40px"-->
+    <!--ng-click="vm.showEditor($event)">-->
+    <!--<md-icon md-font-icon="zmdi zmdi-plus"></md-icon>-->
+    <!--</md-button>-->
+
+</div>

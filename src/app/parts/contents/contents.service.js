@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.plugins.articleproduct', [])
+        .module('app.parts.contents')
         .service('articleProduct', ArticleProduct);
     /* @ngInject */
     function ArticleProduct($transitions, $rootScope, $mdToast, $mdDialog, $firebase, $firebaseStorage, indexService, $timeout, $stateParams, $state, $mdMedia) {
@@ -182,7 +182,7 @@
                 };
 
             vm.getFiltered = function () {
-                $state.go('quartz.admin-default.' + _type + 'Manager', {
+                $state.go('quartz.admin-default.' + _type + 's.manager', {
                     orderBy: vm.orderBy,
                     startAt: vm.startAt,
                     endAt: vm.endAt,
@@ -376,7 +376,7 @@
                 var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
                 $mdDialog.show({
                     controller: EditorController,
-                    templateUrl: 'app/parts/' + type + 's/manager/editor.tmpl.html',
+                    templateUrl: 'app/parts/contents/' + type + 's/manager/editor.tmpl.html',
                     parent: angular.element(document.body),
                     targetEvent: ev,
                     clickOutsideToClose: true,

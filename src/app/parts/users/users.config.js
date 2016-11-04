@@ -10,37 +10,35 @@
         $translatePartialLoaderProvider.addPart('app/parts/users');
 
         $stateProvider
-            .state('quartz.admin-default.allusers', {
-                url: '/admin/users',
-                templateUrl: 'app/parts/users/all-users.tmpl.html',
-                // set the controller to load for this page
-                controller: 'AllUsersController',
-                controllerAs: 'vm'
-            })
-            .state('quartz.admin-default.siteusers', {
-                url: '/admin/:siteName/users',
+            .state('quartz.admin-default.users', {
+                url: '/admin/:siteName/users/',
+                params:{
+                    siteName:''
+                },
                 data: {
                     layout: {
-                        contentClass:'admin-card-container',
+                        // sideMenuSize: 'hidden',
+                        //toolbarShrink: true,
+                        contentClass: 'admin-card-container',
                         footer: false
                     }
                 },
-                params: {
-                    siteName: ''
+                template: '<ui-view></ui-view>'
+            })
+            .state('quartz.admin-default.users.list', {
+                url: 'list/?superAdmin',
+                params:{
+                    superAdmin:''
                 },
-                templateUrl: 'app/parts/users/all-users.tmpl.html',
-                // set the controller to load for this page
+                templateUrl: 'app/parts/users/user-list.tmpl.html',
                 controller: 'SiteUsersController',
                 controllerAs: 'vm'
             })
-            .state('quartz.admin-default.admins', {
-                url: '/admin/:siteName/admins',
-                params: {
-                    siteName: ''
-                },
-                templateUrl: 'app/parts/users/admins.tmpl.html',
+            .state('quartz.admin-default.users.classes', {
+                url: 'user-classes/',
+                templateUrl: 'app/parts/users/user-classes.tmpl.html',
                 // set the controller to load for this page
-                controller: 'AdminsController',
+                controller: 'UserClassesController',
                 controllerAs: 'vm'
             });
     }

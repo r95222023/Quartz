@@ -1,5 +1,5 @@
 <div layout="row" layout-align="center">
-    <md-card class="table-card">
+    <md-card class="table-card" ng-if="vm.paginator.result.total>0">
         <md-card-actions layout="row" style="margin:3px">
             <md-button ng-hide="vm.showFilter"
                        class="md-icon-button toolbar-button"
@@ -60,7 +60,7 @@
                         </thead>
                         <tbody md-body>
                         <tr md-row
-                            ng-repeat="(id, user) in vm.paginator.result.hits">
+                            ng-repeat="(uid, user) in vm.paginator.result.hits">
                             <td md-cell>{{user._key}}</td>
                             <td md-cell>{{user.info.name}}</td>
                             <td md-cell>{{user.class}}</td>
@@ -77,15 +77,15 @@
                                             <md-menu-item>
                                                 <md-button ng-click="vm.showDetail($event,user)">{{'USERS.INFO'}}</md-button>
                                             </md-menu-item>
-                                            <md-menu>
+                                            <md-menu ng-if="vm.userClasses.length">
                                                 <md-button aria-label="change status" ng-click="$mdOpenMenu()"
                                                            aria-label="more action">{{'USERS.SETCLASS'|translate}}
                                                     <md-icon md-font-icon="fa fa-angle-right"></md-icon>
                                                 </md-button>
                                                 <md-menu-content width="3">
                                                     <md-menu-item ng-repeat="class in vm.userClasses">
-                                                        <md-button ng-click="vm.setAs(id, class)"
-                                                                   aria-label="{{class}}">{{class}}</md-button>
+                                                        <md-button ng-click="vm.setAs(uid, $index)"
+                                                                   aria-label="{{class.name}}">{{class.name}}</md-button>
                                                     </md-menu-item>
                                                 </md-menu-content>
                                             </md-menu>
@@ -105,5 +105,8 @@
                                      md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
             </div>
         </md-card-content>
-    </md-card>
+    </md-card >
+    <div class="margin-50" ng-if="vm.paginator.result.total==0">
+        {{'USERS.NOUSERS'}}
+    </div>
 </div>

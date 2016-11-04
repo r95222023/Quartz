@@ -1,5 +1,9 @@
 <div layout="row" layout-align="center">
-    <md-card class="admin-card">
+    <md-button class="md-fab add-btn" aria-label="fab button"
+               ng-click="vm.showEditor($event)">
+        <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+    </md-button>
+    <md-card class="table-card" ng-if="vm.paginator.result.total>0">
         <md-card-actions layout="row" layout-align="end center" ng-show="!vm.showFilter">
             <md-button class="md-raised md-primary" ng-click="vm.showFilter = !vm.showFilter">{{'GENERAL.SEARCH'|translate}}</md-button>
             <md-button class="md-raised md-primary" ng-click="vm.showEditor($event)">{{'PRODUCTS.ADD'|translate}}</md-button>
@@ -7,8 +11,8 @@
         <md-card-content style="padding:0">
             <md-card ng-show="vm.showFilter">
                 <md-card-content>
-                    <form name="filterForm" ng-show="vm.showFilter"
-                          ng-submit="vm.getFiltered()" class="md-whiteframe-3dp">
+                    <form name="filterForm"
+                          ng-submit="vm.getFiltered()">
                         <div layout='row' layout-margin layout-padding>
                             <md-input-container flex>
                                 <label>Filter</label>
@@ -29,22 +33,12 @@
                             <md-input-container class="md-block" flex ng-if="vm.orderBy==='category'">
                                 <label>Equal to</label>
                                 <md-select ng-model="vm.equalTo">
-                                    <md-option ng-repeat="cate in vm.categories" value="{{$index}}">
+                                    <md-option ng-repeat="cate in vm.getCate()" value="{{$index}}">
                                         {{cate[0]}}
                                     </md-option>
                                 </md-select>
                             </md-input-container>
                         </div>
-                        <div layout="row" layout-padding>
-                            <span flex></span>
-                            <md-button class="md-primary md-hue-1 md-raised" type="submit">
-                                OK
-                            </md-button>
-                            <md-button class="md-accent md-raised" ng-click="vm.showFilter = !vm.showFilter">
-                                Cancel
-                            </md-button>
-                        </div>
-
                     </form>
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="end center">
@@ -61,9 +55,9 @@
                         aria-label="search">
                 <div class="md-toolbar-tools" layout="row">
                     <!--<md-button translate="GENERAL.SEARCH"-->
-                    <!--class="toolbar-button"-->
-                    <!--style="color:black"-->
-                    <!--ng-click="vm.showFilter = !vm.showFilter">-->
+                               <!--class="toolbar-button"-->
+                               <!--style="color:black"-->
+                               <!--ng-click="vm.showFilter = !vm.showFilter">-->
                     <!--</md-button>-->
                     <md-button class="toolbar-button"
                                style="color:black"
@@ -71,7 +65,7 @@
                         All
                     </md-button>
                     <md-button class="toolbar-button"
-                               ng-repeat="cate in vm.categories"
+                               ng-repeat="cate in vm.getCate()"
                                style="color:black"
                                ng-click="vm.orderBy='category';vm.equalTo=$index;vm.getFiltered()">
                         {{cate[0]}}
@@ -87,20 +81,24 @@
                 <table md-table md-progress="vm.paginator.promise">
                     <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
                     <tr md-row>
-                        <th md-column md-order-by="id">{{'GENERAL.ID'|translate}}</th>
-                        <th md-column md-order-by="title">{{'GENERAL.TITLE'|translate}}</th>
+                        <th md-column md-order-by="itemId">{{'GENERAL.ID'|translate}}</th>
+                        <th md-column md-order-by="itemName">{{'GENERAL.NAME'|translate}}</th>
                         <th md-column md-order-by="category">{{'GENERAL.CATEGORY'|translate}}</th>
                         <th md-column>{{'GENERAL.SUBCATEGORY'|translate}}</th>
+                        <th md-column md-numeric md-order-by="quantity">{{'GENERAL.QUANTITY'|translate}}</th>
+                        <th md-column md-numeric md-order-by="price">{{'GENERAL.PRICE'|translate}}</th>
                         <th md-column></th>
                     </tr>
                     </thead>
                     <tbody md-body>
-                    <tr md-row md-select="article.id" md-select-id="{{article.id}}" md-auto-select
-                        ng-repeat="(index, article) in vm.paginator.result.hits">
-                        <td md-cell>{{article.id}}</td>
-                        <td md-cell>{{article.title}}</td>
-                        <td md-cell>{{vm.getCate('article')[article.category][0]}}</td>
-                        <td md-cell>{{vm.getCate('article')[article.category][1][article.subcategory]}}</td>
+                    <tr md-row md-select="product.itemId" md-select-id="{{product.itemId}}" md-auto-select
+                        ng-repeat="(index, product) in vm.paginator.result.hits">
+                        <td md-cell>{{product.itemId}}</td>
+                        <td md-cell>{{product.itemName}}</td>
+                        <td md-cell>{{vm.getCate()[product.category][0]}}</td>
+                        <td md-cell>{{vm.getCate()[product.category][1][product.subcategory]}}</td>
+                        <td md-cell>{{product.quantity}}</td>
+                        <td md-cell>{{product.price}}</td>
                         <td md-cell style="width:50px;">
                             <div layout="row">
                                 <span flex></span>
@@ -112,8 +110,7 @@
                                     </md-button>
                                     <md-menu-content width="3">
                                         <md-menu-item ng-repeat="action in vm.actions">
-                                            <md-button ng-click="vm.action(action[0], article.id,$event)"
-                                                       translate="{{action[1]}}"
+                                            <md-button ng-click="vm.action(action[0], product.itemId,$event)" translate="{{action[1]}}"
                                                        aria-label="{{action[1]}}"></md-button>
                                         </md-menu-item>
                                     </md-menu-content>
@@ -126,17 +123,21 @@
                 </table>
             </md-table-container>
             <md-table-pagination md-limit="vm.paginator.size" md-page="vm.paginator.page"
-                                 md-limit-options="[10, 25, 50, 100]"
                                  md-total="{{vm.paginator.result.total}}"
+                                 md-limit-options="[10, 25, 50, 100]"
                                  md-on-paginate="vm.onPaginate" md-page-select></md-table-pagination>
 
         </md-card-content>
     </md-card>
-
+    <div class="margin-50" ng-if="vm.paginator.result.total==0">
+        {{'CONTENTS.NOPRODUCTS'}}
+        <br>
+        <md-button class="md-raised md-primary" ng-click="vm.showEditor($event)">{{'CONTENTS.PRODUCTS.ADD'|translate}}</md-button>
+    </div>
     <!--<md-button class="md-fab" aria-label="fab button"-->
-    <!--style="position: fixed; bottom: 40px; right: 40px"-->
-    <!--ng-click="vm.showEditor($event)">-->
-    <!--<md-icon md-font-icon="zmdi zmdi-plus"></md-icon>-->
+               <!--style="position: fixed; bottom: 40px; right: 40px"-->
+               <!--ng-click="vm.showEditor($event)">-->
+        <!--<md-icon md-font-icon="zmdi zmdi-plus"></md-icon>-->
     <!--</md-button>-->
 
 </div>

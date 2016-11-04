@@ -22,14 +22,18 @@
         },
         "PRODUCTSANDCATEGORIES":"產品及分類",
         "ARTICLESANDCATEGORIES":"文章及分類",
-        "PANDC":{
+        "CONTENTS":{
             "PRODUCTS":"產品",
             "ARTICLES":"文章",
             "CATEGORIES":"分類"
         },
         "ANALYTICS":"分析",
         "ORDERHISTORY":"訂單",
-        "USERS":"使用者"
+        "USERS":{
+            "NAME":"用戶",
+            "LIST":"User List",
+            "CLASSES":"User Classes"
+        }
     }
 }
 

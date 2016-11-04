@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.parts.articles')
+        .module('app.parts.contents.articles')
         .controller('ArticleManagerController', ArticleManagerController);
 
     /* @ngInject */

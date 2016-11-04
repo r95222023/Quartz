@@ -5,8 +5,9 @@
         .module('app.parts', [
             'app.parts.overview',
             'app.parts.auth',
-            'app.parts.products',
-            'app.parts.articles',
+            'app.parts.contents',
+            // 'app.parts.products',
+            // 'app.parts.articles',
             'app.parts.design',
             'app.parts.sites',
             'app.parts.users',

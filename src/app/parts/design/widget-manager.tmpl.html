@@ -1,7 +1,10 @@
 <div layout="row" layout-align="center">
-    <md-card class="table-card">
+    <md-button ui-sref="widgetEditor" class="md-fab add-btn" aria-label="fab button">
+        <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+    </md-button>
+    <md-card class="table-card" ng-if="vm.paginator.result.total>0">
         <md-card-actions layout="row" layout-align="end">
-            <md-button ui-sref="widgetEditor" class="md-primary  md-raised">{{'DESIGN.ADDPAGE'|translate}}</md-button>
+            <md-button ui-sref="widgetEditor" class="md-primary  md-raised">{{'DESIGN.ADDWIDGET'|translate}}</md-button>
         </md-card-actions>
         <md-card-content>
             <div layout="column">
@@ -51,4 +54,9 @@
             </div>
         </md-card-content>
     </md-card>
+    <div class="margin-50" ng-if="vm.paginator.result.total==0">
+        {{'DESIGN.NOWIDGET'}}
+        <br>
+        <md-button ui-sref="widgetEditor" class="md-primary  md-raised">{{'DESIGN.ADDWIDGET'|translate}}</md-button>
+    </div>
 </div>

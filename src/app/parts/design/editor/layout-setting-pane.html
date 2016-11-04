@@ -13,17 +13,17 @@
                         <label>Id</label>
                         <input type="text" ng-model="vm.item.id">
                     </md-input-container>
-                    <md-input-container>
-                        <label>Controller</label>
-                        <md-select ng-model="vm.item.ctrl">
-                            <md-option ng-value="ctrl[0]" ng-repeat="ctrl in vm.ctrls">{{ctrl[0]}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container ng-if="vm.item.ctrl">
-                        <label>Controller as</label>
-                        <input type="text" ng-model="vm.item.ctrlAs">
-                    </md-input-container>
+                    <!--<md-input-container>-->
+                        <!--<label>Controller</label>-->
+                        <!--<md-select ng-model="vm.item.ctrl">-->
+                            <!--<md-option ng-value="ctrl[0]" ng-repeat="ctrl in vm.ctrls">{{ctrl[0]}}-->
+                            <!--</md-option>-->
+                        <!--</md-select>-->
+                    <!--</md-input-container>-->
+                    <!--<md-input-container ng-if="vm.item.ctrl">-->
+                        <!--<label>Controller as</label>-->
+                        <!--<input type="text" ng-model="vm.item.ctrlAs">-->
+                    <!--</md-input-container>-->
                     <br>
                     <div>Class</div>
                     <textarea ng-if="vm.item.type!=='custom'||vm.item.type!=='customWidget'"

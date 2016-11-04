@@ -2,13 +2,13 @@
     'use strict';
 
     angular
-        .module('app.parts.products')
+        .module('app.parts.contents.products')
         .controller('OrderConfirmCtrl', OrderConfirmCtrl);
 
     /* @ngInject */
     function OrderConfirmCtrl(sitesService, $scope, ngCart, $mdMedia, $firebase, $sce, $timeout, snippets, $mdDialog, customParams) {
         var vm = this;
-        console.log(customParams.get())
+        console.log(customParams.get());
         vm.orderSummary=customParams.get().order;
         console.log(vm.orderSummary);
         // $firebase.ref('queue/specs/allpay_reg_temp_order').update({

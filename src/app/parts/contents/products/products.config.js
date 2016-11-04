@@ -2,12 +2,12 @@
     'use strict';
 
     angular
-        .module('app.parts.products')
+        .module('app.parts.contents.products')
         .config(productsConfig);
 
     /* @ngInject */
     function productsConfig($translatePartialLoaderProvider, $stateProvider) {
-        $translatePartialLoaderProvider.addPart('app/parts/products');
+        $translatePartialLoaderProvider.addPart('app/parts/contents/products');
         $stateProvider
             .state('quartz.admin-default.products', {
                 url: '/admin/:siteName/products/',
@@ -37,7 +37,7 @@
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/products/manager/manager.tmpl.html',
+                templateUrl: 'app/parts/contents/products/manager/manager.tmpl.html',
                 controller: 'ProductManagerController',
                 controllerAs: 'vm'
             })
@@ -49,7 +49,7 @@
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/products/manager/categories.tmpl.html',
+                templateUrl: 'app/parts/contents/products/manager/categories.tmpl.html',
                 controller: 'CateManagerController',
                 controllerAs: 'vm'
             })
@@ -70,38 +70,10 @@
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/products/order-history/order-history.tmpl.html',
+                templateUrl: 'app/parts/contents/products/order-history/order-history.tmpl.html',
                 controller: 'OrderHistoryController',
                 controllerAs: 'vm'
             })
-            // .state('quartz.admin-default.productList', {
-            //     url: '/:siteName/prodcuts/list/?&cate&subCate&queryString&tag',
-            //     params: {
-            //         siteName: '',
-            //         cate: '',
-            //         subCate: '',
-            //         queryString: '',
-            //         tag: ''
-            //     },
-            //     templateUrl: 'app/parts/products/list/list.tmpl.html',
-            //     controller: 'ProductListController',
-            //     controllerAs: 'vm'
-            // })
-            // .state('quartz.admin-default.shoppingCart', {
-            //     url: '/:siteName/shoppingcart',
-            //     params: {
-            //         siteName: ''
-            //     },
-            //     templateUrl: 'app/parts/products/shopping-cart/shopping-cart.tmpl.html',
-            //     controller: 'ShoppingCartController',
-            //     controllerAs: 'vm',
-            //     resolve: {
-            //         getSyncTime: function () {
-            //             return _core.syncTime();
-            //         }
-            //     }
-            // })
-
             .stateAuthenticated('quartz.admin-default.yourOrders', {
                 url: '/:siteName/yourOrders/?orderBy&startAt&endAt&equalTo',
                 params: {
@@ -111,7 +83,7 @@
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/products/your-orders/your-orders.tmpl.html',
+                templateUrl: 'app/parts/contents/products/your-orders/your-orders.tmpl.html',
                 controller: 'YourOrdersController',
                 controllerAs: 'vm',
                 resolve:{

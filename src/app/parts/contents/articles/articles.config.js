@@ -2,13 +2,13 @@
     'use strict';
 
     angular
-        .module('app.parts.articles')
+        .module('app.parts.contents.articles')
         .config(articlesConfig);
 
     /* @ngInject */
     function articlesConfig($translatePartialLoaderProvider, $stateProvider, qtMenuProvider) {
 
-        $translatePartialLoaderProvider.addPart('app/parts/articles');
+        $translatePartialLoaderProvider.addPart('app/parts/contents/articles');
         $stateProvider
             .state('quartz.admin-default.articles', {
                 url: '/admin/:siteName/articles/',
@@ -38,7 +38,7 @@
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/articles/manager/manager.tmpl.html',
+                templateUrl: 'app/parts/contents/articles/manager/manager.tmpl.html',
                 controller: 'ArticleManagerController',
                 controllerAs: 'vm'
             })
@@ -50,7 +50,7 @@
                     endAt: '',
                     equalTo: ''
                 },
-                templateUrl: 'app/parts/articles/manager/categories.tmpl.html',
+                templateUrl: 'app/parts/contents/articles/manager/categories.tmpl.html',
                 controller: 'ArticleCateManagerController',
                 controllerAs: 'vm'
             });

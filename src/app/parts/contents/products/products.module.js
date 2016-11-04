@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.parts.products', [
+        .module('app.parts.contents.products', [
             'app.plugins.ngcart',
             'app.plugins.stripe',
             'app.plugins.allpay'

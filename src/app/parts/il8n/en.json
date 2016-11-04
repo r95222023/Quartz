@@ -20,13 +20,19 @@
             "WIDGETMANAGER": "Widgets"
         },
         "PRODUCTSANDCATEGORIES":"Products And Categories",
-        "PANDC":{
+        "ARTICLESANDCATEGORIES":"Articles And Categories",
+        "CONTENTS":{
             "PRODUCTS":"Products",
+            "ARTICLES":"Articles",
             "CATEGORIES":"Categories"
         },
         "ANALYTICS":"Analytics",
         "ORDERHISTORY":"Orders",
-        "USERS":"Users"
+        "USERS":{
+            "NAME":"Users",
+            "LIST":"User List",
+            "CLASSES":"User Classes"
+        }
     }
 }
 

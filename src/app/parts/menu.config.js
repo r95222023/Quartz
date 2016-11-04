@@ -29,11 +29,6 @@
                 type: 'link',
                 state: 'quartz.admin-default.allsites'
             },{
-                name: 'MENU.ALLUSERS',
-                // icon: 'zmdi zmdi-accounts-list',
-                type: 'link',
-                state: 'quartz.admin-default.allusers'
-            },{
                 name: 'MENU.TEMPLATES',
                 // icon: 'zmdi zmdi-square-o',
                 type: 'link',
@@ -60,11 +55,6 @@
                     name: 'MENU.SETTINGS.BASIC',
                     type: 'link',
                     state: 'quartz.admin-default.site-setting.basic'
-                },
-                {
-                    name: 'MENU.SETTINGS.ADMIN',
-                    type: 'link',
-                    state: 'quartz.admin-default.admins'
                 },
                 {
                     name: 'MENU.SETTINGS.ANALYTICS',
@@ -112,12 +102,12 @@
             priority: 1.2,
             children: [
                 {
-                    name: 'MENU.PANDC.PRODUCTS',
+                    name: 'MENU.CONTENTS.PRODUCTS',
                     state: 'quartz.admin-default.products.manager',
                     type: 'link'
                 },
                 {
-                    name: 'MENU.PANDC.CATEGORIES',
+                    name: 'MENU.CONTENTS.CATEGORIES',
                     state: 'quartz.admin-default.products.category',
                     type: 'link'
                 }
@@ -131,12 +121,12 @@
             priority: 1.2,
             children: [
                 {
-                    name: 'MENU.PANDC.ARTICLES',
+                    name: 'MENU.CONTENTS.ARTICLES',
                     state: 'quartz.admin-default.articles.manager',
                     type: 'link'
                 },
                 {
-                    name: 'MENU.PANDC.CATEGORIES',
+                    name: 'MENU.CONTENTS.CATEGORIES',
                     state: 'quartz.admin-default.articles.category',
                     type: 'link'
                 }
@@ -168,11 +158,22 @@
         });
 
         qtMenuProvider.addMenuToGroup("siteSelected", {
-            name: 'MENU.USERS',
+            name: 'MENU.USERS.NAME',
             priority: 1.2,
             icon: 'fa fa-users',
-            type: 'link',
-            state: 'quartz.admin-default.siteusers'
+            type:'dropdown',
+            children: [
+                {
+                    name: 'MENU.USERS.LIST',
+                    state: 'quartz.admin-default.users.list',
+                    type: 'link'
+                },
+                {
+                    name: 'MENU.USERS.CLASSES',
+                    state: 'quartz.admin-default.users.classes',
+                    type: 'link'
+                }
+            ]
         });
     }
 })();

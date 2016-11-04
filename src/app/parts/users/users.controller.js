@@ -3,28 +3,47 @@
 
     angular
         .module('app.parts.users')
-        .controller('AllUsersController', AllUsersController)
         .controller('SiteUsersController', SiteUsersController)
-        .controller('AdminsController', AdminsController);
+        .controller('UserClassesController', UserClassesController);
 
     /* @ngInject */
-    function AllUsersController($firebase, qtNotificationsService, $state, $mdDialog, config) {
+    function SiteUsersController($firebase, $mdMedia, $state, $mdDialog, config,$timeout) {
         var vm = this;
-        vm.paginator = $firebase.pagination('users?type=list');
+        vm.filters = [
+            ['User Id', ''],
+            ['Name', 'info.name']
+        ];
+
+        var userRefStr="site-users?type=list";
+        vm.getClasses = function () {
+            $firebase.queryRef('site-config-user').child('classes').once('value').then(function (snap) {
+                vm.userClasses=[];
+                (snap.val()||[]).forEach( function(val, index){
+                    vm.userClasses[index]=val;
+                });
+                $timeout(angular.noop,0);
+            });
+        };vm.getClasses();
+        vm.setAs=function(uid,usrClassIndex){
+            $firebase.queryRef(userRefStr).child(uid+'/class').update(usrClassIndex)
+        };
+
+
+        vm.paginator = $firebase.pagination(userRefStr);
         vm.paginator.onReorder('name');
+        vm.onPaginate = function (page, size) { //to prevent this being overwritten
+            vm.paginator.get(page, size)
+        };
 
-        usersCtrl(vm);
-    }
+        vm.onReorder = function (orderBy) {
+            vm.paginator.onReorder(orderBy);
+        };
 
-    /* @ngInject */
-    function SiteUsersController($firebase, $mdMedia, $state, $mdDialog, config) {
-        var vm = this;
-        vm.paginator = $firebase.pagination("site-users?type=list");
-        vm.paginator.onReorder('name');
+        vm.getFiltered = function () {
+            vm.paginator.onReorder({orderBy: vm.orderBy, equalTo: vm.equalTo, startAt: vm.startAt, endAt: vm.endAt});
+        };
 
-        usersCtrl(vm);
-
-        vm.showDetail= function(ev, uid){
+        vm.showDetail = function (ev, uid) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
 
             $mdDialog.show({
@@ -42,9 +61,9 @@
                     if (angular.isFunction(onCancel)) onCancel();
                 });
 
-            function DetailDialogCtrl(){
-                var detail=this;
-                detail.uid=uid;
+            function DetailDialogCtrl() {
+                var detail = this;
+                detail.uid = uid;
                 detail.cancel = function () {
                     $mdDialog.cancel();
                 };
@@ -53,44 +72,50 @@
     }
 
     /* @ngInject */
-    function AdminsController($firebase, $stateParams, qtNotificationsService, $state, $mdDialog, config) {
+    function UserClassesController($firebase, $timeout, $state, $mdDialog, config) {
         var vm = this;
-        vm.paginator = $firebase.pagination("site-users?type=list", {equalTo: true});
-        vm.paginator.onReorder('access.read');
-        usersCtrl(vm);
-
-        vm.actions = [
-            ['allowWrite', 'USERS.ALLOWWRITE']
-        ];
-    }
-
-
-    function usersCtrl(vm) {
-        vm.userClasses=['super-admin','admin', 'vendor'];
-
         vm.filters = [
             ['User Id', ''],
             ['Name', 'info.name']
         ];
 
+        //classes
+        vm.userClasses = [];
+        vm.getClasses = function () {
+            $firebase.queryRef('site-config-user').child('classes').once('value').then(function (snap) {
+                vm.userClasses=[];
+                (snap.val()||[]).forEach( function(val, index){
+                    vm.userClasses[index]=val;
+                });
+                vm.oldUserClasses = JSON.stringify(vm.userClasses);
+                $timeout(angular.noop,0);
+            });
 
-        vm.setAs = function (uid, className) {
-            //
+        };vm.getClasses();
+
+        vm.addClass = function () {
+            vm.userClasses.push({});
+        };
+        vm.removeClass = function (index) {
+            vm.userClasses.splice(index, 1);
         };
 
-
-        vm.onPaginate = function (page, size) { //to prevent this being overwritten
-            vm.paginator.get(page, size)
+        vm.save = function(){
+            $firebase.queryRef('site-config-user').child('classes').update(vm.userClasses);
+            vm.changed=false;
         };
 
-        vm.onReorder = function (orderBy) {
-            vm.paginator.onReorder(orderBy);
+        vm.showSaveBtn=function(){
+            return JSON.stringify(vm.userClasses)!==vm.oldUserClasses
         };
 
-        vm.getFiltered = function () {
-            vm.paginator.onReorder({orderBy: vm.orderBy, equalTo: vm.equalTo, startAt: vm.startAt, endAt: vm.endAt});
-        };
-
-
+        // vm.getClasses();
+        vm.checkFC=function(index){
+            if(!vm.userClasses[index].fc){ //it will be checked after ng-clicked
+                ['pg','wg','atc','pd','fs'].forEach(function(type){
+                    delete vm.userClasses[index][type];
+                })
+            }
+        }
     }
 })();

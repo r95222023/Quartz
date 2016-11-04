@@ -1,6 +1,8 @@
 <div layout="row" layout-align="center">
-
-    <md-card class="table-card">
+    <md-button ui-sref="pageEditor" class="md-fab add-btn" aria-label="fab button">
+        <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+    </md-button>
+    <md-card class="table-card" ng-if="vm.paginator.result.total>0">
         <md-card-actions layout="row" layout-align="end">
             <md-button ui-sref="pageEditor" class="md-primary  md-raised">{{'DESIGN.ADDPAGE'|translate}}</md-button>
         </md-card-actions>
@@ -55,5 +57,9 @@
             </div>
         </md-card-content>
     </md-card>
-
+    <div class="margin-50" ng-if="vm.paginator.result.total==0">
+        {{'DESIGN.NOPAGE'}}
+        <br>
+        <md-button ui-sref="pageEditor" class="md-primary  md-raised">{{'DESIGN.ADDPAGE'|translate}}</md-button>
+    </div>
 </div>
