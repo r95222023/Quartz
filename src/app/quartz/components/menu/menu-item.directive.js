@@ -27,7 +27,7 @@
     }
 
     /* @ngInject */
-    function qtMenuItemController($scope, $mdSidenav, $state,$transitions, $filter, qtBreadcrumbsService, $timeout) {
+    function qtMenuItemController($scope, $auth,$mdSidenav, $state,$transitions, $filter, qtBreadcrumbsService, $timeout) {
         var qtMenuItem = this;
         // load a template for this directive based on the type ( link | dropdown )
         qtMenuItem.item.template = 'app/quartz/components/menu/menu-item-' + qtMenuItem.item.type + '.tmpl.html';
@@ -57,7 +57,7 @@
                 break;
             case 'link':
                 qtMenuItem.openLink = openLink;
-
+                qtMenuItem.isDisabled = checkItemDisabled;
                 // on init check if this is current menu
                 checkItemActive($state.current.name, $state.params);
 
@@ -65,6 +65,11 @@
                     checkItemActive(trans.to().name, trans.params('to'));
                 });
                 break;
+        }
+
+        function checkItemDisabled(){
+            var alias = qtMenuItem.item.allowed; //fc: full control, pg:page, wg:widget, at:article, pd:product, fs:file system
+            return alias&&$auth.class&&!($auth.class.fc||$auth.class[alias]);
         }
 
         function checkItemActive() {

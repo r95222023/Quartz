@@ -50,6 +50,32 @@
             });
         };
 
+        Auth.getClass = function(authData){
+            var user = authData||Auth.currentUser;
+            return new Promise(function(resolve,reject){
+                if(!user.uid) reject('user not found');
+                $firebase.queryRef('site-user?type=list&userId='+user.uid).child('class').once('value', function(classSnap){
+                    var promises = [];
+
+                    var classId = classSnap.val();
+
+                    promises[0] = $firebase.queryRef('site-config-user').child('classes').once('value');
+                    promises[1] = $firebase.queryRef('users/detail/'+user.uid+'/sites').orderByChild('siteName').equalTo(_core.util.siteName||'')
+                        .once('child_added');
+                    Promise.all(promises).then(function(res){
+                        if(res[1].val()){
+                            Auth.class={name:'owner', fc:true}; //fc:full control
+                        } else {
+                            var classes=res[0].val()||{};
+                            Auth.class=classes[classId]||{};
+                        }
+                        if(Auth.class.name) console.log('user class: '+Auth.class.name);
+                        resolve(Auth.class);
+                    });
+                });
+            });
+        };
+
         return Auth;
     }
 
@@ -61,13 +87,15 @@
             $rootScope.loggedIn = !!user;
 
             if (user) {
-                $firebase.queryRef('user-path?userId='+user.uid+'&path=info').once('value', function (snap) {
-                    var userData = {},
+                $firebase.queryRef('user?userId='+user.uid).once('value', function (snap) {
+                    var val = snap.val()||{},
+                        userData = {},
                         providerData = user.providerData;
-                    userData.info = snap.val()||{};
+                    userData.info = val.info||{};
                     userData.info.name = user.displayName||providerData[0].displayName||firstPartOfEmail(user.email);
                     userData.info.photoURL = user.photoURL||providerData[0].photoURL;
                     $rootScope.user.info=userData.info;
+                    $auth.getClass();
                 });
 
             } else {

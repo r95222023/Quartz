@@ -2,15 +2,29 @@
     <div class="md-toolbar-tools" layout="row" layout-align="start center">
 
         <!--<div class="sidebar-left-logo">-->
-            <!--<img ng-src="{{vm.sidebarInfo.appLogo}}" alt="{{vm.sidebarInfo.appName}}" width="24px">-->
+        <!--<img ng-src="{{vm.sidebarInfo.appLogo}}" alt="{{vm.sidebarInfo.appName}}" width="24px">-->
         <!--</div>-->
 
-        <h2 flex class="sidebar-left-title" ui-sref="quartz.admin-default.overview" style="cursor:pointer;">{{vm.siteSettings.siteName}}</h2>
+        <h2 flex class="sidebar-left-title" ui-sref="quartz.admin-default.overview" style="cursor:pointer;">
+            {{vm.siteSettings.siteName}}</h2>
         <md-button class="md-icon-button sidebar-left-icon" ng-click="vm.toggleIconMenu()" aria-label="Open side menu">
-            <md-icon md-font-icon ng-class="{ 'zmdi zmdi-unfold-more' : vm.layout.sideMenuSize == 'icon', 'zmdi zmdi-unfold-less' : vm.layout.sideMenuSize == 'full' }"></md-icon>
+            <md-icon md-font-icon
+                     ng-class="{ 'zmdi zmdi-unfold-more' : vm.layout.sideMenuSize == 'icon', 'zmdi zmdi-unfold-less' : vm.layout.sideMenuSize == 'full' }"></md-icon>
         </md-button>
 
     </div>
 </md-toolbar>
 
 <qt-menu admin md-theme="{{qtSkin.elements.sidebar}}" flex></qt-menu>
+<md-toolbar class="sidebar-left-toolbar" style="background-color:white;" ng-if="vm.layout.sideMenuSize == 'full'">
+    <md-list style="padding:0;">
+        <md-list-item class="md-2-line">
+            <div class="md-list-item-text">
+                <h3> Plan</h3>
+                <p> Free, $0/month </p>
+            </div>
+            <md-button style="color:rgb(3,155,229)"
+                       aria-label="change plan" ng-click="vm.onChangeBillingClick()">Change</md-button>
+        </md-list-item>
+    </md-list>
+</md-toolbar>

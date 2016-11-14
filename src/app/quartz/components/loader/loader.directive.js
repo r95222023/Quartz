@@ -3,7 +3,8 @@
 
     angular
         .module('quartz.components')
-        .directive('qtLoader',Loader);
+        .directive('qtLoader',Loader)
+        .run(init);
 
     /* @ngInject */
     function Loader ($rootScope) {
@@ -21,20 +22,20 @@
         return directive;
 
         function link($scope) {
-            var loadingListener = $rootScope.$on('$viewContentLoading', function() {
-                $scope.vm.setLoaderActive(true);
-            });
-
-            var loadedListener = $rootScope.$on('$viewContentLoaded', function() {
-                $scope.vm.setLoaderActive(false);
-            });
-
-            $scope.$on('$destroy', removeListeners);
-
-            function removeListeners() {
-                loadingListener();
-                loadedListener();
-            }
+            // var loadingListener = $rootScope.$on('$viewContentLoading', function() {
+            //     $scope.vm.setLoaderActive(true);
+            // });
+            //
+            // var loadedListener = $rootScope.$on('$viewContentLoaded', function() {
+            //     $scope.vm.setLoaderActive(false);
+            // });
+            //
+            // $scope.$on('$destroy', removeListeners);
+            //
+            // function removeListeners() {
+            //     loadingListener();
+            //     loadedListener();
+            // }
         }
     }
 
@@ -44,5 +45,15 @@
         vm.appName         = qtSettings.name;
         vm.status          = qtLoaderService.status;
         vm.setLoaderActive = qtLoaderService.setLoaderActive;
+    }
+
+    /* @ngInject */
+    function init ($rootScope, qtLoaderService, $transitions) {
+        $transitions.onStart({}, function(trans) {
+            qtLoaderService.setLoaderActive(true);
+            trans.promise.finally(function(){
+                qtLoaderService.setLoaderActive(false);
+            });
+        });
     }
 })();

@@ -36,6 +36,12 @@
                     $(window).trigger('resize');
                 }, 300);
                 var layout=$('#editor-container').layout({
+                    onopen: function (name,element) {
+                        if(name==='east'){vm.previewPanel=true}
+                    },
+                    onclose: function (name,element) {
+                        if(name==='east'){vm.previewPanel=false}
+                    },
                     east__size: .40,
                     east__minSize: 400,
                     east__initClosed: true,
@@ -69,7 +75,7 @@
             vm.isAttrsConfigurable = customService.isAttrsConfigurable;
             vm.isTagConfigurable = customService.isTagConfigurable;
             vm.layoutOptions = customService.layoutOptions;
-            // vm.ctrls = customService.ctrls;
+            vm.ctrls = customService.ctrls;
 
             vm.actions = [['copy', 'GENERAL.COPY'], ['delete', 'GENERAL.DELETE']];
             vm.media = 'all';
@@ -420,11 +426,12 @@
                     }, 0)
                 }
             };
-            vm.compile();
 
 
-            vm.update = function () {
-                var styleSheets = {},
+            vm.update = function (saveAs) {
+                if(saveAs) vm[typeName]=saveAs;
+                var name = vm[typeName],
+                    styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
                     css = vm.css || '' + buildCss(styleSheets) || '';
 
@@ -439,14 +446,22 @@
                         }
                         if (vm.canvas) data.canvas = vm.canvas;
                         if (angular.isArray(vm.sources)) data.sources = vm.sources;
-                        $firebase.update([type + '?type=list&id=' + id, type + '?type=detail&id=' + vm[typeName]], {
-                            "name": vm[typeName],
-                            "author": $auth.currentUser.uid || null,
-                            "compressed@1": _core.encoding.compress(data),
-                            "editTime@0": firebase.database.ServerValue.TIMESTAMP
+                        // $firebase.update([type + '?type=list&id=' + id, type + '?type=detail&id=' + vm[typeName]], {
+                        //     "name": vm[typeName],
+                        //     "editBy": $auth.currentUser.uid || null,
+                        //     "compressed@1": _core.encoding.compress(data),
+                        //     "editTime@0": firebase.database.ServerValue.TIMESTAMP
+                        // });
+                        $firebase.queryRef(type + '?type=list&id=' + id).update({
+                            "name": name,
+                            "editBy": $auth.currentUser.uid || null,
+                            "editTime": firebase.database.ServerValue.TIMESTAMP
+                        });
+                        $firebase.queryRef(type + '?type=list&id=' + id).child('author').transaction(function(author){
+                            return author? undefined:($auth.currentUser.uid || null)
                         });
 
-                        $firebaseStorage.update(type + '?type=detail&id=' + vm[typeName], data).then(function () {
+                        $firebaseStorage.update(type + '?type=detail&id=' + name, data).then(function () {
                             $mdToast.show(
                                 $mdToast.simple()
                                     .textContent('Saved!')
@@ -454,19 +469,20 @@
                             );
                         });
                     };
-                if (vm.originalName && vm.originalName !== vm[typeName]) {
-                    vm.pageRef.parent.orderByChild('name').equalTo(vm.pageName).limitToFirst(1).once('value', function (snap) {
+                if (vm.originalName && vm.originalName !== name&&!saveAs) {
+                    vm.pageRef.parent.orderByChild('name').equalTo(name).limitToFirst(1).once('value', function (snap) {
                         snap.forEach(function (child) {
                             child.ref.remove();
                             vm.pageRef.parent.parent.child('detail').child(vm.originalName).remove();
+                            upload();
                         });
-                        upload();
                     });
                     $firebaseStorage.remove(type + '?type=detail&id=' + vm.originalName);
-                    vm.originalName = angular.copy(vm.pageName);
                 } else {
                     upload();
                 }
+
+                vm.originalName = name;
             };
 
             vm.undo = function () {

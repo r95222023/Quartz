@@ -1,0 +1,28 @@
+<md-dialog aria-label="Settings">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{'EDITOR.SAVEAS'|translate}}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-font-icon="fa fa-times" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="min-width:400px;">
+            <div layout="row" layout-align="center">
+                <md-input-container flex="80">
+                    <label>{{vm.pageName}}</label>
+                    <input type='text' ng-model="newPageName">
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+
+            <md-button ng-click="vm.update(newPageName);hide();">
+                {{'GENERAL.SAVE'|translate}}
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

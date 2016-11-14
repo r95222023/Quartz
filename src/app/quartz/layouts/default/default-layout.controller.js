@@ -16,7 +16,6 @@
     angular
         .module('quartz.layouts')
         .controller('DefaultLayoutController', DefaultLayoutController);
-
     /* @ngInject */
     function DefaultLayoutController($scope, $element, $mdSidenav, qtLayout) {
         // we need to use the scope here because otherwise the expression in md-is-locked-open doesnt work
@@ -45,4 +44,5 @@
             $mdSidenav(navId).toggle();
         }
     }
+
 })();

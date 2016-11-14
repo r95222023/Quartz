@@ -142,9 +142,8 @@
                 frame.refreshPreview(frameData);
             }
         };
-
-        vm.previewUrl ='/preview/#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
+        vm.previewUrl ='/preview/#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
 
         vm.previewPanel = false;
 
@@ -178,6 +177,31 @@
             };
         }
 
+        vm.showSaveAsDialog = function (ev) {
+            $mdDialog.show({
+                controller: SaveAsCtrl,
+                templateUrl: 'app/parts/design/setting/editor-saveas-dialog.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true
+            });
+        };
+        /* @ngInject */
+        function SaveAsCtrl($scope, $mdDialog) {
+            $scope.vm = vm;
+            $scope.hide = function () {
+                $mdDialog.hide();
+            };
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+            $scope.addSource = function (input) {
+                vm.sources.push({src:(input || '').replace(/\s+/g, '')});
+            };
+            $scope.removeSource = function (index) {
+                vm.sources.splice(index, 1);
+            };
+        }
 
         var widgetSource = customService.items,
             containerSource = customService.containers;
@@ -193,7 +217,6 @@
         });
 
         $scope.initDragula = dragula.init.bind(dragula);
-
         siteDesign.ctr(vm, $scope, dragula, 'page', pageData);
         vm.setPreviewScale(0.5);
     }

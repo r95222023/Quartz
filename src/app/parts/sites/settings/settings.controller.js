@@ -86,33 +86,19 @@
     }
 
     /* @ngInject */
-    function SiteSettingPaymentCtrl($firebase, $firebaseStorage) {
+    function SiteSettingPaymentCtrl($firebase, $timeout) {
         var payment = this;
         //payment
-        function getPaymentConfig(provider) {
-            angular.forEach(['public', 'private'], function (privacy) {
-                $firebaseStorage.getWithCache('site-config-payment?provider=' + provider + '&privacy=' + privacy).then(function (val) {
-                    payment[provider] = payment[provider] || {};
-                    payment[provider][privacy] = val || {};
-                });
+        function getPaymentConfig() {
+            $firebase.queryRef('site-config-payment').once('value').then(function(paymenSnap){
+                payment.config=paymenSnap.val()||{};
+                $timeout(angular.noop,0)
             });
         }
+        getPaymentConfig();
 
-        getPaymentConfig('allpay');
-        getPaymentConfig('stripe');
-
-
-        payment.updateAllpay = function (publicData, privatedata) {
-            [['public',publicData],['private',privatedata]].forEach(function(privacy){
-                $firebase.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
-                $firebaseStorage.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
-            });
-        };
-        payment.updateStripe = function (publicData, privatedata) {
-            [['public',publicData],['private',privatedata]].forEach(function(privacy){
-                $firebase.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
-                $firebaseStorage.update('site-config-payment?provider=allpay&privacy='+privacy[0], privacy[1]);
-            });
+        payment.update = function () {
+            $firebase.queryRef('site-config-payment').update(payment.config);
         };
     }
 })();

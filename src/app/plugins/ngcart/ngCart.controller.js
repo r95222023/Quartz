@@ -8,7 +8,8 @@
 
         .controller('AddToCartController', AddToCartController)
 
-        .controller('CartTableAdvancedController', CartTableAdvancedController);
+        .controller('CartTableAdvancedController', CartTableAdvancedController)
+        .controller('CartCtrl', CartTableAdvancedController);
 
     /* @ngInject */
     function CartController($scope, ngCart) {
@@ -21,8 +22,9 @@
     }
 
     /* @ngInject */
-    function CartTableAdvancedController($scope, $timeout, $q) {
+    function CartTableAdvancedController($scope,ngCart, $timeout, $q) {
         var vm = this;
+        $scope.ngCart = ngCart;
         vm.query = {
             filter: '',
             limit: '10',

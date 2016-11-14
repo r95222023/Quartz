@@ -243,7 +243,7 @@
                     orderBy: orderBy
                 }));
             }
-
+            if(self.result&&sortedArr.length<self.result.total) self.cache={}; //this solve the issue that there are some residue terms in cache when the new total is smaller than the original one.
             sortedArr.forEach(function (value, index) {
                 var itemsOnPreviousPages=_page * parseInt(size);
                 if (index+1 > itemsOnPreviousPages) {

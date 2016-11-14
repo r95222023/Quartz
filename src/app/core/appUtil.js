@@ -40,7 +40,7 @@
             'site-path': site + '/:path',
             'site-config-preload': site + '/config/preload',
             'site-config-user': site+'/config/user',
-            'site-config-payment': site + '/config/payment/:provider/:privacy',
+            'site-config-payment': site + '/config/payment/',
             'files': site + '/files',
             'file-path': site + '/files/:path',
             'file-root-path': site + '/files:path',

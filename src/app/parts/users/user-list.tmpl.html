@@ -60,10 +60,10 @@
                         </thead>
                         <tbody md-body>
                         <tr md-row
-                            ng-repeat="(uid, user) in vm.paginator.result.hits">
+                            ng-repeat="(userIndex, user) in vm.paginator.result.hits">
                             <td md-cell>{{user._key}}</td>
                             <td md-cell>{{user.info.name}}</td>
-                            <td md-cell>{{user.class}}</td>
+                            <td md-cell>{{vm.userClasses[user.class].name}}</td>
                             <td md-cell>{{user.createdTime| date: 'medium'}}</td>
                             <td md-cell style="width:50px;">
                                 <div layout="row">
@@ -84,7 +84,7 @@
                                                 </md-button>
                                                 <md-menu-content width="3">
                                                     <md-menu-item ng-repeat="class in vm.userClasses">
-                                                        <md-button ng-click="vm.setAs(uid, $index)"
+                                                        <md-button ng-click="vm.setAs(user._key, $index)"
                                                                    aria-label="{{class.name}}">{{class.name}}</md-button>
                                                     </md-menu-item>
                                                 </md-menu-content>

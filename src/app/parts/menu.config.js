@@ -33,6 +33,11 @@
                 // icon: 'zmdi zmdi-square-o',
                 type: 'link',
                 state: 'quartz.admin-default.template'
+            },{
+                name: 'MENU.TEST',
+                // icon: 'zmdi zmdi-square-o',
+                type: 'link',
+                state: 'quartz.admin-default.test'
             }]
         });
 
@@ -84,13 +89,15 @@
                     name: 'MENU.DESIGN.PAGEMANAGER',
                     state: 'quartz.admin-default.pageManager',
                     params: {cate: 'all', subCate: 'all', queryString: ''},
-                    type: 'link'
+                    type: 'link',
+                    allowed: 'pg'
                 },
                 {
                     name: 'MENU.DESIGN.WIDGETMANAGER',
                     state: 'quartz.admin-default.widgetManager',
                     params: {cate: 'all', subCate: 'all', queryString: ''},
-                    type: 'link'
+                    type: 'link',
+                    allowed: 'wg'
                 }
             ]
         });
@@ -104,12 +111,14 @@
                 {
                     name: 'MENU.CONTENTS.PRODUCTS',
                     state: 'quartz.admin-default.products.manager',
-                    type: 'link'
+                    type: 'link',
+                    allowed: 'pd'
                 },
                 {
                     name: 'MENU.CONTENTS.CATEGORIES',
                     state: 'quartz.admin-default.products.category',
-                    type: 'link'
+                    type: 'link',
+                    allowed: 'pd'
                 }
             ]
         });
@@ -123,12 +132,14 @@
                 {
                     name: 'MENU.CONTENTS.ARTICLES',
                     state: 'quartz.admin-default.articles.manager',
-                    type: 'link'
+                    type: 'link',
+                    allowed: 'at'
                 },
                 {
                     name: 'MENU.CONTENTS.CATEGORIES',
                     state: 'quartz.admin-default.articles.category',
-                    type: 'link'
+                    type: 'link',
+                    allowed: 'at'
                 }
             ]
         });
@@ -138,7 +149,8 @@
             icon: 'fa fa-folder-open',
             type: 'link',
             priority: 1.2,
-            state: 'quartz.admin-default-no-scroll.fileManager'
+            state: 'quartz.admin-default-no-scroll.fileManager',
+            allowed: 'fs'
         });
 
         qtMenuProvider.addMenuToGroup("siteSelected", {

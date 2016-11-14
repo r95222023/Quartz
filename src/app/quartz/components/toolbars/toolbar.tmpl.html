@@ -28,20 +28,20 @@
         <!--<span class="toolbar-button-badge" theme-background="accent" ng-if="vm.cartSubTotal()>0">{{vm.cartSubTotal()}}</span>-->
     <!--</md-button>-->
 
-    <md-button ng-if="loggedIn"
-               class="md-icon-button toolbar-button"
-               ng-click="vm.toggleNotificationsTab(0)"
-               aria-label="side navigation">
-        <md-icon md-font-icon="fa fa-envelope"></md-icon>
-        <span class="toolbar-button-badge animated" theme-background="accent" ng-class="{ 'toolbar-button-badge-new' : vm.emailNew }">5</span>
-    </md-button>
+    <!--<md-button ng-if="loggedIn"-->
+               <!--class="md-icon-button toolbar-button"-->
+               <!--ng-click="vm.toggleNotificationsTab(0)"-->
+               <!--aria-label="side navigation">-->
+        <!--<md-icon md-font-icon="fa fa-envelope"></md-icon>-->
+        <!--<span class="toolbar-button-badge animated" theme-background="accent" ng-class="{ 'toolbar-button-badge-new' : vm.emailNew }">5</span>-->
+    <!--</md-button>-->
 
-    <md-button ng-if="loggedIn"
-               class="md-icon-button toolbar-button"
-               ng-click="vm.toggleNotificationsTab(1)">
-        <md-icon md-font-icon="fa fa-bell-o"></md-icon>
-        <span class="toolbar-button-badge" theme-background="accent" ng-if="vm.notificationSubTotal()>0">{{vm.notificationSubTotal()}}</span>
-    </md-button>
+    <!--<md-button ng-if="loggedIn"-->
+               <!--class="md-icon-button toolbar-button"-->
+               <!--ng-click="vm.toggleNotificationsTab(1)">-->
+        <!--<md-icon md-font-icon="fa fa-bell-o"></md-icon>-->
+        <!--<span class="toolbar-button-badge" theme-background="accent" ng-if="vm.notificationSubTotal()>0">{{vm.notificationSubTotal()}}</span>-->
+    <!--</md-button>-->
 
     <!--<h2 ng-if="!loggedIn" >-->
         <!--<a href="#/login" aria-label="side navigation" translate="ADMIN.TOOLBAR.LOGIN"></a>-->
@@ -59,18 +59,18 @@
             {{user.info.name}}
         </md-button>
         <md-menu-content width="4">
-            <md-menu-item>
-                <md-button ng-click="vm.toggleNotificationsTab(2)" aria-label="side navigation">
-                    <md-icon md-font-icon="fa fa-cog"></md-icon>
-                    <span translate="ADMIN.TOOLBAR.SETTINGS"></span>
-                </md-button>
-            </md-menu-item>
-            <md-menu-item>
-                <md-button ui-sref="quartz.admin-default.profile" aria-label="side navigation">
-                    <md-icon md-font-icon="fa fa-user"></md-icon>
-                    <span translate="ADMIN.TOOLBAR.PROFILE"></span>
-                </md-button>
-            </md-menu-item>
+            <!--<md-menu-item>-->
+                <!--<md-button ng-click="vm.toggleNotificationsTab(2)" aria-label="side navigation">-->
+                    <!--<md-icon md-font-icon="fa fa-cog"></md-icon>-->
+                    <!--<span translate="ADMIN.TOOLBAR.SETTINGS"></span>-->
+                <!--</md-button>-->
+            <!--</md-menu-item>-->
+            <!--<md-menu-item>-->
+                <!--<md-button ui-sref="quartz.admin-default.profile" aria-label="side navigation">-->
+                    <!--<md-icon md-font-icon="fa fa-user"></md-icon>-->
+                    <!--<span translate="ADMIN.TOOLBAR.PROFILE"></span>-->
+                <!--</md-button>-->
+            <!--</md-menu-item>-->
             <md-menu-item>
                 <md-button ui-sref="quartz.admin-default.yourOrders" aria-label="side navigation">
                     <md-icon md-font-icon="fa fa-list"></md-icon>

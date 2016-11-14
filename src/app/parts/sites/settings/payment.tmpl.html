@@ -1,66 +1,80 @@
-<md-content>
-    <form>
-        <fieldset>
-            <md-tabs>
-                <md-tab label="Allpay">
+<md-tabs class="md-primary" md-dynamic-height md-border-bottom md-selected="vm.selectedSettingsTab">
+    <md-tab label="Allpay">
+        <md-content class="transparent-bg-color" layout="row" layout-padding layout-align="center">
+            <md-card class="admin-card">
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Allpay</span>
+                        {{payment.allpay}}
+                        <!--<span class="md-subhead"></span>-->
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content layout="row" layout-wrap>
                     <div class="content-padded" layout="row" layout-wrap layout-padding>
                         <md-input-container flex="50">
                             <label>MerchantID</label>
-                            <input type='text' ng-model="vm.allpay.public.MerchantID">
+                            <input type='text' ng-model="payment.config.allpay.public.MerchantID">
                         </md-input-container>
                         <md-input-container flex="50">
                             <label>HashKey</label>
-                            <input type='text' ng-model="vm.allpay.private.HashKey">
+                            <input type='text' ng-model="payment.config.allpay.private.HashKey">
                         </md-input-container>
                         <md-input-container flex="50">
                             <label>HashIV</label>
-                            <input type='text' ng-model="vm.allpay.private.HashIV">
+                            <input type='text' ng-model="payment.config.allpay.private.HashIV">
                         </md-input-container>
                         <md-input-container flex="50">
                             <label>PaymentType</label>
-                            <input type='text' ng-model="vm.allpay.public.PaymentType">
+                            <input type='text' ng-model="payment.config.allpay.public.PaymentType">
                         </md-input-container>
                         <md-input-container flex="50">
                             <label>ChoosePayment</label>
-                            <input type='text' ng-model="vm.allpay.public.ChoosePayment">
+                            <input type='text' ng-model="payment.config.allpay.public.ChoosePayment">
                         </md-input-container>
                         <md-input-container flex="50">
                             <label>TradeDesc</label>
-                            <input type='text' ng-model="vm.allpay.public.TradeDesc">
+                            <input type='text' ng-model="payment.config.allpay.public.TradeDesc">
                         </md-input-container>
                     </div>
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-raised md-primary" ng-click="payment.update()">UPDATE</md-button>
+                </md-card-actions>
+            </md-card>
+        </md-content>
+    </md-tab>
 
-                    <md-button ng-click="vm.updateAllpay(vm.allpay.public, vm.allpay.private)">Update</md-button>
-                </md-tab>
-                <md-tab label="Stripe">
-                    <md-card layout="row">
-                        <md-card-title>
-                            <md-card-title-text>
-                                <span class="md-headline">Stripe</span>
-                            </md-card-title-text>
-                        </md-card-title>
-                        <md-card-content layout-align="center center">
-                            <md-input-container flex="50">
-                                <label>Secret API Key</label>
-                                <input type='text' ng-model="vm.stripe.private.secretKey">
-                            </md-input-container>
-                            <md-input-container flex="50">
-                                <label>Publishable API Key</label>
-                                <input type='text' ng-model="vm.stripe.public.publicKey">
-                            </md-input-container>
-                            <md-input-container flex="50">
-                                <label>Name</label>
-                                <input type='text' ng-model="vm.stripe.public.name">
-                            </md-input-container>
-                            <md-input-container flex="50">
-                                <label>Currency</label>
-                                <input type='text' ng-model="vm.stripe.public.currency">
-                            </md-input-container>
-                        </md-card-content>
-                    </md-card>
-                </md-tab>
-            </md-tabs>
-        </fieldset>
-    </form>
-
-</md-content>
+    <md-tab label="Stripe">
+        <md-content class="transparent-bg-color" layout="row" layout-padding layout-align="center">
+            <md-card class="admin-card">
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Stripe</span>
+                        <!--<span class="md-subhead"></span>-->
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content layout="row" layout-wrap>
+                    <md-input-container flex="50">
+                        <label>Secret API Key</label>
+                        <input type='text' ng-model="payment.config.stripe.private.secretKey">
+                    </md-input-container>
+                    <md-input-container flex="50">
+                        <label>Publishable API Key</label>
+                        <input type='text' ng-model="payment.config.stripe.public.publicKey">
+                    </md-input-container>
+                    <md-input-container flex="50">
+                        <label>Name</label>
+                        <input type='text' ng-model="payment.config.stripe.public.name">
+                    </md-input-container>
+                    <md-input-container flex="50">
+                        <label>Currency</label>
+                        <input type='text' ng-model="payment.config.stripe.public.currency">
+                    </md-input-container>
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-raised md-primary" ng-click="payment.update()">UPDATE</md-button>
+                </md-card-actions>
+            </md-card>
+        </md-content>
+    </md-tab>
+</md-tabs>

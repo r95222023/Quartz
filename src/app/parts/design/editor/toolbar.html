@@ -25,6 +25,9 @@
                     <md-menu-item>
                         <md-button ng-click="vm.update()" translate>{{'GENERAL.SAVE'|translate}}</md-button>
                     </md-menu-item>
+                    <md-menu-item>
+                        <md-button ng-click="vm.showSaveAsDialog()" translate>{{'GENERAL.SAVEAS'|translate}}</md-button>
+                    </md-menu-item>
                     <md-menu-divider></md-menu-divider>
                     <md-menu-item>
                         <md-button ng-click="vm.selectedSettingsTab=0;vm.showSettinsTab($event)">

@@ -89,7 +89,7 @@
 
 
     /* @ngInject */
-    function run($q, $window, $lazyLoad, config, $rootScope,$transitions, $state, qtMenu, sitesService, $firebaseStorage) {
+    function run($q, $auth, $lazyLoad, config, $rootScope,$transitions, $state, qtMenu, sitesService, $firebaseStorage) {
 
         function setSite(siteName, toState, reset) {
             _core.util.setSiteName(siteName);
@@ -113,7 +113,7 @@
                     def.resolve(sitesService);
                 }
             }
-
+            $auth.getClass();
         }
 
         function getPreload(def) {
@@ -149,12 +149,12 @@
                 toParams = trans.params('to'),
                 abort;
             if (toParams.siteName) {
-                setSite(toParams.siteName, toState);
+                if(_core.util.siteName!==toParams.siteName) setSite(toParams.siteName, toState);
             } else if (toParams.siteName === '' && _core.util.siteName) {
                 //go to different state on the same site
                 setTimeout(function(){ //wait until last transition is aborted then go to new state.
                     $state.go(toState.name, Object.assign(toParams, {siteName: _core.util.siteName}));
-                },0)
+                },0);
                 abort=true;//return !abort===false to abort this transition
             }
 

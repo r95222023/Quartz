@@ -23,12 +23,14 @@
             $transitions.onBefore({ to: '**' }, scrollToTop);
 
             // when content view has loaded add footer if needed and send mdContentLoaded event
-            $scope.$on('$viewContentLoaded', injectFooterUpdateContent);
+            // $scope.$on('$viewContentLoaded', injectFooterUpdateContent);
 
             ////////////////////////
 
-            function scrollToTop() {
+            function scrollToTop(trans) {
                 $element.scrollTop(0);
+                // when content view has loaded add footer if needed and send mdContentLoaded event
+                trans.promise.finally(injectFooterUpdateContent);
             }
 
             function injectFooterUpdateContent() {

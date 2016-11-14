@@ -25,7 +25,7 @@
             });
         };vm.getClasses();
         vm.setAs=function(uid,usrClassIndex){
-            $firebase.queryRef(userRefStr).child(uid+'/class').update(usrClassIndex)
+            $firebase.queryRef(userRefStr).child(uid+'/class').set(usrClassIndex);
         };
 
 
@@ -112,7 +112,7 @@
         // vm.getClasses();
         vm.checkFC=function(index){
             if(!vm.userClasses[index].fc){ //it will be checked after ng-clicked
-                ['pg','wg','atc','pd','fs'].forEach(function(type){
+                ['pg','wg','at','pd','fs'].forEach(function(type){ //pg:page, wg:widget, at:article, pd:product, fs:file system
                     delete vm.userClasses[index][type];
                 })
             }

@@ -11,10 +11,14 @@
         $stateProvider
         .state('quartz.admin-default.test', {
             url: '/:siteName/test',
-            templateUrl: 'app/parts/test/test.tmpl.html',
-            // set the controller to load for this page
-            controller: 'TestPageController',
-            controllerAs: 'vm'
+            data: {
+                layout: {
+                    contentClass:'admin-card-container',
+                    footer: false
+                }
+            },
+            params:{siteName:''},
+            templateUrl: 'app/parts/test/test.tmpl.html'
         });
     }
 })();

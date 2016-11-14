@@ -35,7 +35,7 @@
                         <md-checkbox ng-model="vm.userClasses[$index].wg" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
                             <span>Widgets</span>
                         </md-checkbox>
-                        <md-checkbox ng-model="vm.userClasses[$index].atc" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
+                        <md-checkbox ng-model="vm.userClasses[$index].at" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
                             <span>Articles</span>
                         </md-checkbox>
                         <md-checkbox ng-model="vm.userClasses[$index].pd" ng-disabled="vm.userClasses[$index].fc" ng-click="vm.changed=true;">
@@ -63,10 +63,4 @@
         <br>
         <md-button class="md-raised md-primary" ng-click="vm.addClass()">{{'USERS.ADDCLASS'|translate}}</md-button>
     </div>
-    <!--<md-button class="md-fab" aria-label="fab button"-->
-    <!--style="position: fixed; bottom: 40px; right: 40px"-->
-    <!--ng-click="vm.showEditor($event)">-->
-    <!--<md-icon md-font-icon="zmdi zmdi-plus"></md-icon>-->
-    <!--</md-button>-->
-
 </div>
