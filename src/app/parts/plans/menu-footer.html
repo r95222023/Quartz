@@ -1,0 +1,12 @@
+<md-toolbar class="sidebar-left-toolbar" style="padding-left:12px;background-color:white;" ng-if="vm.layout.sideMenuSize == 'full'">
+    <md-list style="padding:0;">
+        <md-list-item class="md-2-line" layout="row">
+            <div class="md-list-item-text">
+                <h3> Plan</h3>
+                <p> Free, $0/month </p>
+            </div>
+            <md-button style="margin-top:16px; color:rgb(3,155,229)"
+                       aria-label="change plan" ng-click="onChangeBillingClick()">Change</md-button>
+        </md-list-item>
+    </md-list>
+</md-toolbar>

@@ -43,15 +43,16 @@
         }
 
         function addGroup(groupName, params) {
-            function iter(item){
-                if(item.type==='dropdown'&&angular.isArray(item.children)){
+            function iter(item) {
+                if (item.type === 'dropdown' && angular.isArray(item.children)) {
                     angular.forEach(item.children, iter);
-                } else if(item.type==='link'){
-                    if(item.params) angular.extend(item.params, params);
+                } else if (item.type === 'link') {
+                    if (item.params) angular.extend(item.params, params);
                 }
             }
+
             if (angular.isArray(groups[groupName])) angular.forEach(groups[groupName], function (item) {
-                if(angular.isObject(params)){
+                if (angular.isObject(params)) {
                     iter(item);
                 }
                 addMenu(item);
@@ -83,10 +84,10 @@
                 menu: menu,
                 addMenu: addMenu,
                 removeMenu: removeMenu,
-                addMenuToGroup:addMenuToGroup,
-                removeMenuFromGroup:removeMenuFromGroup,
-                addGroup:addGroup,
-                removeGroup:removeGroup
+                addMenuToGroup: addMenuToGroup,
+                removeMenuFromGroup: removeMenuFromGroup,
+                addGroup: addGroup,
+                removeGroup: removeGroup
             };
         };
     }

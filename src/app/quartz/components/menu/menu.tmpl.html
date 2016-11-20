@@ -16,15 +16,4 @@
 </md-toolbar>
 
 <qt-menu admin md-theme="{{qtSkin.elements.sidebar}}" flex></qt-menu>
-<md-toolbar class="sidebar-left-toolbar" style="background-color:white;" ng-if="vm.layout.sideMenuSize == 'full'">
-    <md-list style="padding:0;">
-        <md-list-item class="md-2-line">
-            <div class="md-list-item-text">
-                <h3> Plan</h3>
-                <p> Free, $0/month </p>
-            </div>
-            <md-button style="color:rgb(3,155,229)"
-                       aria-label="change plan" ng-click="vm.onChangeBillingClick()">Change</md-button>
-        </md-list-item>
-    </md-list>
-</md-toolbar>
+<qt-menu-footer></qt-menu-footer>

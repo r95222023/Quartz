@@ -67,7 +67,8 @@
             'user-orders': user + '/orders/:type',
             'order-payment-allpay': site + '/orders/detail/:orderId/payment/allpay',
             'orders-analysis': site + '/orders/analysis/:dateId',
-            'notifications': 'users/detail/:uid/notifications'
+            'notifications': 'users/detail/:uid/notifications',
+            'plans':'plans/:type'
         };
 
 

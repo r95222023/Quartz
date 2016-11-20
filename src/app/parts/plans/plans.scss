@@ -1,0 +1,64 @@
+.billing-dialog {
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'Roboto',sans-serif;
+    width: 820px;
+    position: relative;
+}
+.billing-chooseplanstep {
+    font-family: 'Roboto',sans-serif;
+    width: 820px;
+    padding-bottom: 48px;
+}
+.billing-chooseplanstepbody {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-top: -80px;
+    position: relative;
+}
+.billing-stepheader {
+    background: #039be5;
+    color: white;
+    font-family: 'Roboto',sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    height: 128px;
+    min-height: 128px;
+    padding: 4px 0 0 0;
+}
+.billing-plancardlist{
+    padding: 0 48px;
+}
+
+.billing-note{
+    background-color: #eceff1;
+    color: #546e7a;
+    margin-bottom:24px;
+}
+
+.billing-note-body{
+    padding: 12px 36px;
+    position: relative;
+    line-height: 20px;
+    font-size: 14px;
+}
+.billing-note-icon{
+    margin-right: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+.billing-no-feature{
+    color:white
+}
