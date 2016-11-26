@@ -1,0 +1,57 @@
+<div flex layout="row" class="billing-plancardlist">
+    <md-card style="width:224px">
+        <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
+        <div style="padding:12px">
+            <md-card-title-text>
+                <span class="md-headline">{{currentPlan.title}}</span>
+                <br>
+                <span class="md-subhead">{{currentPlan.desc}}</span>
+            </md-card-title-text>
+        </div>
+        <!--<md-card-content></md-card-content>-->
+        <md-divider></md-divider>
+        <md-list>
+            <md-list-item class="md-long-text" ng-repeat="(fid, fval) in currentPlan.features">
+                <div class="md-list-item-text">
+                    <p>{{features[fid].desc}}</p>
+                </div>
+            </md-list-item>
+        </md-list>
+        <div flex></div>
+
+        <md-divider></md-divider>
+        <md-card-actions layout="row" layout-align="center center">
+
+            <md-button ng-click="toMode('select')">
+                <md-icon md-font-icon="fa fa-long-arrow-left"></md-icon>
+                {{'PLANS.MOREPLANS'|translate}}
+            </md-button>
+        </md-card-actions>
+    </md-card>
+    <div layout="column" flex style="padding:10px 24px;">
+        <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
+        <h2 style="color:white;margin-bottom:36px">{{'PLANS.REFILL'|translate}}</h2>
+        <div class="billing-note">
+            <div class="billing-note-body" layout="row">
+                <span class="fb-callout-message"> 已使用容量: 125MB </span>
+            </div>
+            <div class="billing-note-body" layout="row">
+                <span class="fb-callout-message"> 本月已使用流量: 530MB </span>
+            </div>
+        </div>
+        <div>
+
+        </div>
+        <div class="b5g-modifyplan-billingtotitle">付款方式：</div>
+        <md-input-container style="margin-right: 10px;">
+            <label>Select a payment method</label>
+            <md-select ng-model="selectedMethod">
+                <md-option ng-repeat="method in paymentMethods" value="{{method}}">{{method}}</md-option>
+            </md-select>
+        </md-input-container>
+        <div flex></div>
+
+        <!--checkout button-->
+        <div layout="row" layout-align="end center" ng-include="'app/parts/plans/checkout-methods/checkout.html'"></div>
+    </div>
+</div>

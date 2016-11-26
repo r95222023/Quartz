@@ -2,6 +2,7 @@
     'use strict';
     window._core = window._core || {};
     window._core.syncTime = syncTime;
+
     if (typeof define === 'function' && define.amd) {
         define(function () {
             return syncTime;
@@ -31,9 +32,10 @@
                 systemtime.setMilliseconds(systemtime.getMilliseconds() + (latency / 2));
                 offset = systemtime - (new Date());
 
-                resolve(function () {
+                window._core.getSyncTime = function () {
                     if (offset) return (new Date()).getTime() + offset;
-                });
+                };
+                resolve(window._core.getSyncTime);
             };
             r.send(null);
         });

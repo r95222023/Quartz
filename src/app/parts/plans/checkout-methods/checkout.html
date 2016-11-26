@@ -1,0 +1,17 @@
+<md-button ng-click="cancel()">
+    {{'GENERAL.CANCEL'|translate}}
+</md-button>
+<!--allpay checkout-->
+<div ng-if="selectedMethod=='allpay'"  ng-controller="AllpayCtrl as allpay" ng-init="allpay.getCheckMacValue(selectedplan, currentPlan)">
+    <md-button class="md-raised md-primary" ng-click="allpay.submit();cancel()">
+        {{'GENERAL.CONFIRM'|translate}}
+    </md-button>
+    <form ng-hide="true" ng-if="allpay.order.payment.allpay" name="allpay-checkout" ng-submit="allpay.submit()" target="_blank" method="post" action="{{allpay.formAction}}">
+        <input ng-repeat="(name, value) in allpay.order.payment.allpay" name="{{name}}" value="{{value}}">
+    </form>
+</div>
+
+<!--stripe checkout-->
+<md-button ng-if="selectedMethod=='stripe'" class="md-raised md-primary" ng-click="confirm()">
+    {{'GENERAL.CONFIRM'|translate}}
+</md-button>

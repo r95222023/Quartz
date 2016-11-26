@@ -1,0 +1,51 @@
+<div flex layout="row" class="billing-plancardlist">
+    <md-card style="width:224px">
+        <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
+        <div style="padding:12px">
+            <md-card-title-text>
+                <span class="md-headline">{{selectedplan.title}}</span>
+                <br>
+                <span class="md-subhead">{{selectedplan.desc}}</span>
+            </md-card-title-text>
+        </div>
+        <!--<md-card-content></md-card-content>-->
+        <md-divider></md-divider>
+        <md-list>
+            <md-list-item class="md-long-text" ng-repeat="(fid, fval) in selectedplan.features">
+                <div class="md-list-item-text">
+                    <p>{{features[fid].desc}}</p>
+                </div>
+            </md-list-item>
+        </md-list>
+        <div flex></div>
+
+        <md-divider></md-divider>
+        <md-card-actions layout="row" layout-align="center center">
+
+            <md-button ng-click="toMode('select')">
+                <md-icon md-font-icon="fa fa-long-arrow-left"></md-icon>
+                {{'GENERAL.BACK'|translate}}
+            </md-button>
+        </md-card-actions>
+    </md-card>
+    <div layout="column" flex style="padding:10px 24px;">
+        <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
+        <h2 style="color:white;margin-bottom:36px">{{'GENERAL.CONFIRM'|translate}}</h2>
+        <div class="billing-note">
+            <div class="billing-note-body" layout="row">
+                <i class="fa fa-info-circle billing-note-icon" aria-hidden="true"></i>
+                <span class="fb-callout-message"> 從現在起，系統將根據您的即時資料庫、檔案儲存空間、代管服務、Google Cloud 服務 (如 BigQuery) 和 Test Lab for Android 用量向您收費 </span>
+            </div>
+        </div>
+        <div class="b5g-modifyplan-billingtotitle">付款方式：</div>
+        <md-input-container style="margin-right: 10px;">
+            <label>Select a payment method</label>
+            <md-select ng-model="selectedMethod">
+                <md-option ng-repeat="method in paymentMethods" value="{{method}}">{{method}}</md-option>
+            </md-select>
+        </md-input-container>
+        <div flex></div>
+        <!--checkout button-->
+        <div layout="row" layout-align="end center" ng-include="'app/parts/plans/checkout-methods/checkout.html'"></div>
+    </div>
+</div>
