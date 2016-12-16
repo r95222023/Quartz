@@ -3,51 +3,84 @@
 
     angular
         .module('app.parts.plans')
+        .controller('BillingHistoryCtrl', BillingHistoryCtrl)
         .controller('PlanDialogCtrl', PlanDialogCtrl)
         .controller('PlanRefillCtrl', PlanRefillCtrl);
 
     /* @ngInject */
-    function PlanDialogCtrl($scope, $mdDialog, mode, plans, features, currentPlan,getSyncTime) {
-        $scope.features = features;
-        $scope.currentPlan = currentPlan;
+    function BillingHistoryCtrl($firebase, $scope, $mdDialog) {
+        var bh = this;
+        bh.paginator = $firebase.pagination('users?type=bills/list', {}, function () {
+            $timeout(function () {
+            }, 0)
+        });
 
-        toMode(mode);
-        $scope.selectPlan = function (plan) {
-            $scope.selectedplan = plan;
+        //Test
+        // vm.paginator = $firebase.pagination('pages?type=list',{}, function(){$timeout(function(){},0)});
+
+        //initiate
+        bh.paginator.size = 25;
+        bh.paginator.onReorder('name');
+
+        bh.onPaginate = function (page, size) { //to prevent this being overwritten
+            bh.paginator.get(page, size)
+        };
+        bh.onReorder = function (orderBy) {
+            bh.paginator.onReorder(orderBy);
+        }
+    }
+
+    /* @ngInject */
+    function PlanDialogCtrl($firebase, sitesService, $mdDialog, mode, plans, features, sitePlan, getSyncTime) {
+        var pd = this;
+        pd.features = features;
+        pd.sitePlan = sitePlan;
+        pd.selectPlan = function (plan) {
+            pd.selectedPlan = plan;
             toMode('confirm');
         };
-        $scope.toSelectMode = function () {
-            toMode('select');
-        };
-        $scope.toMode = toMode;
-        function toMode(to) {
-            $scope.mode = to;
-            delete $scope.selectedMethod;
+        // $scope.toSelectMode = function () {
+        //     toMode('select');
+        // };
+        pd.toMode = toMode;
+        toMode(mode);
+        function toMode(mode) {
+            pd.mode = mode;
+            pd.selectedMethod=false;
         }
 
-        $scope.isCurrentPlan = function (plan) {
-            return plan.pid == currentPlan.pid
+        pd.isDowngrade = function () {
+            return pd.selectedPlan.pid < sitePlan.pid
         };
 
-        $scope.isRefillable = function (currentPlan) {
+        pd.confirmDowngrade = function () {
+            $firebase.queryRef('plans?type=sites').child('list/' + sitesService.siteName + '/preChangeTo')
+                .set(pd.selectedPlan.pid).then(pd.cancel);
+        };
+
+        pd.isCurrentPlan = function (plan) {
+            return plan.pid ==  (sitePlan.preChangeTo ||sitePlan.pid)
+        };
+
+        pd.isRefillable = function () {
             var now = getSyncTime(),
-                billingTime = currentPlan.billingTime;
-            switch (currentPlan.period) {
+                dueTime = sitePlan.endAt,
+                refill;
+            switch (sitePlan.period) {
                 case 'M':
-                    return billingTime && now > (billingTime + 27 * 24 * 60 * 60000);
+                    refill = dueTime && now < dueTime && now > moment(dueTime).subtract(7, 'days').valueOf();
                     break;
             }
+            return refill
         };
 
 
-        $scope.paymentMethods = ['allpay', 'stripe'];
-        $scope.onMethodChange = function () {
-        };
+        pd.paymentMethods = ['allpay', 'stripe'];
 
-        $scope.cancel = function () {
+        pd.cancel = function () {
             $mdDialog.cancel();
         };
-        $scope.plans = plans;
+        pd.plans = plans;
 
         //
         // $firebase.queryRef('plans?type=feature').update({

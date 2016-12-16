@@ -2,9 +2,9 @@
     <md-dialog-content class="billing-dialog">
         <div class="billing-chooseplanstep">
             <div class="billing-stepheader"></div>
-            <div ng-if="mode=='select'" ng-include="'app/parts/plans/plans-choose-plan.html'" layout="row" layout-align="center" class="billing-chooseplanstepbody"></div>
-            <div ng-if="mode=='confirm'" ng-include="'app/parts/plans/plans-confirm.html'" layout="row" class="billing-chooseplanstepbody"></div>
-            <div ng-if="mode=='refill'" ng-include="'app/parts/plans/plans-refill.html'" layout="row" class="billing-chooseplanstepbody"></div>
+            <div ng-if="pd.mode=='select'" ng-include="'app/parts/plans/plans-choose-plan.html'" layout="row" layout-align="center" class="billing-chooseplanstepbody"></div>
+            <div ng-if="pd.mode=='confirm'" ng-include="'app/parts/plans/plans-confirm.html'" layout="row" class="billing-chooseplanstepbody"></div>
+            <div ng-if="pd.mode=='refill'" ng-include="'app/parts/plans/plans-refill.html'" layout="row" class="billing-chooseplanstepbody"></div>
         </div>
     </md-dialog-content>
 </md-dialog>

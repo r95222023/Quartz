@@ -1,6 +1,8 @@
-<md-content style="height:100%;width:280px;" ng-keyup="vm.debouncedUpdateItem()" class="bgcolor" ng-class="{whitebg:vm.item.type&&vm.item.type!=='text'||vm.selectedContainerId==='canvas'}"
+<md-content ng-if="vm.item.type!=='widget'" style="height:100%;width:280px;" ng-keyup="vm.debouncedUpdateItem()"
+            class="bgcolor" ng-class="{whitebg:vm.item.type&&vm.item.type!=='text'||vm.selectedContainerId==='canvas'}"
             ng-mouseup="vm.debouncedUpdateItem()">
-    <md-tabs ng-if="vm.item.type&&vm.item.type!=='text'||vm.selectedContainerId==='canvas'" md-selected="vm.selectedSideEditorTab"
+    <md-tabs ng-if="vm.item.type&&vm.item.type!=='text'||vm.selectedContainerId==='canvas'"
+             md-selected="vm.selectedSideEditorTab"
              md-dynamic-height>
         <md-tab label="{{'DESIGN.PROP'|translate}}">
             <div class="padding-30 md-tabs-content">
@@ -14,15 +16,15 @@
                         <input type="text" ng-model="vm.item.id">
                     </md-input-container>
                     <!--<md-input-container>-->
-                        <!--<label>Controller</label>-->
-                        <!--<md-select ng-model="vm.item.ctrl">-->
-                            <!--<md-option ng-value="ctrl[0]" ng-repeat="ctrl in vm.ctrls">{{ctrl[0]}}-->
-                            <!--</md-option>-->
-                        <!--</md-select>-->
+                    <!--<label>Controller</label>-->
+                    <!--<md-select ng-model="vm.item.ctrl">-->
+                    <!--<md-option ng-value="ctrl[0]" ng-repeat="ctrl in vm.ctrls">{{ctrl[0]}}-->
+                    <!--</md-option>-->
+                    <!--</md-select>-->
                     <!--</md-input-container>-->
                     <!--<md-input-container ng-if="vm.item.ctrl">-->
-                        <!--<label>Controller as</label>-->
-                        <!--<input type="text" ng-model="vm.item.ctrlAs">-->
+                    <!--<label>Controller as</label>-->
+                    <!--<input type="text" ng-model="vm.item.ctrlAs">-->
                     <!--</md-input-container>-->
                     <br>
                     <div>Class</div>
@@ -149,4 +151,10 @@
     <!--<md-button ng-click="vm.updateItem()">OK</md-button>
     <md-button ng-click="vm.toggleEditor()">Cancel</md-button>-->
 
+</md-content>
+<md-content ng-if="vm.item.type==='widget'" style="height:100%;width:280px;padding-top:50px;" layout="row" layout-align="center" ng-mouseup="vm.debouncedUpdateItem()">
+    <md-input-container>
+        <label>Widget Name</label>
+        <input type="text" ng-model="vm.item.widget">
+    </md-input-container>
 </md-content>

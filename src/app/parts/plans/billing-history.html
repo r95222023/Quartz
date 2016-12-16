@@ -1,0 +1,39 @@
+<div layout="row" layout-align="center">
+    <md-card class="table-card" ng-if="bh.paginator.result.total>0">
+        <md-card-content>
+            <div layout="column">
+                <md-table-container>
+                    <table md-table md-progress="bh.paginator.promise">
+                        <thead md-head md-order="'_id'" md-on-reorder="bh.onReorder">
+                        <tr md-row>
+                            <th md-column md-order-by="processTime">Date</th>
+                            <th md-column>Description</th>
+                            <th md-column md-order-by="totalAmount">Total</th>
+                            <th md-column></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row
+                            ng-repeat="(id, bill) in bh.paginator.result.hits">
+                            <td md-cell>{{bill.desc}}</td>
+                            <td md-cell>{{bill.Description}}</td>
+                            <td md-cell>{{bill.totalAmount| date: 'medium'}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+
+                <md-table-pagination ng-show="bh.paginator.size<bh.paginator.result.total"
+                                     md-limit="bh.paginator.size" md-page="bh.paginator.page"
+                                     md-limit-options="[10, 25, 50, 100]"
+                                     md-total="{{bh.paginator.result.total}}"
+                                     md-on-paginate="bh.onPaginate" md-page-select></md-table-pagination>
+            </div>
+        </md-card-content>
+    </md-card>
+    <div class="margin-50" ng-if="bh.paginator.result.total==0">
+        {{'DESIGN.NOPAGE'}}
+        <br>
+        <md-button ui-sref="pageEditor" class="md-primary  md-raised">{{'DESIGN.ADDPAGE'|translate}}</md-button>
+    </div>
+</div>

@@ -23,8 +23,10 @@
                 <div ng-class="{rootfocus:vm.selectedContainerId==='root'&&vm.selectedItemIndex===rootIndex,'layout-margin':vm.containerClass['root'][rooIndex]}">
                     <div layout="row" class="containerTitle">
                         <md-icon md-font-icon="fa fa-arrows" class="root-handle containerHandle"></md-icon>
-                        <span >{{container.type==='part'?'part':container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
-                        <span ng-show="container.id">#{{container.id}}</span>
+                        <span >{{container.type==='widget'?'widget':container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
+                        <span ng-if="container.id">#{{container.id}}</span>
+                        <span ng-if="container.widget">#{{container.widget}}</span>
+
                         <span flex></span>
                         <md-menu>
                             <md-button class="md-icon-button" aria-label="more action"
@@ -63,8 +65,10 @@
                                     <md-icon md-font-icon="fa fa-arrows" class="lv1-handle  containerHandle"></md-icon>
 
                                     <!--<span ng-show="subcontainer.type!=='text'"><{{subcontainer.tag||'div'}}></span>-->
-                                    <span>{{subcontainer.type==='part'?'part': subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
-                                    <span ng-show="subcontainer.id">#{{subcontainer.id}}</span>
+                                    <span>{{subcontainer.type==='widget'?'widget': subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
+                                    <span ng-if="subcontainer.id">#{{subcontainer.id}}</span>
+                                    <span ng-if="subcontainer.widget">#{{subcontainer.widget}}</span>
+
                                     <span flex></span>
 
                                     <md-menu>
@@ -102,8 +106,10 @@
                                             <div layout="row" class="containerTitle">
                                                 <md-icon md-font-icon="fa fa-arrows" class="lv2-handle  containerHandle"></md-icon>
 
-                                                <span>{{widget.type==='part'?'part':widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
-                                                <span ng-show="widget.id">#{{widget.id}}</span>
+                                                <span>{{widget.type==='widget'?'widget':widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
+                                                <span ng-if="widget.id">#{{widget.id}}</span>
+                                                <span ng-if="widget.widget">#{{widget.widget}}</span>
+
                                                 <span flex></span>
 
                                                 <md-menu>

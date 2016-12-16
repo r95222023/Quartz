@@ -45,7 +45,9 @@
         "SUBCATEGORY":"子類別",
         "QUANTITY":"數量",
         "PRICE":"價格",
-        "START":"開始使用"
+        "START":"開始使用",
+		"BACK":"上一頁",
+		"CONFIRM":"確認"
     },
     "ADMIN": {
         "TOOLBAR": {

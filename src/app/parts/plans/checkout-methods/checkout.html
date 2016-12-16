@@ -1,9 +1,9 @@
-<md-button ng-click="cancel()">
+<md-button ng-click="pd.cancel()">
     {{'GENERAL.CANCEL'|translate}}
 </md-button>
 <!--allpay checkout-->
-<div ng-if="selectedMethod=='allpay'"  ng-controller="AllpayCtrl as allpay" ng-init="allpay.getCheckMacValue(selectedplan, currentPlan)">
-    <md-button class="md-raised md-primary" ng-click="allpay.submit();cancel()">
+<div ng-if="pd.selectedMethod=='allpay'"  ng-controller="AllpayCtrl as allpay" ng-init="allpay.getCheckMacValue(pd.selectedPlan, pd.sitePlan)">
+    <md-button class="md-raised md-primary" ng-click="allpay.submit();pd.cancel()">
         {{'GENERAL.CONFIRM'|translate}}
     </md-button>
     <form ng-hide="true" ng-if="allpay.order.payment.allpay" name="allpay-checkout" ng-submit="allpay.submit()" target="_blank" method="post" action="{{allpay.formAction}}">
@@ -12,6 +12,9 @@
 </div>
 
 <!--stripe checkout-->
-<md-button ng-if="selectedMethod=='stripe'" class="md-raised md-primary" ng-click="confirm()">
+<md-button ng-if="pd.selectedMethod=='stripe'" class="md-raised md-primary" ng-click="confirm()">
+    {{'GENERAL.CONFIRM'|translate}}
+</md-button>
+<md-button ng-if="pd.isDowngrade()" class="md-raised md-primary" ng-click="pd.confirmDowngrade()">
     {{'GENERAL.CONFIRM'|translate}}
 </md-button>

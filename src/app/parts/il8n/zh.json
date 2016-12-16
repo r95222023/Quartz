@@ -31,8 +31,8 @@
         "ORDERHISTORY":"訂單",
         "USERS":{
             "NAME":"用戶",
-            "LIST":"User List",
-            "CLASSES":"User Classes"
+            "LIST":"用戶清單",
+            "CLASSES":"用戶類別"
         }
     }
 }

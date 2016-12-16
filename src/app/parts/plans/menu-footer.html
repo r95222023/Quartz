@@ -2,8 +2,8 @@
     <md-list style="padding:0;">
         <md-list-item class="md-2-line" layout="row">
             <div class="md-list-item-text">
-                <h3> Plan</h3>
-                <p> Free, $0/month </p>
+                <h3> {{sitePlan.title}}</h3>
+                <p> {{sitePlan.desc}} </p>
             </div>
             <md-button style="margin-top:16px; color:rgb(3,155,229)"
                        aria-label="change plan" ng-click="onChangeBillingClick('select')">Change</md-button>

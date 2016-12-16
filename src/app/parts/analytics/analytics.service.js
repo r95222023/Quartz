@@ -9,8 +9,8 @@
     /* @ngInject */
     function AnalysisService($filter, $q, $firebase, snippets) {
         var to2dig = snippets.to2dig;
-        var orderAnalyticsRef = $firebase.queryRef('site-orders?&type=analytics').child('days');
-        var productAnalyticsRef = $firebase.queryRef('products?&type=analytics').child('summary');
+        var orderAnalyticsRef = $firebase.queryRef('site-orders?type=analytics').child('days');
+        var productAnalyticsRef = $firebase.queryRef('products?type=analytics').child('summary');
 
         var nowDate = new Date();
 

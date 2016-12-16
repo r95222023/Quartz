@@ -70,7 +70,6 @@
 
         vm.actions = [['edit', 'GENERAL.EDIT'], ['delete', 'GENERAL.DELETE']];
         vm.action = function (action, id, name) {
-            console.log(action, id, name);
             switch (action) {
                 case 'edit':
                     $state.go('widgetEditor', {id: id, widgetName: name});
@@ -105,14 +104,13 @@
 
     /* @ngInject */
     function PageEditorController(pageData, $mdDialog, customService, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
-        var vm = this, frame,frameData = angular.copy(pageData)||{};
+        var vm = this, frame={}, frameData = angular.copy(pageData)||{};
+        var previewFrames = ['preview-full-frame','preview-frame'];
         window.initPreviewFrame = function () {
-            if(vm.fullPagePreview){
-                frame = window.frames['preview-full-frame']
-            } else {
-                frame = window.frames['preview-frame']
-            }
-            frame.refreshPreview(frameData, 'init');
+            angular.forEach(previewFrames, function(type){
+                if(window.frames[type]) window.frames[type].refreshPreview(frameData);
+                vm[type]=true;
+            });
         };
 
         vm.refreshPreview =function(){
@@ -137,16 +135,18 @@
             }
             if(reload){
                 console.log('Reloading preview');
-                frame.location.reload(true);
+                angular.forEach(previewFrames, function(type){
+                    if(window.frames[type]) window.frames[type].location.reload(true);
+                });
             } else{
-                frame.refreshPreview(frameData);
+                angular.forEach(previewFrames, function(type){
+                    if(window.frames[type]) window.frames[type].refreshPreview(frameData);
+                });
             }
         };
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
         vm.previewUrl ='/preview/#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
-
         vm.previewPanel = false;
-
 
         vm.selectedSettingsTab = 1;
         vm.sources = pageData&&pageData.sources || [];
@@ -203,8 +203,17 @@
             };
         }
 
-        var widgetSource = customService.items,
-            containerSource = customService.containers;
+        var widgetSource = [
+                // {type: 'custom', content: '<!--include-->'},
+                {type: 'tag', content: ''},
+                {type: 'text', content: ''},
+                {type: 'widget'}
+            ],
+            containerSource = [
+                {type: 'tag', content: '<!--include-->'},
+                {type: 'text'},
+                {type: 'widget'}
+            ];
 
         var dragula = new Dragula(containerSource, containerSource, widgetSource, {
             scope: $scope,
@@ -226,8 +235,15 @@
         var vm = this;
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
-        var elementSource = customService.items,
-            containerSource = customService.containers;
+        var elementSource = [
+                // {type: 'custom', content: '<!--include-->'},
+                {type: 'tag', content: ''},
+                {type: 'text', content: ''}
+            ],
+            containerSource = [
+                {type: 'tag', content: '<!--include-->'},
+                {type: 'text'}
+            ];
 
         var dragula = new Dragula(containerSource, containerSource, elementSource, {
             scope: $scope,

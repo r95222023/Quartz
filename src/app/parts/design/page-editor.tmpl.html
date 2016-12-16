@@ -39,7 +39,7 @@
 
 </div>
 
-<iframe ng-if="vm.fullPagePreview" name="preview-full-frame" ng-src="{{vm.previewUrl}}"
+<iframe ng-show="vm.fullPagePreview" ng-if="vm.fullPagePreview||vm['preview-full-frame']" name="preview-full-frame" ng-src="{{vm.previewUrl}}"
         style="height:100%;width:100%"></iframe>
 <md-button ng-if="vm.fullPagePreview" class="md-fab" aria-label="back to edit" ng-click="vm.fullPagePreview=false"
            style="position:fixed; bottom:20px;left:20px">

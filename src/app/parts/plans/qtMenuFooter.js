@@ -23,32 +23,36 @@
         return directive;
 
         function link($scope, $element, attrs) {
-            $scope.onChangeBillingClick=onChangeBillingClick;
-        }
-
-        function onChangeBillingClick(mode) {
             var promises = [
                 $firebase.queryRef('plans?type=list').once('value'),
                 $firebase.queryRef('plans?type=feature').once('value'),
-                $firebase.queryRef('plans?type=sites').child(sitesService.siteName).once('value'),
                 _core.syncTime()
             ];
-            Promise.all(promises).then(function(res){
-                $mdDialog.show({
-                    mode:mode,
-                    controller: 'PlanDialogCtrl',
-                    templateUrl: 'app/parts/plans/plans-dialog.tmpl.html',
-                    parent: angular.element(document.body),
-                    locals: {
-                        plans: res[0].val(),
-                        features: res[1].val(),
-                        currentPlan:res[2].val()||freePlan,
-                        getSyncTime:res[3]
-                    },
-                    // targetEvent: ev,
-                    clickOutsideToClose: true
+            $firebase.queryRef('plans?type=sites/list').child(sitesService.siteName).on('value',function(snap){
+                var sitePlan = snap.val()||freePlan;
+                promises[0].then(function(listSnap){
+                    $scope.sitePlan = angular.extend({}, listSnap.val()[sitePlan.pid],sitePlan);
                 });
             });
+            $scope.onChangeBillingClick=function(mode){
+                Promise.all(promises).then(function(res){
+                    $mdDialog.show({
+                        mode:mode,
+                        controller: 'PlanDialogCtrl',
+                        controllerAs: 'pd',
+                        templateUrl: 'app/parts/plans/plans-dialog.tmpl.html',
+                        parent: angular.element(document.body),
+                        locals: {
+                            plans: res[0].val(),
+                            features: res[1].val(),
+                            sitePlan:$scope.sitePlan,
+                            getSyncTime:res[2]
+                        },
+                        // targetEvent: ev,
+                        clickOutsideToClose: true
+                    });
+                });
+            };
         }
     }
 

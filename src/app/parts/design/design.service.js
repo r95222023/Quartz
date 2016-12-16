@@ -212,7 +212,7 @@
                     })
                 });
                 return {
-                    inner: inner + (container.type === 'text' || container.type === 'part' ? ' nodrop' : ''),
+                    inner: inner + (container.type === 'text' || container.type === 'widget' ? ' nodrop' : ''),
                     outer: outer + flex + display
                 }
             };
@@ -365,6 +365,7 @@
                 vm.backUpItem = angular.copy($scope.containers[cid][index]);
             };
 
+
             vm.updateItem = function () {
                 if (!vm.selectedContainerId) return;
                 if (vm.selectedContainerId === 'canvas') {
@@ -389,7 +390,7 @@
                 })
             };
 
-            vm.debouncedUpdateItem = snippets.debounce(vm.updateItem, 1000);
+            vm.debouncedUpdateItem = snippets.debounce(vm.updateItem, 300);
 
             // vm.injectCss = function () {
             //     injectCSS.setDirectly(vm[type + 'Ref'].key, vm.css+ (vm.partsCss || ''));

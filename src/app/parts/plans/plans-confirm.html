@@ -3,17 +3,17 @@
         <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
         <div style="padding:12px">
             <md-card-title-text>
-                <span class="md-headline">{{selectedplan.title}}</span>
+                <span class="md-headline">{{pd.selectedPlan.title}}</span>
                 <br>
-                <span class="md-subhead">{{selectedplan.desc}}</span>
+                <span class="md-subhead">{{pd.selectedPlan.desc}}</span>
             </md-card-title-text>
         </div>
         <!--<md-card-content></md-card-content>-->
         <md-divider></md-divider>
         <md-list>
-            <md-list-item class="md-long-text" ng-repeat="(fid, fval) in selectedplan.features">
+            <md-list-item class="md-long-text" ng-repeat="(fid, fval) in pd.selectedPlan.features">
                 <div class="md-list-item-text">
-                    <p>{{features[fid].desc}}</p>
+                    <p>{{pd.features[fid].desc}}</p>
                 </div>
             </md-list-item>
         </md-list>
@@ -22,7 +22,7 @@
         <md-divider></md-divider>
         <md-card-actions layout="row" layout-align="center center">
 
-            <md-button ng-click="toMode('select')">
+            <md-button ng-click="pd.toMode('select')">
                 <md-icon md-font-icon="fa fa-long-arrow-left"></md-icon>
                 {{'GENERAL.BACK'|translate}}
             </md-button>
@@ -37,13 +37,16 @@
                 <span class="fb-callout-message"> 從現在起，系統將根據您的即時資料庫、檔案儲存空間、代管服務、Google Cloud 服務 (如 BigQuery) 和 Test Lab for Android 用量向您收費 </span>
             </div>
         </div>
-        <div class="b5g-modifyplan-billingtotitle">付款方式：</div>
-        <md-input-container style="margin-right: 10px;">
-            <label>Select a payment method</label>
-            <md-select ng-model="selectedMethod">
-                <md-option ng-repeat="method in paymentMethods" value="{{method}}">{{method}}</md-option>
-            </md-select>
-        </md-input-container>
+        <div ng-if="!pd.isDowngrade()">
+            <div class="b5g-modifyplan-billingtotitle">付款方式：</div>
+            <md-input-container style="margin-right: 10px;">
+                <label>Select a payment method</label>
+                <md-select ng-model="pd.selectedMethod">
+                    <md-option ng-repeat="method in pd.paymentMethods" value="{{method}}">{{method}}</md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
         <div flex></div>
         <!--checkout button-->
         <div layout="row" layout-align="end center" ng-include="'app/parts/plans/checkout-methods/checkout.html'"></div>

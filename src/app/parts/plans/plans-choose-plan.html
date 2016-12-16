@@ -1,5 +1,5 @@
 <div layout="row" class="billing-plancardlist">
-    <md-card ng-repeat="(pid,plan) in plans track by pid" style="width:224px">
+    <md-card ng-repeat="(pid,plan) in pd.plans track by pid" style="width:224px">
         <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
 
         <div style="padding:12px">
@@ -14,16 +14,16 @@
         <md-list>
             <md-list-item class="md-long-text" ng-repeat="(fid, fval) in plan.features track by fid">
                 <div class="md-list-item-text">
-                    <p>{{features[fid].desc}}</p>
+                    <p>{{pd.features[fid].desc}}</p>
                 </div>
             </md-list-item>
         </md-list>
         <div flex></div>
         <md-divider></md-divider>
         <md-card-actions layout="row" layout-align="center center">
-            <md-button ng-show="!isCurrentPlan(plan)" class="md-raised md-primary" ng-click="selectPlan(plan)">{{'GENERAL.START'|translate}}</md-button>
-            <md-button ng-show="isCurrentPlan(plan)&&isRefillable(currentPlan)" class="md-raised md-primary" ng-click="toMode('refill')">{{'PLANS.REFILL'|translate}}</md-button>
-            <md-button ng-show="isCurrentPlan(plan)&&!isRefillable(currentPlan)">{{'PLANS.CURRENTPLAN'|translate}}</md-button>
+            <md-button ng-show="!pd.isCurrentPlan(plan)" class="md-raised md-primary" ng-click="pd.selectPlan(plan)">{{'GENERAL.START'|translate}}</md-button>
+            <md-button ng-show="pd.isCurrentPlan(plan)&&pd.isRefillable()" class="md-raised md-primary" ng-click="pd.toMode('refill')">{{'PLANS.REFILL'|translate}}</md-button>
+            <md-button ng-show="pd.isCurrentPlan(plan)&&!pd.isRefillable()">{{'PLANS.CURRENTPLAN'|translate}}</md-button>
         </md-card-actions>
     </md-card>
 </div>

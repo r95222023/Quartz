@@ -3,17 +3,17 @@
         <!--<img ng-src="{{card.img}}" class="md-card-image" alt="Washed Out">-->
         <div style="padding:12px">
             <md-card-title-text>
-                <span class="md-headline">{{currentPlan.title}}</span>
+                <span class="md-headline">{{pd.sitePlan.title}}</span>
                 <br>
-                <span class="md-subhead">{{currentPlan.desc}}</span>
+                <span class="md-subhead">{{pd.sitePlan.desc}}</span>
             </md-card-title-text>
         </div>
         <!--<md-card-content></md-card-content>-->
         <md-divider></md-divider>
         <md-list>
-            <md-list-item class="md-long-text" ng-repeat="(fid, fval) in currentPlan.features">
+            <md-list-item class="md-long-text" ng-repeat="(fid, fval) in pd.sitePlan.features">
                 <div class="md-list-item-text">
-                    <p>{{features[fid].desc}}</p>
+                    <p>{{pd.features[fid].desc}}</p>
                 </div>
             </md-list-item>
         </md-list>
@@ -46,7 +46,7 @@
         <md-input-container style="margin-right: 10px;">
             <label>Select a payment method</label>
             <md-select ng-model="selectedMethod">
-                <md-option ng-repeat="method in paymentMethods" value="{{method}}">{{method}}</md-option>
+                <md-option ng-repeat="method in pd.paymentMethods" value="{{method}}">{{method}}</md-option>
             </md-select>
         </md-input-container>
         <div flex></div>

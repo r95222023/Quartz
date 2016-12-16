@@ -36,7 +36,9 @@
         "SUBCATEGORY":"Subcategory",
         "QUANTITY":"Quantity",
         "PRICE":"Price",
-        "START":"Start"
+        "START":"Start",
+		"BACK":"Back",
+		"CONFIRM":"Confirm"
     },
     "ADMIN": {
         "TOOLBAR": {

@@ -40,15 +40,17 @@
                 embed: 1
             };
 
-        var items = [
-                // {type: 'custom', content: '<!--include-->'},
-                {type: 'tag', content: ''},
-                {type: 'text', content: ''}
-            ],
-            containers = [
-                {type: 'tag', content: '<!--include-->'},
-                {type: 'text'}
-            ];
+        // var items = [
+        //         // {type: 'custom', content: '<!--include-->'},
+        //         {type: 'tag', content: ''},
+        //         {type: 'text', content: ''},
+        //         {type: 'widget'}
+        //     ],
+        //     containers = [
+        //         {type: 'tag', content: '<!--include-->'},
+        //         {type: 'text'},
+        //         {type: 'widget'}
+        //     ];
 
         function isEmptyTag(name) {
             if (name.charAt(0) == '?') {
@@ -61,7 +63,7 @@
         }
 
 
-        var properties = ['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content', 'ctrl', 'ctrlAs'];
+        var properties = ['options', 'id', 'name', 'type', 'tag', 'layout', 'class', 'style', 'attrs', 'content', 'widget'];
 
         function convert(val, target, maxLevel, level) {
             var _level = level || 1,
@@ -138,6 +140,9 @@
                 singleton = isEmptyTag(tag),
                 type=item.type;
 
+            if(item.type==='widget'){
+                return "<custom-widget name="+item.widget+"></custom-widget>"
+            }
             if (item.content) {
                 content = item.content;
                 if (type === 'text') return content;
@@ -213,9 +218,9 @@
             compileAll:compileAll,
             compileTag: compileTag,
             isAttrsConfigurable: isAttrsConfigurable,
-            isTagConfigurable: isTagConfigurable,
-            containers: containers,
-            items: items
+            isTagConfigurable: isTagConfigurable
+            // containers: containers,
+            // items: items
         }
     }
 
