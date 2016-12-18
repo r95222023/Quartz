@@ -18,7 +18,7 @@
         vm.action = function (action, id, name) {
             switch (action) {
                 case 'view':
-                    $window.location.href=config.playerUrl+'/#!/'+_core.util.siteName+'/'+name+'/';
+                    $window.location.href = config.playerUrl + '/#!/' + _core.util.siteName + '/' + name + '/';
                     // $state.go('customPage', {id: id, pageName: name});
                     break;
                 case 'edit':
@@ -27,12 +27,12 @@
                 case 'setPrivate':
                     $firebase.update(['page-property?type=list', 'page-property?type=detail'], {
                         "@all": true
-                    }, {property:'private',id:id});
+                    }, {property: 'private', id: id});
                     break;
                 case 'setPublic':
                     $firebase.update(['page-property?type=list', 'page-property?type=detail'], {
                         "@all": null
-                    }, {property:'private',id:id});
+                    }, {property: 'private', id: id});
                     break;
                 case 'delete':
                     var confirm = $mdDialog.confirm()
@@ -44,14 +44,17 @@
                     $mdDialog.show(confirm).then(function () {
                         $firebase.update(['page?type=list', 'page?type=detail'], {
                             "@all": null
-                        },{id:id});
+                        }, {id: id});
                         $firebaseStorage.remove('page?type=detail&id=' + name);
                     });
 
                     break;
             }
         };
-        vm.paginator = $firebase.pagination('pages?type=list',{}, function(){$timeout(function(){},0)});
+        vm.paginator = $firebase.pagination('pages?type=list', {}, function () {
+            $timeout(function () {
+            }, 0)
+        });
         //initiate
         vm.paginator.size = 25;
         vm.paginator.onReorder('name');
@@ -84,7 +87,7 @@
                     $mdDialog.show(confirm).then(function () {
                         $firebase.update(['widget?type=list', 'widget?type=detail'], {
                             "@all": null
-                        },{id:id});
+                        }, {id: id});
                     });
 
                     break;
@@ -103,53 +106,18 @@
     }
 
     /* @ngInject */
-    function PageEditorController(pageData, $mdDialog, customService, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
-        var vm = this, frame={}, frameData = angular.copy(pageData)||{};
-        var previewFrames = ['preview-full-frame','preview-frame'];
-        window.initPreviewFrame = function () {
-            angular.forEach(previewFrames, function(type){
-                if(window.frames[type]) window.frames[type].refreshPreview(frameData);
-                vm[type]=true;
-            });
-        };
+    function PageEditorController(pageData, $mdDialog, customService, $stateParams, $scope, $timeout, siteDesign) {
+        var vm = this, frameData = angular.copy(pageData) || {};
+        vm.mode='page';
+        siteDesign.previewCtr(vm, $scope, frameData);
+        siteDesign.editorLayoutCtr(vm);
 
-        vm.refreshPreview =function(){
-            var styleSheets = {},
-                reload,
-                content = customService.convertBack($scope.containers, 'root', styleSheets),
-                css = vm.css || '' + vm.buildCss(styleSheets) || '';
-            frameData = angular.extend(frameData,{
-                "css": css || '',
-                "content": content
-            });
-            if(vm.canvas) frameData.canvas=vm.canvas;
-            if(angular.isArray(vm.sources)) {
-                frameData.sources=frameData.sources||[];
-                if(JSON.stringify(vm.sources)!==JSON.stringify(frameData.sources)){
-                    reload=true;
-                    frameData.sources = angular.copy(vm.sources);
-                }
-            }
-            if(vm.js&&vm.js.trim()){
-                frameData.js = vm.js.trim();
-            }
-            if(reload){
-                console.log('Reloading preview');
-                angular.forEach(previewFrames, function(type){
-                    if(window.frames[type]) window.frames[type].location.reload(true);
-                });
-            } else{
-                angular.forEach(previewFrames, function(type){
-                    if(window.frames[type]) window.frames[type].refreshPreview(frameData);
-                });
-            }
-        };
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-        vm.previewUrl ='/preview/#!/preview/'+ $stateParams.siteName+'/'+$stateParams.pageName+'/';
+        vm.previewUrl = '/preview/#!/preview/' + $stateParams.siteName + '/' + $stateParams.pageName + '/';
         vm.previewPanel = false;
 
         vm.selectedSettingsTab = 1;
-        vm.sources = pageData&&pageData.sources || [];
+        vm.sources = pageData && pageData.sources || [];
         vm.showSettinsTab = function (ev) {
             $mdDialog.show({
                 controller: SettingsCtrl,
@@ -170,7 +138,7 @@
                 $mdDialog.cancel();
             };
             $scope.addSource = function (input) {
-                vm.sources.push({src:(input || '').replace(/\s+/g, '')});
+                vm.sources.push({src: (input || '').replace(/\s+/g, '')});
             };
             $scope.removeSource = function (index) {
                 vm.sources.splice(index, 1);
@@ -196,7 +164,7 @@
                 $mdDialog.cancel();
             };
             $scope.addSource = function (input) {
-                vm.sources.push({src:(input || '').replace(/\s+/g, '')});
+                vm.sources.push({src: (input || '').replace(/\s+/g, '')});
             };
             $scope.removeSource = function (index) {
                 vm.sources.splice(index, 1);
@@ -215,24 +183,15 @@
                 {type: 'widget'}
             ];
 
-        var dragula = new Dragula(containerSource, containerSource, widgetSource, {
-            scope: $scope,
-            dragulaService: dragulaService,
-            $timeout: $timeout
-        }, {
-            onDrop: function () {
-                vm.compile();
-            }
-        });
-
-        $scope.initDragula = dragula.init.bind(dragula);
+        var dragula = siteDesign.initDragula(vm, $scope, containerSource, containerSource, widgetSource);
         siteDesign.ctr(vm, $scope, dragula, 'page', pageData);
         vm.setPreviewScale(0.5);
     }
 
     /* @ngInject */
-    function WidgetEditorController(widgetData, customService, $stateParams, $scope, dragulaService, $timeout, siteDesign) {
+    function WidgetEditorController(widgetData, customService, $stateParams, $scope, $timeout, siteDesign) {
         var vm = this;
+        vm.mode='widget';
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
         var elementSource = [
@@ -245,166 +204,10 @@
                 {type: 'text'}
             ];
 
-        var dragula = new Dragula(containerSource, containerSource, elementSource, {
-            scope: $scope,
-            dragulaService: dragulaService,
-            $timeout: $timeout
-        }, {
-            // maxRoot: 1,
-            onDrop: function () {
-                vm.compile();
-            }
-        });
-        $scope.initDragula = dragula.init.bind(dragula);
         vm.previewPanel = true;
 
+        var dragula = siteDesign.initDragula(vm, $scope, containerSource, containerSource, elementSource);
+        siteDesign.editorLayoutCtr(vm);
         siteDesign.ctr(vm, $scope, dragula, 'widget', widgetData);
     }
-
-    ////////Classes
-
-    function Dragula(containerSource, subContainerSource, subSubContainerSource, services, options) {
-        this.options = options || {};
-        this.scope = services.scope;
-        this.$timeout = services.$timeout;
-        this.dragulaService = services.dragulaService;
-        this.containerSource = containerSource;
-        this.subContainerSource = subContainerSource;
-        this.subSubContainerSource = subSubContainerSource;
-
-        this.scope.containers = {root: []};
-        this.scope.containerSource = this.getSource(containerSource);
-        this.scope.subContainerSource = this.getSource(subContainerSource);
-        this.scope.subSubContainerSource = this.getSource(subSubContainerSource);
-
-        this.steps = {
-            index: -1,
-            action: '',
-            cache: []
-        };
-
-        var self = this;
-        self.scope.$watch('containers', function () {
-            registerStep();
-        }, true);
-
-        function registerStep() {
-            var index = self.steps['index'],
-                action = self.steps['action'],
-                lastIndex = self.steps['cache'].length - 1;
-            if (action === '') {
-                if (index !== lastIndex) {
-                    self.steps['cache'].splice(index + 1, lastIndex - index, angular.copy(self.scope.containers));
-                } else {
-                    self.steps['cache'].push(angular.copy(self.scope.containers));
-                }
-                self.steps['index'] = self.steps['cache'].length - 1;
-                if (self.steps['cache'].length > 20) {
-                    self.steps['index']--;
-                    self.steps['cache'].shift()
-                }
-            } else {
-                self.steps['action'] = '';
-            }
-        }
-
-        this.undo = function () {
-            if (self.steps['index'] < 1 || self.steps.cache.length < 2) return;
-            var resumed = self.steps['cache'][self.steps['index'] - 1];
-            if (resumed.root.length < 1) return;
-            self.steps['index']--;
-            self.steps['action'] = 'undo';
-            self.scope.containers = resumed;
-        };
-        this.redo = function () {
-            if (self.steps['index'] === self.steps['cache'].length - 1) return;
-            self.steps['index']++;
-            var resumed = self.steps['cache'][self.steps['index']];
-            self.steps['action'] = 'redo';
-            self.scope.containers = resumed;
-        }
-    }
-
-    Dragula.prototype = {
-        init: function () {
-            var self = this;
-
-            function onDrop() {
-                if (angular.isFunction(self.options.onDrop)) {
-                    self.options.onDrop()
-                }
-            }
-
-
-            self.dragulaService.options(self.scope, 'drag-container-root', {
-                moves: function (el, container, handle) {
-                    return handle.classList.contains('root-handle');
-                },
-                accepts: function (el, target, source, sibling) {
-                    return !target.classList.contains('nodrop');
-                }
-            });
-            self.dragulaService.options(self.scope, 'drag-container-lv1', {
-                moves: function (el, container, handle) {
-                    return handle.classList.contains('lv1-handle');
-                },
-                accepts: function (el, target, source, sibling) {
-                    return !target.classList.contains('nodrop');
-                }
-            });
-            self.dragulaService.options(self.scope, 'drag-container-lv2', {
-                moves: function (el, container, handle) {
-                    return handle.classList.contains('lv2-handle');
-                },
-                accepts: function (el, target, source, sibling) {
-                    return !target.classList.contains('nodrop');
-                }
-            });
-            self.dragRootOff = self.scope.$on('drag-container-root.drop-model', function (el, target, source) {
-                if (self.options.maxRoot && self.scope.containers['root'].length > self.options.maxRoot) self.scope.containers.root.pop();
-                self.scope.containerSource = self.getSource(self.containerSource);
-                onDrop();
-            });
-            self.dragLv1Off = self.scope.$on('drag-container-lv1.drop-model', function (el, source, target) {
-                if (source.parent().context.className.indexOf('subContainerSource') !== -1 || (target.context.firstElementChild && target.context.firstElementChild.className.indexOf('subContainerSource') !== -1)) {
-                    //only happen when user drag a subcontainer from source to the container
-                    self.scope.subContainerSource = self.getSource(self.subContainerSource);
-                } else if (source.parent()[0] && source.parent()[0]['$$hashKey'] === target[0]['$$hashKey']) {
-                    //this happens only when two subcontainers are swapped in the same container
-                } else {
-                    //this happens only when one subcontainer is moved from one container to another
-                    self.resetDragula();
-                }
-                onDrop();
-            });
-            self.dragLv2Off = self.scope.$on('drag-container-lv2.drop-model', function (el, target, source) {
-                self.scope.subSubContainerSource = self.getSource(self.subSubContainerSource);
-                onDrop();
-            });
-        },
-        resetDragula: function () {
-            var self = this;
-            self.dragulaService.destroy(self.scope, 'drag-container-root');
-            self.dragulaService.destroy(self.scope, 'drag-container-lv1');
-            self.dragulaService.destroy(self.scope, 'drag-container-lv2');
-            self.dragRootOff();
-            self.dragLv1Off();
-            self.dragLv2Off();
-            self.scope.destroyDragula = true;
-            self.$timeout(function () {
-                self.scope.destroyDragula = false;
-            }, 0);
-        },
-        getSource: function (source) {
-            var copy = [],
-                self = this;
-
-            angular.forEach(source, function (item) {
-                var cid = Math.random().toString();
-                self.scope.containers[cid] = [];
-                copy.push(angular.extend({}, item, {cid: cid}))
-            });
-            return copy;
-        }
-    };
 })();

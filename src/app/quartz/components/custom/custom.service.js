@@ -141,7 +141,7 @@
                 type=item.type;
 
             if(item.type==='widget'){
-                return "<custom-widget name="+item.widget+"></custom-widget>"
+                return '<custom-widget name="'+item.widget+'"></custom-widget>'
             }
             if (item.content) {
                 content = item.content;

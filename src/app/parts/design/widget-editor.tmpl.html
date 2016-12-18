@@ -1,122 +1,5 @@
 <!--Toolbar-->
-<md-toolbar ng-if="!vm.fullPagePreview" class="md-menu-toolbar editor-toolbar">
-    <div layout="row">
-        <md-toolbar-filler style="cursor:pointer;background-color:#F44336;" layout layout-align="center center"
-                           ui-sref="quartz.admin-default.widgetManager">
-            <md-icon md-font-icon="zmdi zmdi-apps"></md-icon>
-        </md-toolbar-filler>
-        <div>
-            <input type="text" class="docs-title-input" ng-model="vm.widgetName">
-
-            <md-menu-bar>
-                <md-menu>
-                    <button ng-click="$mdOpenMenu()">
-                        {{'GENERAL.FILE'|translate}}
-                    </button>
-                    <md-menu-content width="3">
-                        <md-menu-item>
-                            <md-button ui-sref="quartz.admin-default-no-scroll.pageEditor({pageName:''})">
-                                {{'GENERAL.NEW'|translate}}
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ui-sref="quartz.admin-default.pageManager">{{'GENERAL.OPEN'|translate}}
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ngf-select="vm.import($files)">{{'GENERAL.IMPORT'|translate}}</md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ng-click="vm.export()" translate>{{'GENERAL.EXPORT'|translate}}</md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ng-click="vm.update()" translate>{{'GENERAL.SAVE'|translate}}</md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-                <md-menu>
-                    <button ng-click="$mdOpenMenu()">{{'GENERAL.EDIT'|translate}}</button>
-                    <md-menu-content width="3">
-                        <md-menu-item class="md-indent">
-                            <md-icon md-svg-icon="undo"></md-icon>
-                            <md-button ng-click="vm.undo()">{{'GENERAL.UNDO'|translate}}</md-button>
-                        </md-menu-item>
-                        <md-menu-item class="md-indent">
-                            <md-icon md-svg-icon="redo"></md-icon>
-                            <md-button ng-click="vm.redo()">{{'GENERAL.REDO'|translate}}</md-button>
-                        </md-menu-item>
-                        <md-menu-item class="md-indent">
-                            <md-icon md-font-icon="fa fa-eraser"></md-icon>
-                            <md-button ng-click="vm.clearAll()">{{'GENERAL.CLEARALL'|translate}}</md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-                <md-menu>
-                    <button ng-click="$mdOpenMenu()">{{'GENERAL.VIEW'|translate}}</button>
-                    <md-menu-content width="3">
-                        <md-menu-item>
-                            <md-menu>
-                                <md-button ng-click="$mdOpenMenu()">{{'GENERAL.RESPONSIVEMODE'|translate}}
-                                </md-button>
-                                <md-menu-content width="3">
-                                    <!--<md-menu-item ng-repeat="bp in vm.layoutOptions.breakpoints" type="radio" ng-model="vm.layoutBreakpoint" value="{{bp}}">{{bp}}</md-menu-item>-->
-                                </md-menu-content>
-                            </md-menu>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-menu>
-                                <md-button ng-click="$mdOpenMenu()">{{'GENERAL.MEDIAWIDTH'|translate}}</md-button>
-                                <md-menu-content width="3">
-                                    <md-menu-item type="radio" ng-model="vm.media" value="'all'">
-                                        {{'GENERAL.ALL'|translate}}
-                                    </md-menu-item>
-                                    <md-menu-item type="radio" ng-model="vm.media" value="'0~599'">0~599
-                                    </md-menu-item>
-                                    <md-menu-item type="radio" ng-model="vm.media" value="'600~959'">600~959
-                                    </md-menu-item>
-                                    <md-menu-item type="radio" ng-model="vm.media" value="'960~1279'">960~1279
-                                    </md-menu-item>
-                                    <md-menu-item type="radio" ng-model="vm.media" value="'1280~1919'">1280~1919
-                                    </md-menu-item>
-                                    <md-menu-item type="radio" ng-model="vm.media" value="'>1920'">>1920
-                                    </md-menu-item>
-                                    <!--<md-menu-item type="radio" ng-repeat="mq in vm.layoutOptions.mediaQueries"-->
-                                    <!--ng-model="vm.media" value="{{mq}}">{{mq}}-->
-                                    <!--</md-menu-item>-->
-                                </md-menu-content>
-                            </md-menu>
-                        </md-menu-item>
-
-                        <md-menu-divider></md-menu-divider>
-                        <md-menu-item ng-if="!vm.fullPagePreview">
-                            <md-button ng-click="vm.fullPagePreview=true;">
-                                {{'GENERAL.PREVIEW'|translate}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-                <md-menu>
-                    <button ng-click="$mdOpenMenu()">{{'GENERAL.TOOLS'|translate}}</button>
-                    <md-menu-content width="3">
-                        <md-menu-item ng-if="!vm.showCss">
-                            <md-button ng-click="vm.showCss=true">
-                                {{'GENERAL.SHOW'|translate}}{{'GENERAL.CSSEDITOR'|translate}}
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item ng-if="vm.showCss">
-                            <md-button ng-click="vm.showCss=false">
-                                {{'GENERAL.HIDE'|translate}}{{'GENERAL.CSSEDITOR'|translate}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-            </md-menu-bar>
-        </div>
-        <div flex></div>
-        <user-menu></user-menu>
-
-    </div>
-</md-toolbar>
+<md-toolbar ng-if="!vm.fullPagePreview" class="md-menu-toolbar editor-toolbar" ng-include="'app/parts/design/editor/widget-toolbar.html'"></md-toolbar>
 <div id="editor-container" ng-show="!vm.fullPagePreview" class="ui-layout-container editor-full-height"
      style="overflow: hidden;" ng-if="!destroyDragula" ng-init="initDragula();">
 
@@ -161,8 +44,8 @@
 <!--<custom-item layout="row" ng-class="vm.canvas.class" layout-wrap content="vm.html" scope="vm.scope"></custom-item>-->
 
 <!--</md-content>-->
-<custom-item ng-if="vm.fullPagePreview" content="vm.html" scope="vm.scope" ng-init="vm.compile()" class="full-height"></custom-item>
-
+<iframe ng-show="vm.fullPagePreview" ng-if="vm.fullPagePreview||vm['preview-full-frame']" name="preview-full-frame" ng-src="{{vm.previewUrl}}"
+        style="height:100%;width:100%"></iframe>
 
 <md-button ng-if="vm.fullPagePreview" class="md-fab" aria-label="back to edit" ng-click="vm.fullPagePreview=false"
            style="position:fixed; bottom:20px;left:20px">

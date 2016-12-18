@@ -65,13 +65,13 @@
 
                         <md-input-container>
                             <label for="password" translate>PROFILE.PASSWORD.LABEL</label>
-                            <input id="password" label="password" name="password" type="password" ng-model="vm.pass.password" qt-same-password="password.confirm" ng-minlength="8" required/>
+                            <input id="password" label="password" name="password" type="password" ng-model="vm.pass.password" same-password="password.confirm" ng-minlength="8" required/>
                             <ng-messages for="password.password.$error" ng-hide="password.password.$pristine" ng-include="'app/quartz/components/authentication/signup/password.messages.html'"></ng-messages>
                         </md-input-container>
 
                         <md-input-container>
                             <label for="confirm" translate>PROFILE.PASSWORD_CONFIRM.LABEL</label>
-                            <input id="confirm" label="confirm" name="confirm" type="password" ng-model="vm.pass.confirm" qt-same-password="password.password" ng-minlength="8" required/>
+                            <input id="confirm" label="confirm" name="confirm" type="password" ng-model="vm.pass.confirm" same-password="password.password" ng-minlength="8" required/>
                             <ng-messages for="password.confirm.$error" ng-hide="password.confirm.$pristine" ng-include="'app/quartz/components/authentication/signup/password.messages.html'"></ng-messages>
                         </md-input-container>
                         <md-button class="md-raised md-primary margin-left-0" ng-disabled="password.$invalid" ng-click="changePassword()" translate="PROFILE.BUTTON"></md-button>

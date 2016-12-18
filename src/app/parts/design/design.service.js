@@ -6,7 +6,110 @@
         .factory('siteDesign', SiteDesign);
 
     /* @ngInject */
-    function SiteDesign($auth, $firebase, $stateParams, $firebaseStorage, $state, $mdToast, $ocLazyLoad, customService, snippets, $timeout) {
+    function SiteDesign($auth, $firebase, $stateParams, dragulaService, $firebaseStorage, $state, $mdToast, $ocLazyLoad, customService, snippets, $timeout) {
+        function previewCtr(vm, $scope, frameData) {
+            var previewFrames = ['preview-full-frame', 'preview-frame'];
+            window.initPreviewFrame = function () {
+                angular.forEach(previewFrames, function (type) {
+                    if (window.frames[type]) window.frames[type].refreshPreview(frameData);
+                    vm[type] = true;
+                });
+            };
+
+            vm.refreshPreview = function () {
+                var styleSheets = {},
+                    reload,
+                    content = customService.convertBack($scope.containers, 'root', styleSheets),
+                    css = vm.css || '' + vm.buildCss(styleSheets) || '';
+                frameData = angular.extend(frameData, {
+                    "css": css || '',
+                    "content": content
+                });
+                if (vm.canvas) frameData.canvas = vm.canvas;
+                if (angular.isArray(vm.sources)) {
+                    frameData.sources = frameData.sources || [];
+                    if (JSON.stringify(vm.sources) !== JSON.stringify(frameData.sources)) {
+                        reload = true;
+                        frameData.sources = angular.copy(vm.sources);
+                    }
+                }
+                if (vm.js && vm.js.trim()) {
+                    frameData.js = vm.js.trim();
+                }
+                if (reload) {
+                    console.log('Reloading preview');
+                    angular.forEach(previewFrames, function (type) {
+                        if (window.frames[type]) window.frames[type].location.reload(true);
+                    });
+                } else {
+                    angular.forEach(previewFrames, function (type) {
+                        if (window.frames[type]) window.frames[type].refreshPreview(frameData);
+                    });
+                }
+            };
+        }
+
+        function editorLayoutCtr(vm) {
+            vm.initEditorLayout = snippets.debounce(initEditorLayout, 300);
+            function initEditorLayout() {
+                setTimeout(function () {
+                    $(window).trigger('resize');
+                }, 300);
+                var layout = $('#editor-container').layout({
+                    onopen: function (name, element) {
+                        if (name === 'east') {
+                            vm.previewPanel = true
+                        }
+                    },
+                    onclose: function (name, element) {
+                        if (name === 'east') {
+                            vm.previewPanel = false
+                        }
+                    },
+                    east__size: .40,
+                    east__minSize: 400,
+                    east__initClosed: true,
+                    center__childOptions: {
+                        center__childOptions: {
+                            west__size: 130,
+                            east__size: 280,
+                            east__resizable: false,
+                            west__resizable: false
+                        },
+                        south__size: .50,
+                        south__initClosed: true,
+                        south__childOptions: {
+                            west__size: .33,
+                            east__size: .33
+                        }
+                    }
+                });
+                vm.togglePane = function (pane) {
+                    var paneArr = pane.split('.');
+                    if (paneArr[1]) {
+                        layout.children[paneArr[0]].layout1.toggle(paneArr[1]);
+                    } else {
+                        layout.toggle(pane);
+                    }
+                };
+            }
+        }
+
+        function initDragula(vm, $scope, lv0src, lv1src, lv2src) {
+            var dragula = new Dragula(lv0src, lv1src, lv2src, {
+                scope: $scope,
+                dragulaService: dragulaService,
+                $timeout: $timeout
+            }, {
+                onDrop: function () {
+                    vm.compile();
+                }
+            });
+
+            $scope.initDragula = dragula.init.bind(dragula);
+            return dragula;
+        }
+
         function ctr(vm, $scope, dragula, type, data) {
 
             var typeName = type + 'Name',
@@ -30,46 +133,6 @@
             }
 
             vm.originalName = $state.params[typeName] || '';
-            vm.initEditorLayout= snippets.debounce(initEditorLayout, 300);
-            function initEditorLayout() {
-                setTimeout(function () {
-                    $(window).trigger('resize');
-                }, 300);
-                var layout=$('#editor-container').layout({
-                    onopen: function (name,element) {
-                        if(name==='east'){vm.previewPanel=true}
-                    },
-                    onclose: function (name,element) {
-                        if(name==='east'){vm.previewPanel=false}
-                    },
-                    east__size: .40,
-                    east__minSize: 400,
-                    east__initClosed: true,
-                    center__childOptions: {
-                        center__childOptions: {
-                            west__size: 130,
-                            east__size: 280,
-                            east__resizable: false,
-                            west__resizable: false
-                        },
-                        south__size: .50,
-                        south__initClosed: true,
-                        south__childOptions: {
-                            west__size: .33,
-                            east__size: .33
-                        }
-                    }
-                });
-                vm.togglePane= function(pane){
-                    var paneArr= pane.split('.');
-                    if(paneArr[1]){
-                        layout.children[paneArr[0]].layout1.toggle(paneArr[1]);
-                    } else {
-                        layout.toggle(pane);
-                    }
-                };
-            }
-
 
             vm.compileContent = customService.compileTag;
             vm.isAttrsConfigurable = customService.isAttrsConfigurable;
@@ -256,6 +319,19 @@
                 }
             };
 
+            vm.export = function () {
+                var styleSheets = {},
+                    content = customService.convertBack($scope.containers, 'root', styleSheets),
+                    css = vm.css || '' + buildCss(styleSheets) || '',
+                    data = angular.extend({}, {
+                        canvas: vm.canvas || {},
+                        id: vm[typeName],
+                        content: content,
+                        css: css
+                    });
+                snippets.saveData(data, vm[typeName] + '.json')
+            };
+
             function getLocalFilesSrc(html) {
                 var localFilesSrcRegEx = /src[\s\S]*?=[\s\S]*?['"](?:[^']|[^"])*?['"][\s\S]*?/gm;
                 return html.match(localFilesSrcRegEx);
@@ -377,16 +453,16 @@
                 vm.compile();
             };
 
-            vm.beautify = function(type){
-                $ocLazyLoad.load(['app/lazyload/beautify/beautify-'+type+'.min.js']).then(function(){
-                    var content = type==='html'? vm.item.content:vm[type];
-                    var res= window[type+'_beautify'](content);
-                    if(type==='html'){
-                        vm.item.content=res;
-                    } else{
-                        vm[type]=res;
+            vm.beautify = function (type) {
+                $ocLazyLoad.load(['app/lazyload/beautify/beautify-' + type + '.min.js']).then(function () {
+                    var content = type === 'html' ? vm.item.content : vm[type];
+                    var res = window[type + '_beautify'](content);
+                    if (type === 'html') {
+                        vm.item.content = res;
+                    } else {
+                        vm[type] = res;
                     }
-                    $timeout(angular.noop,0);
+                    $timeout(angular.noop, 0);
                 })
             };
 
@@ -430,7 +506,7 @@
 
 
             vm.update = function (saveAs) {
-                if(saveAs) vm[typeName]=saveAs;
+                if (saveAs) vm[typeName] = saveAs;
                 var name = vm[typeName],
                     styleSheets = {},
                     content = customService.convertBack($scope.containers, 'root', styleSheets),
@@ -458,8 +534,8 @@
                             "editBy": $auth.currentUser.uid || null,
                             "editTime": firebase.database.ServerValue.TIMESTAMP
                         });
-                        $firebase.queryRef(type + '?type=list&id=' + id).child('author').transaction(function(author){
-                            return author? undefined:($auth.currentUser.uid || null)
+                        $firebase.queryRef(type + '?type=list&id=' + id).child('author').transaction(function (author) {
+                            return author ? undefined : ($auth.currentUser.uid || null)
                         });
 
                         $firebaseStorage.update(type + '?type=detail&id=' + name, data).then(function () {
@@ -470,7 +546,7 @@
                             );
                         });
                     };
-                if (vm.originalName && vm.originalName !== name&&!saveAs) {
+                if (vm.originalName && vm.originalName !== name && !saveAs) {
                     vm.pageRef.parent.orderByChild('name').equalTo(name).limitToFirst(1).once('value', function (snap) {
                         snap.forEach(function (child) {
                             child.ref.remove();
@@ -516,21 +592,6 @@
                             break;
                     }
                 };
-
-                vm.export = function () {
-                    var styleSheets = {},
-                        content = customService.convertBack($scope.containers, 'root', styleSheets),
-                        css = vm.css || '' + buildCss(styleSheets) || '',
-                        data = angular.extend({}, {
-                            canvas: vm.canvas || {},
-                            id: vm[typeName],
-                            content: content,
-                            css: css
-                        });
-                    snippets.saveData(data, vm[typeName] + '.json')
-                };
-
-
             } else if (type === 'widget') {
                 vm.action = function (action, cid, index) {
                     switch (action) {
@@ -554,7 +615,155 @@
         }
 
         return {
-            ctr: ctr
+            ctr: ctr,
+            initDragula:initDragula,
+            previewCtr: previewCtr,
+            editorLayoutCtr: editorLayoutCtr
         }
     }
+
+    function Dragula(containerSource, subContainerSource, subSubContainerSource, services, options) {
+        this.options = options || {};
+        this.scope = services.scope;
+        this.$timeout = services.$timeout;
+        this.dragulaService = services.dragulaService;
+        this.containerSource = containerSource;
+        this.subContainerSource = subContainerSource;
+        this.subSubContainerSource = subSubContainerSource;
+
+        this.scope.containers = {root: []};
+        this.scope.containerSource = this.getSource(containerSource);
+        this.scope.subContainerSource = this.getSource(subContainerSource);
+        this.scope.subSubContainerSource = this.getSource(subSubContainerSource);
+
+        this.steps = {
+            index: -1,
+            action: '',
+            cache: []
+        };
+
+        var self = this;
+        self.scope.$watch('containers', function () {
+            registerStep();
+        }, true);
+
+        function registerStep() {
+            var index = self.steps['index'],
+                action = self.steps['action'],
+                lastIndex = self.steps['cache'].length - 1;
+            if (action === '') {
+                if (index !== lastIndex) {
+                    self.steps['cache'].splice(index + 1, lastIndex - index, angular.copy(self.scope.containers));
+                } else {
+                    self.steps['cache'].push(angular.copy(self.scope.containers));
+                }
+                self.steps['index'] = self.steps['cache'].length - 1;
+                if (self.steps['cache'].length > 20) {
+                    self.steps['index']--;
+                    self.steps['cache'].shift()
+                }
+            } else {
+                self.steps['action'] = '';
+            }
+        }
+
+        this.undo = function () {
+            if (self.steps['index'] < 1 || self.steps.cache.length < 2) return;
+            var resumed = self.steps['cache'][self.steps['index'] - 1];
+            if (resumed.root.length < 1) return;
+            self.steps['index']--;
+            self.steps['action'] = 'undo';
+            self.scope.containers = resumed;
+        };
+        this.redo = function () {
+            if (self.steps['index'] === self.steps['cache'].length - 1) return;
+            self.steps['index']++;
+            var resumed = self.steps['cache'][self.steps['index']];
+            self.steps['action'] = 'redo';
+            self.scope.containers = resumed;
+        }
+    }
+
+    Dragula.prototype = {
+        init: function () {
+            var self = this;
+
+            function onDrop() {
+                if (angular.isFunction(self.options.onDrop)) {
+                    self.options.onDrop()
+                }
+            }
+
+
+            self.dragulaService.options(self.scope, 'drag-container-root', {
+                moves: function (el, container, handle) {
+                    return handle.classList.contains('root-handle');
+                },
+                accepts: function (el, target, source, sibling) {
+                    return !target.classList.contains('nodrop');
+                }
+            });
+            self.dragulaService.options(self.scope, 'drag-container-lv1', {
+                moves: function (el, container, handle) {
+                    return handle.classList.contains('lv1-handle');
+                },
+                accepts: function (el, target, source, sibling) {
+                    return !target.classList.contains('nodrop');
+                }
+            });
+            self.dragulaService.options(self.scope, 'drag-container-lv2', {
+                moves: function (el, container, handle) {
+                    return handle.classList.contains('lv2-handle');
+                },
+                accepts: function (el, target, source, sibling) {
+                    return !target.classList.contains('nodrop');
+                }
+            });
+            self.dragRootOff = self.scope.$on('drag-container-root.drop-model', function (el, target, source) {
+                if (self.options.maxRoot && self.scope.containers['root'].length > self.options.maxRoot) self.scope.containers.root.pop();
+                self.scope.containerSource = self.getSource(self.containerSource);
+                onDrop();
+            });
+            self.dragLv1Off = self.scope.$on('drag-container-lv1.drop-model', function (el, source, target) {
+                if (source.parent().context.className.indexOf('subContainerSource') !== -1 || (target.context.firstElementChild && target.context.firstElementChild.className.indexOf('subContainerSource') !== -1)) {
+                    //only happen when user drag a subcontainer from source to the container
+                    self.scope.subContainerSource = self.getSource(self.subContainerSource);
+                } else if (source.parent()[0] && source.parent()[0]['$$hashKey'] === target[0]['$$hashKey']) {
+                    //this happens only when two subcontainers are swapped in the same container
+                } else {
+                    //this happens only when one subcontainer is moved from one container to another
+                    self.resetDragula();
+                }
+                onDrop();
+            });
+            self.dragLv2Off = self.scope.$on('drag-container-lv2.drop-model', function (el, target, source) {
+                self.scope.subSubContainerSource = self.getSource(self.subSubContainerSource);
+                onDrop();
+            });
+        },
+        resetDragula: function () {
+            var self = this;
+            self.dragulaService.destroy(self.scope, 'drag-container-root');
+            self.dragulaService.destroy(self.scope, 'drag-container-lv1');
+            self.dragulaService.destroy(self.scope, 'drag-container-lv2');
+            self.dragRootOff();
+            self.dragLv1Off();
+            self.dragLv2Off();
+            self.scope.destroyDragula = true;
+            self.$timeout(function () {
+                self.scope.destroyDragula = false;
+            }, 0);
+        },
+        getSource: function (source) {
+            var copy = [],
+                self = this;
+
+            angular.forEach(source, function (item) {
+                var cid = Math.random().toString();
+                self.scope.containers[cid] = [];
+                copy.push(angular.extend({}, item, {cid: cid}))
+            });
+            return copy;
+        }
+    };
 })();

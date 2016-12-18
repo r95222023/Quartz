@@ -3,7 +3,7 @@
 
     angular
         .module('quartz.directives')
-        .directive('qtSamePassword', samePassword);
+        .directive('samePassword', samePassword);
 
     /* @ngInject */
     function samePassword() {

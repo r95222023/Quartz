@@ -23,9 +23,8 @@
                 <div ng-class="{rootfocus:vm.selectedContainerId==='root'&&vm.selectedItemIndex===rootIndex,'layout-margin':vm.containerClass['root'][rooIndex]}">
                     <div layout="row" class="containerTitle">
                         <md-icon md-font-icon="fa fa-arrows" class="root-handle containerHandle"></md-icon>
-                        <span >{{container.type==='widget'?'widget':container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
-                        <span ng-if="container.id">#{{container.id}}</span>
-                        <span ng-if="container.widget">#{{container.widget}}</span>
+                        <span>{{container.type==='widget'?'widget':container.type==='text'? 'text': '<'+(container.tag||'div')+'>'}}</span>
+                        <span ng-if="container.widget||container.id">#{{container.widget||container.id}}</span>
 
                         <span flex></span>
                         <md-menu>
@@ -66,8 +65,7 @@
 
                                     <!--<span ng-show="subcontainer.type!=='text'"><{{subcontainer.tag||'div'}}></span>-->
                                     <span>{{subcontainer.type==='widget'?'widget': subcontainer.type==='text'? 'text': '<'+(subcontainer.tag||'div')+'>'}}</span>
-                                    <span ng-if="subcontainer.id">#{{subcontainer.id}}</span>
-                                    <span ng-if="subcontainer.widget">#{{subcontainer.widget}}</span>
+                                    <span ng-if="subcontainer.widget||subcontainer.id">#{{subcontainer.widget||subcontainer.id}}</span>
 
                                     <span flex></span>
 
@@ -107,8 +105,7 @@
                                                 <md-icon md-font-icon="fa fa-arrows" class="lv2-handle  containerHandle"></md-icon>
 
                                                 <span>{{widget.type==='widget'?'widget':widget.type==='text'? 'text': '<'+(widget.tag||'div')+'>'}}</span>
-                                                <span ng-if="widget.id">#{{widget.id}}</span>
-                                                <span ng-if="widget.widget">#{{widget.widget}}</span>
+                                                <span ng-if="widget.widget||widget.id">#{{widget.widget||widget.id}}</span>
 
                                                 <span flex></span>
 
