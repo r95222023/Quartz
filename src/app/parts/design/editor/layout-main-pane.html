@@ -6,7 +6,7 @@
                        aria-label="edit">
                 <md-icon md-font-icon="fa fa-pencil-square-o"></md-icon>
             </md-button>
-
+            <span ng-if="vm.canvas.tag">{{'<'+vm.canvas.tag+'>'}}</span>
         </div>
 
         <div layout="{{vm.canvas.layout[vm.layoutBreakpoint].layout||'column'}}"

@@ -7,13 +7,18 @@
     /* @ngInject */
     function SiteSettingAdvanceCtrl() {
         var vm = this;
-        vm.presets = [
-            {
-                name: 'AngularJS', id: 'ng1'
-            },
-            {
-                name: 'AngularJS + Material', id: 'ngMaterial'
+        vm.presets = {
+            ng1: {
+                name: 'AngularJS', id: 'ng1',
+                plugins: [
+                    {name: 'allpay', js: ['/allpay.ctrl']}]
             }
-        ];
+            ,
+            ngMaterial: {
+                name: 'AngularJS + Material', id: 'ngMaterial',
+                plugins: [
+                    {name: 'allpay', js: ['/allpay.ctrl']}]
+            }
+        };
     }
 })();

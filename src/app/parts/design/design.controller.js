@@ -113,7 +113,7 @@
         siteDesign.editorLayoutCtr(vm);
 
         vm.pageName = $stateParams.pageName || ('New Page-' + (new Date()).getTime());
-        vm.previewUrl = '/preview/#!/preview/' + $stateParams.siteName + '/' + $stateParams.pageName + '/';
+
         vm.previewPanel = false;
 
         vm.selectedSettingsTab = 1;
@@ -190,7 +190,7 @@
 
     /* @ngInject */
     function WidgetEditorController(widgetData, customService, $stateParams, $scope, $timeout, siteDesign) {
-        var vm = this;
+        var vm = this, frameData = angular.copy(widgetData) || {};
         vm.mode='widget';
 
         vm.widgetName = $stateParams.widgetName || ('New Widget-' + (new Date()).getTime());
@@ -207,6 +207,7 @@
         vm.previewPanel = true;
 
         var dragula = siteDesign.initDragula(vm, $scope, containerSource, containerSource, elementSource);
+        siteDesign.previewCtr(vm, $scope, frameData);
         siteDesign.editorLayoutCtr(vm);
         siteDesign.ctr(vm, $scope, dragula, 'widget', widgetData);
     }

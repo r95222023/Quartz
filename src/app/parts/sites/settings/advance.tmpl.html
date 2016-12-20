@@ -82,7 +82,7 @@
                 <md-card-content layout="row" layout-wrap>
                     <md-input-container style="width:300px">
                         <label>Preset</label>
-                        <md-select ng-model="common.preload.preset.id">
+                        <md-select ng-model="common.preload.preset.id" ng-change="common.preload.plugins=[]">
                             <md-option><em>None</em></md-option>
                             <md-option ng-repeat="preset in vm.presets track by preset.name" ng-value="preset.id">
                                 {{preset.name}}
@@ -93,6 +93,27 @@
                         ng-if="common.preload.preset.id==='ng1'||common.preload.preset.id==='ngMaterial'">
                         <label>Dependent Angular Modules</label>
                         <input type='text' ng-model="common.preload.preset.config.dependencies">
+                    </md-input-container>
+                    <div flex="100" ng-if="common.preload.plugins.length">
+                        Plugins:
+                        <br>
+                        <span ng-repeat="(pluginIndex, plugin) in common.preload.plugins track by pluginIndex">
+                            {{plugin.name}}
+                            <md-icon md-font-icon="fa fa-times" style="cursor:pointer;"
+                                     ng-click="common.removeSource('plugins',srcIndex)"></md-icon>
+                        </span>
+
+                    </div>
+                    <md-input-container flex="100">
+                        <label>Plugin</label>
+                        <md-select ng-model="selectedPlugin">
+                            <md-option><em>None</em></md-option>
+                            <md-option ng-repeat="plugin in vm.presets[common.preload.preset.id].plugins track by $index" ng-value="plugin">
+                                {{plugin.name}}
+                            </md-option>
+                        </md-select>
+                        <md-icon md-font-icon="fa fa-plus" style="cursor:pointer"
+                                 ng-click="common.addSource('plugins', selectedPlugin);selectedPlugin={}"></md-icon>
                     </md-input-container>
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="end center">

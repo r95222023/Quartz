@@ -84,18 +84,32 @@
             return res
         }
 
-        function convertBack(val, cid, styleSheets) {
+        // function convertBack(val, cid, styleSheets) {
+        //     var result = [],
+        //         _cid = cid || 'root';
+        //
+        //     angular.forEach(val[_cid], function (item) {
+        //         var _item = {};
+        //         if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
+        //         // if(item.type==='custom'||item.type==='row'||item.type==='column') item.type='tag';
+        //         angular.forEach(properties, function (property) {
+        //             if (item[property]) _item[property] = item[property];
+        //         });
+        //         if (item.cid) _item.divs = convertBack(val, item.cid, styleSheets);
+        //         result.push(_item);
+        //     });
+        //     return result;
+        // }
+        function convertBack(val, cid) {
             var result = [],
                 _cid = cid || 'root';
 
             angular.forEach(val[_cid], function (item) {
                 var _item = {};
-                if (item.css && styleSheets && item.name) styleSheets[item.name] = item.css;
-                // if(item.type==='custom'||item.type==='row'||item.type==='column') item.type='tag';
                 angular.forEach(properties, function (property) {
                     if (item[property]) _item[property] = item[property];
                 });
-                if (item.cid) _item.divs = convertBack(val, item.cid, styleSheets);
+                if (item.cid) _item.divs = convertBack(val, item.cid);
                 result.push(_item);
             });
             return result;
@@ -194,11 +208,13 @@
             });
             return html;
         }
-        function compileAll(containers, canvas){
-            var _canvas=angular.copy(canvas)||{};
-            _canvas.content ='<!--include-->';
-            _canvas.tag='md-content';
-            _canvas.style =  _canvas.style||'';
+
+        function compileAll(containers, canvas) {
+            var _canvas = angular.copy(canvas) || {};
+            if(_canvas.skip) return compile(containers);
+            _canvas.content = '<!--include-->';
+            _canvas.tag = 'div';
+            _canvas.style = _canvas.style || '';
             return compileTag(_canvas).replace('<!--include-->', compile(containers))
         }
 

@@ -31,7 +31,12 @@
         //external lib
         vm.addSource = function (type, input) {
             vm.preload[type] = vm.preload[type] || [];
-            vm.preload[type].push({src: (input || '').replace(/\s+/g, '')});
+            if(JSON.stringify(vm.preload[type]).indexOf(JSON.stringify(input))!==-1) return; //input is duplicated
+            if(type==='plugins'&&input.name){
+                vm.preload[type].push(input);
+            } else {
+                vm.preload[type].push({src: (input || '').replace(/\s+/g, '')});
+            }
         };
 
 

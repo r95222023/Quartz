@@ -9,18 +9,21 @@
     function SiteDesign($auth, $firebase, $stateParams, dragulaService, $firebaseStorage, $state, $mdToast, $ocLazyLoad, customService, snippets, $timeout) {
         function previewCtr(vm, $scope, frameData) {
             var previewFrames = ['preview-full-frame', 'preview-frame'];
+            vm.previewUrl = function(){
+                return '/preview/#!/preview/' + $stateParams.siteName + '/' + $stateParams.pageName + '/';
+            };
             window.initPreviewFrame = function () {
                 angular.forEach(previewFrames, function (type) {
                     if (window.frames[type]) window.frames[type].refreshPreview(frameData);
                     vm[type] = true;
                 });
             };
-
+            var oldFrameData='';
             vm.refreshPreview = function () {
-                var styleSheets = {},
-                    reload,
-                    content = customService.convertBack($scope.containers, 'root', styleSheets),
-                    css = vm.css || '' + vm.buildCss(styleSheets) || '';
+                var reload,
+                    // styleSheets = {},
+                    content = customService.convertBack($scope.containers, 'root'/*, styleSheets*/),
+                    css = vm.css || '' /*+ vm.buildCss(styleSheets) || ''*/;
                 frameData = angular.extend(frameData, {
                     "css": css || '',
                     "content": content
@@ -42,9 +45,12 @@
                         if (window.frames[type]) window.frames[type].location.reload(true);
                     });
                 } else {
+                    var frameDataStr = JSON.stringify(frameData);
+                    if(frameDataStr===oldFrameData) return; // no refresh if there is no change
                     angular.forEach(previewFrames, function (type) {
                         if (window.frames[type]) window.frames[type].refreshPreview(frameData);
                     });
+                    oldFrameData=frameDataStr;
                 }
             };
         }
@@ -320,9 +326,9 @@
             };
 
             vm.export = function () {
-                var styleSheets = {},
-                    content = customService.convertBack($scope.containers, 'root', styleSheets),
-                    css = vm.css || '' + buildCss(styleSheets) || '',
+                // var styleSheets={};
+                var content = customService.convertBack($scope.containers, 'root'/*, styleSheets*/),
+                    css = vm.css || ''/* + buildCss(styleSheets) || ''*/,
                     data = angular.extend({}, {
                         canvas: vm.canvas || {},
                         id: vm[typeName],
@@ -355,9 +361,9 @@
                         $scope.containers[vm.item.cid] = [];
                         vm.updateItem();
                     } else {
-                        var styleSheets = {},
-                            content = customService.convertBack($scope.containers, 'root', styleSheets) || [],
-                            css = vm.css || '' + buildCss(styleSheets) || '';
+                        // var styleSheets={};
+                        var content = customService.convertBack($scope.containers, 'root'/*, styleSheets*/) || [],
+                            css = vm.css || ''/* + buildCss(styleSheets) || ''*/;
 
                         customService.convert(content.concat(result.content || []), $scope['containers'], 3);
                         vm.css = css + ' ' + (result.css || '');
@@ -466,7 +472,7 @@
                 })
             };
 
-            vm.debouncedUpdateItem = snippets.debounce(vm.updateItem, 300);
+            vm.debouncedUpdateItem = snippets.debounce(vm.updateItem, 1000);
 
             // vm.injectCss = function () {
             //     injectCSS.setDirectly(vm[type + 'Ref'].key, vm.css+ (vm.partsCss || ''));
@@ -476,31 +482,23 @@
             //             dereg();
             //         });
             // };
-            function buildCss(styleSheets) {
-                var partsCss = '';
-                angular.forEach(styleSheets, function (partCss) {
-                    if (vm.pageCss.indexOf(partCss) === -1) {
-                        partsCss += partCss
-                    }
-                });
-                return partsCss;
-            }
 
-            vm.buildCss = buildCss;
+            // function buildCss(styleSheets) {
+            //     var partsCss = '';
+            //     angular.forEach(styleSheets, function (partCss) {
+            //         if (vm.pageCss.indexOf(partCss) === -1) {
+            //             partsCss += partCss
+            //         }
+            //     });
+            //     return partsCss;
+            // }
+            // vm.buildCss = buildCss;
 
             vm.compile = function () {
                 if (!vm.previewPanel && !vm.fullPagePreview) return;
                 if (vm.refreshPreview) {
                     vm.refreshPreview();
-                } else {
-                    var styleSheets = {};
-                    var compiled = customService.compileAll(customService.convertBack($scope.containers, 'root', styleSheets), vm.canvas);
-
-                    vm.partsCss = buildCss(styleSheets);
-                    // vm.injectCss();
-                    $timeout(function () {
-                        vm.html = compiled
-                    }, 0)
+                    $timeout(angular.noop, 0)
                 }
             };
 
@@ -508,9 +506,9 @@
             vm.update = function (saveAs) {
                 if (saveAs) vm[typeName] = saveAs;
                 var name = vm[typeName],
-                    styleSheets = {},
-                    content = customService.convertBack($scope.containers, 'root', styleSheets),
-                    css = vm.css || '' + buildCss(styleSheets) || '';
+                    // styleSheets = {},
+                    content = customService.convertBack($scope.containers, 'root'/*, styleSheets*/),
+                    css = vm.css || ''/* + buildCss(styleSheets) || ''*/;
 
                 var id = vm[typeRef].key,
                     upload = function () {
@@ -609,8 +607,6 @@
                             break;
                     }
                 };
-
-
             }
         }
 

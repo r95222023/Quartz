@@ -26,7 +26,7 @@
     <!--<div class="ui-layout-west blue"><b><u>Outer West</u></b></div>-->
 
 
-    <div class="ui-layout-east" ng-include="'app/parts/design/editor/widget-preview-pane.html'"></div>
+    <div class="ui-layout-east" ng-include="'app/parts/design/editor/preview-pane.html'"></div>
 
 
     <!--Preview-->
@@ -44,7 +44,7 @@
 <!--<custom-item layout="row" ng-class="vm.canvas.class" layout-wrap content="vm.html" scope="vm.scope"></custom-item>-->
 
 <!--</md-content>-->
-<iframe ng-show="vm.fullPagePreview" ng-if="vm.fullPagePreview||vm['preview-full-frame']" name="preview-full-frame" ng-src="{{vm.previewUrl}}"
+<iframe ng-show="vm.fullPagePreview" ng-if="vm.fullPagePreview||vm['preview-full-frame']" name="preview-full-frame" ng-src="{{vm.previewUrl()}}"
         style="height:100%;width:100%"></iframe>
 
 <md-button ng-if="vm.fullPagePreview" class="md-fab" aria-label="back to edit" ng-click="vm.fullPagePreview=false"
