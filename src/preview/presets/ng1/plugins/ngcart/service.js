@@ -1,18 +1,21 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app.plugins.ngcart')
+    var pluginsModule;
+    try{
+        pluginsModule=angular.module('app.plugins');
+    }catch(e){
+        pluginsModule = angular.module('app.plugins',[]);
+    }
+
+    pluginsModule
         .provider('$ngCart', function () {
             this.$get = function () {
             };
         })
         .service('ngCart', ['$rootScope', 'ngCartItem', 'store', '$window', function ($rootScope, ngCartItem, store, $window) {
 
-            var selectedSiteName = "";
-            $rootScope.$on('site:change', function (ev, siteName) {
-                selectedSiteName = siteName;
-            });
+            var siteName = _core.util.site.siteName;
 
             this.init = function () {
                 this.$cart = {
@@ -137,7 +140,7 @@
 
                 $rootScope.$broadcast('ngCart:change', {});
                 this.$cart.items = [];
-                $window.localStorage.removeItem(selectedSiteName + '_cart');
+                $window.localStorage.removeItem(siteName + '_cart');
             };
 
             this.isEmpty = function () {
@@ -179,7 +182,7 @@
             };
 
             this.$save = function () {
-                return store.set(selectedSiteName + '_cart', JSON.stringify(this.getCart()));
+                return store.set(siteName + '_cart', JSON.stringify(this.getCart()));
             }
 
         }])
@@ -366,6 +369,22 @@
                 return $firebase.update(settings.refUrl,
                     {cart: ngCart.toObject(), options: settings.options || null, payment: settings.payment || null});
             }
-        }]);
+        }])
+        .run(['$rootScope', 'ngCart','ngCartItem', 'store', function ($rootScope, ngCart, ngCartItem, store) {
 
+            $rootScope.$on('ngCart:change', function(){
+                ngCart.$save();
+            });
+
+            init(_core.util.site.siteName);
+
+            function init(siteName){
+                if (angular.isObject(store.get(siteName+'_cart'))) {
+                    ngCart.$restore(store.get(siteName+'_cart'));
+                } else {
+                    ngCart.init();
+                }
+            }
+
+        }]);
 })();

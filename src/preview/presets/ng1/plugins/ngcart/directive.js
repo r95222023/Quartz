@@ -1,9 +1,14 @@
 (function() {
     'use strict';
 
-    angular
-        .module('app.plugins.ngcart')
+    var pluginsModule;
+    try{
+        pluginsModule=angular.module('app.plugins');
+    }catch(e){
+        pluginsModule = angular.module('app.plugins',[]);
+    }
 
+    pluginsModule
 
         .directive('ngcartAddtocart', /* @ngInject */ function(ngCart, $mdToast){
             return {

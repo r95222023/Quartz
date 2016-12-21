@@ -2,6 +2,6 @@
     'use strict';
 
     angular
-        .module('app.plugins.ngcart', [
+        .module('app.plugins.stripe', [
         ]);
 })();

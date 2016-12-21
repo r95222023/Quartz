@@ -6,7 +6,7 @@
         .controller('DefaultToolbarController', DefaultToolbarController);
 
     /* @ngInject */
-    function DefaultToolbarController($auth, config, $scope, $rootScope, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, ngCart, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
+    function DefaultToolbarController($auth, config, $scope, $rootScope, $mdMedia, $translate, $state, $stateParams, $element, $filter, $mdUtil, $mdSidenav, $mdToast, $timeout, qtBreadcrumbsService, qtSettings, qtNotificationsService, qtLayout) {
         var vm = this;
         vm.breadcrumbs = qtBreadcrumbsService.breadcrumbs;
         vm.emailNew = false;
@@ -17,7 +17,6 @@
         vm.switchLanguage = switchLanguage;
         vm.toggleNotificationsTab = toggleNotificationsTab;
         vm.notificationSubTotal = notificationSubTotal;
-        vm.cartSubTotal = cartSubTotal;
 
         ////////////////
 
@@ -61,9 +60,6 @@
             return qtNotificationsService.getSubTotal()
         }
 
-        function cartSubTotal() {
-            return ngCart.getTotalItems()
-        }
 
         $scope.$on('newMailNotification', function () {
             vm.emailNew = true;

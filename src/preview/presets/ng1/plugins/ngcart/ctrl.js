@@ -1,15 +1,20 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app.plugins.ngcart')
+    var pluginsModule;
+    try{
+        pluginsModule=angular.module('app.plugins');
+    }catch(e){
+        pluginsModule = angular.module('app.plugins',[]);
+    }
+
+    pluginsModule
 
         .controller('CartController', CartController)
 
         .controller('AddToCartController', AddToCartController)
 
-        .controller('CartTableAdvancedController', CartTableAdvancedController)
-        .controller('CartCtrl', CartTableAdvancedController);
+        .controller('CartTableAdvancedController', CartTableAdvancedController);
 
     /* @ngInject */
     function CartController($scope, ngCart) {
@@ -22,9 +27,8 @@
     }
 
     /* @ngInject */
-    function CartTableAdvancedController($scope,ngCart, $timeout, $q) {
+    function CartTableAdvancedController($scope, $timeout, $q) {
         var vm = this;
-        $scope.ngCart = ngCart;
         vm.query = {
             filter: '',
             limit: '10',
