@@ -10,7 +10,7 @@
         var vm = this;
 
         vm.filters = [
-            ['Product Id', 'itemId'],
+            ['Product Id', 'id'],
             ['Name', 'itemName'],
             ['Category', 'category'],
             ['Quantity', 'quantity'],
@@ -20,6 +20,6 @@
         articleProduct.cateCtr(vm, 'product');
         articleProduct.managerCtr(vm, 'product');
         //initiate
-        vm.paginator.onReorder($stateParams.orderBy || 'itemId');
+        vm.paginator.onReorder($stateParams.orderBy || 'id');
     }
 })();

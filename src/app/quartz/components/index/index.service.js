@@ -10,28 +10,45 @@
 
         ////////////////
 
-        function add(type, id, body, index) {
-            return toQueue("add", index || false, type, id, body)
+        function create(siteName){
+            var obj = {
+                "_state":"index",
+                "siteName": siteName,
+                "task": "create"
+            };
+            return $firebase.queryRef("queue-tasks").push(obj);
+        }
+        function deleteIndex(siteName){
+            var obj = {
+                "_state":"index",
+                "siteName": siteName,
+                "task": "delete"
+            };
+            return $firebase.queryRef("queue-tasks").push(obj);
         }
 
-        function update(type, id, body, index) {
-            return toQueue("update", index || false, type, id, body)
+        function add(type, id, body) {
+            return toQueue("add", type, id, body)
         }
 
-        function remove(type, id, index) {
-            return toQueue("remove", index || false, type, id)
+        function update(type, id, body) {
+            return toQueue("update", type, id, body)
         }
 
-        function toQueue(task, index, type, id, body) {
-            if (!index && !_core.util.siteName) {
-                console.log("Please select a site or enter an index");
+        function remove(type, id) {
+            return toQueue("remove", type, id)
+        }
+
+        function toQueue(task, type, id, body) {
+            if (!_core.util.siteName) {
+                console.log("Please select a site");
                 return;
             }
 
             var obj = {
                 "_state":"index"
             };
-            obj.index = typeof index==='string' ? index : _core.util.siteName;
+            obj.siteName = _core.util.siteName;
             if (angular.isString(task)) obj.task = task;
             if (angular.isString(type)) obj.type = type;
             if (angular.isString(id)) obj.id = id;
@@ -43,7 +60,9 @@
         return {
             add: add,
             update: update,
-            remove: remove
+            remove: remove,
+            create:create,
+            deleteIndex:deleteIndex
         }
 
     }

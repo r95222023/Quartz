@@ -12,7 +12,7 @@
 
     ////
     /* @ngInject */
-    function AllpayCtrl($auth, $firebase, $mdMedia, $timeout, snippets) {
+    function AllpayCtrl($ngCart, $auth, $firebase, $mdMedia, $timeout, snippets) {
         var vm = this;
         var siteName = _core.util.site.siteName;
 
@@ -104,9 +104,9 @@
 
         function getOrderData() {
             vm.order.id = vm.order.id || _core.getSyncTime();
-            // $ngCart.$cart.items.forEach(function (item) {
-            //     vm.order.items[item.getId()] = item.toObject();
-            // });
+            $ngCart.$cart.items.forEach(function (item) {
+                vm.order.items[item.getId()] = item.toObject();
+            });
             vm.order.buyer.id = $auth.currentUser.uid;
             vm.order.siteName = siteName;
             vm.order.payer.id = $auth.currentUser.uid;
@@ -165,39 +165,39 @@
             e[0].submit();
         };
 
-        // vm.showDialog = function ($event) {
-        //     var parentEl = angular.element(document.body);
-        //     $mdDialog.show({
-        //         parent: parentEl,
-        //         targetEvent: $event,
-        //         templateUrl: 'app/plugins/allpay/allpayDialog.tmpl.html',
-        //         controller: DialogController
-        //     });
-        //
-        //     /* @ngInject */
-        //     function DialogController($scope, $mdDialog, ngCart) {
-        //         var allpayFormAction = vm.stage ? 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment.allpay.com.tw/Cashier/AioCheckOut';
-        //
-        //         $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
-        //
-        //         getCheckMacValue().then(function (order) {
-        //             $scope.data = order;
-        //         });
-        //
-        //         $scope.submit = function () {
-        //             $scope.closeDialog();
-        //             var e = document.getElementsByName('allpay-checkout');
-        //             e[0].submit();
-        //             //clear cart
-        //             ngCart.empty();
-        //         };
-        //         $scope.closeDialog = function () {
-        //             // remove data
-        //             // $firebase.queryRef('queue-task?id=' + data['_id']).child('status').set('canceled');
-        //             $mdDialog.hide();
-        //         }
-        //     }
-        // }
+        vm.showDialog = function ($event) {
+            var parentEl = angular.element(document.body);
+            $mdDialog.show({
+                parent: parentEl,
+                targetEvent: $event,
+                templateUrl: 'app/plugins/allpay/allpayDialog.tmpl.html',
+                controller: DialogController
+            });
+
+            /* @ngInject */
+            function DialogController($scope, $mdDialog, ngCart) {
+                var allpayFormAction = vm.stage ? 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment.allpay.com.tw/Cashier/AioCheckOut';
+
+                $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
+
+                getCheckMacValue().then(function (order) {
+                    $scope.data = order;
+                });
+
+                $scope.submit = function () {
+                    $scope.closeDialog();
+                    var e = document.getElementsByName('allpay-checkout');
+                    e[0].submit();
+                    //clear cart
+                    ngCart.empty();
+                };
+                $scope.closeDialog = function () {
+                    // remove data
+                    // $firebase.queryRef('queue-task?id=' + data['_id']).child('status').set('canceled');
+                    $mdDialog.hide();
+                }
+            }
+        }
     }
 
 })();

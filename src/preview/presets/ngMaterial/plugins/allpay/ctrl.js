@@ -1,24 +1,24 @@
 (function () {
     'use strict';
-    var pluginsModule;
+    var m;
     try{
-        pluginsModule=angular.module('app.plugins');
+        m=angular.module('app.plugins');
     }catch(e){
-        pluginsModule = angular.module('app.plugins',[]);
+        m = angular.module('app.plugins',[]);
     }
 
-    pluginsModule
+    m
         .controller('AllpayCtrl', AllpayCtrl);
 
     ////
     /* @ngInject */
-    function AllpayCtrl($ngCart, $auth, $firebase, $mdMedia, $timeout, snippets) {
+    function AllpayCtrl(ngCart, $auth, $firebase, $mdMedia, $timeout, $sce) {
         var vm = this;
         var siteName = _core.util.site.siteName;
 
         vm.order = {
-            vendor: {},
             buyer: {},
+            items:{},
             shipping: {},
             payment: {}
         };
@@ -78,9 +78,9 @@
             // return paymentParams;
             // var date = moment(_core.getSyncTime()).format('YYYY/MM/DD HH:mm:ss');
 
-            var paymentParams = Object.assign({}, defaultAllpayParams, {
-                ReturnURL: "http://131.193.191.5/planAllpayReceive?sitename=" + siteName + '&uid=' + $auth.currentUser.uid,
-                PaymentInfoURL: "http://131.193.191.5/allpayPaymentInfo?sitename=" + siteName + '&uid=' + $auth.currentUser.uid,
+            var paymentParams = {
+                // ReturnURL: "http://131.193.191.5/planAllpayReceive?sitename=" + siteName + '&uid=' + $auth.currentUser.uid,
+                // PaymentInfoURL: "http://131.193.191.5/allpayPaymentInfo?sitename=" + siteName + '&uid=' + $auth.currentUser.uid,
                 // MerchantTradeDate: date,
                 // ChoosePayment: 'Credit',
                 // PeriodAmount: plan.periodAmount,
@@ -89,7 +89,7 @@
                 // Frequency:1,
                 // ExecTimes:99,
                 PaymentType: 'aio'
-            });
+            };
 
             if ($mdMedia('xs')) {
                 paymentParams.DeviceSource = 'M'
@@ -104,12 +104,11 @@
 
         function getOrderData() {
             vm.order.id = vm.order.id || _core.getSyncTime();
-            $ngCart.$cart.items.forEach(function (item) {
+            ngCart.getItems().forEach(function (item) {
                 vm.order.items[item.getId()] = item.toObject();
             });
             vm.order.buyer.id = $auth.currentUser.uid;
             vm.order.siteName = siteName;
-            vm.order.payer.id = $auth.currentUser.uid;
             vm.order.payment = {
                 provider: 'allpay',
                 allpay: buildAllpayParams()
@@ -119,12 +118,15 @@
 
         function buildRequest(orderData) {
             var req = {payment: {allpay: {}}};
-            angular.extend(req, orderData);
+            var str = JSON.stringify(orderData).replace('undefined','null');
+            var _orderData = JSON.parse(str);
+            angular.extend(req, _orderData);
 
-            req['_state'] = 'order_allpay_gen_check_mac';
-            return snippets.rectifyUpdateData(req);
+            req['_state'] = 'allpay_gen_check_mac';
+            return req;
         }
 
+        vm.getCheckMacValue=getCheckMacValue;
         function getCheckMacValue() {
             return new Promise(function (resolve, reject) {
                 getOrderData();
@@ -133,10 +135,13 @@
                     .then(function () {
                         var listener = function (snap) {
                             if (snap.val() && snap.val().payment.allpay.CheckMacValue) {
-                                vm.order.payment.allpay = snap.val().payment.allpay;
+                                vm.order.payment = snap.val().payment;
                                 $timeout(angular.noop, 0);
-                                console.log(vm.order.payment.allpay);
+
+                                vm.formAction = $sce.trustAsResourceUrl('https://payment'+(vm.order.payment.stage? '-stage':'')+'.allpay.com.tw/Cashier/AioCheckOut');
+
                                 taskRef.off('value', listener);
+                                console.log(vm.order);
                                 resolve(vm.order);
                             }
                         };
@@ -144,7 +149,6 @@
                     });
             });
         }
-
         // function buildRequest(orderData) {
         //     var req = {payment: {allpay: {}}};
         //     angular.extend(req, orderData);
@@ -164,40 +168,6 @@
             var e = document.getElementsByName('allpay-checkout');
             e[0].submit();
         };
-
-        vm.showDialog = function ($event) {
-            var parentEl = angular.element(document.body);
-            $mdDialog.show({
-                parent: parentEl,
-                targetEvent: $event,
-                templateUrl: 'app/plugins/allpay/allpayDialog.tmpl.html',
-                controller: DialogController
-            });
-
-            /* @ngInject */
-            function DialogController($scope, $mdDialog, ngCart) {
-                var allpayFormAction = vm.stage ? 'https://payment-stage.allpay.com.tw/Cashier/AioCheckOut' : 'https://payment.allpay.com.tw/Cashier/AioCheckOut';
-
-                $scope.allpayFormAction = $sce.trustAsResourceUrl(allpayFormAction);
-
-                getCheckMacValue().then(function (order) {
-                    $scope.data = order;
-                });
-
-                $scope.submit = function () {
-                    $scope.closeDialog();
-                    var e = document.getElementsByName('allpay-checkout');
-                    e[0].submit();
-                    //clear cart
-                    ngCart.empty();
-                };
-                $scope.closeDialog = function () {
-                    // remove data
-                    // $firebase.queryRef('queue-task?id=' + data['_id']).child('status').set('canceled');
-                    $mdDialog.hide();
-                }
-            }
-        }
     }
 
 })();

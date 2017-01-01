@@ -26,7 +26,7 @@
                     "siteName@1": _newSiteName,
                     "createdTime": firebase.database.ServerValue.TIMESTAMP
                 },{siteName:_newSiteName});
-                indexService.add("record", "created", {siteName: _newSiteName}, _newSiteName);
+                indexService.create(_newSiteName);
             });
         }
 
@@ -73,7 +73,7 @@
             $firebase.update(['site?type=detail', 'site?type=list'], {
                 "@all": null
             },{siteName:siteName});
-            indexService.remove(false, false, siteName);
+            indexService.deleteIndex(siteName);
         }
 
         var title='TBD';

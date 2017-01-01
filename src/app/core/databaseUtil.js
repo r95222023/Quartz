@@ -197,10 +197,9 @@
     Pagination.prototype.listener = function (maxCachedPage, page, size, orderBy, resolve, reject) {
         var self = this,
             limitTo = maxCachedPage * parseInt(size),
-            isDesc = orderBy.split('-')[1],
+            isDesc = orderBy&&orderBy.split('-')[1],
             _orderBy = isDesc ? isDesc : orderBy,
             limitToType = isDesc ? 'limitToLast' : 'limitToFirst';
-
         var _ref;
         if (orderBy) {
             _ref = this.listRef.orderByChild(_orderBy.replace('.', '/'));
@@ -245,13 +244,14 @@
             }
             if(self.result&&sortedArr.length<self.result.total) self.cache={}; //this solve the issue that there are some residue terms in cache when the new total is smaller than the original one.
             sortedArr.forEach(function (value, index) {
-                var itemsOnPreviousPages=_page * parseInt(size);
-                if (index+1 > itemsOnPreviousPages) {
+                //_page * parseInt(size)  accumulative items number on previous pages
+                if (index+1 > _page * parseInt(size)) {
                     _page++;
                 }
+
                 var id = getPaginationId(_page, size, orderBy);
                 self.cache[id] = self.cache[id] ||[];
-                self.cache[id][_page===1? index: (index-itemsOnPreviousPages)]=value;
+                self.cache[id][index-(_page-1) * parseInt(size)]=value;
             });
 
             var hits = self.cache[getPaginationId(page, size, orderBy)];

@@ -9,7 +9,7 @@
     function AnalyticsController($firebase, $timeout, analyticsService, qtNotificationsService, $state, $mdDialog, config) {
         var vm = this;
         vm.orderData = {};
-
+        // analyticsService.getOrderAnalytics('7',1).then(function(res){console.log(res)});
         vm.periods = [
             {id:'7d',name: 'ANALYTICS.LAST7DAYS', period: 1, repeat: 7},
             {id:'35d',name: 'ANALYTICS.LAST5WEEKS', period: 7, repeat: 5},
@@ -90,27 +90,28 @@
 
         function getTopProducts(topX){
             vm.topProducts={};
-            ['cs','g'].forEach(function(type){
-                analyticsService.getTopProducts(vm.selectedPeriod.id+'/'+type, topX).then(function(res){
+            ['s','g'].forEach(function(type){
+                analyticsService.getTopProducts(type, topX).then(function(res){
                     vm.topProducts[type] = res;
+                    console.log(vm.topProducts);
                     $timeout(angular.noop,0);
                 });
             });
         }
 
         vm.topSales = [
-            {itemId: 'P100001', name: 'Apple', count: 43},
-            {itemId: 'P100003', name: 'Orange', count: 31},
-            {itemId: 'P100002', name: 'Pearl', count: 25},
-            {itemId: 'P100004', name: 'Guava', count: 20},
-            {itemId: 'P100005', name: 'Banana', count: 11}
+            {id: 'P100001', name: 'Apple', count: 43},
+            {id: 'P100003', name: 'Orange', count: 31},
+            {id: 'P100002', name: 'Pearl', count: 25},
+            {id: 'P100004', name: 'Guava', count: 20},
+            {id: 'P100005', name: 'Banana', count: 11}
         ];
         vm.topIncome = [
-            {itemId: 'P100003', name: 'Orange', count: 5400},
-            {itemId: 'P100004', name: 'Guava', count: 3850},
-            {itemId: 'P100002', name: 'Pearl', count: 3230},
-            {itemId: 'P100001', name: 'Apple', count: 3210},
-            {itemId: 'P100005', name: 'Banana', count: 1880}
+            {id: 'P100003', name: 'Orange', count: 5400},
+            {id: 'P100004', name: 'Guava', count: 3850},
+            {id: 'P100002', name: 'Pearl', count: 3230},
+            {id: 'P100001', name: 'Apple', count: 3210},
+            {id: 'P100005', name: 'Banana', count: 1880}
         ];
         console.log(vm.data)
         console.log(vm.labels)

@@ -11,16 +11,17 @@
             ng1: {
                 name: 'AngularJS', id: 'ng1',
                 plugins: [
-                    {name: 'allpay', js: ['/ctrl']},
-                    {name: 'ngcart', js:['/ctrl','/directive','/service']}
+                    {name: 'allpay', js: ['allpay/ctrl']},
+                    {name: 'ngcart', js:['ngcart/ctrl','ngcart/directive','ngcart/service']}
                     ]
             }
             ,
             ngMaterial: {
                 name: 'AngularJS + Material', id: 'ngMaterial',
                 plugins: [
-                    {name: 'allpay', js: ['/ctrl']},
-                    {name: 'ngcart', js:['/ctrl','/directive','/service']}
+                    {name: 'Allpay', js: ['allpay/ctrl']},
+                    {name: 'Simple Shop', js: ['shop/ctrl','allpay/ctrl','ngcart/ctrl','ngcart/directive','ngcart/service','auth/ctrl']},
+                    {name: 'Cart', js:['ngcart/ctrl','ngcart/directive','ngcart/service']}
                     ]
             }
         };

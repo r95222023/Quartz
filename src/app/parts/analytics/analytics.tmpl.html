@@ -60,7 +60,7 @@
                 <md-list-item class="md-2-line" ng-repeat="product in vm.topSales">
                     <!--<md-checkbox ng-model="item.done"></md-checkbox>-->
                     <div class="md-list-item-text">
-                        <h3>{{$index}}: {{product.name}} (編號: {{product.itemId}})</h3>
+                        <h3>{{$index}}: {{product.name}} (編號: {{product.id}})</h3>
                         <p>Count: {{product.count}}</p>
                     </div>
                 </md-list-item>
@@ -79,7 +79,7 @@
                 <md-list-item class="md-2-line" ng-repeat="product in vm.topIncome">
                     <!--<md-checkbox ng-model="item.done"></md-checkbox>-->
                     <div class="md-list-item-text">
-                        <h3>{{$index}}: {{product.name}} (編號:{{product.itemId}})</h3>
+                        <h3>{{$index}}: {{product.name}} (編號:{{product.id}})</h3>
                         <p>Subtotal: {{product.count}}</p>
                     </div>
                 </md-list-item>

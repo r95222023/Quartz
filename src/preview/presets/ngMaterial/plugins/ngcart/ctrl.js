@@ -1,24 +1,34 @@
 (function () {
     'use strict';
 
-    var pluginsModule;
+    var m;
     try{
-        pluginsModule=angular.module('app.plugins');
+        m=angular.module('app.plugins');
     }catch(e){
-        pluginsModule = angular.module('app.plugins',[]);
+        m = angular.module('app.plugins',[]);
     }
 
-    pluginsModule
-
-        .controller('CartController', CartController)
-
+    m
+        .controller('Cart', Cart)
         .controller('AddToCartController', AddToCartController)
-
         .controller('CartTableAdvancedController', CartTableAdvancedController);
 
     /* @ngInject */
-    function CartController($scope, ngCart) {
+    function Cart($scope, ngCart) {
+        var cart = this;
         $scope.ngCart = ngCart;
+        cart.getCart = function(){
+            return ngCart.getCart();
+        };
+        cart.getTotalItems = function(){
+            return ngCart.getTotalItems();
+        };
+        cart.clear = function(){
+            ngCart.empty();
+        };
+        cart.removeItem=function(item){
+            ngCart.removeItemById(item.getId());
+        };
     }
 
     /* @ngInject */

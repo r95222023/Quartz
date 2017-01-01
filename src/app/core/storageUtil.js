@@ -62,6 +62,7 @@
                     reject(error);
                 }
             }).then(function (meta) {
+                if(!meta) return;
                 var url = getRandomDownloadUrl(meta.downloadURLs),
                     updated = (new Date(meta.updated)).getTime();
                 if (localStorage && localStorage.getItem(id)) {

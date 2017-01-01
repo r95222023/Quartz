@@ -197,11 +197,13 @@
         var elementSource = [
                 // {type: 'custom', content: '<!--include-->'},
                 {type: 'tag', content: ''},
-                {type: 'text', content: ''}
+                {type: 'text', content: ''},
+                {type: 'widget'}
             ],
             containerSource = [
                 {type: 'tag', content: '<!--include-->'},
-                {type: 'text'}
+                {type: 'text'},
+                {type: 'widget'}
             ];
 
         vm.previewPanel = true;

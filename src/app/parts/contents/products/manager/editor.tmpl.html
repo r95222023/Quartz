@@ -1,4 +1,4 @@
-<md-dialog aria-label="Product Editor" ng-cloak flex="60" style="max-height: 80%">
+<md-dialog aria-label="Product Editor" flex="60" style="max-height: 80%">
     <form ng-submit="vm.update()">
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -15,7 +15,7 @@
                 <div layout="row">
                     <md-input-container flex="50">
                         <label>ID</label>
-                        <input type='text' ng-model="vm.product.itemId" ng-change="vm.merchantChange()">
+                        <input type='text' ng-model="vm.product.id" ng-change="vm.merchantChange()">
                     </md-input-container>
                     <md-input-container flex="50">
                         <label>Name</label>

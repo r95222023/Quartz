@@ -21,7 +21,7 @@
         function queryList(params) {
             var type = (params || {}).type || 'product',
                 _params = Object.assign({}, getParams()[type], (params || {})),
-                sort = _params.sort || (type === 'product' ? 'itemId' : 'id'),
+                sort = _params.sort || 'id',
                 id = 't' + type + 'c' + _params.cate + 's' + _params.subCate + 'q' + _params.queryString + 't' + _params.tag + 's' + sort;
             queryListCache[id] = queryListCache[id] || {};
 
@@ -194,7 +194,7 @@
             vm.paginator = $firebase.pagination(_type + 's?type=list', $stateParams);
             //initiate
             vm.paginator.size = 25;
-            vm.paginator.onReorder($stateParams.orderBy || 'itemId');
+            vm.paginator.onReorder($stateParams.orderBy || 'id');
 
             vm.onPaginate = function (page, size) { //to prevent this being overwritten
                 vm.paginator.get(page, size)
@@ -274,6 +274,7 @@
             };
 
             vm.update = function () {
+                console.log(vm[type])
                 if (angular.isObject(vm.optional.options)) {
                     vm[type].options = {};
                     angular.forEach(vm.optional.options, function (item, key) {
@@ -284,7 +285,6 @@
                         });
                     })
                 }
-
                 vm[type].tags = {};
                 if (angular.isString(vm.optional.tags) && vm.optional.tags.trim()) {
                     var tags = vm.optional.tags.split(',');
@@ -292,7 +292,7 @@
                         vm[type].tags[tag] = 1;
                     })
                 }
-                var id = vm[type].id || vm[type].itemId || (new Date()).getTime();
+                var id = vm[type].id|| (new Date()).getTime();
 
                 var listData = angular.extend({}, vm[type], {description: null, custom: null}),
                     detailData = {
@@ -371,7 +371,7 @@
                         }
                     });
                 } else {
-                    vm[type].id = type + ':' + (new Date()).getTime()
+                    vm[type].id = type + '_' + (new Date()).getTime()
                 }
                 var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
                 $mdDialog.show({
@@ -399,7 +399,7 @@
             vm.menuWidth = vm.tags ? 6 : 4;
 
             vm.queryList = function (params, sort) {
-                return queryList(type, params, sort || (type === 'article' ? 'id' : 'itemId'));
+                return queryList(type, params, sort || 'id');
             };
             vm.queryList();
 

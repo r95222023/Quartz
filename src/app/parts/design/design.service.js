@@ -545,10 +545,10 @@
                         });
                     };
                 if (vm.originalName && vm.originalName !== name && !saveAs) {
-                    vm.pageRef.parent.orderByChild('name').equalTo(name).limitToFirst(1).once('value', function (snap) {
+                    vm[typeRef].parent.orderByChild('name').equalTo(name).limitToFirst(1).once('value', function (snap) {
                         snap.forEach(function (child) {
                             child.ref.remove();
-                            vm.pageRef.parent.parent.child('detail').child(vm.originalName).remove();
+                            vm[typeRef].parent.parent.child('detail').child(vm.originalName).remove();
                             upload();
                         });
                     });

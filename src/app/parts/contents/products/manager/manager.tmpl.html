@@ -61,7 +61,7 @@
                     <!--</md-button>-->
                     <md-button class="toolbar-button"
                                style="color:black"
-                               ng-click="vm.orderBy='itemId';vm.startAt='';vm.endAt='';vm.getFiltered()">
+                               ng-click="vm.orderBy='id';vm.startAt='';vm.endAt='';vm.getFiltered()">
                         All
                     </md-button>
                     <md-button class="toolbar-button"
@@ -81,7 +81,7 @@
                 <table md-table md-progress="vm.paginator.promise">
                     <thead md-head md-order="'_id'" md-on-reorder="vm.onReorder">
                     <tr md-row>
-                        <th md-column md-order-by="itemId">{{'GENERAL.ID'|translate}}</th>
+                        <th md-column md-order-by="id">{{'GENERAL.ID'|translate}}</th>
                         <th md-column md-order-by="itemName">{{'GENERAL.NAME'|translate}}</th>
                         <th md-column md-order-by="category">{{'GENERAL.CATEGORY'|translate}}</th>
                         <th md-column>{{'GENERAL.SUBCATEGORY'|translate}}</th>
@@ -91,9 +91,9 @@
                     </tr>
                     </thead>
                     <tbody md-body>
-                    <tr md-row md-select="product.itemId" md-select-id="{{product.itemId}}" md-auto-select
+                    <tr md-row md-select="product.id" md-select-id="{{product.id}}" md-auto-select
                         ng-repeat="(index, product) in vm.paginator.result.hits">
-                        <td md-cell>{{product.itemId}}</td>
+                        <td md-cell>{{product.id}}</td>
                         <td md-cell>{{product.itemName}}</td>
                         <td md-cell>{{vm.getCate()[product.category][0]}}</td>
                         <td md-cell>{{vm.getCate()[product.category][1][product.subcategory]}}</td>
@@ -110,7 +110,7 @@
                                     </md-button>
                                     <md-menu-content width="3">
                                         <md-menu-item ng-repeat="action in vm.actions">
-                                            <md-button ng-click="vm.action(action[0], product.itemId,$event)" translate="{{action[1]}}"
+                                            <md-button ng-click="vm.action(action[0], product.id, $event)" translate="{{action[1]}}"
                                                        aria-label="{{action[1]}}"></md-button>
                                         </md-menu-item>
                                     </md-menu-content>

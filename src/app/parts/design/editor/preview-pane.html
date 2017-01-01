@@ -13,7 +13,7 @@
             </md-menu-content>
         </md-menu>
     </span>
-    <div ng-init="vm.compile()" ng-style="vm.previewPanelStyle">
+    <div class="full-height" ng-init="vm.compile()" ng-style="vm.previewPanelStyle">
         <iframe ng-show="!vm.fullPagePreview" ng-if="!vm.fullPagePreview||vm['preview-frame']" name="preview-frame" ng-src="{{vm.previewUrl()}}"
                 style="height:calc(100% - 100px);width:100%"></iframe>
 
