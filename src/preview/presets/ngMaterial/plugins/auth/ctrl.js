@@ -1,21 +1,20 @@
 (function () {
     'use strict';
     var m;
-    try{
-        m=angular.module('app.plugins');
-    }catch(e){
-        m = angular.module('app.plugins',[]);
+    try {
+        m = angular.module('app.plugins');
+    } catch (e) {
+        m = angular.module('app.plugins', []);
     }
 
-    m
-        .controller('Login', Login)
+    m.controller('Login', Login)
         .controller('Signup', Signup)
         .controller('ForgotPass', ForgotPass);
 
     ////
 
     /* @ngInject */
-    function Login($state, $stateParams, $mdMedia,$auth, config) {
+    function Login($state, $stateParams, $mdMedia, $auth, config) {
         var vm = this;
 
         vm.email = null;
@@ -54,9 +53,9 @@
         };
 
         ////////////////
-        function redirect(){
-            if($stateParams.siteName&&$stateParams.pageName){
-                $state.go($stateParams.stateName||'customPage',$stateParams)
+        function redirect() {
+            if ($stateParams.siteName && $stateParams.pageName) {
+                $state.go($stateParams.stateName || 'customPage', $stateParams)
             } else {
                 $state.go(config.home);
             }
@@ -68,7 +67,7 @@
 
         function login(email, pass, opt) {
             vm.err = null;
-            $auth.signInWithEmailAndPassword(email,pass).then(function(){
+            $auth.signInWithEmailAndPassword(email, pass).then(function () {
                 redirect();
             }, showError);
         }
@@ -81,7 +80,7 @@
                 window.location.href = homeUrl;
                 $auth.loginWithProvider(provider, vm.loginOption);
             } else {
-                $auth.loginWithProvider(provider, vm.loginOption).catch(showError).then(function(res){
+                $auth.loginWithProvider(provider, vm.loginOption).catch(showError).then(function (res) {
                     redirect();
                     return $auth.checkIfAccountExistOnFb(res.user)
                 }).then($auth.createAccount);
@@ -104,8 +103,8 @@
                 $auth.createUserWithEmailAndPassword(email, pass)
                     .then(function () {
                         $auth.signInWithEmailAndPassword(email, pass)
-                            .then(function(){
-                                return $auth.createAccount({regSite:true})
+                            .then(function () {
+                                return $auth.createAccount({regSite: true})
                             })
                             .then(signupSuccess)
                             .catch(signupError);
@@ -167,6 +166,7 @@
             )
         }
     }
+
     /* @ngInject */
     function ForgotPass($state, $mdToast, $filter, $auth) {
         var vm = this;
@@ -180,7 +180,7 @@
 
         function resetClick() {
 
-            $auth.$resetPassword({email:vm.email})
+            $auth.$resetPassword({email: vm.email})
                 .then(success, error);
 
             function success() {
@@ -191,7 +191,7 @@
                         .action($filter('translate')('FORGOT.MESSAGES.LOGIN_NOW'))
                         .highlightAction(true)
                         .hideDelay(0)
-                ).then(function() {
+                ).then(function () {
                     $state.go('authentication.login');
                 });
             }

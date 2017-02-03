@@ -10,7 +10,9 @@
         function previewCtr(vm, $scope, frameData) {
             var previewFrames = ['preview-full-frame', 'preview-frame'];
             vm.previewUrl = function(){
-                return '/preview/#!/preview/' + $stateParams.siteName + '/' + $stateParams.pageName + '/';
+                var params=''
+                if(vm.previewParams) {params = '?params='+vm.previewParams};
+                return '/preview/#!/preview/' + $stateParams.siteName + '/' + $stateParams.pageName + '/'+params;
             };
             window.initPreviewFrame = function () {
                 angular.forEach(previewFrames, function (type) {

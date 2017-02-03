@@ -11,82 +11,86 @@
         vm.orderData = {};
         // analyticsService.getOrderAnalytics('7',1).then(function(res){console.log(res)});
         vm.periods = [
-            {id:'7d',name: 'ANALYTICS.LAST7DAYS', period: 1, repeat: 7},
-            {id:'35d',name: 'ANALYTICS.LAST5WEEKS', period: 7, repeat: 5},
-            {id:'180d',name: 'ANALYTICS.LAST6MONTHES', period: 30, repeat: 6}
+            {type:'7d',name: 'ANALYTICS.LAST7DAYS'},
+            {type:'6w',name: 'ANALYTICS.LAST6WEEKS'},
+            {type:'6m',name: 'ANALYTICS.LAST6MONTHES'}
         ];
         vm.selectedPeriod = vm.periods[0];
 
-        // vm.barChart = {
-        //     type: 'Bar',
-        //     data: [
-        //         ['Month', 'Sales', 'Expenses', 'Profit'],
-        //         ['JAN.', 1000, 400, 200],
-        //         ['FEB.', 1170, 460, 250],
-        //         ['MAR.', 660, 1120, 300],
-        //         ['APR.', 1030, 540, 350]
-        //     ],
-        //     options: {
-        //         chart: {
-        //             title: 'Company Performance',
-        //             subtitle: 'Sales, Expenses, and Profit: January-April'
-        //         },
-        //         bars: 'vertical',
-        //         // width: 800,
-        //         height: 600
+        // function mockOrderAnalytics(){
+        //     var cs=0, g=0;
+        //     var time = moment().subtract(31, 'days');
+        //     var res = {};
+        //     for(var i=0; i<31; i++){
+        //         time = time.add(1,'days');
+        //         var rs = Math.floor((Math.random() * (100)) + 1);
+        //         var ri = Math.floor((Math.random() * (10000)) + 1);
+        //
+        //         cs+=rs;
+        //         g+=ri;
+        //         res[time.format('YYMMDD')]={
+        //             s:rs,
+        //             i:ri,
+        //             cs:cs,
+        //             g:g
+        //         };
         //     }
-        // };
+        //     console.log(res);
+        //     $firebase.queryRef('site-orders?type=analytics').child('days').update(res);
+        //     $firebase.queryRef('site-orders?type=analytics').child('summary').update({cs:cs,g:g});
+        //
+        // }
+        // mockOrderAnalytics();
         vm.series=['ANALYTICS.SALES', 'ANALYTICS.GROSS'];
-
-        vm.onPeriodChange= function (){
-            analyticsService.getOrderAnalytics(vm.selectedPeriod.period, vm.selectedPeriod.repeat).then(function(res){
-                var cs=[];
-                var g=[];
+        vm.changePeriod=function(period){
+            analyticsService.getOrderAnalytics(period.type).then(function(res){
+                var sales=[];
+                var income=[];
                 var labels=[];
                 vm.cs=0;vm.g=0;
-                angular.forEach(res, function(dateData){
-                    cs.push(dateData.cs);
-                    vm.cs+=dateData.cs;
-                    g.push(dateData.g);
-                    vm.g+=dateData.g;
+                console.log(res);
 
-                    var time = new Date(dateData.time);
-                    var year = time.getFullYear();
-                    var month = time.getMonth();
-                    var date = time.getMonth();
-
-                    labels.push((year-2000)+'/'+month+'/'+date);
+                angular.forEach(res, function(periodData){
+                    sales.unshift(periodData.cs);
+                    vm.cs+=periodData.cs;
+                    income.unshift(periodData.g);
+                    vm.g+=periodData.g;
+                    labels.unshift(moment(periodData.time).format('YY/MM/DD'));
                 });
-                vm.data=[cs,g];
+                vm.salesData=[sales];
+                vm.incomeData=[income];
+
                 vm.labels=labels;
+                vm.from = '20'+labels[0];
+                vm.to = '20'+labels[labels.length-1];
+
                 $timeout(angular.noop,0);
             });
         };
-
-
-        vm.labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        vm.changePeriod(vm.selectedPeriod);
+        // vm.labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         vm.salesSeries = ['Sales'/*, 'Series B'*/];
-        vm.incomeSeries = ['Sales'/*, 'Series B'*/];
+        vm.incomeSeries = ['Incomes'/*, 'Series B'*/];
 
         vm.orderSeries = ['Daily Orders'];
         vm.datasetOverride = [{lineTension: 0}];
         /////////
 
-        function randomData(dataName, serieName, lableName, order) {
-            vm[dataName] = [];
-            for (var series = 0; series < vm[serieName].length; series++) {
-                var row = [];
-                for (var label = 0; label < vm[lableName].length; label++) {
-                    row.push(Math.floor((Math.random() * (order || 100)) + 1));
-                }
-                vm[dataName].push(row);
-            }
-        }
+        // function randomData(dataName, serieName, lableName, order) {
+        //     vm[dataName] = [];
+        //     for (var series = 0; series < vm[serieName].length; series++) {
+        //         var row = [];
+        //         for (var label = 0; label < vm[lableName].length; label++) {
+        //             row.push(Math.floor((Math.random() * (order || 100)) + 1));
+        //         }
+        //         vm[dataName].push(row);
+        //     }
+        // }
 
         // init
-
-        randomData('salesData', 'salesSeries', 'labels', 100);
-        randomData('incomeData', 'incomeSeries', 'labels', 10000);
+        //
+        // randomData('salesData', 'salesSeries', 'labels', 100);
+        // randomData('incomeData', 'incomeSeries', 'labels', 10000);
 
         function getTopProducts(topX){
             vm.topProducts={};
@@ -98,23 +102,21 @@
                 });
             });
         }
+        getTopProducts(5);
 
-        vm.topSales = [
-            {id: 'P100001', name: 'Apple', count: 43},
-            {id: 'P100003', name: 'Orange', count: 31},
-            {id: 'P100002', name: 'Pearl', count: 25},
-            {id: 'P100004', name: 'Guava', count: 20},
-            {id: 'P100005', name: 'Banana', count: 11}
-        ];
-        vm.topIncome = [
-            {id: 'P100003', name: 'Orange', count: 5400},
-            {id: 'P100004', name: 'Guava', count: 3850},
-            {id: 'P100002', name: 'Pearl', count: 3230},
-            {id: 'P100001', name: 'Apple', count: 3210},
-            {id: 'P100005', name: 'Banana', count: 1880}
-        ];
-        console.log(vm.data)
-        console.log(vm.labels)
-
+        var productNames={};
+        vm.getProductName = function(id){
+            if(productNames[id]==='_loading'){
+                //
+            } else if(productNames[id]===undefined){
+                productNames[id]='_loading';
+                $firebase.queryRef('products?type=list').child(id).child('itemName').once('value')
+                    .then(function(snap){
+                        productNames[id] = snap.val();
+                    })
+            } else {
+                return productNames[id]
+            }
+        };
     }
 })();

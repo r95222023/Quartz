@@ -36,7 +36,6 @@
         tb.getCartTotalItems=function(){
             return ngCart.getTotalItems()||0;
         };
-
         ////////////////
 
         function logout() {
@@ -84,7 +83,16 @@
         // });
     }
 
+    /* @ngInject */
     function Checkout($ngCart, $auth, $firebase,$firebaseStorage, $mdMedia, $timeout, snippets, $stateParams) {
         var checkout = this;
+    }
+
+    /* @ngInject */
+    function OrderSummary(store, $auth, $firebase,$firebaseStorage, $mdMedia, $timeout, snippets, $stateParams) {
+        var os = this;
+        var siteName = _core.util.site.siteName;
+
+        // os.currentOrder = store.get(siteName+'_order');
     }
 })();

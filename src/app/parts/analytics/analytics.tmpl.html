@@ -4,11 +4,11 @@
         <div layout="row" layout-align="end center">
             <md-icon md-font-icon="fa fa-calendar"></md-icon>
 
-            <md-select ng-model="vm.selectedPeriod" class="marginless" ng-change="vm.onPeriodChange()">
-                <md-option ng-value="period" ng-repeat="period in vm.periods">{{period.name}}</md-option>
+            <md-select ng-model="vm.selectedPeriod" class="marginless">
+                <md-option ng-value="period" ng-repeat="period in vm.periods track by $index" ng-click="vm.changePeriod(period)">{{period.name}}</md-option>
             </md-select>
         </div>
-        <div style="font-size:12px;">10月21日 至 2016年10月22日 (GMT-5)</div>
+        <div style="font-size:12px;">{{vm.from}} 至 {{vm.to}} (GMT-5)</div>
     </div>
     <md-card flex="80" class="analytic-card">
         <!--<md-card-title>-->
@@ -20,9 +20,9 @@
             <md-tabs md-dynamic-height md-no-ink-bar class="score-card">
                 <md-tab>
                     <md-tab-label>
-                        {{'ANALYTICS.SALES'|translate}}
+                        {{'ANALYTICS.SALES'|translate}}: {{vm.cs}}
                         <br>
-                        {{'ANALYTICS.TOTALSALES'|translate}}: 350
+                        {{'ANALYTICS.TOTALSALES'|translate}}
                     </md-tab-label>
                     <md-tab-body>
                         <canvas class="chart-line" chart-data="vm.salesData" chart-labels="vm.labels"
@@ -32,9 +32,9 @@
                 </md-tab>
                 <md-tab>
                     <md-tab-label>
-                        {{'ANALYTICS.INCOMES'|translate}}
+                        {{'ANALYTICS.INCOMES'|translate}}: {{vm.g}}
                         <br>
-                        {{'ANALYTICS.TOTALINCOMES'|translate}}: 41850
+                        {{'ANALYTICS.TOTALINCOMES'|translate}}
                     </md-tab-label>
                     <md-tab-body>
                         <canvas class="chart-line" chart-data="vm.incomeData" chart-labels="vm.labels"
@@ -52,16 +52,16 @@
     <md-card flex="40">
         <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">Top Sales (Unit)</span>
+                <span class="md-headline">Top Products (Unit)</span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="product in vm.topSales">
+                <md-list-item class="md-2-line" ng-repeat="product in vm.topProducts.s">
                     <!--<md-checkbox ng-model="item.done"></md-checkbox>-->
                     <div class="md-list-item-text">
-                        <h3>{{$index}}: {{product.name}} (編號: {{product.id}})</h3>
-                        <p>Count: {{product.count}}</p>
+                        <h3>{{$index+1}}: {{vm.getProductName(product.id)}} (編號: {{product.id}})</h3>
+                        <p>Sales: {{product.s}}</p>
                     </div>
                 </md-list-item>
             </md-list>
@@ -71,16 +71,16 @@
     <md-card flex="40">
         <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">Top Sales (Income)</span>
+                <span class="md-headline">Top Products (Income)</span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
             <md-list>
-                <md-list-item class="md-2-line" ng-repeat="product in vm.topIncome">
+                <md-list-item class="md-2-line" ng-repeat="product in vm.topProducts.g">
                     <!--<md-checkbox ng-model="item.done"></md-checkbox>-->
                     <div class="md-list-item-text">
-                        <h3>{{$index}}: {{product.name}} (編號:{{product.id}})</h3>
-                        <p>Subtotal: {{product.count}}</p>
+                        <h3>{{$index+1}}:  {{vm.getProductName(product.id)}} (編號:{{product.id}})</h3>
+                        <p>Incomes: {{product.g}}</p>
                     </div>
                 </md-list-item>
             </md-list>

@@ -12,7 +12,7 @@
 
     ////
     /* @ngInject */
-    function AllpayCtrl(ngCart, $auth, $firebase, $mdMedia, $timeout, $sce) {
+    function AllpayCtrl(ngCart, $auth, $firebase, $mdMedia, $timeout, $sce, store) {
         var vm = this;
         var siteName = _core.util.site.siteName;
 
@@ -166,6 +166,7 @@
         // }
         vm.submit = function () {
             var e = document.getElementsByName('allpay-checkout');
+            // store.set(siteName+'_order_', JSON.stringify(vm.order));
             e[0].submit();
         };
     }
