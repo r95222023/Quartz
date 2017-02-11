@@ -1,0 +1,17 @@
+{
+    "DESIGN":{
+        "PROP":"属性",
+        "LAYOUT":"排版",
+        "EXTERNAL":"外部资源",
+        "TEMPLATES":"范本",
+        "PRESET":"预置",
+        "META":"Meta 值"
+    },
+    "MENU": {
+        "PAGES": {
+            "MENUNAME": "页面",
+            "PAGEMANAGER":"页面",
+            "WIDGETMANAGER": "元件"
+        }
+    }
+}

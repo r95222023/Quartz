@@ -1,0 +1,8 @@
+{
+    "ANALYTICS":{
+        "SALES":"销售量",
+        "INCOMES":"收入",
+        "TOTALSALES":"总销售量",
+        "TOTALINCOMES":"总收入"
+    }
+}

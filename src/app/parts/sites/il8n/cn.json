@@ -1,0 +1,10 @@
+{
+    "MENU": {
+        "MYSITES": "我的网站",
+        "ALLSITES": "所有网站",
+        "SITEMENU": "网站设置",
+        "SITES": {
+            "CONFIG": "基本设定"
+        }
+    }
+}

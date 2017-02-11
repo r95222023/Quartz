@@ -1,0 +1,126 @@
+{
+    "MENU": {
+        "AUTH": {
+            "AUTH": "认证",
+            "LOGIN": "登入",
+            "SIGN_UP": "注册",
+            "FORGOT": "忘记密码",
+            "LOCK": "锁住页面",
+            "PROFILE": "个人简介"
+        }
+    },
+    "HEADER": {
+        "HEADING": "Quartz"
+    },
+    "LOGIN": {
+        "TITLE": "登入",
+        "EMAIL": {
+            "LABEL": "电子邮件",
+            "PLEASE_ENTER": "请输入您的电子邮件。",
+            "PLEASE_VALID": "请输入有效的电子邮件。"
+        },
+        "PASSWORD": {
+            "LABEL": "密码",
+            "PLEASE_ENTER": "请输入您的密码"
+        },
+        "REMEMBER": "保持登入",
+        "FORGOT": "忘记密码?",
+        "BUTTON": "登入",
+        "SIGNUP_LINK": "没有帐户? 现在创一个",
+        "SOCIAL": {
+            "OR": "或以下列方法登入"
+        },
+        "MESSAGES": {
+            "ACCESS_DENIED": "用户名或密码不正确"
+        }
+    },
+    "SIGNUP": {
+        "TITLE": "注册",
+        "NAME": {
+            "LABEL": "名字",
+            "PLEASE_ENTER": "请输入您的姓名"
+        },
+        "EMAIL": {
+            "LABEL": "电子邮件",
+            "PLEASE_ENTER": "请输入您的电子邮件",
+            "PLEASE_VALID": "请输入有效的电子邮件"
+        },
+        "PASSWORD": {
+            "LABEL": "密码",
+            "PLEASE_ENTER": "请输入密码",
+            "MIN_LENGTH": "您的密码必须超过8个字符",
+            "SAME_PASSWORD": "请确认您的密码"
+        },
+        "PASSWORD_CONFIRM": {
+            "LABEL": "确认密码"
+        },
+        "BUTTON": "注册",
+        "HAVE_LOGIN": "已经有帐号？ 由此登入",
+        "MESSAGES": {
+            "CONFIRM_SENT": "确认发送",
+            "LOGIN_NOW": "登入",
+            "NO_SIGNUP": "无法登入"
+        }
+    },
+    "LOCK": {
+        "TITLE": "欢迎回来",
+        "LOGGED_OUT": "閒置过久自动登出。 请输入您的密码重新登入",
+        "PASSWORD": {
+            "LABEL": "密码",
+            "PLEASE_ENTER": "请输入您的密码"
+        },
+        "LOGIN": "登入",
+        "LOGOUT": "登出",
+        "MESSAGES": {
+            "ACCESS_DENIED": "用户名或密码不正确"
+        }
+    },
+    "FORGOT": {
+        "TITLE": "忘记密码?",
+        "ENTER_EMAIL": "请输入您的电子邮件",
+        "EMAIL": {
+            "LABEL": "电子邮件",
+            "PLEASE_ENTER": "请输入您的电子邮件。",
+            "PLEASE_VALID": "请输入有效的电子邮件。"
+        },
+        "RESET": "重设密码",
+        "LOGIN": "记得密码? 由此登入",
+        "MESSAGES": {
+            "RESET_SENT": "已寄出新密码至您指定的电子邮件信箱",
+            "LOGIN_NOW": "登入",
+            "NO_RESET": "无法重新设定密码"
+        }
+    },
+    "PROFILE": {
+        "TITLE": "用户简介",
+        "NAME": {
+            "LABEL": "名字",
+            "PLEASE_ENTER": "请输入您的姓名"
+        },
+        "EMAIL": {
+            "LABEL": "电子邮件",
+            "PLEASE_ENTER": "请输入您的电子邮件",
+            "PLEASE_VALID": "请输入有效的电子邮件"
+        },
+        "WEBSITE": {
+            "LABEL": "网站"
+        },
+        "BIO": {
+            "LABEL": "自介"
+        },
+        "TWITTER": {
+            "LABEL": "twitter"
+        },
+        "PASSWORD": {
+            "LABEL": "新密码",
+            "CURRENT": "目前的",
+            "PLEASE_ENTER": "请输入密码",
+            "MIN_LENGTH": "您的密码必须超过8个字符",
+            "SAME_PASSWORD": "请确认您的密码"
+        },
+        "PASSWORD_CONFIRM": {
+            "LABEL": "确认密码"
+        },
+        "BUTTON": "更新密码"
+    }
+}

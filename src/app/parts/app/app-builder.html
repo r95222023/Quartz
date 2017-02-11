@@ -1,0 +1,120 @@
+<!--<md-card>
+    Android:
+    <md-button ng-hide="ab.app.android.ready" ng-click="ab.buildApp('android')">Build</md-button>
+    <md-button ng-show="ab.app.android.ready">Download</md-button>
+    <form method="get" action="http://localhost/apps/obsidian/package.json">
+        <button type="submit">Download!</button>
+    </form>
+    <a href="http://localhost/apps/obsidian/package.json" download="package.json">Download!</a>
+
+</md-card>-->
+<md-content layout="row" layout-padding layout-align="center" class="admin-card-container">
+    <md-card class="admin-card" style="width:800px;">
+        <!--<md-card-title>-->
+            <!--<md-card-title-text>-->
+                <!--<span class="md-headline">Basic</span>-->
+                <!--&lt;!&ndash;<span class="md-subhead"></span>&ndash;&gt;-->
+            <!--</md-card-title-text>-->
+        <!--</md-card-title>-->
+        <md-card-content>
+            <div layout="row" layout-wrap flex="100">
+                <!--<div flex>-->
+                    <!--<h3>App Manager</h3>-->
+                <!--</div>-->
+                <div flex layout="column">
+                    <div layout="row">
+                        <img flex="50" src="assets/images/elements/noicon.png" alt="App Icon" height="250" width="250">
+                        <div flex="50">
+                            <input type="text" style="margin-left:-10px;" class="docs-title-input" ng-model="ab.appName">
+                            <h4>Size: 2.03 MB</h4>
+                            <h4>Last Build: 2017/02/01</h4>
+                        </div>
+                    </div>
+                </div>
+                <div layout="column" layout-align="center center">
+                    <div layout-align="center center" style="width:200px">
+                        <img ng-src="{{ab.getQRcode()}}" alt="QRCode">
+                    </div>
+                    <div>
+                        <md-input-container>
+                            <md-select ng-model="ab.selectedPlatform" placeholder="Select a platform">
+                                <md-option ng-value="platform" ng-repeat="platform in ab.platforms">{{ platform }}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <a class="md-button" ng-href="{{ab.getDownload()}}" download>Download</a>
+                    </div>
+                </div>
+            </div>
+            <div flex="100" layout="row">
+                <md-card flex >
+                    <md-card-content layout="row">
+                        <md-icon md-font-icon="fa fa-android"></md-icon><h4>android</h4><span flex></span><md-button>Add Key</md-button><md-button class="md-raised">Build</md-button>
+                    </md-card-content>
+                </md-card>
+                <md-card flex>
+                    <md-card-content layout="row">
+                        <h4>iOS</h4><span flex></span><md-button>Add Key</md-button><md-button class="md-raised">Build</md-button>
+                    </md-card-content>
+                </md-card>
+            </div>
+            <div layout="row" layout-wrap flex="100">
+                <div flex>
+                    <h3>Plugins</h3>
+                </div>
+            </div>
+            <div flex-offset="20" flex="60" layout="row" layout-wrap>
+                <md-input-container flex="100" ng-repeat="plugin in ab.plugins track by $index">
+                    <label></label>
+                    <input type="text" ng-model="ab.plugins[$index]">
+                    <md-icon md-font-icon="fa fa-times" style="cursor:pointer"
+                             ng-click="ab.removePlugin($index)"></md-icon>
+                </md-input-container>
+            </div>
+            <div flex-offset="20" flex="60" layout="row" layout-wrap>
+                <md-input-container flex="100">
+                    <label>Plugin</label>
+                    <md-select ng-model="selectedPlugin">
+                        <md-option><em>None</em></md-option>
+                        <md-option ng-repeat="plugin in ab.pluginOptions track by $index" ng-value="plugin">
+                            {{plugin}}
+                        </md-option>
+                    </md-select>
+                    <md-icon md-font-icon="fa fa-plus" style="cursor:pointer"
+                             ng-click="ab.addPlugin(selectedPlugin);selectedPlugin=''"></md-icon>
+                </md-input-container>
+            </div>
+
+            <!--<form>
+                <fieldset>
+                    <div layout="row" layout-wrap>
+                        <md-input-container flex="50">
+                            <label>Title</label>
+                            <input type='text' ng-model="common.preload.title">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>Favicon</label>
+                            <input type='text' ng-model="common.preload.favicon">
+                        </md-input-container>
+
+                        <md-input-container flex="50">
+                            <label>Description</label>
+                            <input type='text' ng-model="common.siteListData.description">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>Type</label>
+                            <input type='text' ng-model="common.siteListData.type">
+                        </md-input-container>
+                        <md-input-container flex="50">
+                            <label>Thumbnail</label>
+                            <input type='text' ng-model="common.siteListData.thumbnail">
+                        </md-input-container>
+                    </div>
+                </fieldset>
+            </form>-->
+        </md-card-content>
+        <!--<md-card-actions layout="row" layout-align="end center">
+            <md-button class="md-raised md-primary" ng-click="common.update()">Update</md-button>
+        </md-card-actions>-->
+    </md-card>
+
+</md-content>

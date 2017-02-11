@@ -1,0 +1,11 @@
+{
+    "MENU": {
+        "PRODUCTS": {
+            "NAME":"产品",
+            "LIST": "产品清单",
+            "SHOPPINGCART":"购物车",
+            "MANAGER":"产品"
+        },
+        "ORDERHISTORY": "订单"
+    }
+}

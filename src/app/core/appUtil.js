@@ -38,6 +38,7 @@
             'sites': 'sites/:type',
             'site': 'sites/:type/:siteName',
             'site-path': site + '/:path',
+            'site-config': site + '/config',
             'site-config-preload': site + '/config/preload',
             'site-config-user': site+'/config/user',
             'site-config-payment': site + '/config/payment/',

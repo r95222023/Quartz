@@ -25,6 +25,7 @@
                     </div>
                     <button ui-sref="quartz.admin-default.pageManager({siteName:site.siteName})">page</button>
                     <button ng-click="vm.selectedSite=site;vm.showTemplate($event); $event.stopPropagation();">apply template</button>
+                    <button ui-sref="quartz.admin-default.app({siteName:site.siteName,selectedSite:site.siteName})">app manager</button>
                     <button ng-click="vm.deleteSite(site); $event.stopPropagation();">delete</button>
                 </md-card-content>
             </md-card>

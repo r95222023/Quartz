@@ -5,8 +5,7 @@
         .module('app.parts.sites')
         .controller('MySitesController', MySitesController)
         .controller('AllSitesController', AllSitesController)
-        .controller('TemplateCtrl', TemplateCtrl)
-        .controller('AppBuilderCtrl', AppBuilderCtrl);
+        .controller('TemplateCtrl', TemplateCtrl);
 
     /* @ngInject */
     function TemplateCtrl($stateParams, $firebase, $mdDialog, indexService, sitesService) {
@@ -125,29 +124,11 @@
     }
 
     /* @ngInject */
-    function AppBuilderCtrl(site, $firebase, $mdDialog, indexService, sitesService) {
-        var ab = this;
-        ab.plugins = [];
-        ab.removePlugin = function (index) {
-            ab.plugins.splice(index, 1);
-        };
-        ab.addPlugin = function (input) {
-            if(JSON.stringify(ab.plugins).indexOf(JSON.stringify(input))!==-1) return; //input is duplicated
-            ab.plugins.push(input);
-        };
-        ab.buildApp = function(){
-            var taskRef = $firebase.queryRef('queue-tasks').push();
-            taskRef.set({
-                siteName: site.siteName,
-                plugins:ab.plugins
-            })
-        }
-    }
-
-    /* @ngInject */
     function MySitesController($firebase, $timeout, authData, $state, sitesService, qtNotificationsService, $mdDialog) {
         var vm = this;
-        if (!authData){return $state.go('authentication.login')}
+        if (!authData) {
+            return $state.go('authentication.login')
+        }
 
         vm.newSiteName = '';
 
@@ -174,24 +155,6 @@
                 controllerAs: 'vm'
             });
         };
-
-        vm.showAppBuilder = function ($event) {
-            var parentEl = angular.element(document.body);
-            $mdDialog.show({
-                parent: parentEl,
-                // contentElement: '#template-list',
-                templateUrl: 'app/parts/sites/app-builder.html',
-                targetEvent: $event,
-                fullscreen: true,
-                locals: {
-                    site: vm.selectedSite
-                },
-                controller: 'AppBuilderCtrl',
-                clickOutsideToClose: true,
-                controllerAs: 'ab'
-            });
-        };
-
 
         vm.addSite = function () {
             $firebase.queryRef('site?type=list&siteName=' + vm.newSiteName).child('createdTime').once('value', function (snap) {
@@ -225,8 +188,8 @@
 
         };
 
-        vm.go=function(site){
-            $state.go('quartz.admin-default.overview',{siteName:site.siteName})
+        vm.go = function (site) {
+            $state.go('quartz.admin-default.overview', {siteName: site.siteName})
         }
 
     }

@@ -1,0 +1,91 @@
+{
+    "404": {
+        "TITLE": "404",
+        "HOME": "主页",
+        "MESSAGE": "找不到主页",
+        "DESCRIPTION": "抱歉，此页面不存在。 请回主页重新开始。"
+    },
+    "500": {
+        "TITLE": "500",
+        "MESSAGE": "出了点问题。",
+        "DESCRIPTION": "对不起，出问题了",
+        "HOME": "回主页"
+    },
+    "EDITOR":{
+        "SETTINGS":"设置"
+    },
+    "GENERAL": {
+        "FILE":"档案",
+        "NEW":"新增",
+        "OPEN":"开启...",
+        "IMPORT":"汇入",
+        "EXPORT":"汇出",
+        "RESPONSIVEMODE":"响应式设计模式",
+        "MEDIAWIDTH":"装置尺寸",
+        "CSSEDITOR":"CSS 编辑器",
+        "TOOLS":"工具",
+        "PREVIEW":"预览",
+        "ALL":"所有",
+        "ALLCATE":"所有类别",
+        "UNDO":"復原",
+        "REDO":"取消復原",
+        "SHOW":"显示",
+        "HIDE":"隐藏",
+        "CANCEL": "取消",
+        "OK": "好",
+        "EDIT": "编辑",
+        "DELETE": "删除",
+        "COPY":"複製",
+        "VIEW": "检视",
+        "SAVE":"储存",
+        "SEARCH":"搜索",
+        "ID":"编号",
+        "NAME":"名称",
+        "CATEGORY":"类别",
+        "SUBCATEGORY":"子类别",
+        "QUANTITY":"数量",
+        "PRICE":"价格",
+        "START":"开始使用",
+		"BACK":"上一页",
+		"CONFIRM":"确认"
+    },
+    "ADMIN": {
+        "TOOLBAR": {
+            "SETTINGS": "设置",
+            "PROFILE": "简介",
+            "LOGOUT": "登出",
+            "LOGIN": "登入",
+            "SIDEBAR_TOGGLE": "侧方清单"
+        },
+        "NOTIFICATIONS": {
+            "ACCOUNT_SETTINGS": "帐户设定",
+            "CHAT_SETTINGS": "聊天设定",
+            "USER_STATS": "用户统计",
+            "SERVER_STATS": "服务统计",
+            "SHOW_LOCATION": "显示我的位置",
+            "SHOW_AVATAR": "查看我的化身",
+            "SEND_NOTIFICATIONS": "送出通知",
+            "ALLOW_BACKUPS": "允许云端备份",
+            "SHOW_USERNAME": "显示用户名称",
+            "SHOW_PROFILE": "显示个人资料",
+            "STORAGE_SPACE": "存储空间(120/160Gb)",
+            "BANDWIDTH_USAGAE": "频宽使用情况（10/100Gb)",
+            "MEMORY_USAGAE": "记忆体使用情况（1/8Gb)"
+        }
+    },
+    "LANGUAGES": {
+        "CHINESE": "中文(繁體)",
+        "ENGLISH": "英文",
+        "FRENCH": "法語",
+        "PORTUGUESE": "葡萄牙語"
+    },
+    "TABLES": {
+        "NEXT": "下一頁",
+        "PREV": "前一頁",
+        "OF": "的",
+        "ROWS": "每頁行數:"
+    },
+    "MESSAGES": {
+        "LANGUAGE_CHANGED": "語言已改變"
+    }
+}

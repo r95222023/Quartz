@@ -12,6 +12,6 @@
             'app.parts.users',
             'app.parts.files',
             'app.parts.analytics',
-            'app.parts.test'
+            'app.parts.app'
         ]);
 })();
